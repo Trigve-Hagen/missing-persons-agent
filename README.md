@@ -1,5 +1,5 @@
 # Missing Persons Agent
-Define code and create models that do tasks related to finding missing people.
+Create models define code and that do tasks related to finding missing people.
 
 ## Models
 
