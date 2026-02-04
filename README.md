@@ -1,2 +1,7 @@
 ### Missing Persons Agent
-Define and create models that do tasks related to finding missing people.
+Define and create models that do tasks related to finding missing people.  
+  
+### Models
+Public records search:  
+Hospitals, Homeless Shelters in different countries. USA, Mexico, Canada etc..
+
