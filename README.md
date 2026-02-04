@@ -1,8 +1,8 @@
 ### Missing Persons Agent
-Define and create models that do tasks related to finding missing people.  
+Define and create models that do tasks related to finding missing people. 
   
 ### Models
-Predict the area based upon distance able to travel in a time frame. Start from estimated time of found missing. Figure out the distance they could have traveled. Send alerts to gas stations, hotels, hospitals and and shelters. Update to larger areas as the search progresses.
+Predict the area based upon distance able to travel in a time frame. Start from estimated time of found missing. Figure out the distance they could have traveled. Send email alerts to gas stations, hotels, hospitals and and shelters. Update to larger areas as the search progresses.
    
 Search for people who have been missing for a long time in different countries. USA, Mexico, Canada etc..  
 Look up all places that have public records about people to search through.
