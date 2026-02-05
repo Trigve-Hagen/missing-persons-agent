@@ -8,7 +8,14 @@ Define the area based upon distance able to travel in a time frame by car. Start
 
 FEMA Public Alert Warning System - [FEMA](https://www.fema.gov/emergency-managers/practitioners/integrated-public-alert-warning-system)  
 FEMA Github Emaple API calls - [FEMA Github](https://github.com/FEMA/openfema-samples)  
+  
 Missing Persons Database API - [namus](https://nij.ojp.gov/namus)  
+**I asked google AI:** Write a php script to use NamUs API to get a list of missing persons in california that have only been missing in the last week.  
+**I got this response:**
+It is not possible to write a direct PHP script using the NamUs API as described because the
+NamUs system does not have a public-facing API for automated data retrieval. While the database is publicly accessible and searchable by individuals and professionals, programmatic access through an API for fetching large, filterable datasets (such as missing persons in a specific state within a specific time frame) is not available to the general public.  
+Can we open an endpoint for read only data so I can build a module that creates pages on all Drupal sites. I want to also have it train people to be on the lookout for people who are missing by having them look at peoples images, think about the image, then print and carry a paper with the missing peoples images with them to cross reference if they are unsure.  
+  
 Create an API endpoint that can load email lists to send the alerts to.  
 Send it forward email campaign. Have every person who recieve the email alert send it to all of their people they send emails to..  
 A bunch of downloadable modules and plugins for wodpress, Drupal etc.. that can do all of the emailing from your website..  
