@@ -4,7 +4,8 @@ Need READ ONLY APIs that supply data for missing people and emergency alerts.
 Need the best up to date APIs.  
 
 ## Drupal Module
-I just started work on this module as of 02-04-2026. [Sentinel](https://www.drupal.org/project/sentinel)
+I just started work on this module as of 02-04-2026. [Sentinel](https://www.drupal.org/project/sentinel)  
+**Sentinel** "A soldier or guard whose job is to stand and keep watch."
 
 ## Models
 
