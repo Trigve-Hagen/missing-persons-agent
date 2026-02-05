@@ -28,14 +28,14 @@ Look up all places that have public records about people to search through.
 
 ## Data APIs
 FEMA Public Alert Warning System - [FEMA](https://www.fema.gov/emergency-managers/practitioners/integrated-public-alert-warning-system)  
-Missing Persons Database API - [namus](https://nij.ojp.gov/namus)  
+Missing Persons Database API - [NamUs](https://nij.ojp.gov/namus)  
 FEMA Github Emaple API calls - [FEMA Github](https://github.com/FEMA/openfema-samples)  
 
 ## Updates
 ### FEMA update 02-05-2026
 I signed up for the developer account at FEMA so I can use the IPAWS Api to build a page to warn people of **floods, huricaines and tornadoes** on every drupal site that uses the module. Its will also allow the admin to add alerts to emails so they can email their clients in the event of an emergency in their area. It should possibly have people check if their buildings are in a flood zone. Its going to take a couple days to get approved.  
 
-### namus update 02-05-2026
+### NamUs update 02-05-2026
 **I asked google AI:** Write a php script to use NamUs API to get a list of missing persons in california that have only been missing in the last week.  
 **I got this response:**
 It is not possible to write a direct PHP script using the NamUs API as described because the
