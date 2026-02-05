@@ -32,7 +32,7 @@ FEMA Github Emaple API calls - [FEMA Github](https://github.com/FEMA/openfema-sa
 
 ## Updates
 ### FEMA update 02-05-2026
-I signed up for the developer account at FEMA so I can use the IPAWS Api to build a page to warn people of **floods, huricaines and tornadoes** of every drupal site that uses the module. Its will also allow the admin to add alerts to emails so they can email their clients in the event of an emergency in their area. It should possibly have people check if their buildings are in a flood zone. Its going to take a couple days to get approved.  
+I signed up for the developer account at FEMA so I can use the IPAWS Api to build a page to warn people of **floods, huricaines and tornadoes** on every drupal site that uses the module. Its will also allow the admin to add alerts to emails so they can email their clients in the event of an emergency in their area. It should possibly have people check if their buildings are in a flood zone. Its going to take a couple days to get approved.  
 
 ### namus update 02-05-2026
 **I asked google AI:** Write a php script to use NamUs API to get a list of missing persons in california that have only been missing in the last week.  
