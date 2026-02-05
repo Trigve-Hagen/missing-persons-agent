@@ -1,16 +1,23 @@
 # Missing Persons Agent
 Create models define code and that do tasks related to finding missing people.
 
+## Drupal Module
+I just started work on this module as of 02-04-2026. [Sentinel](https://www.drupal.org/project/sentinel)
+
 ## Models
 
 ## Code
 Define the area based upon distance able to travel in a time frame by car. Start from estimated time of found missing. Build circles starting from ground zero. Send email alerts to gas stations, markets, restaraunts, hotels, hospitals and shelters in those areas. Update to larger areas as the search progresses.  
 
 FEMA Public Alert Warning System - [FEMA](https://www.fema.gov/emergency-managers/practitioners/integrated-public-alert-warning-system)  
-I signed up for the developer account so I can build a page to warn people of **floods, huricaines and tornadoes** of every drupal site that uses the module.  
-FEMA Github Emaple API calls - [FEMA Github](https://github.com/FEMA/openfema-samples)  
-  
 Missing Persons Database API - [namus](https://nij.ojp.gov/namus)  
+FEMA Github Emaple API calls - [FEMA Github](https://github.com/FEMA/openfema-samples)  
+
+## 02-05-2026
+### FEMA update
+I signed up for the developer account at FEMA so I can build a page to warn people of **floods, huricaines and tornadoes** of every drupal site that uses the module. Its going to take a couple days to get approved.  
+
+### namus update
 **I asked google AI:** Write a php script to use NamUs API to get a list of missing persons in california that have only been missing in the last week.  
 **I got this response:**
 It is not possible to write a direct PHP script using the NamUs API as described because the
