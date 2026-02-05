@@ -1,5 +1,6 @@
 # Missing Persons Agent
-Create models define code and that do tasks related to finding missing people.
+Create AI models for predicting behavior and define code that do tasks related to finding missing people.  
+Looking for READ ONLY APIs that supply data for missing people and emergency alerts.  
 
 ## Drupal Module
 I just started work on this module as of 02-04-2026. [Sentinel](https://www.drupal.org/project/sentinel)
