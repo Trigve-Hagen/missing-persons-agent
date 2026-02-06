@@ -37,5 +37,8 @@ I signed up for the developer account at FEMA so I can use the IPAWS Api to buil
 It is not possible to write a direct PHP script using the NamUs API as described because the
 NamUs system does not have a public-facing API for automated data retrieval. While the database is publicly accessible and searchable by individuals and professionals, programmatic access through an API for fetching large, filterable datasets (such as missing persons in a specific state within a specific time frame) is not available to the general public.  
   
-**Can we open an endpoint for read only data** so I can build a module that creates pages on all Drupal sites? I want to also have it train people to be on the lookout for people who are missing by having them look at peoples images, think about the image, then print and carry a paper with the missing peoples images with them to cross reference if they are unsure. I only need name, image, brief description of what they where last wearing, hair and eye color, height etc.. Anything that would help someone identify the individual. Thanks!
+**Can we open an endpoint for read only data** so I can build a module that creates pages on all Drupal sites? I want to also have it train people to be on the lookout for people who are missing by having them look at peoples images, think about the image, then print and carry a paper with the missing peoples images with them to cross reference if they are unsure. I only need name, image, brief description of what they where last wearing, hair and eye color, height etc.. Anything that would help someone identify the individual. Thanks!  
+
+### NamUs update 02-06-2026
+Submitted a question asking for access to a public API for missing people.  
 
