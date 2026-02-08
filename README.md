@@ -8,6 +8,7 @@ I just started work on this module as of 02-04-2026. [Sentinel](https://www.drup
 **Sentinel** "A soldier or guard whose job is to stand and keep watch."
 
 ## Models
+Model that takes all the persons social media accounts and predics if a friend would have something to do with it based upon posts.  
 
 ## Code
 Define the area based upon distance able to travel in a time frame by car. Start from estimated time of found missing. Build circles starting from ground zero. Send email alerts to gas stations, markets, restaraunts, hotels, hospitals and shelters in those areas. Update to larger areas as the search progresses. 
