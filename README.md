@@ -46,7 +46,7 @@ Submitted a question asking for access to a public API for missing people.
 ** Response same day: ** Thank you for your inquiry. Currently there is no endpoint access available for the National Missing and Unidentified Persons (NamUs) system.  
 
 ### FEMA update 02-12-2026
-** Response: **
+** Response: **  
 Hello  
 I am reaching out from FEMA IPAWS Technical Support Services.  
 Are you interested in receiving and/or redistributing the alerts, warning and notification posted on the IPAWS All Hazards Information Feed?  
