@@ -71,3 +71,11 @@ Registered to be a user on NamUs site so I can recieve content. Will see if I ca
 If it was there now we could have the description of the Walmart backpack guy who abducted Nancy Guthrie up on every site that uses this module.  
 ** Response same day: ** They sent me an email almost immediately to register. Go to say they are awesomely prompt about stuff.  
 
+** I Registered created a Contact Us where I asked **
+I would like to create an API endpoint for you. I work for the ** where I work ** as a Drupal developer. I would like to create the code block that would allow publicly viewable data via an API. If you send me the as parameters, you can make available and the type of code you need Module for Drupal, etc.. I can create the API endpoint as a module that you can install on whatever website you would use to offer up the API. My goal is to help find Nancy Guthrie and other missing people such as her. Thanks. I will build it for free.  
+  
+A request would resemble: https://developer.paypal.com/api/rest/requests/  
+A response would resemble: https://developer.paypal.com/api/rest/responses/  
+
+
+
