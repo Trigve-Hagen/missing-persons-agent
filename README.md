@@ -45,6 +45,27 @@ NamUs system does not have a public-facing API for automated data retrieval. Whi
 Submitted a question asking for access to a public API for missing people.  
 ** Response same day: ** Thank you for your inquiry. Currently there is no endpoint access available for the National Missing and Unidentified Persons (NamUs) system.  
 
+### FEMA update 02-12-2026
+** Response: **
+Hello  
+I am reaching out from FEMA IPAWS Technical Support Services.  
+Are you interested in receiving and/or redistributing the alerts, warning and notification posted on the IPAWS All Hazards Information Feed?  
+Here’s more information online for potential new vendors and developers Technology Vendors & Developers | FEMA.gov  
+I can better assist once I understand if you are trying to be an Origination Developer and/or Redistribution Developer for IPAWS.  
+The Alert Origination Software Providers (AOSP vendors) are the only Developer type required to complete MOA Application in the IPAWS Users Portal.  
+Here’s a listing of AOSPs vendors that have successfully demonstration their IPAWS capabilities - Demonstrated IPAWS Capabilities - Alert Origination Software Providers  
+Let me know if you have further IPAWS questions or concerns to further assist with your needs!  
+Thank you  
+
+** I Resonded: **  
+I just want to be a  Redistribution Developer for IPAWS.I only need read access to display on a module developed for drupal called Sentinel:  
+https://www.drupal.org/project/sentinel  
+  
+My plan is here.  
+https://github.com/Trigve-Hagen/missing-persons-agent/blob/main/README.md  
+  
+Thanks.  
+
 ### NamUs update 02-14-2026
 Registered to be a user on NamUs site so I can recieve content. Will see if I can talk with the people who run the website to get an API built that allows content that is released by Law Enforcement to be available on a read only API.  
 If it was there now we could have the description of the Walmart backpack guy who abducted Nancy Guthrie up on every site that uses this module.  
