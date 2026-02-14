@@ -41,3 +41,12 @@ NamUs system does not have a public-facing API for automated data retrieval. Whi
   
 **Can we open an endpoint for read only data** so I can build a module that creates pages on all Drupal sites? I want to also have it train people to be on the lookout for people who are missing by having them look at peoples images, think about the image, then print and carry a paper with the missing peoples images with them to cross reference if they are unsure. I only need name, image, brief description of what they where last wearing, hair and eye color, height etc.. Anything that would help someone identify the individual. Thanks!  
 
+### NamUs update 02-06-2026
+Submitted a question asking for access to a public API for missing people.  
+** Response same day: ** Thank you for your inquiry. Currently there is no endpoint access available for the National Missing and Unidentified Persons (NamUs) system.  
+
+### NamUs update 02-14-2026
+Registered to be a user on NamUs site so I can recieve content. Will see if I can talk with the people who run the website to get an API built that allows content that is released by Law Enforcement to be available on a read only API.  
+If it was there now we could have the description of the Walmart backpack guy who abducted Nancy Guthrie up on every site that uses this module.  
+** Response same day: ** They sent me an email almost immediately to register. Go to say they are awesomely prompt about stuff.  
+
