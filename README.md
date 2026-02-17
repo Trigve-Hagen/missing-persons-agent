@@ -43,10 +43,10 @@ NamUs system does not have a public-facing API for automated data retrieval. Whi
 
 ### NamUs update 02-06-2026
 Submitted a question asking for access to a public API for missing people.  
-** Response same day: ** Thank you for your inquiry. Currently there is no endpoint access available for the National Missing and Unidentified Persons (NamUs) system.  
+**Response same day:** Thank you for your inquiry. Currently there is no endpoint access available for the National Missing and Unidentified Persons (NamUs) system.  
 
 ### FEMA update 02-12-2026
-** Response: **  
+**Response:**  
 Hello  
 I am reaching out from FEMA IPAWS Technical Support Services.  
 Are you interested in receiving and/or redistributing the alerts, warning and notification posted on the IPAWS All Hazards Information Feed?  
@@ -57,7 +57,7 @@ Here’s a listing of AOSPs vendors that have successfully demonstration their I
 Let me know if you have further IPAWS questions or concerns to further assist with your needs!  
 Thank you  
 
-** I Resonded: **  
+**I Resonded:**  
 I just want to be a  Redistribution Developer for IPAWS.I only need read access to display on a module developed for drupal called Sentinel:  
 https://www.drupal.org/project/sentinel  
   
@@ -69,13 +69,56 @@ Thanks.
 ### NamUs update 02-14-2026
 Registered to be a user on NamUs site so I can recieve content. Will see if I can talk with the people who run the website to get an API built that allows content that is released by Law Enforcement to be available on a read only API.  
 If it was there now we could have the description of the Walmart backpack guy who abducted Nancy Guthrie up on every site that uses this module.  
-** Response same day: ** They sent me an email almost immediately to register. Go to say they are awesomely prompt about stuff.  
+**Response same day:** They sent me an email almost immediately to register. Go to say they are awesomely prompt about stuff.  
 
-** I Registered created a Contact Us where I asked **  
+**I Registered created a Contact Us where I asked**  
 I would like to create an API endpoint for you. I work for the ** where I work ** as a Drupal developer. I would like to create the code block that would allow publicly viewable data via an API. If you send me the as parameters, you can make available and the type of code you need Module for Drupal, etc.. I can create the API endpoint as a module that you can install on whatever website you would use to offer up the API. My goal is to help find Nancy Guthrie and other missing people such as her. Thanks. I will build it for free.  
   
 A request would resemble: https://developer.paypal.com/api/rest/requests/  
 A response would resemble: https://developer.paypal.com/api/rest/responses/  
+
+### FEMA Update 02-16-2026
+Here is what I can share about redistribution of IPAWS alerts below and in attachments. No access or application is required in the IPAWS Users Portal.  
+IPAWS provides all hazards alert Feeds with simple-to-implement interface for the public to consume. No key/password are required for access. Many Internet-connected devices and services use pulling method to receive IPAWS alerts. We recommend vendor set up a server to send requests no more frequently than every 2 minutes and cache results from your end. Redistribute alerts from your end to your customers.  
+  
+For developer to start, please point your test server to IPAWS Staging environment which is designed for vendors testing. IPAWS provide various alert feed endpoints that match vendors need.  
+  
+&nbsp;&nbsp;&nbsp;&nbsp;**EAS Feed** - This URL path returns alerts that are valid for Emergency Alert Systems (EAS) dissemination.  
+&nbsp;&nbsp;&nbsp;&nbsp;**NWEM Feed** - This URL path returns alerts that are valid for Non-Weather Emergency Alerts (NWEM) goes to NOAA Weather Radio dissemination.  
+&nbsp;&nbsp;&nbsp;&nbsp;**WEA Feed** - This URL path returns alerts that are valid for Wireless Emergency Alerts (WEA) dissemination.  
+&nbsp;&nbsp;&nbsp;&nbsp;**PUBLIC Feed (All alerts)** - This URL path returns any alert that successfully passes IPAWS authentication and validation processing regardless of dissemination path and BLOCKCHANNEL preferences. EAS, WEA, NWEM and other valid alerts can retrieve from these feeds.  
+
+STAGING (TDL) Test Environment
+
+**Feed - Staging - EAS Feed** -  https://tdl.apps.fema.gov/IPAWSOPEN_EAS_SERVICE/rest/eas/recent/2024-02-15T12:00:00Z  
+**Feed - Staging - NWEM Feed** - https://tdl.apps.fema.gov/IPAWSOPEN_EAS_SERVICE/rest/nwem/recent/2024-02-15T12:00:00Z  
+**Feed - Staging - WEA Feed** - https://tdl.apps.fema.gov/IPAWSOPEN_EAS_SERVICE/rest/PublicWEA/recent/2024-02-15T12:00:00Z   
+**Feed - Staging - PUBLIC Feed** - https://tdl.apps.fema.gov/IPAWSOPEN_EAS_SERVICE/rest/public/recent/2024-02-15T12:00:00Z  
+**Feed - Staging - PUBLIC NON_EAS** - https://tdl.apps.fema.gov/IPAWSOPEN_EAS_SERVICE/rest/public_non_eas/recent/2024-02-15T12:00:00Z  
+  
+Please see IPAWS All-Hazard Info Feed for more detail. IPAWS PMO recently change access feed policy, you can skip “Gain Access to the Feed” section.  
+If you don’t want traditional polling method to access IPAWS feeds, IPAWS is piloting a new message delivery method utilizing the AWS Simple Notification Service (SNS), which provides a pub/sub messing model for end users to receive IPAWS-OPEN messages. There is only one AWS SNS topic (EAS_PUBLIC_FEED) has been created at this moment. The distribution speed and content are the same as PULBIC Feed.   
+  
+&nbsp;&nbsp;&nbsp;&nbsp;**Production:** https://apps.fema.gov/IPAWSOPEN_EAS_SERVICE/rest/public/recent/2020-08-21T11:40:43Z  
+&nbsp;&nbsp;&nbsp;&nbsp;**Staging:**  https://tdl.apps.fema.gov/IPAWSOPEN_EAS_SERVICE/rest/public/recent/2020-08-21T11:40:43Z   
+  
+Our developers are continue developing more SNS topics for IPAWS vendors/subscribers to choose.  
+Similarly, for start, I would suggest your team to test pub/sub messaging method at Staging before you start pulling alert from Production with pub/sub method. IPAWS currently support following subscription methods:  
+  
+&nbsp;&nbsp;&nbsp;&nbsp;Email/Email-JSON  
+&nbsp;&nbsp;&nbsp;&nbsp;HTTP/HTTPS **  
+&nbsp;&nbsp;&nbsp;&nbsp;Amazon Kinesis Data Firehose*  
+&nbsp;&nbsp;&nbsp;&nbsp;AWS Lambda*  
+&nbsp;&nbsp;&nbsp;&nbsp;Platform application endpoint*  
+  
+Note:     * Subscription methods are available but have not been fully tested.  
+  
+** For using HTTP/ HTTPS endpoint, please follow AWS guide to setup and getting the ready to receive messages. AWS SNS Step 1: Make sure your endpoint is ready to process Amazon SNS messages - Amazon Simple Notification Service  
+Please let us know which AWS SNS subscription methods below work for you, so I will ask my developer to add that to the subscription list. I also attached IPAWS Pub/Sub quick guide to explain how IPAWS pub/sub messaging work.  
+All this information may seem overwhelming to you at first. Members of IPAWS Engineering Branch (fema-ipaws-eng@fema.dhs.gov)  will be happy to help and hop on a call to explain the processes in more detail.  
+  
+Thank you  
+fema.gov  
 
 
 
