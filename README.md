@@ -126,12 +126,7 @@ fema.gov
 Reading [Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-missing-people-online-7dec4cb038e5).
 ### News Stations
 
-- NBC News (2007–Present): Co-anchor of Today (since 2012), White House Correspondent, and legal analyst.
-- WRC-TV (NBC D.C.): Reporter covering major national stories.
-- KVOA (NBC Tucson): Reporter and anchor.
-- KMIZ (ABC Columbia, MO): Reporter.
-- KTVM (NBC Butte, MT): Early broadcasting career.
-- Are there APIs for news stories?
+- NBC News
 
 LLM to take in news reports from news stations.
   - Look throuh news reports for people who may have been mad at you.
@@ -173,7 +168,10 @@ Build out these timelines and then recursively build timelines for each person o
     - Get a list of the clerks that worked there before the disappearence.
     - See if any went missing in the days following the disappearance.
 
-Need a list of phone calls that people of interest (basically everyone) called with the identities of the people they called.
+Get a list of phone calls and emails that the person missing called and/or sent.
+  - Get the identities of the people they where talking to.
+
+Create timelines on everyone.
 
 Time of disappearance - get what people of interest are reported doing.
   - Looking for people with records.
