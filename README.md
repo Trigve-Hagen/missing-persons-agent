@@ -131,19 +131,20 @@ Reading [Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-miss
 - KVOA (NBC Tucson): Reporter and anchor.
 - KMIZ (ABC Columbia, MO): Reporter.
 - KTVM (NBC Butte, MT): Early broadcasting career.
+- Are there APIs for news stories?
 
-RAG LLM to take in news reports from news stations.
-  - Look throuh news reports for people who may have been mad at you. Sorry Its important to be thourogh.
+LLM to take in news reports from news stations.
+  - Look throuh news reports for people who may have been mad at you.
     - Gone to jail and got out recently.
     - Carear that may have been lost and could be looking for revenge.
-    - Lost family.
+    - If they lost family.
   - Get all information from reliable news outlets.
     - Look for missed information
 
 ### Social Media Accounts
   - Facebook
 
-Build timeline for all family members and friend + in her imminent group and anyone they contacted
+Build timeline for all family members and friend + in the immediate group and anyone they contacted.
   - Get any references to close friends.
   - Get all reference through bills to people she hired.
   - What services did she use?
@@ -160,17 +161,17 @@ Build timeline for all family members and friend + in her imminent group and any
   - Get list of phone calls she made.
 
 Build out these timelines and then recursively build timelines for each person of interest found as a result of the initial investigation.
-  - Look for people whos timeline ends in the close proximity of your mom.
+  - Look for people whos timeline ends in the close proximity of the missing person.
   - Check what they bought.
   - Who they called.
   - GPS of their phones.
+
 ### Favorite Things
   - Favorite Websites?
-  - What where her interests?
+  - What where their interests?
   - Favorite Stores
-    - Get a list of the clerks that worked there before her disappearence.
-    - See if any went missing in the days following her disappearance.
-
+    - Get a list of the clerks that worked there before the disappearence.
+    - See if any went missing in the days following the disappearance.
 
 Need a list of phone calls that people of interest (basically everyone) called with the identities of the people they called.
 
