@@ -15,29 +15,15 @@ Model that looks for patterns in prior cases.
 Define the area based upon distance able to travel in a time frame by car. Start from estimated time of found missing. Build circles starting from ground zero. Send email alerts to gas stations, markets, restaraunts, hotels, hospitals and shelters in those areas. Update to larger areas as the search progresses.
 
 ## Ideas
-Create an API endpoint that can load email lists to send the alerts to them.
+Create an API endpoint that can load email lists to send the alerts to them.<br/>
 Send it forward email campaign. Have every person who recieve the email alert send it to all of their people they send emails to..
 Modules and plugins for Wordpress, Drupal etc.. that can do all of the emailing from your website..
 The module could pull from a missing persons database and list people who are reported missing in your area, city, county, state. It could also warn if a flood is comming, hurricaine, tornadoes all of it.
 You then have an oportunity to send the link of the alert to your clients in an email.
 
 Search for people who have been missing for a long time in different countries. USA, Mexico, Canada etc..
+
 Look up all places that have public records about people to search through.
-
-People who may have gone to jail as a result of reporting and got out in the year prior to her having gone missing
-Look up person on Facebook account and find family members.
-Get any references to close friends.
-Get all reference through bills to people she hired.
-Get list of phone calls she made.
-Get all information from reliable news outlets.
-
-The timeline for all family members in her imminent group.
-	Looking for people with records who would possibly do that.
-Build out these timelines and then recursively build timelines for each person of interest found as a result of the initial investigation.
-
-Time of disappearance - get what people of interest are reported doing.
-
-[Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-missing-people-online-7dec4cb03)
 
 ## Data APIs
 FEMA Public Alert Warning System - [FEMA](https://www.fema.gov/emergency-managers/practitioners/integrated-public-alert-warning-system)
@@ -135,5 +121,59 @@ All this information may seem overwhelming to you at first. Members of IPAWS Eng
 Thank you
 fema.gov
 
+### Update 04-25-2026
+
+Reading [Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-missing-people-online-7dec4cb038e5).
+### News Stations
+
+- NBC News (2007–Present): Co-anchor of Today (since 2012), White House Correspondent, and legal analyst.
+- WRC-TV (NBC D.C.): Reporter covering major national stories.
+- KVOA (NBC Tucson): Reporter and anchor.
+- KMIZ (ABC Columbia, MO): Reporter.
+- KTVM (NBC Butte, MT): Early broadcasting career.
+
+RAG LLM to take in news reports from news stations.
+  - Look throuh news reports for people who may have been mad at you. Sorry Its important to be thourogh.
+    - Gone to jail and got out recently.
+    - Carear that may have been lost and could be looking for revenge.
+    - Lost family.
+  - Get all information from reliable news outlets.
+    - Look for missed information
+
+### Social Media Accounts
+  - Facebook
+
+Build timeline for all family members and friend + in her imminent group and anyone they contacted
+  - Get any references to close friends.
+  - Get all reference through bills to people she hired.
+  - What services did she use?
+    - Lawn Care
+    - Pool Cleaners
+    - Remodeling Contractors
+    - Electricians
+    - Sears
+    - Delivery Drivers
+    - Mail People
+    - Phone
+    - Internet and Cable.
+    - etc..
+  - Get list of phone calls she made.
+
+Build out these timelines and then recursively build timelines for each person of interest found as a result of the initial investigation.
+  - Look for people whos timeline ends in the close proximity of your mom.
+  - Check what they bought.
+  - Who they called.
+  - GPS of their phones.
+### Favorite Things
+  - Favorite Websites?
+  - What where her interests?
+  - Favorite Stores
+    - Get a list of the clerks that worked there before her disappearence.
+    - See if any went missing in the days following her disappearance.
 
 
+Need a list of phone calls that people of interest (basically everyone) called with the identities of the people they called.
+
+Time of disappearance - get what people of interest are reported doing.
+  - Looking for people with records.
+  - People with motives.
