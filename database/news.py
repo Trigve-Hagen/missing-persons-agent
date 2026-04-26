@@ -1,8 +1,24 @@
 # schema - news - newsId, station, article, URL
 # what could be used to grab the text of the article?
 from sqlalchemy import create_engine, ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func
-from base import Base # Import shared base
+from database.base import Base # Import shared base
 
 class News(Base):
-  def __init__(self):
+  __tablename__ = "news"
+
+  nid = Column("nid", Integer, primary_key=True)
+  station = Column("station", String)
+  news = Column("news", String)
+  owner = Column(Integer, ForeignKey("people.pid"))
+
+  def __init__(self, nid, station, news, owner):
+    self.eid = nid
+    self.station = station
+    self.news = news
+    self.owner = owner
+
+  def __repr__(self):
+    return f"({self.nid}) {self.station} {self.news} owned by {self.owner}"
+
+  def validate():
     pass
