@@ -10,6 +10,10 @@ class Person(Base):
   pid = Column("pid", Integer, primary_key=True)
   ifMissing = Column("ifMissing", Boolean, default=True, nullable=False)
   linkedBy = Column("linkedBy", String) # what are they linked by service, email, phone
+  height = Column("height", String)
+  weight = Column("weight", String)
+  hairColor = Column("hairColor", String)
+  eyeColor = Column("eyeColor", String)
   ssn = Column("ssn", Integer)
   gender = Column("gender", CHAR)
   dob = Column("dob", DateTime)

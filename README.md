@@ -201,3 +201,5 @@ Build one for social media posts from each social media platform.
 
 Somewhere out there there may be a person or group of people having a digital conversation about what they should be doing. What platforms might they use? Discord, Google Meet, Microsoft Teams, Messaging services, etc... Create RAG LLMs that can pull text that reference the missing persons name in it.. How can it be intercepted? Can you petition to look through records in the companies database for references that might suggest nefarious behavior?
 
+There may be somebody trying to apply for life insurance, credit cards, and/or loans on them. Keep an eye on that.
+
