@@ -176,3 +176,11 @@ Create timelines on everyone.
 Time of disappearance - get what people of interest are reported doing.
   - Looking for people with records.
   - People with motives.
+
+### Update 04-26-2026
+
+Working on the database implementation.
+ - Every time interval search for new data. Daily?
+ - Have prompt ask a list of specific questions.
+ - Flag recent updates of interest, save it to a database, notify user of entries.
+
