@@ -186,7 +186,7 @@ Working on the database implementation.
 
 ### The Multiple Model Strategy
 List all people starting with the main family and working through everyone they know. Get their purchasing history for 3  to 6 months maybe a year before the person turns up missing. Seems like a few weeks would be a good start then go furthur back on the purchase history when nothing turns up.
-- Create multiple models specific to one item - softmax logits equals a probability distribution highlighting those that have a higher probability of being nefarious.
+- Create multiple models each specific to one item - softmax logits equals a probability distribution highlighting those that have a higher probability of being nefarious.
   - Renting a rent a car (more nefarious behaviour) as apposed to not; not so nefarious
   - buying gas closer to the crime scene equals (more nefarious behaviour) farther away not so nefarious
   - mobile phone GPS tracking close to the crime scene equals (more nefarious) as apposed to being far away would equal less nefarious.
