@@ -18,16 +18,20 @@ class Person(Base):
   gender = Column("gender", CHAR)
   dob = Column("dob", DateTime)
 
-  def __init__(self, pid, ifMissing, linkedBy, ssn, gender, dob):
+  def __init__(self, pid, ifMissing, linkedBy, height, weight, hairColor, eyeColor, ssn, gender, dob):
     self.pid = pid
     self.ifMissing = ifMissing
     self.linkedBy = linkedBy
+    self.height = height
+    self.weight = weight
+    self.hairColor = hairColor
+    self.eyeColor = eyeColor
     self.ssn = ssn
     self.gender = gender
     self.dob = dob
 
   def __repr__(self):
-    return f"({self.pid}) {self.ifMissing} {self.linkedBy} {self.ssn} ({self.gender}, {self.dob})"
+    return f"({self.pid}) {self.ifMissing} {self.linkedBy} {self.height} {self.weight} {self.hairColor} {self.eyeColor} {self.ssn} ({self.gender}, {self.dob})"
 
 class Name(Base):
   __tablename__ = "names"
