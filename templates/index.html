@@ -6,7 +6,7 @@
 {% block content %}
 
 <h1 class="my-4">Missing Persons Timeline Builder</h1>
-<p>User account and Login vrs you download a json file with the missing person information you put in and find. Then upload that to start off where you left off.. With the second I can clear the database and have no saved data on my server. But How would that work with training an LLM on the missing person data? I need to find a way to train a separate model for every missing person.</p>
+<p>User account and Login vrs you download a json file with the missing person information you put in and find. Then upload that to start off where you left off.. With the second I can clear the database and have no saved data on my server. But How would that work with training an LLM on the missing person data? I need to find a way to train the model for every missing person.</p>
 <p>Go through all of the records coming from the list below and build a timeline for everyone. Go levels deep. 1 level would be just the names of the peope in the immediate family. Level 2 would be family and friends. Level 3 would be family friends and their friends. etc.. Narrow timelines down to people in the areas during the time of dissapearence to start. Fan out as the investigation neads it.</p>
 
 <h3 class="my-4">News</h3>
@@ -24,5 +24,24 @@
 <h3 class="my-4">Email Records</h3>
 <p>List all Phone Records, identify and timeline them.</p>
 
+<h3 class="my-4">The Main Timeline</h3>
+<ul>
+    <li>Facebook profile, tweets, calls, messages and emails.</li>
+    <li>What gives references to a persons activities?</li>
+    <li>track mobile phone, car, purchases to see if there was things purchased like rent a car or temporary phones.</li>
+</ul>
+
+<h3 class="my-4">The Multiple Model Strategy</h3>
+<p>List all people starting with the main family and working through everyone they know. Get their purchasing history for 3  to 6 months maybe a year before the person turns up missing.</p>
+<ul>
+    <li>Create multiple models specific to one item
+        <ul>
+            <li>renting a rent a car (nefarious behaviour)</li>
+            <li>buying gas closer to the crime scene equals (nefarious behaviour) farther away not so nefarious - softmax logits equals a probability distribution highlighting those that have a higher probability of being nefarious.</li>
+            <li>mobile phone GPS tracking close to the crime scene equals (more nefarious) as apposed to being far away would equal less nefarious.</li>
+            <li>car GPS tracking close to the crime scene equals (more nefarious) as apposed to being far away would equal less nefarious.</li>
+        </ul>
+    <li></li>
+\</ul>
 {% endblock %}
 
