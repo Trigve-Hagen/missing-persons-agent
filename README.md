@@ -89,9 +89,10 @@ Think its better to use a single model that uses each of the line items as a fea
   - buying gas closer to the crime scene
   - mobile phone GPS tracking close to the crime scene
   - car GPS tracking close to the crime scene
- Need a warrent to see peoples financial statements and gps of their whereabouts and you need probable cause to get the search warrent.
 
- What other things can AI do before that happens?
+Need a warrent to see peoples financial statements and gps of their whereabouts and you need probable cause to get the search warrent.
+
+What other things can AI do before that happens?
 
 Thought for a moment Web Scraping Web was illegal. But if done ethically and takes into consideration the robot.txt. So onward!
 
