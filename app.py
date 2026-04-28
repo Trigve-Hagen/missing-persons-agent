@@ -10,7 +10,7 @@ from pathlib import Path
 from database.base import Base
 from database.event import Event, Url, Question
 from database.news import News
-from database.person import Person, Name, Email, Phone, Address
+from database.person import Person, Alias, Email, Phone, Address
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -38,6 +38,10 @@ def add_nosniff_header_to_static(response):
 @app.route('/index')
 def index():
   return flask.render_template('index.html')
+
+@app.route('/data')
+def data():
+  return flask.render_template('data.html')
 
 engine = create_engine(f"sqlite:///{DATABASE}", echo=True)
 Session = sessionmaker(bind=engine)

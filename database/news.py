@@ -9,7 +9,7 @@ class News(Base):
   id = Column("id", Integer, primary_key=True)
   station = Column("station", String)
   news = Column("news", String)
-  owner = Column(Integer, ForeignKey("people.pid"))
+  owner = Column(Integer, ForeignKey("people.id"))
 
   def __init__(self, id, station, news, owner):
     self.eid = id

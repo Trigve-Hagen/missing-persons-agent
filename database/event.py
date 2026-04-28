@@ -42,7 +42,7 @@ class Event(Base):
   id = Column("id", Integer, primary_key=True)
   eventType = Column("eventType", String)
   description = Column("description", String)
-  owner = Column(Integer, ForeignKey("people.pid"))
+  owner = Column(Integer, ForeignKey("people.id"))
 
   def __init__(self, id, eventType, description, owner):
     self.id = id

@@ -1,4 +1,6 @@
 # Missing Persons Agent
+This will run on any person who downloads its local computer and without coding you will be able to get it up and running and manage it from a form allowing anyone you want to help you work with it.
+
 Create AI models for predicting behavior and define code that do tasks related to finding missing people.
 Need READ ONLY APIs that supply data for missing people and emergency alerts.
 Need the best up to date APIs.
