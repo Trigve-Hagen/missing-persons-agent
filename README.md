@@ -85,3 +85,15 @@ Somewhere out there there may be a person or group of people having a digital co
 
 There may be somebody trying to apply for life insurance, credit cards, and/or loans on them. Keep an eye on that.
 
+### Update 04-28-2026
+
+Think its better to use a single model that uses each of the line items as a feature.
+ - buying products that could be used in a crime. Duck tape, rope, weapons, ski mask, gloves, etc..
+ - large expense deducted from bank account in cash or transfered to another account.
+
+ Need a warrent to see peoples financial statements and gps of their whereabouts and you need probable cause to get the search warrent.
+
+ What other things can AI do before that happens?
+
+
+
