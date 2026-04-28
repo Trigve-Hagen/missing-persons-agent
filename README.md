@@ -91,7 +91,8 @@ Think its better to use a single model that uses each of the line items as a fea
 
  What other things can AI do before that happens?
 
-Web scraping
+Thought for a moment Web Scraping Web was illegal. But if done ethically and takes into consideration the robot.txt. So onward!
+
 Web Scraper Idea:
  - Create a RAG LLM like this - [Build a RAG web scraper using Langchain, Ollama, ChromaDB](https://www.youtube.com/watch?v=0zgYu_9WF7A)
  - Create a database to store sites to scrape so a user can add them.
