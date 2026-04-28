@@ -7,92 +7,139 @@
 
 <h1 class="my-4">Person</h1>
 
-<form class="row g-4">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Contact Type</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for person in people %}
+          <tr>
+              <td scope="row">{{ person.id }}</td>
+              <td>{{ person.sirName }} {{ person.firstName }} {{ person.middleName if person.middleName is not none else '' }} {{ person.lastName }}</td>
+              <td>{{ person.contactType }}</td>
+              <td><a class="btn btn-secondary" href="/edit/{{person.id}}" type="button">Edit</a><a class="btn btn-danger ms-2" href="/delete/{{person.id}}" type="button">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<form class="row g-4" action="/set_person" method="POST" name="person">
+  <!-- not editable if the missing person is not in the database its them or if they are then its not them -->
   <div class="col-md-6">
-    <label for="validationDefault04" class="form-label">If Missing</label>
-    <select class="form-select" id="validationDefault04" required>
-      <option selected disabled value="">Choose...</option>
-      <option>Yes</option>
-      <option>No</option>
-    </select>
-  </div>
-  <div class="col-md-6">
-    <label for="validationDefault04" class="form-label">Contact Type</label>
-    <select class="form-select" id="validationDefault04" required>
-      <option selected disabled value="">Choose...</option>
-      <option>Will create a database to save types in</option>
-      <option>Missing Person</option>
-      <option>Hired Service worker</option>
-      <option>Contacts</option>
-      <option>Employment</option>
-    </select>
-  </div>
-  <div class="col-md-3">
-    <label for="validationDefault04" class="form-label">Sir Name</label>
-    <select class="form-select" id="validationDefault04" required>
-      <option selected disabled value="">Choose...</option>
-      <option>Mr.</option>
-      <option>Mrs.</option>
-      <option>Miss.</option>
-    </select>
-  </div>
-  <div class="col-md-3">
-    <label for="validationDefault01" class="form-label">First name</label>
-    <input type="text" class="form-control" id="validationDefault01" value="Mark" required>
-  </div>
-  <div class="col-md-3">
-    <label for="validationDefault01" class="form-label">Middle name</label>
-    <input type="text" class="form-control" id="validationDefault01" value="Mark" required>
-  </div>
-  <div class="col-md-3">
-    <label for="validationDefault02" class="form-label">Last name</label>
-    <input type="text" class="form-control" id="validationDefault02" value="Otto" required>
-  </div>
-  <div class="col-md-3">
-    <label for="validationDefault04" class="form-label">Height</label>
-    <select class="form-select" id="validationDefault04" required>
-      <option selected disabled value="">Choose...</option>
-      <option>Mr.</option>
-      <option>Mrs.</option>
-      <option>Miss.</option>
-    </select>
-  </div>
-  <div class="col-md-3">
-    <label for="validationDefault01" class="form-label">Weight</label>
-    <input type="text" class="form-control" id="validationDefault01" value="" required>
-  </div>
-  <div class="col-md-3">
-    <label for="validationDefault04" class="form-label">Hair Color</label>
-    <select class="form-select" id="validationDefault04" required>
-      <option selected disabled value="">Choose...</option>
-      <option>Mr.</option>
-      <option>Mrs.</option>
-      <option>Miss.</option>
-    </select>
-  </div>
-  <div class="col-md-3">
-    <label for="validationDefault04" class="form-label">Eye Color</label>
-    <select class="form-select" id="validationDefault04" required>
-      <option selected disabled value="">Choose...</option>
-      <option>Mr.</option>
-      <option>Mrs.</option>
-      <option>Miss.</option>
-    </select>
+    <label for="ifMissing" class="form-label">If Missing Person</label>
+    {% if missing_exists %}
+      <input class="form-control" id="ifMissing" name="ifMissing" type="text" value="False" readonly>
+    {% else %}
+      <input class="form-control" id="ifMissing" name="ifMissing" type="text" value="True" readonly>
+    {% endif %}
   </div>
   <div class="col-md-6">
-    <label for="validationDefault03" class="form-label">SSN</label>
-    <input type="text" class="form-control" id="validationDefault03" required>
+    <label for="contactType" class="form-label">Contact Type</label>
+    {% if missing_exists %}
+      <select class="form-select" id="contactType" name="contactType" required>
+        <option selected disabled value="">Choose...</option>
+        <option>Will create a database to save types in</option>
+        <option>Hired Service worker</option>
+        <option>Contacts</option>
+        <option>Employment</option>
+      </select>
+    {% else %}
+      <input class="form-control" id="contactType" name="contactType" type="text" value="Missing Person" readonly>
+    {% endif %}
   </div>
   <div class="col-md-3">
-    <label for="validationDefault04" class="form-label">Gender</label>
-    <select class="form-select" id="validationDefault04" required>
+    <label for="sirName" class="form-label">Sir Name</label>
+    <select class="form-select" id="sirName" name="sirName" required>
       <option selected disabled value="">Choose...</option>
-      <option>...</option>
+      <option>Mr.</option>
+      <option>Mrs.</option>
+      <option>Miss.</option>
     </select>
   </div>
   <div class="col-md-3">
-    <label for="validationDefault05" class="form-label">DOB</label>
-    <input type="text" class="form-control" id="validationDefault05" required>
+    <label for="firstName" class="form-label">First name</label>
+    <input type="text" class="form-control" id="firstName" name="firstName" value="" required>
+  </div>
+  <div class="col-md-3">
+    <label for="middlename" class="form-label">Middle name</label>
+    <input type="text" class="form-control" id="middlename" name="middlename" value="">
+  </div>
+  <div class="col-md-3">
+    <label for="lastName" class="form-label">Last name</label>
+    <input type="text" class="form-control" id="lastName" name="lastName" value="" required>
+  </div>
+  <div class="col-md-3">
+    <label for="height" class="form-label">Height - In Feet and Inches</label>
+    <select class="form-select" id="height" name="height" required>
+      <option selected disabled value="">Choose...</option>
+      {% for value, label in height_options %}
+        <option value="{{ value }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label for="weight" class="form-label">Weight - In Pounds</label>
+    <select class="form-select" id="weight" name="weight" required>
+      <option selected disabled value="">Choose...</option>
+      {% for w in weight_options %}
+        <option value="{{ w }}">{{ w }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label for="hairColor" class="form-label">Hair Color</label>
+    <select class="form-select" id="hairColor" name="hairColor" required>
+      <option selected disabled value="">Choose...</option>
+      {% for value, label in hair_color_codes %}
+        <option value="{{ value }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label for="eyeColor" class="form-label">Eye Color</label>
+    <select class="form-select" id="eyeColor" name="eyeColor" required>
+      <option selected disabled value="">Choose...</option>
+      {% for color in eye_colors %}
+        <option value="{{ color }}">{{ color }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-6">
+    <label for="ssn" class="form-label">SSN</label>
+    <input type="text" class="form-control" id="ssn" name="ssn" pattern="^\d{3}-\d{2}-\d{4}$"
+      placeholder="XXX-XX-XXXX"
+      required>
+  </div>
+  <div class="col-md-3">
+    <label for="gender" class="form-label">Gender</label>
+    <select class="form-select" id="gender" name="gender" required>
+      <option selected disabled value="">Choose...</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label for="dob" class="form-label">DOB</label>
+    <input type="date" class="form-control" id="dob" name="dob" required>
   </div>
   <div class="col-12 mb-5">
     <button class="btn btn-primary" type="submit">Submit form</button>

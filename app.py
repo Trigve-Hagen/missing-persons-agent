@@ -2,10 +2,12 @@
 import os
 import flask
 from config import Config
-from flask import Flask, request, session, jsonify, current_app
-from sqlalchemy import create_engine, inspect
+from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy import create_engine, inspect, exc
 from sqlalchemy_utils import database_exists
 from sqlalchemy.orm import sessionmaker
+from datetime import datetime
 from pathlib import Path
 from database.base import Base
 from database.event import Event, Url, Question
@@ -41,7 +43,75 @@ def index():
 
 @app.route('/data')
 def data():
-  return flask.render_template('data.html')
+  missing_exists = session.query(
+    session.query(Person).filter_by(ifMissing=True).exists()
+  ).scalar()
+
+  height_options = []
+  for feet in range(4, 8):  # From 4ft to 7ft
+    for inches in range(12):
+        if feet == 7 and inches > 0: # Cap at exactly 7'0"
+            break
+        total_inches = (feet * 12) + inches
+        display_label = f"{feet}' {inches}\""
+        height_options.append((total_inches, display_label))
+
+  hair_color_codes = [
+    ("BLK", "Black"),
+    ("BLN", "Blond"),
+    ("BRN", "Brown"),
+    ("DBR", "Dark Brown"),
+    ("LBR", "Light Brown"),
+    ("RED", "Red or Auburn"),
+    ("GRY", "Gray"),
+    ("WHI", "White"),
+    ("XXX", "Unknown/Bald")
+  ]
+
+  eye_colors = ["Brown", "Blue", "Hazel", "Green", "Grey", "Amber", "Other"]
+
+  all_people = session.query(Person).all()
+  print(all_people)
+  all_aliases = session.query(Alias).all()
+  all_addresses = session.query(Address).all()
+  all_emails = session.query(Email).all()
+  all_phones = session.query(Phone).all()
+  return flask.render_template('data.html', missing_exists=missing_exists, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, people=all_people, aliases=all_aliases, addresses=all_addresses, emails=all_emails, phones=all_phones)
+
+@app.route('/set_person', methods=['POST'])
+def set_person():
+  form_data = request.form
+  try:
+    formatted_date = datetime.strptime(form_data.get('dob'), '%Y-%m-%d')
+    new_entry = Person(
+      firstName=form_data.get('firstName'),
+      middleName=form_data.get('middleName'),
+      lastName=form_data.get('lastName'),
+      sirName=form_data.get('sirName'),
+      ifMissing=form_data.get('ifMissing') == "True",
+      contactType=form_data.get('contactType'),
+      height=form_data.get('height'),
+      weight=form_data.get('weight'),
+      hairColor=form_data.get('hairColor'),
+      eyeColor=form_data.get('eyeColor'),
+      ssn=form_data.get('ssn'),
+      gender=form_data.get('gender'),
+      dob=formatted_date
+    )
+    session.add(new_entry)
+    session.commit()
+    flash("Data added successfully!", "success")
+    return redirect(url_for('data'))
+  except IntegrityError as e:
+    session.rollback()  # Always rollback on error to reset the session
+    error_msg = str(e.orig) # Gets the specific database error message
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('data'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('data'))
+
 
 engine = create_engine(f"sqlite:///{DATABASE}", echo=True)
 Session = sessionmaker(bind=engine)

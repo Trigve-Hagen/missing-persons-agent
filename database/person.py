@@ -13,23 +13,22 @@ class Person(Base):
   lastName = Column("lastName", String)
   sirName = Column("sirName", String)
   ifMissing = Column("ifMissing", Boolean, default=True, nullable=False)
-  linkedBy = Column("linkedBy", String) # what are they linked by service, contacts
+  contactType = Column("contactType", String) # what are they linked by service, contacts
   height = Column("height", String)
   weight = Column("weight", String)
   hairColor = Column("hairColor", String)
   eyeColor = Column("eyeColor", String)
-  ssn = Column("ssn", Integer)
-  gender = Column("gender", CHAR)
+  ssn = Column("ssn", String)
+  gender = Column("gender", String)
   dob = Column("dob", DateTime)
 
-  def __init__(self, id, firstName, middleName, lastName, sirName, ifMissing, linkedBy, height, weight, hairColor, eyeColor, ssn, gender, dob):
-    self.id = id
+  def __init__(self, firstName, middleName, lastName, sirName, ifMissing, contactType, height, weight, hairColor, eyeColor, ssn, gender, dob):
     self.ifMissing = ifMissing
     self.firstName = firstName
     self.middleName = middleName
     self.lastName = lastName
     self.sirName = sirName
-    self.linkedBy = linkedBy
+    self.contactType = contactType
     self.height = height
     self.weight = weight
     self.hairColor = hairColor
@@ -39,7 +38,7 @@ class Person(Base):
     self.dob = dob
 
   def __repr__(self):
-    return f"({self.id}) {self.ifMissing} {self.firstName} {self.middleName} {self.lastName} {self.sirName} {self.linkedBy} {self.height} {self.weight} {self.hairColor} {self.eyeColor} {self.ssn} ({self.gender}, {self.dob})"
+    return f"({self.id}) {self.ifMissing} {self.firstName} {self.middleName} {self.lastName} {self.sirName} {self.contactType} {self.height} {self.weight} {self.hairColor} {self.eyeColor} {self.ssn} ({self.gender}, {self.dob})"
 
 class Alias(Base):
   __tablename__ = "aliases"
