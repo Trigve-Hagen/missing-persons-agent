@@ -66,18 +66,11 @@ Working on the database implementation.
  - Have prompt ask a list of specific questions.
  - Flag recent updates of interest, save it to a database, notify user of entries.
 
-### The Multiple Model Strategy
 List all people starting with the main family and working through everyone they know. Get their purchasing history for 3  to 6 months maybe a year before the person turns up missing. Seems like a few weeks would be a good start then go furthur back on the purchase history when nothing turns up.
-- Create multiple models each specific to one item - softmax logits equals a probability distribution highlighting those that have a higher probability of being nefarious.
-  - Renting a rent a car (more nefarious behaviour) as apposed to not; not so nefarious
-  - buying gas closer to the crime scene equals (more nefarious behaviour) farther away not so nefarious
-  - mobile phone GPS tracking close to the crime scene equals (more nefarious) as apposed to being far away would equal less nefarious.
-  - car GPS tracking close to the crime scene equals (more nefarious) as apposed to being far away would equal less nefarious.
-When you have delegated a small task to one model and you have 50 models pointing a group of people that group of people will have a higher probability of being involved.
 
 List all the places that you or the missing individual have worked and get the archived text to feed to an LLM. Then through prompt enginearing create specific questions geared to uncovering people with motive.
 
-Build the same for all the bible study classes if there are recordings.
+Build the same for all the persons favorite events if there are recordings.
 
 Build one for social media posts from each social media platform.
 
@@ -88,9 +81,12 @@ There may be somebody trying to apply for life insurance, credit cards, and/or l
 ### Update 04-28-2026
 
 Think its better to use a single model that uses each of the line items as a feature.
- - buying products that could be used in a crime. Duck tape, rope, weapons, ski mask, gloves, etc..
- - large expense deducted from bank account in cash or transfered to another account.
-
+  - buying products that could be used in a crime. Duck tape, rope, weapons, ski mask, gloves, etc..
+  - large expense deducted from bank account in cash or transfered to another account.
+  - Renting a rent a car
+  - buying gas closer to the crime scene
+  - mobile phone GPS tracking close to the crime scene
+  - car GPS tracking close to the crime scene
  Need a warrent to see peoples financial statements and gps of their whereabouts and you need probable cause to get the search warrent.
 
  What other things can AI do before that happens?
