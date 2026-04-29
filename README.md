@@ -2,6 +2,8 @@
 
 I'm creating a installable application that is a tool to investigate a persons disappearance. It will initially use an [Ollama](https://ollama.com/download/windows) RAG LLM and train it on any data that can be found on the people in the immediate family, friends, and acquaintances including the missing person. It will then look for connections to the person gone missing. Anyone will be able to download this and the idea is that you can get as many people as you can searching for the missing person. It will download and install both ollama and a model to use as the RAG LLM upon installation. The software is a website that runs in a browser so its immediately connected to use the internet for acquiring data. It will give you the ability to ethically scrape websites and add it to the LLM. It allows the user to create lists of people and aquire as much data as posible about them to cross reference and ask questions about using AI.
 
+To help this along when someone is using this they will need the family of the missing person to create a feed of the persons posts so they can be consumed by the application ethically. I will build configuration in the back to allow connecting to public and private feeds and APIs.
+
 Retrieval-Augmented Generation (RAG) is an AI framework that improves the accuracy and relevance of large language model (LLM) outputs by referencing an authoritative, external knowledge base outside of its static training data.
 
 Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
