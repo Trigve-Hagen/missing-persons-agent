@@ -5,6 +5,10 @@ Create AI models for predicting behavior and define code that do tasks related t
 Need READ ONLY APIs that supply data for missing people and emergency alerts.
 Need the best up to date APIs.
 
+### Donate
+
+Donate to keep me going. [CityZenUSA](https://www.paypal.com/donate/?hosted_button_id=J8WY5PDLWGK6Y) Thanks.
+
 ### Links
 
 Reading [Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-missing-people-online-7dec4cb038e5).
