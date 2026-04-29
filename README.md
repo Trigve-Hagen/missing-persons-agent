@@ -1,6 +1,6 @@
 # Missing Persons Agent
 
-I'm creating a installable application that is a tool to investigate a persons disappearance. It will initially use an Ollama RAG LLM and train it on any data that can be found on the people in the immediate family, friends, or acquaintances of the missing person. It will then look for connections to the person gone missing. It will allow the user to create lists of people and aquire as much data as posible about them to cross reference and ask questions about using AI. I will keep updating this file as I come up with new ideas.
+I'm creating a installable application that is a tool to investigate a persons disappearance. It will initially use an Ollama RAG LLM and train it on any data that can be found on the people in the immediate family, friends, and acquaintances including the missing person. It will then look for connections to the person gone missing. Anyone will be able to download this and the idea is that you can get as many people as you can searching for the missing person. It will download and install both ollama and a model to use as the RAG LLM upon installation. The software is a website that runs in a browser so its immediately connected to use the internet for acquiring data. It will give you the ability to ethically scrape websites and add it to the LLM. It allows the user to create lists of people and aquire as much data as posible about them to cross reference and ask questions about using AI. I will keep updating this file as I come up with new ideas.
 
 ### Donate
 
