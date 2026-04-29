@@ -7,7 +7,7 @@ Need the best up to date APIs.
 
 ### Donate
 
-Donate to keep me going. [CityZenUSA](https://www.paypal.com/donate/?hosted_button_id=J8WY5PDLWGK6Y) Thanks.
+Donate to keep me going. [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=J8WY5PDLWGK6Y) Thanks.
 
 ### Links
 
