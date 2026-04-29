@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<h1 class="my-4">Person</h1>
+<h1 class="my-4">People</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -47,7 +47,11 @@
   <div class="col-md-4">
     <label for="ifMissing" class="form-label">If Missing Person</label>
     {% if missing_exists %}
-      <input class="form-control" id="ifMissing" name="ifMissing" type="text" value="False" readonly>
+      <select class="form-select" id="contactType" name="contactType" required>
+        <option selected disabled value="">Choose...</option>
+        <option value="True">True</option>
+        <option value="False">False</option>
+      </select>
     {% else %}
       <input class="form-control" id="ifMissing" name="ifMissing" type="text" value="True" readonly>
     {% endif %}
@@ -79,8 +83,8 @@
     <input type="text" class="form-control" id="firstName" name="firstName" value="" required>
   </div>
   <div class="col-md-3">
-    <label for="middlename" class="form-label">Middle name</label>
-    <input type="text" class="form-control" id="middlename" name="middlename" value="">
+    <label for="middleName" class="form-label">Middle name</label>
+    <input type="text" class="form-control" id="middleName" name="middleName" value="">
   </div>
   <div class="col-md-3">
     <label for="lastName" class="form-label">Last name</label>
@@ -189,8 +193,8 @@
     </select>
   </div>
   <div class="col-md-6">
-    <label for="suffix" class="form-label">Suffix</label>
-    <select class="form-select" id="suffix" name="suffix">
+    <label for="alias-suffix" class="form-label">Suffix</label>
+    <select class="form-select" id="alias-suffix" name="suffix">
       <option selected disabled value="">Choose...</option>
       {% for s in suffixes %}
         <option value="{{ s }}">{{ s }}</option>
@@ -198,18 +202,26 @@
     </select>
   </div>
   <div class="col-md-4">
-    <label for="firstName" class="form-label">First name</label>
-    <input type="text" class="form-control" id="firstName" name="firstName" value="" required>
+    <label for="alias-firstName" class="form-label">First name</label>
+    <input type="text" class="form-control" id="alias-firstName" name="firstName" value="" required>
   </div>
   <div class="col-md-4">
-    <label for="middlename" class="form-label">Middle name</label>
-    <input type="text" class="form-control" id="middlename" name="middlename" value="">
+    <label for="alias-middleName" class="form-label">Middle name</label>
+    <input type="text" class="form-control" id="alias-middleName" name="middleName" value="">
   </div>
   <div class="col-md-4">
-    <label for="lastName" class="form-label">Last name</label>
-    <input type="text" class="form-control" id="lastName" name="lastName" value="">
+    <label for="alias-lastName" class="form-label">Last name</label>
+    <input type="text" class="form-control" id="alias-lastName" name="lastName" value="">
   </div>
-  <input type="hidden" name="owner" value="1" />
+  <div class="col-md-3">
+    <label for="alias-owner" class="form-label">Person</label>
+    <select class="form-select" id="alias-owner" name="owner">
+      <option selected disabled value="">Choose...</option>
+      {% for person in owners %}
+        <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
+      {% endfor %}
+    </select>
+  </div>
   <div class="col-12 mb-5">
     <button class="btn btn-primary" type="submit">Submit form</button>
   </div>

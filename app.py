@@ -78,6 +78,9 @@ def person():
   stmt = select(Category).where(Category.type == "contactType")
   contactType_select = session.execute(stmt).scalars().all()
 
+  stmt = select(Person).where(Person.contactType == "Missing Person")
+  owner_select = session.execute(stmt).scalars().all()
+
   height_options = []
   for feet in range(4, 8):  # From 4ft to 7ft
     for inches in range(12):
@@ -108,7 +111,7 @@ def person():
   all_addresses = session.query(Address).all()
   all_emails = session.query(Email).all()
   all_phones = session.query(Phone).all()
-  return flask.render_template('person.html', missing_exists=missing_exists, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, people=all_people, aliases=all_aliases, addresses=all_addresses, emails=all_emails, phones=all_phones, contactTypes=contactType_select)
+  return flask.render_template('person.html', missing_exists=missing_exists, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, people=all_people, aliases=all_aliases, addresses=all_addresses, emails=all_emails, phones=all_phones, contactTypes=contactType_select, owners=owner_select)
 
 @app.route('/set_person', methods=['POST'])
 def set_person():
