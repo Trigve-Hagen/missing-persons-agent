@@ -32,7 +32,7 @@
         {% for person in people %}
           <tr>
               <td scope="row">{{ person.id }}</td>
-              <td>{{ person.sirName }} {{ person.firstName }} {{ person.middleName if person.middleName is not none else '' }} {{ person.lastName }}</td>
+              <td>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</td>
               <td>{{ person.contactType }}</td>
               <td><a class="btn btn-secondary" href="/edit/{{person.id}}" type="button">Edit</a><a class="btn btn-danger ms-2" href="/delete/{{person.id}}" type="button">Delete</a></td>
           </tr>
@@ -44,7 +44,7 @@
 
 <form class="row g-4" action="/set_person" method="POST" name="person">
   <!-- not editable if the missing person is not in the database its them or if they are then its not them -->
-  <div class="col-md-6">
+  <div class="col-md-4">
     <label for="ifMissing" class="form-label">If Missing Person</label>
     {% if missing_exists %}
       <input class="form-control" id="ifMissing" name="ifMissing" type="text" value="False" readonly>
@@ -52,23 +52,22 @@
       <input class="form-control" id="ifMissing" name="ifMissing" type="text" value="True" readonly>
     {% endif %}
   </div>
-  <div class="col-md-6">
+  <div class="col-md-4">
     <label for="contactType" class="form-label">Contact Type</label>
     {% if missing_exists %}
       <select class="form-select" id="contactType" name="contactType" required>
         <option selected disabled value="">Choose...</option>
-        <option>Will create a database to save types in</option>
-        <option>Hired Service worker</option>
-        <option>Contacts</option>
-        <option>Employment</option>
+        {% for type in contactTypes %}
+          <option value="{{ type.name }}">{{ type.name }}</option>
+        {% endfor %}
       </select>
     {% else %}
       <input class="form-control" id="contactType" name="contactType" type="text" value="Missing Person" readonly>
     {% endif %}
   </div>
-  <div class="col-md-3">
+  <div class="col-md-4">
     <label for="sirName" class="form-label">Sir Name</label>
-    <select class="form-select" id="sirName" name="sirName" required>
+    <select class="form-select" id="sirName" name="sirName">
       <option selected disabled value="">Choose...</option>
       <option>Mr.</option>
       <option>Mrs.</option>
@@ -88,8 +87,17 @@
     <input type="text" class="form-control" id="lastName" name="lastName" value="" required>
   </div>
   <div class="col-md-3">
+    <label for="suffix" class="form-label">Suffix</label>
+    <select class="form-select" id="suffix" name="suffix">
+      <option selected disabled value="">Choose...</option>
+      {% for s in suffixes %}
+        <option value="{{ s }}">{{ s }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3">
     <label for="height" class="form-label">Height - In Feet and Inches</label>
-    <select class="form-select" id="height" name="height" required>
+    <select class="form-select" id="height" name="height">
       <option selected disabled value="">Choose...</option>
       {% for value, label in height_options %}
         <option value="{{ value }}">{{ label }}</option>
@@ -98,7 +106,7 @@
   </div>
   <div class="col-md-3">
     <label for="weight" class="form-label">Weight - In Pounds</label>
-    <select class="form-select" id="weight" name="weight" required>
+    <select class="form-select" id="weight" name="weight">
       <option selected disabled value="">Choose...</option>
       {% for w in weight_options %}
         <option value="{{ w }}">{{ w }}</option>
@@ -107,7 +115,7 @@
   </div>
   <div class="col-md-3">
     <label for="hairColor" class="form-label">Hair Color</label>
-    <select class="form-select" id="hairColor" name="hairColor" required>
+    <select class="form-select" id="hairColor" name="hairColor">
       <option selected disabled value="">Choose...</option>
       {% for value, label in hair_color_codes %}
         <option value="{{ value }}">{{ label }}</option>
@@ -116,7 +124,7 @@
   </div>
   <div class="col-md-3">
     <label for="eyeColor" class="form-label">Eye Color</label>
-    <select class="form-select" id="eyeColor" name="eyeColor" required>
+    <select class="form-select" id="eyeColor" name="eyeColor">
       <option selected disabled value="">Choose...</option>
       {% for color in eye_colors %}
         <option value="{{ color }}">{{ color }}</option>
@@ -126,8 +134,7 @@
   <div class="col-md-6">
     <label for="ssn" class="form-label">SSN</label>
     <input type="text" class="form-control" id="ssn" name="ssn" pattern="^\d{3}-\d{2}-\d{4}$"
-      placeholder="XXX-XX-XXXX"
-      required>
+      placeholder="XXX-XX-XXXX">
   </div>
   <div class="col-md-3">
     <label for="gender" class="form-label">Gender</label>
@@ -139,7 +146,7 @@
   </div>
   <div class="col-md-3">
     <label for="dob" class="form-label">DOB</label>
-    <input type="date" class="form-control" id="dob" name="dob" required>
+    <input type="date" class="form-control" id="dob" name="dob">
   </div>
   <div class="col-12 mb-5">
     <button class="btn btn-primary" type="submit">Submit form</button>
@@ -148,28 +155,61 @@
 
 <h3 class="my-4">Aliases</h3>
 
-<form class="row g-4">
-  <div class="col-md-3">
-    <label for="validationDefault04" class="form-label">Sir Name</label>
-    <select class="form-select" id="validationDefault04" required>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for alias in aliases %}
+          <tr>
+              <td scope="row">{{ alias.id }}</td>
+              <td>{{ alias.sirName }} {{ alias.firstName }} {{ alias.middleName }} {{ alias.lastName }} {{ alias.suffix }}</td>
+              <td><a class="btn btn-secondary" href="/edit/{{alias.id}}" type="button">Edit</a><a class="btn btn-danger ms-2" href="/delete/{{alias.id}}" type="button">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<form class="row g-4" action="/set_alias" method="POST" name="alias">
+  <div class="col-md-6">
+    <label for="sirName" class="form-label">Sir Name</label>
+    <select class="form-select" id="sirName" name="sirName">
       <option selected disabled value="">Choose...</option>
       <option>Mr.</option>
       <option>Mrs.</option>
       <option>Miss.</option>
     </select>
   </div>
-  <div class="col-md-3">
-    <label for="validationDefault01" class="form-label">First name</label>
-    <input type="text" class="form-control" id="validationDefault01" value="Mark" required>
+  <div class="col-md-6">
+    <label for="suffix" class="form-label">Suffix</label>
+    <select class="form-select" id="suffix" name="suffix">
+      <option selected disabled value="">Choose...</option>
+      {% for s in suffixes %}
+        <option value="{{ s }}">{{ s }}</option>
+      {% endfor %}
+    </select>
   </div>
-  <div class="col-md-3">
-    <label for="validationDefault01" class="form-label">Middle name</label>
-    <input type="text" class="form-control" id="validationDefault01" value="Mark" required>
+  <div class="col-md-4">
+    <label for="firstName" class="form-label">First name</label>
+    <input type="text" class="form-control" id="firstName" name="firstName" value="" required>
   </div>
-  <div class="col-md-3">
-    <label for="validationDefault02" class="form-label">Last name</label>
-    <input type="text" class="form-control" id="validationDefault02" value="Otto" required>
+  <div class="col-md-4">
+    <label for="middlename" class="form-label">Middle name</label>
+    <input type="text" class="form-control" id="middlename" name="middlename" value="">
   </div>
+  <div class="col-md-4">
+    <label for="lastName" class="form-label">Last name</label>
+    <input type="text" class="form-control" id="lastName" name="lastName" value="">
+  </div>
+  <input type="hidden" name="owner" value="1" />
   <div class="col-12 mb-5">
     <button class="btn btn-primary" type="submit">Submit form</button>
   </div>

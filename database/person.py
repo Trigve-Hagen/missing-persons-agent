@@ -2,32 +2,34 @@
 # schema - person - person of interest - id, iid, ifMissing - missing or POI, ssn, gender, dob
 
 from sqlalchemy import ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func
-from database.base import Base
+from database.base import Base, NullToEmptyString
 
 class Person(Base):
   __tablename__ = "people"
 
   id = Column("id", Integer, primary_key=True)
-  firstName = Column("firstName", String)
-  middleName = Column("middleName", String)
-  lastName = Column("lastName", String)
-  sirName = Column("sirName", String)
+  firstName = Column(NullToEmptyString)
+  middleName = Column(NullToEmptyString)
+  lastName = Column(NullToEmptyString)
+  sirName = Column(NullToEmptyString)
+  suffix = Column(NullToEmptyString)
   ifMissing = Column("ifMissing", Boolean, default=True, nullable=False)
-  contactType = Column("contactType", String) # what are they linked by service, contacts
-  height = Column("height", String)
-  weight = Column("weight", String)
-  hairColor = Column("hairColor", String)
-  eyeColor = Column("eyeColor", String)
-  ssn = Column("ssn", String)
-  gender = Column("gender", String)
+  contactType = Column(NullToEmptyString) # what are they linked by service, contacts
+  height = Column(NullToEmptyString)
+  weight = Column(NullToEmptyString)
+  hairColor = Column(NullToEmptyString)
+  eyeColor = Column(NullToEmptyString)
+  ssn = Column(NullToEmptyString)
+  gender = Column(NullToEmptyString)
   dob = Column("dob", DateTime)
 
-  def __init__(self, firstName, middleName, lastName, sirName, ifMissing, contactType, height, weight, hairColor, eyeColor, ssn, gender, dob):
+  def __init__(self, firstName, middleName, lastName, sirName, suffix, ifMissing, contactType, height, weight, hairColor, eyeColor, ssn, gender, dob):
     self.ifMissing = ifMissing
     self.firstName = firstName
     self.middleName = middleName
     self.lastName = lastName
     self.sirName = sirName
+    self.suffix = suffix
     self.contactType = contactType
     self.height = height
     self.weight = weight
@@ -38,24 +40,25 @@ class Person(Base):
     self.dob = dob
 
   def __repr__(self):
-    return f"({self.id}) {self.ifMissing} {self.firstName} {self.middleName} {self.lastName} {self.sirName} {self.contactType} {self.height} {self.weight} {self.hairColor} {self.eyeColor} {self.ssn} ({self.gender}, {self.dob})"
+    return f"({self.id}) {self.ifMissing} {self.firstName} {self.middleName} {self.lastName} {self.sirName} {self.suffix} {self.contactType} {self.height} {self.weight} {self.hairColor} {self.eyeColor} {self.ssn} ({self.gender}, {self.dob})"
 
 class Alias(Base):
   __tablename__ = "aliases"
 
   id = Column("id", Integer, primary_key=True)
-  firstName = Column("firstName", String)
-  middleName = Column("middleName", String)
-  lastName = Column("lastName", String)
-  sirName = Column("sirName", String)
+  firstName = Column(NullToEmptyString)
+  middleName = Column(NullToEmptyString)
+  lastName = Column(NullToEmptyString)
+  sirName = Column(NullToEmptyString)
+  suffix = Column(NullToEmptyString)
   owner = Column(Integer, ForeignKey("people.id"))
 
-  def __init__(self, id, ifAlias, firstName, middleName, lastName, sirName, owner):
-    self.id = id
+  def __init__(self, firstName, middleName, lastName, sirName, suffix, owner):
     self.firstName = firstName
     self.middleName = middleName
     self.lastName = lastName
     self.sirName = sirName
+    self.suffix = suffix
     self.owner = owner
 
   def __repr__(self):

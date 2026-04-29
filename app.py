@@ -4,7 +4,7 @@ import flask
 from config import Config
 from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import create_engine, inspect, exc
+from sqlalchemy import create_engine, inspect, exc, select
 from sqlalchemy_utils import database_exists
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -75,6 +75,9 @@ def person():
     session.query(Person).filter_by(ifMissing=True).exists()
   ).scalar()
 
+  stmt = select(Category).where(Category.type == "contactType")
+  contactType_select = session.execute(stmt).scalars().all()
+
   height_options = []
   for feet in range(4, 8):  # From 4ft to 7ft
     for inches in range(12):
@@ -98,12 +101,14 @@ def person():
 
   eye_colors = ["Brown", "Blue", "Hazel", "Green", "Grey", "Amber", "Other"]
 
+  name_suffixes = ["Jr.", "Sr.", "II", "III", "IV", "V", "MD", "PhD", "JD", "DDS"]
+
   all_people = session.query(Person).all()
   all_aliases = session.query(Alias).all()
   all_addresses = session.query(Address).all()
   all_emails = session.query(Email).all()
   all_phones = session.query(Phone).all()
-  return flask.render_template('person.html', missing_exists=missing_exists, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, people=all_people, aliases=all_aliases, addresses=all_addresses, emails=all_emails, phones=all_phones)
+  return flask.render_template('person.html', missing_exists=missing_exists, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, people=all_people, aliases=all_aliases, addresses=all_addresses, emails=all_emails, phones=all_phones, contactTypes=contactType_select)
 
 @app.route('/set_person', methods=['POST'])
 def set_person():
@@ -115,6 +120,7 @@ def set_person():
       middleName=form_data.get('middleName'),
       lastName=form_data.get('lastName'),
       sirName=form_data.get('sirName'),
+      suffix=form_data.get('suffix'),
       ifMissing=form_data.get('ifMissing') == "True",
       contactType=form_data.get('contactType'),
       height=form_data.get('height'),
@@ -128,6 +134,32 @@ def set_person():
     session.add(new_entry)
     session.commit()
     flash("Person added successfully!", "success")
+    return redirect(url_for('person'))
+  except IntegrityError as e:
+    session.rollback()  # Always rollback on error to reset the session
+    error_msg = str(e.orig) # Gets the specific database error message
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('person'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('person'))
+
+@app.route('/set_alias', methods=['POST'])
+def set_alias():
+  form_data = request.form
+  try:
+    new_entry = Alias(
+      firstName=form_data.get('firstName'),
+      middleName=form_data.get('middleName'),
+      lastName=form_data.get('lastName'),
+      sirName=form_data.get('sirName'),
+      suffix=form_data.get('suffix'),
+      owner=form_data.get('owner'),
+    )
+    session.add(new_entry)
+    session.commit()
+    flash("Alias added successfully!", "success")
     return redirect(url_for('person'))
   except IntegrityError as e:
     session.rollback()  # Always rollback on error to reset the session
