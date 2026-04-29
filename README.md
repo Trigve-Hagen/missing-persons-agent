@@ -103,3 +103,5 @@ Web Scraper Idea:
  - Put the scrapper on a cron so it scrapes for any talk about the missing person every day.
  - Ask people to help that own big sites so it can be done legally.
  - Prompt the LLM everyday with questons that are engineered to find the most relevant conversations.
+ - Create an application style tool where none coders can use beatiful soup and model traning to scrape the internet for information.
+ - Use pyinstaller once finished to create a executable so none programmers can install and use.
