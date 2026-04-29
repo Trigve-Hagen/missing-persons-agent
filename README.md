@@ -1,9 +1,6 @@
 # Missing Persons Agent
-This will run on any person who downloads its local computer and without coding you will be able to get it up and running and manage it from a form allowing anyone you want to help you work with it.
 
-Create AI models for predicting behavior and define code that do tasks related to finding missing people.
-Need READ ONLY APIs that supply data for missing people and emergency alerts.
-Need the best up to date APIs.
+I'm creating a installable application that is a tool to investigate a persons disappearance. It will initially use an Ollama RAG LLM and train it on any data that can be found on the people in the immediate family, friends, or acquaintances of the missing person. It will then look for connections to the person gone missing. It will allow the user to create lists of people and aquire as much data as posible about them to cross reference and ask questions about using AI. I will keep updating this file as I come up with new ideas.
 
 ### Donate
 
