@@ -50,17 +50,39 @@ def category():
   all_categories = session.query(Category).all()
   return flask.render_template('category.html', categories=all_categories)
 
+@app.route('/api/category/<int:id>', methods=['GET'])
+def get_category(id):
+    # Retrieve category or return 404
+    category = session.get(Category, id)
+    if not category:
+        return jsonify({'error': 'Category not found'}), 404
+
+    # Serialize to JSON (assuming basic dictionary serialization)
+    category_data = {
+        'id': category.id,
+        'type': category.type,
+        'name': category.name
+    }
+    return jsonify(category_data)
+
 @app.route('/set_category', methods=['POST'])
 def set_category():
   form_data = request.form
   try:
-    new_entry = Category(
-      type=form_data.get('type'),
-      name=form_data.get('name')
-    )
-    session.add(new_entry)
+    catagory = session.execute(select(Category).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if catagory:
+      uporadd = "updated"
+      catagory.type=form_data.get('type')
+      catagory.name=form_data.get('name')
+    else:
+      uporadd = "added"
+      catagory = Category(
+        type=form_data.get('type'),
+        name=form_data.get('name')
+      )
+    session.merge(catagory)
     session.commit()
-    flash("Category added successfully!", "success")
+    flash("Category "+uporadd+" successfully!", "success")
     return redirect(url_for('category'))
   except IntegrityError as e:
     session.rollback()  # Always rollback on error to reset the session
@@ -420,7 +442,7 @@ def delete_item():
   form_data = request.form
   id = form_data.get('id')
   table_type = form_data.get('type')
-  models = {'person': Person, 'alias': Alias, 'address': Address, 'email': Email, 'phone': Phone}
+  models = {'person': Person, 'alias': Alias, 'address': Address, 'email': Email, 'phone': Phone, 'category': Category}
   model = models.get(table_type)
 
   # Specific check for Person child records
@@ -447,15 +469,21 @@ def delete_item():
     session.delete(item)
     session.commit()
     flash(table_type + " deleted successfully!", "success")
+    if table_type == 'category':
+      return redirect(url_for('category'))
     return redirect(url_for('person'))
   except IntegrityError as e:
     session.rollback()  # Always rollback on error to reset the session
     error_msg = str(e.orig) # Gets the specific database error message
     flash(f"Database Error: {error_msg}", "danger")
+    if table_type == 'category':
+      return redirect(url_for('category'))
     return redirect(url_for('person'))
   except Exception as e:
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
+    if table_type == 'category':
+      return redirect(url_for('category'))
     return redirect(url_for('person'))
 
 

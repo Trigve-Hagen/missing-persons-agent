@@ -19,6 +19,12 @@
 
 <div class="row">
   <div class="col-md-12">
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editCategoryModal" data-bs-item-id="">Add Category</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -34,7 +40,7 @@
               <td scope="row">{{ category.id }}</td>
               <td>{{ category.name }}</td>
               <td>{{ category.type }}</td>
-              <td><a class="btn btn-secondary" href="/edit/{{category.id}}" type="button">Edit</a><a class="btn btn-danger ms-2" href="/delete/{{category.id}}" type="button">Delete</a></td>
+              <td><a class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#editCategoryModal" data-bs-id="{{ category.id }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="category" data-bs-item-id="{{ category.id }}" data-bs-item="{{ category.name }}">Delete</a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -42,23 +48,42 @@
   </div>
 </div>
 
-<h3 class="my-4">Category</h3>
+<div class="modal modal-xl fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editCategoryModalLabel">Edit</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-4" action="/set_category" method="POST" name="category" autocomplete="off">
+          <input type="hidden" class="form-control" id="category-id" name="id" />
+          <div class="col-md-6">
+            <label for="category-type" class="form-label">Type</label>
+            <select class="form-select" id="category-type" name="type" required>
+              <option selected disabled value="">Choose...</option>
+              <option value="addressType">Address Type</option>
+              <option value="contactType">Contact Type</option>
+              <option value="emailType">Email Type</option>
+              <option value="phoneType">Phone Type</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="category-name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="category-name" name="name" required>
+          </div>
+          <div class="col-12 mb-5">
+            <button class="btn btn-primary" type="submit">Submit form</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<form class="row g-4" action="/set_category" method="POST" name="category">
-  <div class="col-md-6">
-    <label for="type" class="form-label">Type</label>
-    <select class="form-select" id="type" name="type" required>
-      <option selected disabled value="">Choose...</option>
-      <option value="addressType">Address Type</option>
-      <option value="contactType">Contact Type</option>
-    </select>
-  </div>
-  <div class="col-md-6">
-    <label for="name" class="form-label">Name</label>
-    <input type="text" class="form-control" id="name" name="name" required>
-  </div>
-  <div class="col-12 mb-5">
-    <button class="btn btn-primary" type="submit">Submit form</button>
-  </div>
-</form>
+{% include 'includes/delete_modal.html' %}
+
 {% endblock %}

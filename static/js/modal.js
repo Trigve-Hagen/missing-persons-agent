@@ -25,11 +25,40 @@ if (deleteModal) {
   })
 }
 
+const editCategoryModal = document.getElementById('editCategoryModal')
 const editPersonModal = document.getElementById('editPersonModal')
 const editAliasModal = document.getElementById('editAliasModal')
 const editAddressModal = document.getElementById('editAddressModal')
 const editEmailModal = document.getElementById('editEmailModal')
 const editPhoneModal = document.getElementById('editPhoneModal')
+if (editCategoryModal) {
+  editCategoryModal.addEventListener('show.bs.modal', event => {
+    // Button that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const categoryId = button.getAttribute('data-bs-id')
+
+    // Update the modal's content.
+    const modalTitle = editCategoryModal.querySelector('.modal-title')
+    const modalFormId = editCategoryModal.querySelector('.modal-body #category-id')
+
+    if (categoryId == undefined) {
+      modalTitle.textContent = `Add Category`
+      modalFormId.value = ""
+    } else {
+      fetch(`/api/category/${categoryId}`)
+        .then(response => response.json())
+        .then(data => {
+          // Populate Form Fields
+          document.getElementById('category-id').value = data.id;
+          document.getElementById('category-type').value = data.type;
+          document.getElementById('category-name').value = data.name;
+        });
+      modalTitle.textContent = `Edit Category`
+      modalFormId.value = categoryId
+    }
+  })
+}
 if (editPersonModal) {
   editPersonModal.addEventListener('show.bs.modal', event => {
     // Button that triggered the modal
