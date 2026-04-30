@@ -2,9 +2,9 @@
 import os
 import flask
 from config import Config
-from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for
+from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for, jsonify
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import create_engine, inspect, exc, select
+from sqlalchemy import create_engine, inspect, exc, select, update
 from sqlalchemy_utils import database_exists
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -25,6 +25,9 @@ DATABASE = script_dir / "database" / "db" / "hope.db"
 app=Flask(__name__)
 app.config.from_object(Config)
 app.secret_key = 'your_very_secret_key_here'
+
+def object_as_dict(obj):
+  return {c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs}
 
 @app.route('/favicon.ico')
 def favicon():
@@ -71,9 +74,6 @@ def set_category():
 
 @app.route('/person')
 def person():
-  missing_exists = session.query(
-    session.query(Person).filter_by(ifMissing=True).exists()
-  ).scalar()
 
   stmt = select(Category).where(Category.type == "contactType")
   contactType_select = session.execute(stmt).scalars().all()
@@ -120,32 +120,76 @@ def person():
   all_addresses = session.query(Address).all()
   all_emails = session.query(Email).all()
   all_phones = session.query(Phone).all()
-  return flask.render_template('person.html', missing_exists=missing_exists, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, people=all_people, aliases=all_aliases, addresses=all_addresses, emails=all_emails, phones=all_phones, contactTypes=contactType_select, addressTypes=addressType_select, emailTypes=emailType_select, phoneTypes=phoneType_select, owners=owner_select)
+  return flask.render_template('person.html', height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, people=all_people, aliases=all_aliases, addresses=all_addresses, emails=all_emails, phones=all_phones, contactTypes=contactType_select, addressTypes=addressType_select, emailTypes=emailType_select, phoneTypes=phoneType_select, owners=owner_select)
+
+@app.route('/api/person/<int:id>', methods=['GET'])
+def get_person(id):
+    # Retrieve person or return 404
+    person = session.get(Person, id)
+    if not person:
+        return jsonify({'error': 'Person not found'}), 404
+
+    # Serialize to JSON (assuming basic dictionary serialization)
+    person_data = {
+        'id': person.id,
+        'firstName': person.firstName,
+        'middleName': person.middleName,
+        'lastName': person.lastName,
+        'sirName': person.sirName,
+        'suffix': person.suffix,
+        'contactType': person.contactType,
+        'height': person.height,
+        'weight': person.weight,
+        'hairColor': person.hairColor,
+        'eyeColor': person.eyeColor,
+        'ssn': person.ssn,
+        'gender': person.gender,
+        'dob': person.dob,
+    }
+    return jsonify(person_data)
 
 @app.route('/set_person', methods=['POST'])
 def set_person():
   form_data = request.form
   try:
+    user = session.execute(select(Person).filter_by(id = form_data.get('id'))).scalar_one_or_none()
     formatted_date = datetime.strptime(form_data.get('dob'), '%Y-%m-%d')
-    new_entry = Person(
-      firstName=form_data.get('firstName'),
-      middleName=form_data.get('middleName'),
-      lastName=form_data.get('lastName'),
-      sirName=form_data.get('sirName'),
-      suffix=form_data.get('suffix'),
-      ifMissing=form_data.get('ifMissing') == "True",
-      contactType=form_data.get('contactType'),
-      height=form_data.get('height'),
-      weight=form_data.get('weight'),
-      hairColor=form_data.get('hairColor'),
-      eyeColor=form_data.get('eyeColor'),
-      ssn=form_data.get('ssn'),
-      gender=form_data.get('gender'),
-      dob=formatted_date
-    )
-    session.add(new_entry)
+    if user:
+      uporadd = "updated"
+      user.firstName=form_data.get('firstName')
+      user.middleName=form_data.get('middleName')
+      user.lastName=form_data.get('lastName')
+      user.sirName=form_data.get('sirName')
+      user.suffix=form_data.get('suffix')
+      user.contactType=form_data.get('contactType')
+      user.height=form_data.get('height')
+      user.weight=form_data.get('weight')
+      user.hairColor=form_data.get('hairColor')
+      user.eyeColor=form_data.get('eyeColor')
+      user.ssn=form_data.get('ssn')
+      user.gender=form_data.get('gender')
+      user.dob=formatted_date
+    else:
+      uporadd = "added"
+      user = Person(
+        firstName=form_data.get('firstName'),
+        middleName=form_data.get('middleName'),
+        lastName=form_data.get('lastName'),
+        sirName=form_data.get('sirName'),
+        suffix=form_data.get('suffix'),
+        contactType=form_data.get('contactType'),
+        height=form_data.get('height'),
+        weight=form_data.get('weight'),
+        hairColor=form_data.get('hairColor'),
+        eyeColor=form_data.get('eyeColor'),
+        ssn=form_data.get('ssn'),
+        gender=form_data.get('gender'),
+        dob=formatted_date
+      )
+
+    session.merge(user)
     session.commit()
-    flash("Person added successfully!", "success")
+    flash("Person "+uporadd+" successfully!", "success")
     return redirect(url_for('person'))
   except IntegrityError as e:
     session.rollback()  # Always rollback on error to reset the session
@@ -156,22 +200,52 @@ def set_person():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('person'))
+
+@app.route('/api/alias/<int:id>', methods=['GET'])
+def get_alias(id):
+    # Retrieve alias or return 404
+    alias = session.get(Alias, id)
+    if not alias:
+        return jsonify({'error': 'Alias not found'}), 404
+
+    # Serialize to JSON (assuming basic dictionary serialization)
+    alias_data = {
+        'id': alias.id,
+        'firstName': alias.firstName,
+        'middleName': alias.middleName,
+        'lastName': alias.lastName,
+        'sirName': alias.sirName,
+        'suffix': alias.suffix,
+        'owner': alias.owner
+    }
+    return jsonify(alias_data)
 
 @app.route('/set_alias', methods=['POST'])
 def set_alias():
   form_data = request.form
   try:
-    new_entry = Alias(
-      firstName=form_data.get('firstName'),
-      middleName=form_data.get('middleName'),
-      lastName=form_data.get('lastName'),
-      sirName=form_data.get('sirName'),
-      suffix=form_data.get('suffix'),
-      owner=form_data.get('owner'),
-    )
-    session.add(new_entry)
+    alias = session.execute(select(Alias).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if alias:
+      uporadd = "updated"
+      alias.firstName=form_data.get('firstName')
+      alias.middleName=form_data.get('middleName')
+      alias.lastName=form_data.get('lastName')
+      alias.sirName=form_data.get('sirName')
+      alias.suffix=form_data.get('suffix')
+      alias.owner=form_data.get('owner')
+    else:
+      uporadd = "aadded"
+      alias = Alias(
+        firstName=form_data.get('firstName'),
+        middleName=form_data.get('middleName'),
+        lastName=form_data.get('lastName'),
+        sirName=form_data.get('sirName'),
+        suffix=form_data.get('suffix'),
+        owner=form_data.get('owner'),
+      )
+    session.merge(alias)
     session.commit()
-    flash("Alias added successfully!", "success")
+    flash("Alias "+uporadd+" successfully!", "success")
     return redirect(url_for('person'))
   except IntegrityError as e:
     session.rollback()  # Always rollback on error to reset the session
@@ -182,26 +256,60 @@ def set_alias():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('person'))
+
+@app.route('/api/address/<int:id>', methods=['GET'])
+def get_address(id):
+    # Retrieve address or return 404
+    address = session.get(Address, id)
+    if not address:
+        return jsonify({'error': 'Address not found'}), 404
+
+    # Serialize to JSON (assuming basic dictionary serialization)
+    alias_data = {
+        'id': address.id,
+        'type': address.type,
+        'address1': address.address1,
+        'address2': address.address2,
+        'city': address.city,
+        'state': address.state,
+        'zip5': address.zip5,
+        'zip4': address.zip4,
+        'owner': address.owner
+    }
+    return jsonify(alias_data)
 
 @app.route('/set_address', methods=['POST'])
 def set_address():
   form_data = request.form
   try:
-    new_entry = Address(
-      ifCrimeScene=form_data.get('ifCrimeScene') == "True",
-      type=form_data.get('type'),
-      name=form_data.get('name'),
-      address1=form_data.get('address1'),
-      address2=form_data.get('address2'),
-      city=form_data.get('city'),
-      state=form_data.get('state'),
-      zip5=form_data.get('zip5'),
-      zip4=form_data.get('zip4'),
-      owner=form_data.get('owner'),
-    )
-    session.add(new_entry)
+    address = session.execute(select(Address).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if address:
+      uporadd = "updated"
+      address.type=form_data.get('type')
+      address.name=form_data.get('name')
+      address.address1=form_data.get('address1')
+      address.address2=form_data.get('address2')
+      address.city=form_data.get('city')
+      address.state=form_data.get('state')
+      address.zip5=form_data.get('zip5')
+      address.zip4=form_data.get('zip4')
+      address.owner=form_data.get('owner')
+    else:
+      uporadd = "added"
+      address = Address(
+        type=form_data.get('type'),
+        name=form_data.get('name'),
+        address1=form_data.get('address1'),
+        address2=form_data.get('address2'),
+        city=form_data.get('city'),
+        state=form_data.get('state'),
+        zip5=form_data.get('zip5'),
+        zip4=form_data.get('zip4'),
+        owner=form_data.get('owner'),
+      )
+    session.merge(address)
     session.commit()
-    flash("Address added successfully!", "success")
+    flash("Address "+uporadd+" successfully!", "success")
     return redirect(url_for('person'))
   except IntegrityError as e:
     session.rollback()  # Always rollback on error to reset the session
@@ -212,19 +320,43 @@ def set_address():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('person'))
+
+@app.route('/api/email/<int:id>', methods=['GET'])
+def get_email(id):
+    # Retrieve email or return 404
+    email = session.get(Email, id)
+    if not email:
+        return jsonify({'error': 'Email not found'}), 404
+
+    # Serialize to JSON (assuming basic dictionary serialization)
+    email_data = {
+        'id': email.id,
+        'type': email.type,
+        'email': email.email,
+        'owner': email.owner
+    }
+    return jsonify(email_data)
 
 @app.route('/set_email', methods=['POST'])
 def set_email():
   form_data = request.form
   try:
-    new_entry = Email(
-      type=form_data.get('type'),
-      email=form_data.get('email'),
-      owner=form_data.get('owner'),
-    )
-    session.add(new_entry)
+    email = session.execute(select(Email).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if email:
+      uporadd = "updated"
+      email.type=form_data.get('type')
+      email.email=form_data.get('email')
+      email.owner=form_data.get('owner')
+    else:
+      uporadd = "added"
+      email = Email(
+        type=form_data.get('type'),
+        email=form_data.get('email'),
+        owner=form_data.get('owner'),
+      )
+    session.merge(email)
     session.commit()
-    flash("Email added successfully!", "success")
+    flash("Email "+uporadd+" successfully!", "success")
     return redirect(url_for('person'))
   except IntegrityError as e:
     session.rollback()  # Always rollback on error to reset the session
@@ -236,18 +368,42 @@ def set_email():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('person'))
 
+@app.route('/api/phone/<int:id>', methods=['GET'])
+def get_phone(id):
+    # Retrieve phone or return 404
+    phone = session.get(Phone, id)
+    if not phone:
+        return jsonify({'error': 'Phone not found'}), 404
+
+    # Serialize to JSON (assuming basic dictionary serialization)
+    phone_data = {
+        'id': phone.id,
+        'type': phone.type,
+        'phone': phone.phone,
+        'owner': phone.owner
+    }
+    return jsonify(phone_data)
+
 @app.route('/set_phone', methods=['POST'])
 def set_phone():
   form_data = request.form
   try:
-    new_entry = Phone(
-      type=form_data.get('type'),
-      phone=form_data.get('phone'),
-      owner=form_data.get('owner'),
-    )
-    session.add(new_entry)
+    phone = session.execute(select(Phone).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if phone:
+      uporadd = "updated"
+      phone.type=form_data.get('type')
+      phone.phone=form_data.get('phone')
+      phone.owner=form_data.get('owner')
+    else:
+      uporadd = "added"
+      phone = Phone(
+        type=form_data.get('type'),
+        phone=form_data.get('phone'),
+        owner=form_data.get('owner'),
+      )
+    session.merge(phone)
     session.commit()
-    flash("Phone added successfully!", "success")
+    flash("Phone "+uporadd+" successfully!", "success")
     return redirect(url_for('person'))
   except IntegrityError as e:
     session.rollback()  # Always rollback on error to reset the session

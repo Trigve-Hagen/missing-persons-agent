@@ -1,5 +1,5 @@
 # https://www.youtube.com/watch?v=AKQ3XEDI9Mw
-# schema - person - person of interest - id, iid, ifMissing - missing or POI, ssn, gender, dob
+# schema - person - person of interest - id, iid - missing or POI, ssn, gender, dob
 
 from sqlalchemy import ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func
 from database.base import Base, NullToEmptyString
@@ -13,7 +13,6 @@ class Person(Base):
   lastName = Column(NullToEmptyString)
   sirName = Column(NullToEmptyString)
   suffix = Column(NullToEmptyString)
-  ifMissing = Column("ifMissing", Boolean, default=True, nullable=False)
   contactType = Column(NullToEmptyString) # what are they linked by service, contacts
   height = Column(NullToEmptyString)
   weight = Column(NullToEmptyString)
@@ -23,8 +22,7 @@ class Person(Base):
   gender = Column(NullToEmptyString)
   dob = Column("dob", DateTime)
 
-  def __init__(self, firstName, middleName, lastName, sirName, suffix, ifMissing, contactType, height, weight, hairColor, eyeColor, ssn, gender, dob):
-    self.ifMissing = ifMissing
+  def __init__(self, firstName, middleName, lastName, sirName, suffix, contactType, height, weight, hairColor, eyeColor, ssn, gender, dob):
     self.firstName = firstName
     self.middleName = middleName
     self.lastName = lastName
@@ -40,7 +38,7 @@ class Person(Base):
     self.dob = dob
 
   def __repr__(self):
-    return f"({self.id}) {self.ifMissing} {self.firstName} {self.middleName} {self.lastName} {self.sirName} {self.suffix} {self.contactType} {self.height} {self.weight} {self.hairColor} {self.eyeColor} {self.ssn} ({self.gender}, {self.dob})"
+    return f"({self.id}) {self.firstName} {self.middleName} {self.lastName} {self.sirName} {self.suffix} {self.contactType} {self.height} {self.weight} {self.hairColor} {self.eyeColor} {self.ssn} ({self.gender}, {self.dob})"
 
 class Alias(Base):
   __tablename__ = "aliases"
@@ -71,7 +69,6 @@ class Address(Base):
   __tablename__ = "addresses"
 
   id = Column("id", Integer, primary_key=True)
-  ifCrimeScene = Column("ifCrimeScene", Boolean, default=False, nullable=False)
   type = Column(NullToEmptyString(20)) # home, work
   name = Column(NullToEmptyString) # name of business if work address
   address1 = Column(NullToEmptyString)
@@ -82,8 +79,7 @@ class Address(Base):
   zip4 = Column("zip4", Integer)
   owner = Column(Integer, ForeignKey("people.id"))
 
-  def __init__(self, ifCrimeScene, type, name, address1, address2, city, state, zip5, zip4, owner):
-    self.ifCrimeScene = ifCrimeScene
+  def __init__(self, type, name, address1, address2, city, state, zip5, zip4, owner):
     self.type = type
     self.name = name
     self.address1 = address1
@@ -95,7 +91,7 @@ class Address(Base):
     self.owner = owner
 
   def __repr__(self):
-    return f"({self.id}) {self.ifCrimeScene} {self.type} {self.name} {self.address1} {self.address2} {self.city} {self.state} {self.zip5} {self.zip4} owned by {self.owner}"
+    return f"({self.id}) {self.type} {self.name} {self.address1} {self.address2} {self.city} {self.state} {self.zip5} {self.zip4} owned by {self.owner}"
 
   def validate():
     pass
