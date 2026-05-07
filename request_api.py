@@ -1,3 +1,6 @@
+import requests
+from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
+from flask import flash
 from sqlalchemy import create_engine, inspect, exc, select, update
 from database.state import State
 from database.category import Category
@@ -5,7 +8,6 @@ from database.event import Event, Url, Question
 from database.news import News
 from database.apis import Api, ApiField
 from database.person import Person, Alias, Email, Phone, Address
-import requests
 
 class RequestApi:
   def __init__(self, session):
@@ -29,13 +31,32 @@ class RequestApi:
 
   def get_request(self):
     self.get_params()
-    response = requests.get(self.api.url, params=self.params)
 
-    if response.status_code == 200:
+    try:
+      # 1. Perform the request (always set a timeout to prevent hanging)
+      response = requests.get(self.api.url, params=self.params, timeout=10)
+
+      # 2. Raise an exception for 4xx or 5xx status codes
+      response.raise_for_status()
+
+      # 3. Process the response if no exception was raised
       data = response.json()
-      # Access the first matching person
-      return data
-      # print(f"Name: {person['title']}")
-      # print(f"Details: {person['description']}")
+
+    except HTTPError as http_err:
+        flash(f"HTTP error occurred: {http_err}", "danger")
+        return "Http error. Please check that you are using correct api and field values."
+    except ConnectionError as conn_err:
+        flash(f"Connection error occurred: {conn_err}", "danger")
+        return "Connection Error. Please check that you are using correct api and field values."
+    except Timeout as timeout_err:
+        flash(f"The request timed out: {timeout_err}", "danger")
+        return "Request Timeout. Please check that you are using correct api and field values."
+    except RequestException as req_err:
+        flash(f"A general Requests error occurred: {req_err}", "danger")
+        return "Request Exception. Please check that you are using correct api and field values."
+    except Exception as e:
+        flash(f"An unexpected non-requests error occurred: {e}", "danger")
+        return "Exception. Request failed. Please check that you are using correct api and field values."
     else:
-      return "Error."
+        flash("Success! Data retrieved.", "success")
+        return data
