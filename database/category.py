@@ -12,9 +12,3 @@ class Category(Base):
   def __init__(self, type, name):
     self.type = type
     self.name = name
-
-  def __repr__(self):
-    return f"({self.id}) {self.type} {self.name}"
-
-  def validate():
-    pass

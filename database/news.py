@@ -16,9 +16,3 @@ class News(Base):
     self.station = station
     self.news = news
     self.owner = owner
-
-  def __repr__(self):
-    return f"({self.id}) {self.station} {self.news} owned by {self.owner}"
-
-  def validate():
-    pass

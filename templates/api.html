@@ -1,0 +1,82 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}APIs{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">APIs</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-3">
+    {% include 'includes/sidebar_menu.html' %}
+  </div>
+  <div class="col-md-9">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for api in apis %}
+          <tr>
+              <td scope="row">{{ api.id }}</td>
+              <td>{{ api.name }}</td>
+              <td><a class="btn btn-secondary" href="{{ url_for('edit_api', id=api.id) }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="api" data-bs-item-id="{{ api.id }}" data-bs-item="{{ api.name }}">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr>
+<h3 class="my-4">Add Api</h3>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_api" method="POST" name="api" autocomplete="off">
+      <input type="hidden" class="form-control" id="api-id" name="id" />
+      <div class="col-md-4">
+        <label for="api-name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="api-name" name="name" required>
+      </div>
+      <div class="col-md-8">
+        <label for="api-url" class="form-label">URL</label>
+        <input type="text" class="form-control" id="api-url" name="url" required>
+      </div>
+      <div class="col-md-6">
+        <label for="api-key" class="form-label">Key</label>
+        <input type="text" class="form-control" id="api-key" name="key">
+      </div>
+      <div class="col-md-6">
+        <label for="api-secret" class="form-label">Secret</label>
+        <input type="text" class="form-control" id="api-secret" name="secret">
+      </div>
+      <div class="col-md-12">
+        <label for="api-description" class="form-label">Description</label>
+        <textarea class="form-control" id="api-description" name="description" rows="3"></textarea>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}

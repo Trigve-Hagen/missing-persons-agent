@@ -13,22 +13,22 @@ class Person(Base):
   lastName = Column(NullToEmptyString)
   sirName = Column(NullToEmptyString)
   suffix = Column(NullToEmptyString)
-  contactType = Column(NullToEmptyString) # what are they linked by service, contacts
-  height = Column(NullToEmptyString)
-  weight = Column(NullToEmptyString)
+  type = Column(Integer)
+  height = Column(Integer)
+  weight = Column(Integer)
   hairColor = Column(NullToEmptyString)
   eyeColor = Column(NullToEmptyString)
   ssn = Column(NullToEmptyString)
   gender = Column(NullToEmptyString)
   dob = Column("dob", DateTime)
 
-  def __init__(self, firstName, middleName, lastName, sirName, suffix, contactType, height, weight, hairColor, eyeColor, ssn, gender, dob):
+  def __init__(self, firstName, middleName, lastName, sirName, suffix, type, height, weight, hairColor, eyeColor, ssn, gender, dob):
     self.firstName = firstName
     self.middleName = middleName
     self.lastName = lastName
     self.sirName = sirName
     self.suffix = suffix
-    self.contactType = contactType
+    self.type = type
     self.height = height
     self.weight = weight
     self.hairColor = hairColor
@@ -36,9 +36,6 @@ class Person(Base):
     self.ssn = ssn
     self.gender = gender
     self.dob = dob
-
-  def __repr__(self):
-    return f"({self.id}) {self.firstName} {self.middleName} {self.lastName} {self.sirName} {self.suffix} {self.contactType} {self.height} {self.weight} {self.hairColor} {self.eyeColor} {self.ssn} ({self.gender}, {self.dob})"
 
 class Alias(Base):
   __tablename__ = "aliases"
@@ -59,17 +56,11 @@ class Alias(Base):
     self.suffix = suffix
     self.owner = owner
 
-  def __repr__(self):
-    return f"({self.id}){self.firstName} {self.middleName} {self.lastName} {self.sirName} owned by {self.owner}"
-
-  def validate():
-    pass
-
 class Address(Base):
   __tablename__ = "addresses"
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(NullToEmptyString(20)) # home, work
+  type = Column(Integer) # home, work
   name = Column(NullToEmptyString) # name of business if work address
   address1 = Column(NullToEmptyString)
   address2 = Column(NullToEmptyString)
@@ -90,17 +81,11 @@ class Address(Base):
     self.zip4 = zip4
     self.owner = owner
 
-  def __repr__(self):
-    return f"({self.id}) {self.type} {self.name} {self.address1} {self.address2} {self.city} {self.state} {self.zip5} {self.zip4} owned by {self.owner}"
-
-  def validate():
-    pass
-
 class Email(Base):
   __tablename__ = "emails"
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(NullToEmptyString(20)) # personel, work
+  type = Column(Integer) # personel, work
   email = Column(NullToEmptyString(255), unique=True, nullable=False)
   owner = Column(Integer, ForeignKey("people.id"))
 
@@ -109,17 +94,11 @@ class Email(Base):
     self.email = email
     self.owner = owner
 
-  def __repr__(self):
-    return f"({self.id}) {self.type} {self.email} owned by {self.owner}"
-
-  def validate():
-    pass
-
 class Phone(Base):
   __tablename__ = "phones"
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(NullToEmptyString(20)) # cell, home, work
+  type = Column(Integer) # cell, home, work
   phone = Column(NullToEmptyString(20), unique=True, nullable=False)
   owner = Column(Integer, ForeignKey("people.id"))
 
@@ -127,9 +106,3 @@ class Phone(Base):
     self.type = type
     self.phone = phone
     self.owner = owner
-
-  def __repr__(self):
-    return f"({self.id}) {self.type} {self.phone} owned by {self.owner}"
-
-  def validate():
-    pass

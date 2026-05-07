@@ -138,3 +138,41 @@ Web Scraper Idea:
  - You define questions and Prompt the LLM everyday if you like with questons that are engineered to find the most relevant conversations.
  - Create an application style tool where none coders can use beatiful soup and model traning to scrape the internet for information.
  - Use pyinstaller once finished to create a executable so none programmers can install and use.
+
+## The Build
+
+### Stage 1
+Build out the database for Person and Categories.
+- Eack link is a separate entity.
+  - Categories - You can have different categories for people, phones, emails and addresses. Define your categories for each and they will show up in each of them when you add or edit rows.
+  - Person - A person is anyone you will search for information on through the APIs(next stage). The initial category I created for person was 'Missing Person'. You can change it or create others like 'Person of Interest' etc..
+  - The rest are parts of a person, addresses, emails, phones and alias. They all have an owner which is a person entity.
+  - View Person - A page to view people. Going to finish the main work first.
+
+### Stage 2
+Build out the database and pages for consuming APIs. Users use a form to run the API to get data from whatever API they choose to use.
+- Api, ApiFields and State. I have just finished the basics and added Nancy Guthrie as aan example of how to use it. There is still alot of work to do on this part of the system. Im going to move on though and complete the minimum of each Stage so I can have a fully working app before I go back and fully complete everything. This allows U.S to help if you want by taking on a section of it. Thanks.
+  - Api - Fill in the information about the api here. Put the full url into the url field including the https:// and the url endpoint.
+  - ApiFields - Fill in each field that will be used in the api call. Field is a query parameter and is used to filter results. The field is the query parameter name, value is the value that needs to be there. Everything associated with a person will eventually be an option in the value list. Right now there is only the persons name.
+  - State - The appication state is saved to help guild your workflow. The state form in the upper right corner and holds the person and the api that you are working on. When you create ApiFields or call Apis you need to have the Person and the Api selected and saved in state.
+
+### Stage 3
+Build out the vector database to save the API data for the Ollama model. Users can refine the data.
+
+### Stage 4
+Build out training functionality for the Ollama LLM. Users can train and retrain models as they build and refine the data.
+
+### Stage 5
+Build out prompt functionality for the Ollama LLM. Users can create questions to use when prompting the LLM.
+
+### Stage 6
+Use the data gathered from the APIs to build timelines for each person.
+
+### Stage 7
+Add images and video to the person object to use when looking though images and videos for matching.
+
+### Stage 8
+Build ability to train a model on video and images.
+
+### Stage 8
+Build out functionality for testing and viewing data from videos and images.

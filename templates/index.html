@@ -5,45 +5,63 @@
 
 {% block content %}
 
-<h1 class="my-4">Missing Persons Timeline Builder</h1>
-<p>This will run on any person who downloads its local computer and without coding you will be able to get it up and running and manage it from a form allowing anyone you want to help you work with it.</p>
-<p>User account and Login vrs you download a json file with the missing person information you put in and find. Then upload that to start off where you left off.. With the second I can clear the database and have no saved data on my server. But How would that work with training an LLM on the missing person data? I need to find a way to train the model for every missing person.</p>
-<p>Go through all of the records coming from the list below and build a timeline for everyone. Go levels deep. 1 level would be just the names of the peope in the immediate family. Level 2 would be family and friends. Level 3 would be family friends and their friends. etc.. Narrow timelines down to people in the areas during the time of dissapearence to start. Fan out as the investigation neads it.</p>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
-<h3 class="my-4">News</h3>
-<p>List all media sources that are conneted and begi scanning for anything related to the missing person. With someone high profile who family is say an anchor search through the hosted shws for people who could be mad. All other news search for possible sightings. Make an LLM of all articles to be able to search it. One for the anchor broadcasts and one for news related stores.</p>
+<h1 class="my-4 mb-0">Missing Persons</h1>
+<p class="mt-0">The plan is to create a release for each stage. Write and test the stage. Create an .exe file. Build it into an installer. Write docs for installation and usage. Upload to my website so it can be downloaded.</p>
 
-<h3 class="my-4">Social Media Accounts</h3>
-<p>List all social media sources so more people can be identified and timelines made from them.</p>
-
-<h3 class="my-4">Bills and Services</h3>
-<p>List all Bills and Services and the people they hire, identify and timeline them.</p>
-
-<h3 class="my-4">Phone Records</h3>
-<p>List all Phone Records, identify and timeline them.</p>
-
-<h3 class="my-4">Email Records</h3>
-<p>List all Phone Records, identify and timeline them.</p>
-
-<h3 class="my-4">The Main Timeline</h3>
+<h3 class="my-3 mb-0">Stage 1</h3>
+<p class="mt-0 mb-3">Build out the database for Person and Categories.</p>
 <ul>
-    <li>Facebook profile, tweets, calls, messages and emails.</li>
-    <li>What gives references to a persons activities?</li>
-    <li>track mobile phone, car, purchases to see if there was things purchased like rent a car or temporary phones.</li>
+  <li>Eack link is a separate entity.
+    <ul>
+      <li>Categories - You can have different categories for people, phones, emails and addresses. Define your categories for each and they will show up in each of them when you add or edit rows.</li>
+      <li>Person - A person is anyone you will search for information on through the APIs(next stage). The initial category I created for person was 'Missing Person'. You can change it or create others like 'Person of Interest' etc..</li>
+      <li>The rest are parts of a person, addresses, emails, phones and alias. They all have an owner which is a person entity.</li>
+      <li>View Person - A page to view people. Going to finish the main work first.</li>
+    </ul>
+  </li>
 </ul>
 
-<h3 class="my-4">Web Scraper Idea:</h3>
+<h3 class="my-3 mb-0">Stage 2</h3>
+<p class="mt-0">Build out the database and pages for consuming APIs.</p>
 <ul>
-    <li>Create singleusing multiple features
-        <ul>
-            <li>Create a RAG LLM like this - <a href="https://www.youtube.com/watch?v=0zgYu_9WF7A" target="_blank">Build a RAG web scraper using Langchain, Ollama, ChromaDB</a></li>
-            <li>Create a database to store sites to scrape so a user can add them.</li>
-            <li>Ask all that can to take a list of sites to scape and coordinate between the searchers.</li>
-            <li>Put the scrapper on a cron so it scrapes for any talk about the missing person every day.</li>
-            <li>Ask people to help that own big sites so it can be done legally.</li>
-            <li>Prompt the LLM everyday with questons that are engineered to find the most relevant conversations.</li>
-        </ul>
-    </li>
+  <li>Api, ApiFields and State. I have just finished the basics and added Nancy Guthrie as aan example of how to use it. There is still alot of work to do on this part of the system. Im going to move on though and complete the minimum of each Stage so I can have a fully working app before I go back and fully complete everything. This allows U.S to help if you want by taking on a section of it. Thanks.
+    <ul>
+      <li>Api - Fill in the information about the api here. Put the full url into the url field including the https:// and the url endpoint.</li>
+      <li>ApiFields - Fill in each field that will be used in the api call. Field is a query parameter and is used to filter results. The field is the query parameter name, value is the value that needs to be there. Everything associated with a person will eventually be an option in the value list. Right now there is only the persons name.</li>
+      <li>State - The appication state is saved to help guild your workflow. The state form in the upper right corner and holds the person and the api that you are working on. When you create ApiFields or call Apis you need to have the Person and the Api selected and saved in state.</li>
+    </ul>
+  </li>
 </ul>
+
+<h3 class="my-3 mb-0">Stage 3</h3>
+<p class="mt-0">Build out the vector database to save the API data for the Ollama model. Users can refine the data.</p>
+
+<h3 class="my-3 mb-0">Stage 4</h3>
+<p class="mt-0">Build out training functionality for the Ollama LLM. Users can train and retrain models as they build and refine the data.</p>
+
+<h3 class="my-3 mb-0">Stage 5</h3>
+<p class="mt-0">Build out prompt functionality for the Ollama LLM. Users can create questions to use when prompting the LLM.</p>
+
+<h3 class="my-3 mb-0">Stage 6</h3>
+<p class="mt-0">Use the data gathered from the APIs to build timelines for each person.</p>
+
+<h3 class="my-3 mb-0">Stage 7</h3>
+<p class="mt-0">Add images and video to the person object to use when looking though images and videos for matching.</p>
+
+<h3 class="my-3 mb-0">Stage 8</h3>
+<p class="mt-0">Build ability to train a model on video and images.</p>
+
+<h3 class="my-3 mb-0">Stage 8</h3>
+<p class="mt-0">Build out functionality for testing and viewing data from videos and images.</p>
+
 {% endblock %}
-

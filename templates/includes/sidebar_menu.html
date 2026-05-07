@@ -1,0 +1,5 @@
+<!-- templates/includes/sidebar_menu.html -->
+<nav class="nav flex-column">
+  <a class="nav-link{% if request.endpoint == 'view_person' %} active{% endif %}" href="{{ url_for('view_person') }}">View People</a>
+  <a class="nav-link{% if request.endpoint == 'call_apis' %} active{% endif %}" href="{{ url_for('call_apis') }}">Call APIs</a>
+</nav>

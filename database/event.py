@@ -14,12 +14,6 @@ class Url(Base):
     self.name = name
     self.url = url
 
-  def __repr__(self):
-    return f"({self.id}) {self.name} {self.url}"
-
-  def validate():
-    pass
-
 class Question(Base):
   __tablename__ = "questions"
 
@@ -29,12 +23,6 @@ class Question(Base):
   def __init__(self, id, question):
     self.id = id
     self.question = question
-
-  def __repr__(self):
-    return f"({self.id}) {self.question}"
-
-  def validate():
-    pass
 
 class Event(Base):
   __tablename__ = "events"
@@ -49,9 +37,3 @@ class Event(Base):
     self.eventType = eventType
     self.description = description
     self.owner = owner
-
-  def __repr__(self):
-    return f"({self.id}) {self.eventType} {self.description} owned by {self.owner}"
-
-  def validate():
-    pass

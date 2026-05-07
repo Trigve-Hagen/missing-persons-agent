@@ -18,29 +18,26 @@
 {% endwith %}
 
 <div class="row">
-  <div class="col-md-12">
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editPersonModal" data-bs-item-id="">Add Person</button>
+  <div class="col-md-3">
+    {% include 'includes/sidebar_menu.html' %}
   </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
+  <div class="col-md-9">
     <table class="table table-striped">
       <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col">Name</th>
-          <th scope="col">Contact Type</th>
+          <th scope="col">Type</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
-        {% for person in people %}
+        {% for person, cat_name in people %}
           <tr>
               <td scope="row">{{ person.id }}</td>
               <td>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</td>
-              <td>{{ person.contactType }}</td>
-              <td><a class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#editPersonModal" data-bs-id="{{ person.id }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="person" data-bs-item-id="{{ person.id }}" data-bs-item="{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}">Delete</a></td>
+              <td>{{ cat_name }}</td>
+              <td><a class="btn btn-secondary" href="{{ url_for('edit_person', id=person.id) }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="person" data-bs-item-id="{{ person.id }}" data-bs-item="{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}">Delete</a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -48,484 +45,110 @@
   </div>
 </div>
 
-<div class="modal modal-xl fade" id="editPersonModal" tabindex="-1" aria-labelledby="editPersonModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="editPersonModalLabel">Edit</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form class="row g-4" action="/set_person" method="POST" name="person" autocomplete="off">
-          <input type="hidden" class="form-control" id="person-id" name="id" />
-          <div class="col-md-6">
-            <label for="person-contactType" class="form-label">Contact Type</label>
-            <select class="form-select" id="person-contactType" name="contactType" required>
-              <option selected disabled value="">Choose...</option>
-              {% for type in contactTypes %}
-                <option value="{{ type.name }}">{{ type.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="person-sirName" class="form-label">Sir Name</label>
-            <select class="form-select" id="person-sirName" name="sirName">
-              <option selected disabled value="">Choose...</option>
-              <option>Mr.</option>
-              <option>Mrs.</option>
-              <option>Miss.</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label for="person-firstName" class="form-label">First name</label>
-            <input type="text" class="form-control" id="person-firstName" name="firstName" value="" required>
-          </div>
-          <div class="col-md-3">
-            <label for="person-middleName" class="form-label">Middle name</label>
-            <input type="text" class="form-control" id="person-middleName" name="middleName" value="">
-          </div>
-          <div class="col-md-3">
-            <label for="person-lastName" class="form-label">Last name</label>
-            <input type="text" class="form-control" id="person-lastName" name="lastName" value="" required>
-          </div>
-          <div class="col-md-3">
-            <label for="person-suffix" class="form-label">Suffix</label>
-            <select class="form-select" id="person-suffix" name="suffix">
-              <option selected disabled value="">Choose...</option>
-              {% for s in suffixes %}
-                <option value="{{ s }}">{{ s }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label for="person-height" class="form-label">Height - In Feet and Inches</label>
-            <select class="form-select" id="person-height" name="height">
-              <option selected disabled value="">Choose...</option>
-              {% for value, label in height_options %}
-                <option value="{{ value }}">{{ label }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label for="person-weight" class="form-label">Weight - In Pounds</label>
-            <select class="form-select" id="person-weight" name="weight">
-              <option selected disabled value="">Choose...</option>
-              {% for w in weight_options %}
-                <option value="{{ w }}">{{ w }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label for="person-hairColor" class="form-label">Hair Color</label>
-            <select class="form-select" id="person-hairColor" name="hairColor">
-              <option selected disabled value="">Choose...</option>
-              {% for value, label in hair_color_codes %}
-                <option value="{{ value }}">{{ label }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label for="person-eyeColor" class="form-label">Eye Color</label>
-            <select class="form-select" id="person-eyeColor" name="eyeColor">
-              <option selected disabled value="">Choose...</option>
-              {% for color in eye_colors %}
-                <option value="{{ color }}">{{ color }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="person-ssn" class="form-label">SSN</label>
-            <input type="text" class="form-control" id="person-ssn" name="ssn" pattern="^\d{3}-\d{2}-\d{4}$"
-              placeholder="XXX-XX-XXXX">
-          </div>
-          <div class="col-md-3">
-            <label for="person-gender" class="form-label">Gender</label>
-            <select class="form-select" id="person-gender" name="gender" required>
-              <option selected disabled value="">Choose...</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-          </div>
-          <div class="col-md-3">
-            <label for="person-dob" class="form-label">DOB</label>
-            <input type="date" class="form-control" id="person-dob" name="dob" required>
-          </div>
-          <div class="col-12 mb-5">
-            <button class="btn btn-primary" type="submit">Submit form</button>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+<hr>
 
-<h3 class="my-4">Aliases</h3>
+<h3 class="my-4">Add Person</h3>
 
-<div class="row">
+<div class="row mt-5">
   <div class="col-md-12">
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editAliasModal" data-bs-item-id="">Add Alias</button>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Name</th>
-          <th scope="col">Person</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for alias in aliases %}
-          <tr>
-              <td scope="row">{{ alias.id }}</td>
-              <td>{{ alias.sirName }} {{ alias.firstName }} {{ alias.middleName }} {{ alias.lastName }} {{ alias.suffix }}</td>
-              {% for person in owners %}
-                {% if person.id == alias.owner %}
-                  <td>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</td>
-                {% endif %}
-              {% endfor %}
-              <td><a class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#editAliasModal" data-bs-id="{{ alias.id }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="alias" data-bs-item-id="{{ alias.id }}" data-bs-item="{{ alias.sirName }} {{ alias.firstName }} {{ alias.middleName }} {{ alias.lastName }} {{ alias.suffix }}">Delete</a></td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="modal modal-xl fade" id="editAliasModal" tabindex="-1" aria-labelledby="editAliasModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="editAliasModalLabel">Edit</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <form class="row g-4" action="/set_person" method="POST" name="person" autocomplete="off">
+      <input type="hidden" class="form-control" id="person-id" name="id" />
+      <div class="col-md-6">
+        <label for="person-type" class="form-label">Contact Type</label>
+        <select class="form-select" id="person-type" name="type" required>
+          <option value="">Choose...</option>
+          {% for type in contactTypes %}
+            <option value="{{ type.id }}">{{ type.name }}</option>
+          {% endfor %}
+        </select>
       </div>
-      <div class="modal-body">
-        <form class="row g-4" action="/set_alias" method="POST" name="alias" autocomplete="off">
-          <input type="hidden" class="form-control" id="alias-id" name="id" />
-          <div class="col-md-6">
-            <label for="alias-sirName" class="form-label">Sir Name</label>
-            <select class="form-select" id="alias-sirName" name="sirName">
-              <option selected disabled value="">Choose...</option>
-              <option>Mr.</option>
-              <option>Mrs.</option>
-              <option>Miss.</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="alias-suffix" class="form-label">Suffix</label>
-            <select class="form-select" id="alias-suffix" name="suffix">
-              <option selected disabled value="">Choose...</option>
-              {% for s in suffixes %}
-                <option value="{{ s }}">{{ s }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-4">
-            <label for="alias-firstName" class="form-label">First name</label>
-            <input type="text" class="form-control" id="alias-firstName" name="firstName" value="" required>
-          </div>
-          <div class="col-md-4">
-            <label for="alias-middleName" class="form-label">Middle name</label>
-            <input type="text" class="form-control" id="alias-middleName" name="middleName" value="">
-          </div>
-          <div class="col-md-4">
-            <label for="alias-lastName" class="form-label">Last name</label>
-            <input type="text" class="form-control" id="alias-lastName" name="lastName" value="">
-          </div>
-          <div class="col-md-3">
-            <label for="alias-owner" class="form-label">Person</label>
-            <select class="form-select" id="alias-owner" name="owner" required>
-              <option selected disabled value="">Choose...</option>
-              {% for person in owners %}
-                <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-12 mb-5">
-            <button class="btn btn-primary" type="submit">Submit form</button>
-          </div>
-        </form>
+      <div class="col-md-6">
+        <label for="person-sirName" class="form-label">Sir Name</label>
+        <select class="form-select" id="person-sirName" name="sirName">
+          <option value="">Choose...</option>
+          {% for name in sir_names %}
+            <option value="{{ name }}">{{ name }}</option>
+          {% endfor %}
+        </select>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <div class="col-md-3">
+        <label for="person-firstName" class="form-label">First name</label>
+        <input type="text" class="form-control" id="person-firstName" name="firstName" value="" required>
       </div>
-    </div>
-  </div>
-</div>
-
-<h3 class="my-4">Addresses</h3>
-
-<div class="row">
-  <div class="col-md-12">
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editAddressModal" data-bs-item-id="">Add Address</button>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Name</th>
-          <th scope="col">Address</th>
-          <th scope="col">Person</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for address in addresses %}
-          <tr>
-              <td scope="row">{{ address.id }}</td>
-              <td>{{ address.name }}</td>
-              <td>{{ address.address1 }} {{ address.city }}</td>
-              {% for person in owners %}
-                {% if person.id == address.owner %}
-                  <td>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</td>
-                {% endif %}
-              {% endfor %}
-              <td><a class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#editAddressModal" data-bs-id="{{ address.id }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="address" data-bs-item-id="{{ address.id }}" data-bs-item="{{ address.name }}: {{ address.address1 }} {{ address.city }}">Delete</a></td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="modal modal-xl fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="editAddressModalLabel">Edit</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="col-md-3">
+        <label for="person-middleName" class="form-label">Middle name</label>
+        <input type="text" class="form-control" id="person-middleName" name="middleName" value="">
       </div>
-      <div class="modal-body">
-        <form class="row g-4" action="/set_address" method="POST" name="address" autocomplete="off">
-          <input type="hidden" class="form-control" id="address-id" name="id" />
-          <div class="col-md-6">
-            <label for="address-type" class="form-label">Type</label>
-            <select class="form-select" id="address-type" name="type" required>
-              <option selected disabled value="">Choose...</option>
-              {% for type in addressTypes %}
-                <option value="{{ type.name }}">{{ type.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="address-name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="address-name" name="name" required>
-          </div>
-          <div class="col-md-6">
-            <label for="address-address1" class="form-label">Address 1</label>
-            <input type="text" class="form-control" id="address-address1" name="address1" required>
-          </div>
-          <div class="col-md-6">
-            <label for="address-address2" class="form-label">Address 2</label>
-            <input type="text" class="form-control" id="address-address2" name="address2">
-          </div>
-          <div class="col-md-3">
-            <label for="address-city" class="form-label">City</label>
-            <input type="text" class="form-control" id="address-city" name="city" required>
-          </div>
-          <div class="col-md-3">
-            <label for="address-state" class="form-label">State</label>
-            <input type="text" class="form-control" id="address-state" name="state" required>
-          </div>
-          <div class="col-md-3">
-            <label for="address-zip5" class="form-label">Zip 5</label>
-            <input type="text" class="form-control" id="address-zip5" name="zip5" required>
-          </div>
-          <div class="col-md-3">
-            <label for="address-zip4" class="form-label">Zip 4</label>
-            <input type="text" class="form-control" id="address-zip4" name="zip4">
-          </div>
-          <div class="col-md-4">
-            <label for="address-owner" class="form-label">Person</label>
-            <select class="form-select" id="address-owner" name="owner" required>
-              <option selected disabled value="">Choose...</option>
-              {% for person in owners %}
-                <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-12 mb-5">
-            <button class="btn btn-primary" type="submit">Submit form</button>
-          </div>
-        </form>
+      <div class="col-md-3">
+        <label for="person-lastName" class="form-label">Last name</label>
+        <input type="text" class="form-control" id="person-lastName" name="lastName" value="" required>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <div class="col-md-3">
+        <label for="person-suffix" class="form-label">Suffix</label>
+        <select class="form-select" id="person-suffix" name="suffix">
+          <option value="">Choose...</option>
+          {% for s in suffixes %}
+            <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
       </div>
-    </div>
-  </div>
-</div>
-
-<h3 class="my-4">Emails</h3>
-
-<div class="row">
-  <div class="col-md-12">
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editEmailModal" data-bs-item-id="">Add Email</button>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Email</th>
-          <th scope="col">Person</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for email in emails %}
-          <tr>
-              <td scope="row">{{ email.id }}</td>
-              <td>{{ email.email }}</td>
-              {% for person in owners %}
-                {% if person.id == email.owner %}
-                  <td>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</td>
-                {% endif %}
-              {% endfor %}
-              <td><a class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#editEmailModal" data-bs-id="{{ email.id }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="email" data-bs-item-id="{{ email.id }}" data-bs-item="{{ email.email }}">Delete</a></td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="modal modal-xl fade" id="editEmailModal" tabindex="-1" aria-labelledby="editEmailModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="editEmailModalLabel">Edit</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="col-md-3">
+        <label for="person-height" class="form-label">Height - In Feet and Inches</label>
+        <select class="form-select" id="person-height" name="height">
+          <option value="">Choose...</option>
+          {% for value, label in height_options %}
+            <option value="{{ value }}">{{ label }}</option>
+          {% endfor %}
+        </select>
       </div>
-      <div class="modal-body">
-        <form class="row g-4" action="/set_email" method="POST" name="email" autocomplete="off">
-          <input type="hidden" class="form-control" id="email-id" name="id" />
-          <div class="col-md-6">
-            <label for="email-type" class="form-label">Type</label>
-            <select class="form-select" id="email-type" name="type" required>
-              <option selected disabled value="">Choose...</option>
-              {% for type in emailTypes %}
-                <option value="{{ type.name }}">{{ type.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="email-email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email-email" name="email" required>
-          </div>
-          <div class="col-md-4">
-            <label for="email-owner" class="form-label">Person</label>
-            <select class="form-select" id="email-owner" name="owner" required>
-              <option selected disabled value="">Choose...</option>
-              {% for person in owners %}
-                <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-12 mb-5">
-            <button class="btn btn-primary" type="submit">Submit form</button>
-          </div>
-        </form>
+      <div class="col-md-3">
+        <label for="person-weight" class="form-label">Weight - In Pounds</label>
+        <select class="form-select" id="person-weight" name="weight">
+          <option value="">Choose...</option>
+          {% for w in weight_options %}
+            <option value="{{ w }}">{{ w }}</option>
+          {% endfor %}
+        </select>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <div class="col-md-3">
+        <label for="person-hairColor" class="form-label">Hair Color</label>
+        <select class="form-select" id="person-hairColor" name="hairColor">
+          <option value="">Choose...</option>
+          {% for value, label in hair_color_codes %}
+            <option value="{{ value }}">{{ label }}</option>
+          {% endfor %}
+        </select>
       </div>
-    </div>
-  </div>
-</div>
-
-<h3 class="my-4">Phone Numbers</h3>
-
-<div class="row">
-  <div class="col-md-12">
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#editPhoneModal" data-bs-item-id="">Add Phone</button>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Email</th>
-          <th scope="col">Person</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for phone in phones %}
-          <tr>
-              <td scope="row">{{ phone.id }}</td>
-              <td>{{ phone.phone }}</td>
-              {% for person in owners %}
-                {% if person.id == phone.owner %}
-                  <td>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</td>
-                {% endif %}
-              {% endfor %}
-              <td><a class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#editPhoneModal" data-bs-id="{{ phone.id }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="phone" data-bs-item-id="{{ phone.id }}" data-bs-item="{{ phone.phone }}">Delete</a></td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="modal modal-xl fade" id="editPhoneModal" tabindex="-1" aria-labelledby="editPhoneModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="editPhoneModalLabel">Edit</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="col-md-3">
+        <label for="person-eyeColor" class="form-label">Eye Color</label>
+        <select class="form-select" id="person-eyeColor" name="eyeColor">
+          <option value="">Choose...</option>
+          {% for color in eye_colors %}
+            <option value="{{ color }}">{{ color }}</option>
+          {% endfor %}
+        </select>
       </div>
-      <div class="modal-body">
-        <form class="row g-4" action="/set_phone" method="POST" name="phone" autocomplete="off">
-          <input type="hidden" class="form-control" id="phone-id" name="id" />
-          <div class="col-md-6">
-            <label for="phone-type" class="form-label">Type</label>
-            <select class="form-select" id="phone-type" name="type" required>
-              <option selected disabled value="">Choose...</option>
-              {% for type in phoneTypes %}
-                <option value="{{ type.name }}">{{ type.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label for="phone-phone" class="form-label">Phone</label>
-            <input type="tel" class="form-control" id="phone-phone" name="phone" required>
-          </div>
-          <div class="col-md-4">
-            <label for="phone-owner" class="form-label">Person</label>
-            <select class="form-select" id="phone-owner" name="owner" required>
-              <option selected disabled value="">Choose...</option>
-              {% for person in owners %}
-                <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-12 mb-5">
-            <button class="btn btn-primary" type="submit">Submit form</button>
-          </div>
-        </form>
+      <div class="col-md-6">
+        <label for="person-ssn" class="form-label">SSN</label>
+        <input type="text" class="form-control" id="person-ssn" name="ssn" pattern="^\d{3}-\d{2}-\d{4}$"
+          placeholder="XXX-XX-XXXX">
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <div class="col-md-3">
+        <label for="person-gender" class="form-label">Gender</label>
+        <select class="form-select" id="person-gender" name="gender" required>
+          <option value="">Choose...</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
       </div>
-    </div>
+      <div class="col-md-3">
+        <label for="person-dob" class="form-label">DOB</label>
+        <input type="date" class="form-control" id="person-dob" name="dob" required>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
   </div>
 </div>
 

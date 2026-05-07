@@ -1,0 +1,65 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Edit API Field{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Edit API Field</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-12">
+    <a href="{{ url_for('api_field') }}" class="btn btn-primary mb-3">back</a>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_api_field" method="POST" name="api" autocomplete="off">
+      <input type="hidden" class="form-control" id="api-field-id" name="id" value="{{ api_field_data.id }}" />
+      <div class="col-md-6">
+        <label for="api-field-field" class="form-label">Field</label>
+        <input type="text" class="form-control" id="api-field-field" name="name" value="{{ api_field_data.field }}" required>
+      </div>
+      <div class="col-md-6">
+        <label for="api-field-value" class="form-label">Value</label>
+        <select class="form-select" id="api-field-value" name="value" required>
+          <option value="">Choose...</option>
+          {% for key, value in value_options.items() %}
+            <option value="{{ key }}">{{ value }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-12">
+        <label for="api-field-description" class="form-label">Description</label>
+        <textarea class="form-control" id="api-field-description" name="description" rows="3">{{ api_field_data.description }}</textarea>
+      </div>
+      <div class="col-md-4">
+        <label for="api-field-owner" class="form-label">Api</label>
+        <select class="form-select" id="api-field-owner" name="owner" required>
+          <option value="">Choose...</option>
+          {% for api in owners %}
+            <option value="{{ api.id }}">{{ api.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}
