@@ -123,7 +123,7 @@ def edit_category(id):
       'type': category.type,
       'name': category.name
   }
-  return flask.render_template('edit_category.html', category_data=category_data, category_types=category_types)
+  return flask.render_template('edit_category.html', edit_id=id, category_data=category_data, category_types=category_types)
 
 @app.route('/set_category', methods=['POST'])
 def set_category():
@@ -194,7 +194,7 @@ def edit_person(id):
       'gender': person.gender,
       'dob': person.dob.strftime('%Y-%m-%d'),
   }
-  return flask.render_template('edit_person.html', contactTypes=contactType_select, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, sir_names=sir_names, person_data=person_data)
+  return flask.render_template('edit_person.html', edit_id=id, contactTypes=contactType_select, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, sir_names=sir_names, person_data=person_data)
 
 @app.route('/set_person', methods=['POST'])
 def set_person():
@@ -279,7 +279,7 @@ def edit_alias(id):
     sir_names, name_suffixes = people_utils.name_params()
     owner_select = session.query(Person).all()
 
-    return flask.render_template('edit_alias.html', alias_data=alias_data, suffixes=name_suffixes, sir_names=sir_names, owners=owner_select)
+    return flask.render_template('edit_alias.html', edit_id=id, alias_data=alias_data, suffixes=name_suffixes, sir_names=sir_names, owners=owner_select)
 
 @app.route('/set_alias', methods=['POST'])
 def set_alias():
@@ -352,7 +352,7 @@ def edit_address(id):
         'zip4': address.zip4,
         'owner': address.owner
     }
-    return flask.render_template('edit_address.html', address_data=address_data, addressTypes=addressType_select, owners=owner_select)
+    return flask.render_template('edit_address.html', edit_id=id, address_data=address_data, addressTypes=addressType_select, owners=owner_select)
 
 @app.route('/set_address', methods=['POST'])
 def set_address():
@@ -421,7 +421,7 @@ def edit_phone(id):
     stmt = select(Category).where(Category.type == "phoneType")
     phoneType_select = session.execute(stmt).scalars().all()
     owner_select = session.query(Person).all()
-    return flask.render_template('edit_phone.html', phone_data=phone_data, phoneTypes=phoneType_select, owners=owner_select)
+    return flask.render_template('edit_phone.html', edit_id=id, phone_data=phone_data, phoneTypes=phoneType_select, owners=owner_select)
 
 @app.route('/set_phone', methods=['POST'])
 def set_phone():
@@ -477,7 +477,7 @@ def edit_email(id):
     stmt = select(Category).where(Category.type == "emailType")
     emailType_select = session.execute(stmt).scalars().all()
     owner_select = session.query(Person).all()
-    return flask.render_template('edit_email.html', email_data=email_data, emailTypes=emailType_select, owners=owner_select)
+    return flask.render_template('edit_email.html', edit_id=id, email_data=email_data, emailTypes=emailType_select, owners=owner_select)
 
 @app.route('/set_email', methods=['POST'])
 def set_email():
@@ -529,7 +529,7 @@ def edit_api(id):
         'secret': api.secret,
         'description': api.description
     }
-    return flask.render_template('edit_api.html', api_data=api_data)
+    return flask.render_template('edit_api.html', edit_id=id, api_data=api_data)
 
 @app.route('/set_api', methods=['POST'])
 def set_api():
@@ -591,7 +591,7 @@ def edit_api_field(id):
     value_options = ValueOptions(session=session)
     options = value_options.get_value_options()
     owner_select = session.query(Api).all()
-    return flask.render_template('edit_api_field.html', api_field_data=api_field_data, value_options=options, owners=owner_select)
+    return flask.render_template('edit_api_field.html', edit_id=id, api_field_data=api_field_data, value_options=options, owners=owner_select)
 
 @app.route('/set_api_field', methods=['POST'])
 def set_api_field():
@@ -645,7 +645,7 @@ def call_apis():
   api_params = request_api.get_api_params()
   return flask.render_template('call_apis.html', api=api, person_name=person_name, api_params=api_params, api_data=None)
 
-@app.route('/call_api', methods=['POST'])
+@app.route('/call_api', methods=['GET', 'POST'])
 def call_api():
   people_utils = PeopleUtils(session=session)
   person = people_utils.get_person()
@@ -655,7 +655,10 @@ def call_api():
   request_api = RequestApi(session=session)
   api = request_api.get_api()
   api_params = request_api.get_api_params()
-  api_data = request_api.get_request()
+  api_data = None
+  if request.method == 'POST':
+    api_data = request_api.get_request()
+
   return flask.render_template('call_apis.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data)
 
 @app.route('/delete_item', methods=['POST'])
@@ -749,12 +752,17 @@ def set_state():
   if form_data is None:
     return redirect(url_for('index'))
 
+  path = form_data.get('path')
   state = session.get(State, 1)
   if state:
     state.person = form_data.get('person')
     state.api = form_data.get('api')
     session.commit()
-  return redirect(url_for('index'))
+
+  if 'edit_id' in request.form:
+    return redirect(url_for(path, id=form_data.get('edit_id')))
+  else:
+    return redirect(url_for(path))
 
 @app.context_processor
 def get_state_api():
@@ -779,6 +787,7 @@ def inject_site_settings():
   person = getPerson()
   api = getApi()
   return dict(
+    state_path = request.endpoint,
     selected_person = person,
     selected_api = api,
   )
@@ -807,7 +816,7 @@ def initialize_database(engine):
 if __name__ == '__main__':
   initialize_database(engine)
   webview.create_window('Missing Persons', app, min_size=(1180, 600), resizable=True, fullscreen=False, text_select=True)
-  webview.start(debug=False)
+  webview.start(debug=True)
 
 # python -m venv .venv
 # .\.venv\Scripts\Activate.ps1

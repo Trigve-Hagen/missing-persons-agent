@@ -38,6 +38,10 @@
         </div>
       </ul>
       <form class="d-flex" action="/set_state" method="POST" name="state" autocomplete="off">
+        <input type="hidden" class="form-control" name="path" value="{{ state_path }}" />
+        {% if edit_id %}
+          <input type="hidden" class="form-control" name="edit_id" value="{{ edit_id }}" />
+        {% endif %}
         <select  class="form-select mr-sm-2 mx-1" id="state-person" name="person" aria-label="Switch Person">
           <option value="0">Choose Person</option>
           {% if state_people %}

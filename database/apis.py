@@ -23,7 +23,7 @@ class ApiField(Base):
   __tablename__ = "api_fields"
 
   id = Column("id", Integer, primary_key=True)
-  field = Column(NullToEmptyString, unique=True, nullable=False)
+  field = Column(NullToEmptyString)
   value = Column(NullToEmptyString)
   description = Column(NullToEmptyString)
   owner = Column(Integer, ForeignKey("api.id"))
