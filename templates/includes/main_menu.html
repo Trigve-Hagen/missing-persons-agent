@@ -33,7 +33,15 @@
           <ul class="dropdown-menu" aria-labelledby="person-dropdown">
             <li><a class="dropdown-item" href="{{ url_for('api') }}">Api</a></li>
             <li><a class="dropdown-item" href="{{ url_for('api_field') }}">Api Field</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('call_apis') }}">Call APIs</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('data') }}">Data</a></li>
+          </ul>
+        </div>
+        <div class="dropdown">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'api' or request.endpoint == 'api_field' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Models
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="person-dropdown">
+            <li><a class="dropdown-item" href="{{ url_for('resources') }}">Resources</a></li>
           </ul>
         </div>
       </ul>

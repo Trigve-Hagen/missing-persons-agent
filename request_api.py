@@ -1,4 +1,6 @@
 import requests
+import json
+from jsonpath_ng import jsonpath, parse
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 from flask import flash
 from sqlalchemy import create_engine, inspect, exc, select, update
@@ -31,6 +33,14 @@ class RequestApi:
   def get_api_params(self):
     self.get_params()
     return self.params
+
+  def filter_data(self, data):
+    if self.state.root_node:
+      filter = '$.'+self.state.root_node
+      print(filter)
+      if parse(filter).find(data):
+        return parse(filter).find(data)[0].value
+    return data
 
   def get_request(self):
     self.get_params()

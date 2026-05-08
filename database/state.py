@@ -11,3 +11,5 @@ class State(Base):
   id = Column(Integer, primary_key=True, default=1)
   person = Column(Integer, default=0)
   api = Column(Integer, default=0)
+  root_node = Column(NullToEmptyString, default="")
+  display_type = Column(NullToEmptyString, default="")

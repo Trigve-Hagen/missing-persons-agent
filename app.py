@@ -37,7 +37,6 @@
 import flask
 import webview
 import requests
-import json
 import os
 import sys
 from config import Config
@@ -56,6 +55,7 @@ from database.apis import Api, ApiField
 from database.person import Person, Alias, Email, Phone, Address
 from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
+from resources import Resources
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -633,33 +633,48 @@ def view_person():
   person, aliases, addresses, emails, phones = people_utils.get_all_person()
   return flask.render_template('view_person.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
 
-@app.route('/call_apis')
-def call_apis():
+@app.route('/data')
+def data():
   people_utils = PeopleUtils(session=session)
   person = people_utils.get_person()
   person_name = ""
   if person:
     person_name = people_utils.get_person_name(person)
+
   request_api = RequestApi(session=session)
   api = request_api.get_api()
   api_params = request_api.get_api_params()
-  return flask.render_template('call_apis.html', api=api, person_name=person_name, api_params=api_params, api_data=None)
+  api_data = request_api.get_request()
+  api_data = request_api.filter_data(api_data)
 
-@app.route('/call_api', methods=['GET', 'POST'])
-def call_api():
+  return flask.render_template('data.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=getRootNode(), display_type=getDisplayType())
+
+@app.route('/filter_data', methods=['POST'])
+def filter_data():
+  form_data = request.form
+  if form_data is None:
+    return redirect(url_for('data'))
+
+  state = session.get(State, 1)
+  if state:
+    state.root_node = form_data.get('root_node')
+    state.display_type = form_data.get('display_type')
+    session.commit()
+
   people_utils = PeopleUtils(session=session)
   person = people_utils.get_person()
+
   person_name = ""
   if person:
     person_name = people_utils.get_person_name(person)
+
   request_api = RequestApi(session=session)
   api = request_api.get_api()
   api_params = request_api.get_api_params()
-  api_data = None
-  if request.method == 'POST':
-    api_data = request_api.get_request()
+  api_data = request_api.get_request()
+  api_data = request_api.filter_data(api_data)
 
-  return flask.render_template('call_apis.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data)
+  return flask.render_template('data.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'))
 
 @app.route('/delete_item', methods=['POST'])
 def delete_item():
@@ -730,9 +745,34 @@ def delete_item():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for(table_type))
 
+@app.route('/resources')
+def resources():
+  app_resources = Resources(session=session)
+  resources = dict(
+    files_size = app_resources.files_size(),
+    initial_database = app_resources.initial_database(),
+    eav_database = app_resources.eav_database(),
+    vector_database = app_resources.vector_database(),
+    ollama_models = app_resources.ollama_models(),
+  )
+
+  return flask.render_template('resources.html', resources=resources)
+
 engine = create_engine(f"sqlite:///{DATABASE}", echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
+
+def getRootNode():
+  state = session.get(State, 1)
+  current_value = state.root_node
+  default_value = ""
+  return current_value or default_value
+
+def getDisplayType():
+  state = session.get(State, 1)
+  current_value = state.display_type
+  default_value = "json"
+  return current_value or default_value
 
 def getPerson():
   state = session.get(State, 1)
@@ -816,7 +856,7 @@ def initialize_database(engine):
 if __name__ == '__main__':
   initialize_database(engine)
   webview.create_window('Missing Persons', app, min_size=(1180, 600), resizable=True, fullscreen=False, text_select=True)
-  webview.start(debug=False)
+  webview.start(debug=True)
 
 # python -m venv .venv
 # .\.venv\Scripts\Activate.ps1
