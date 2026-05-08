@@ -27,11 +27,26 @@
   <div class="col-md-12">
     <form class="row g-4" action="/set_api" method="POST" name="api" autocomplete="off">
       <input type="hidden" class="form-control" id="api-id" name="id" value="{{ api_data.id }}" />
-      <div class="col-md-4">
+      <div class="col-md-6">
         <label for="api-name" class="form-label">Name</label>
         <input type="text" class="form-control" id="api-name" name="name" value="{{ api_data.name }}" required>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-6">
+        <label for="api-type" class="form-label">Type</label>
+        <select class="form-select" id="api-type" name="type" required>
+          {% if api_data.type == 'api' %}
+            <option value="api" selected>API</option>
+          {% else %}
+            <option value="api">API</option>
+          {% endif %}
+          {% if api_data.type == 'rss' %}
+            <option value="rss" selected>RSS</option>
+          {% else %}
+            <option value="rss">RSS</option>
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-md-12">
         <label for="api-url" class="form-label">URL</label>
         <input type="text" class="form-control" id="api-url" name="url" value="{{ api_data.url }}" required>
       </div>

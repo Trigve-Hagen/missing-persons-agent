@@ -7,13 +7,15 @@ class Api(Base):
 
   id = Column("id", Integer, primary_key=True)
   name = Column(NullToEmptyString)
+  type = Column(NullToEmptyString)
   url = Column(NullToEmptyString)
   key = Column(NullToEmptyString)
   secret = Column(NullToEmptyString)
   description = Column(NullToEmptyString)
 
-  def __init__(self, name, url, key, secret, description):
+  def __init__(self, name, type, url, key, secret, description):
     self.name = name
+    self.type = type
     self.url = url
     self.key = key
     self.secret = secret

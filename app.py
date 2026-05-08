@@ -524,6 +524,7 @@ def edit_api(id):
     api_data = {
         'id': api.id,
         'name': api.name,
+        'type': api.type,
         'url': api.url,
         'key': api.key,
         'secret': api.secret,
@@ -539,6 +540,7 @@ def set_api():
     if api:
       uporadd = "updated"
       api.name=form_data.get('name')
+      api.type=form_data.get('type')
       api.url=form_data.get('url')
       api.key=form_data.get('key')
       api.secret=form_data.get('secret')
@@ -547,6 +549,7 @@ def set_api():
       uporadd = "added"
       api = Api(
         name=form_data.get('name'),
+        type=form_data.get('type'),
         url=form_data.get('url'),
         key=form_data.get('key'),
         secret=form_data.get('secret'),
@@ -609,7 +612,7 @@ def set_api_field():
       uporadd = "added"
       api_field = ApiField(
         field=form_data.get('field'),
-        value=value_options.get_options_value(form_data.get('value')),
+        value=form_data.get('value'),
         description=form_data.get('description'),
         owner=form_data.get('owner'),
       )

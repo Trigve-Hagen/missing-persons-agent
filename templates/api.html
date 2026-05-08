@@ -27,6 +27,7 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Name</th>
+          <th scope="col">Type</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
@@ -35,6 +36,7 @@
           <tr>
               <td scope="row">{{ api.id }}</td>
               <td>{{ api.name }}</td>
+              <td>{{ api.type }}</td>
               <td><a class="btn btn-secondary" href="{{ url_for('edit_api', id=api.id) }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="api" data-bs-item-id="{{ api.id }}" data-bs-item="{{ api.name }}">Delete</a></td>
           </tr>
         {% endfor %}
@@ -50,11 +52,18 @@
   <div class="col-md-12">
     <form class="row g-4" action="/set_api" method="POST" name="api" autocomplete="off">
       <input type="hidden" class="form-control" id="api-id" name="id" />
-      <div class="col-md-4">
+      <div class="col-md-6">
         <label for="api-name" class="form-label">Name</label>
         <input type="text" class="form-control" id="api-name" name="name" required>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-6">
+        <label for="api-type" class="form-label">Type</label>
+        <select class="form-select" id="api-type" name="type" required>
+          <option value="api">API</option>
+          <option value="rss">RSS</option>
+        </select>
+      </div>
+      <div class="col-md-12">
         <label for="api-url" class="form-label">URL</label>
         <input type="text" class="form-control" id="api-url" name="url" required>
       </div>

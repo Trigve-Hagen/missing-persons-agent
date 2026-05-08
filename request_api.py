@@ -1,5 +1,7 @@
 import requests
 import json
+import feedparser
+import urllib.parse
 from jsonpath_ng import jsonpath, parse
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 from flask import flash
@@ -51,8 +53,9 @@ class RequestApi:
       # 2. Raise an exception for 4xx or 5xx status codes
       response.raise_for_status()
 
-      # 3. Process the response if no exception was raised
-      data = response.json()
+      if self.api.type == 'api':
+        # 3. Process the response if no exception was raised
+        data = response.json()
 
     except HTTPError as http_err:
         flash(f"HTTP error occurred: {http_err}", "danger")
@@ -70,5 +73,12 @@ class RequestApi:
         flash(f"An unexpected non-requests error occurred: {e}", "danger")
         return "Exception. Request failed. Please check that you are using correct api and field values."
     else:
+        if self.api.type == 'rss':
+          # Parse the content with feedparser
+          data = feedparser.parse(response.content)
+          if data.bozo:
+            flash(f"Warning: Non-well-formed feed: {data.bozo_exception}", "warning")
+            # return "Warning. Non-well-formed feed. Please check that you are using correct api and field values."
+
         flash("Success! Data retrieved.", "success")
         return data

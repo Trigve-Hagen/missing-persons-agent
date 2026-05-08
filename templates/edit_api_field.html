@@ -33,12 +33,7 @@
       </div>
       <div class="col-md-6">
         <label for="api-field-value" class="form-label">Value</label>
-        <select class="form-select" id="api-field-value" name="value" required>
-          <option value="">Choose...</option>
-          {% for key, value in value_options.items() %}
-            <option value="{{ key }}">{{ value }}</option>
-          {% endfor %}
-        </select>
+        <input type="text" class="form-control" id="api-field-value" name="value" value="{{ api_field_data.value }}" required>
       </div>
       <div class="col-md-12">
         <label for="api-field-description" class="form-label">Description</label>
