@@ -37,10 +37,9 @@ class RequestApi:
   def filter_data(self, data):
     if self.state.root_node:
       filter = '$.'+self.state.root_node
-      print(filter)
       if parse(filter).find(data):
-        return parse(filter).find(data)[0].value
-    return data
+        return parse(filter).find(data)[0].value, True
+    return data, False
 
   def get_request(self):
     self.get_params()

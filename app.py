@@ -645,9 +645,9 @@ def data():
   api = request_api.get_api()
   api_params = request_api.get_api_params()
   api_data = request_api.get_request()
-  api_data = request_api.filter_data(api_data)
+  api_data, ifParsed = request_api.filter_data(api_data)
 
-  return flask.render_template('data.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=getRootNode(), display_type=getDisplayType())
+  return flask.render_template('data.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=getRootNode(), display_type=getDisplayType(), if_parsed=ifParsed)
 
 @app.route('/filter_data', methods=['POST'])
 def filter_data():
@@ -657,8 +657,8 @@ def filter_data():
 
   state = session.get(State, 1)
   if state:
-    state.root_node = form_data.get('root_node')
     state.display_type = form_data.get('display_type')
+    state.root_node = form_data.get('root_node')
     session.commit()
 
   people_utils = PeopleUtils(session=session)
@@ -672,9 +672,9 @@ def filter_data():
   api = request_api.get_api()
   api_params = request_api.get_api_params()
   api_data = request_api.get_request()
-  api_data = request_api.filter_data(api_data)
+  api_data, ifParsed = request_api.filter_data(api_data)
 
-  return flask.render_template('data.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'))
+  return flask.render_template('data.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'), if_parsed=ifParsed)
 
 @app.route('/delete_item', methods=['POST'])
 def delete_item():
