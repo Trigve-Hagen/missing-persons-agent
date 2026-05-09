@@ -117,8 +117,9 @@ def edit_model(id):
   ]
   model_data = {
       'id': model.id,
-      'type': model.type,
       'name': model.name,
+      'model': model.model,
+      'type': model.type,
       'system': model.system
   }
   return flask.render_template('edit_model.html', edit_id=id, model_data=model_data, model_types=model_types)
@@ -126,23 +127,31 @@ def edit_model(id):
 @app.route('/set_model', methods=['POST'])
 def set_model():
   form_data = request.form
+  ollama_model = form_data.get('model')
+  manager = OllamaManager()
+  if not manager.is_model_downloaded(ollama_model):
+    manager.download_model(ollama_model)
+
   try:
     model = session.execute(select(Model).filter_by(id = form_data.get('id'))).scalar_one_or_none()
     if model:
       uporadd = "updated"
-      model.type=form_data.get('type')
       model.name=form_data.get('name')
+      model.model=ollama_model
+      model.type=form_data.get('type')
       model.system=form_data.get('system')
     else:
       uporadd = "added"
       model = Model(
-        type=form_data.get('type'),
         name=form_data.get('name'),
+        model=ollama_model,
+        type=form_data.get('type'),
         system=form_data.get('system')
       )
     session.merge(model)
     session.commit()
-    flash("Model "+uporadd+" successfully!", "success")
+
+    flash(f"Model {uporadd} successfully!", "success")
     return redirect(url_for('model'))
   except IntegrityError as e:
     session.rollback()
@@ -156,25 +165,25 @@ def set_model():
 
 @app.route('/model_params')
 def model_params():
-    all_model_params = session.query(ModelParams).all()
-    owner_select = session.query(Model).all()
-    return flask.render_template('model_params.html', model_paramss=all_model_params, owners=owner_select)
+  all_model_params = session.query(ModelParams).all()
+  owner_select = session.query(Model).all()
+  return flask.render_template('model_params.html', model_params=all_model_params, owners=owner_select)
 
 @app.route('/edit/model_params/<int:id>', methods=['GET', 'POST'])
 def edit_model_params(id):
-    model_params = session.get(ModelParams, id)
-    if not model_params:
-      return redirect(url_for('model_params'))
+  model_params = session.get(ModelParams, id)
+  if not model_params:
+    return redirect(url_for('model_params'))
 
-    model_params_data = {
-        'id': model_params.id,
-        'name': model_params.name,
-        'value': model_params.value,
-        'owner': model_params.owner
-    }
+  model_params_data = {
+    'id': model_params.id,
+    'name': model_params.name,
+    'value': model_params.value,
+    'owner': model_params.owner
+  }
 
-    owner_select = session.query(Model).all()
-    return flask.render_template('edit_model_params.html', edit_id=id, model_params_data=model_params_data, owners=owner_select)
+  owner_select = session.query(Model).all()
+  return flask.render_template('edit_model_params.html', edit_id=id, model_params=model_params_data, owners=owner_select)
 
 @app.route('/set_model_params', methods=['POST'])
 def set_model_params():
@@ -183,19 +192,19 @@ def set_model_params():
     model_params = session.execute(select(ModelParams).filter_by(id = form_data.get('id'))).scalar_one_or_none()
     if model_params:
       uporadd = "updated"
-      model_params.field=form_data.get('field')
+      model_params.name=form_data.get('name')
       model_params.value=form_data.get('value')
       model_params.owner=form_data.get('owner')
     else:
       uporadd = "added"
       model_params = ModelParams(
-        field=form_data.get('field'),
+        name=form_data.get('name'),
         value=form_data.get('value'),
         owner=form_data.get('owner'),
       )
     session.merge(model_params)
     session.commit()
-    flash("Api Field "+uporadd+" successfully!", "success")
+    flash(f"Model Parameters {uporadd} successfully!", "success")
     return redirect(url_for('model_params'))
   except IntegrityError as e:
     session.rollback()
@@ -256,7 +265,7 @@ def set_category():
       )
     session.merge(catagory)
     session.commit()
-    flash("Category "+uporadd+" successfully!", "success")
+    flash(f"Category {uporadd} successfully!", "success")
     return redirect(url_for('category'))
   except IntegrityError as e:
     session.rollback()
@@ -351,7 +360,7 @@ def set_person():
 
     session.merge(user)
     session.commit()
-    flash("Person "+uporadd+" successfully!", "success")
+    flash(f"Person {uporadd} successfully!", "success")
     return redirect(url_for('person'))
   except IntegrityError as e:
     session.rollback()
@@ -420,7 +429,7 @@ def set_alias():
       )
     session.merge(alias)
     session.commit()
-    flash("Alias "+uporadd+" successfully!", "success")
+    flash(f"Alias {uporadd} successfully!", "success")
     return redirect(url_for('alias'))
   except IntegrityError as e:
     session.rollback()
@@ -499,7 +508,7 @@ def set_address():
       )
     session.merge(address)
     session.commit()
-    flash("Address "+uporadd+" successfully!", "success")
+    flash(f"Address {uporadd} successfully!", "success")
     return redirect(url_for('address'))
   except IntegrityError as e:
     session.rollback()
@@ -556,7 +565,7 @@ def set_phone():
       )
     session.merge(phone)
     session.commit()
-    flash("Phone "+uporadd+" successfully!", "success")
+    flash(f"Phone {uporadd} successfully!", "success")
     return redirect(url_for('phone'))
   except IntegrityError as e:
     session.rollback()
@@ -612,7 +621,7 @@ def set_email():
       )
     session.merge(email)
     session.commit()
-    flash("Email "+uporadd+" successfully!", "success")
+    flash(f"Email {uporadd} successfully!", "success")
     return redirect(url_for('email'))
   except IntegrityError as e:
     session.rollback()
@@ -671,7 +680,7 @@ def set_api():
       )
     session.merge(api)
     session.commit()
-    flash("Api "+uporadd+" successfully!", "success")
+    flash(f"Api {uporadd} successfully!", "success")
     return redirect(url_for('api'))
   except IntegrityError as e:
     session.rollback()
@@ -731,7 +740,7 @@ def set_api_field():
       )
     session.merge(api_field)
     session.commit()
-    flash("Api Field "+uporadd+" successfully!", "success")
+    flash(f"Api Field {uporadd} successfully!", "success")
     return redirect(url_for('api_field'))
   except IntegrityError as e:
     session.rollback()
@@ -797,7 +806,7 @@ def delete_item():
   form_data = request.form
   id = form_data.get('id')
   table_type = form_data.get('type')
-  models = {'person': Person, 'alias': Alias, 'address': Address, 'email': Email, 'phone': Phone, 'category': Category, 'api': Api, 'api_field': ApiField}
+  models = {'person': Person, 'alias': Alias, 'address': Address, 'email': Email, 'phone': Phone, 'category': Category, 'api': Api, 'api_field': ApiField, 'model': Model, 'model_params': ModelParams}
   model = models.get(table_type)
 
   # Specific check for Category child records
@@ -844,6 +853,13 @@ def delete_item():
     if api_field_count > 0:
       flash(f"Cannot delete: {table_type} has {api_field_count} associated api fields. Delete them first.", "danger")
       return redirect(url_for('api'))
+
+  # Specific check for Model child records
+  model_params_count = session.query(ModelParams).filter_by(owner=id).count()
+  if table_type == 'model':
+    if model_params_count > 0:
+      flash(f"Cannot delete: {table_type} has {model_params_count} associated api fields. Delete them first.", "danger")
+      return redirect(url_for('model'))
 
   try:
     item = session.get(model, id)

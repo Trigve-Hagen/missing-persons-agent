@@ -20,11 +20,29 @@ class OllamaManager:
 
     return models
 
+  def is_model_downloaded(self, name):
+    # checks if the model is downloaded already.
+    local_models = ollama.list()
+    for model in local_models['models']:
+      if model['model'] == name:
+        return True
+    return False
+
   def download_model(self, model_name: str):
-    """Downloads/Pulls an Ollama model."""
-    print(f"Downloading {model_name}...")
-    self.client.pull(model_name)
-    print(f"Model {model_name} downloaded successfully.")
+    # Downloads/Pulls an Ollama model.
+    try:
+      ollama.pull(model_name)
+      flash(f"Model {model_name} downloaded successfully.", "success")
+      return True
+    except ollama.ResponseError as e:
+      if "404" in str(e):
+        flash(f"Model '{model_name}' does not exist on ollama.com.", "danger")
+      else:
+        flash(f"An error occurred: {e}", "danger")
+      return False
+    except Exception as e:
+      flash(f"Error fetching models: {e}", "danger")
+      return False
 
   def create_model(self, name, config):
     print(f"Creating model: {name}...")

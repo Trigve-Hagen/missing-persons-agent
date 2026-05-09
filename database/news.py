@@ -11,8 +11,7 @@ class News(Base):
   news = Column(NullToEmptyString)
   owner = Column(Integer, ForeignKey("people.id"))
 
-  def __init__(self, id, station, news, owner):
-    self.eid = id
+  def __init__(self, station, news, owner):
     self.station = station
     self.news = news
     self.owner = owner

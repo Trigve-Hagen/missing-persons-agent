@@ -29,14 +29,21 @@
       <div class="col-md-12">
         <form class="row g-4" action="/set_model" method="POST" name="model" autocomplete="off">
           <input type="hidden" class="form-control" id="model-id" name="id" value="{{ model_data.id }}" />
-          <div class="col-md-12">
+          <div class="col-md-6">
             <label for="model-name" class="form-label">Name</label>
             <input type="text" class="form-control" id="model-name" name="name" value="{{ model_data.name }}" required>
           </div>
           <div class="col-md-6">
+            <label for="model-model" class="form-label">Model</label>
+            <input type="text" class="form-control" id="model-model" name="model" value="{{ model_data.model }}" required>
+          </div>
+          <div class="col-md-6">
+            <label for="model-system" class="form-label">System</label>
+            <textarea class="form-control" id="model-system" name="system" rows="3">{{ model_data.system }}</textarea>
+          </div>
+          <div class="col-md-6">
             <label for="model-type" class="form-label">Type</label>
             <select class="form-select" id="model-type" name="type" required>
-              <option value="">Choose...</option>
               {% for value, label in model_types %}
                 {% if model_data.type == value %}
                   <option value="{{ value }}" selected>{{ label }}</option>

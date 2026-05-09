@@ -8,8 +8,7 @@ class Url(Base):
   name = Column(NullToEmptyString)
   url = Column(NullToEmptyString)
 
-  def __init__(self, id, name, url):
-    self.id = id
+  def __init__(self, name, url):
     self.name = name
     self.url = url
 
@@ -19,8 +18,7 @@ class Question(Base):
   id = Column("id", Integer, primary_key=True)
   question = Column(NullToEmptyString)
 
-  def __init__(self, id, question):
-    self.id = id
+  def __init__(self, question):
     self.question = question
 
 class Event(Base):
@@ -31,8 +29,7 @@ class Event(Base):
   description = Column(NullToEmptyString)
   owner = Column(Integer, ForeignKey("people.id"))
 
-  def __init__(self, id, eventType, description, owner):
-    self.id = id
+  def __init__(self, ieventType, description, owner):
     self.eventType = eventType
     self.description = description
     self.owner = owner

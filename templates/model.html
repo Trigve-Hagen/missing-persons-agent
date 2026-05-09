@@ -55,16 +55,20 @@
       <div class="col-md-6">
         <label for="model-name" class="form-label">Name</label>
         <input type="text" class="form-control" id="model-name" name="name" required>
-        <div class="form-text" id="model-name-text">When you click save a model of the type you selected will be downloaded and installed onto this computer if it does not already exist.</div>
+        <div class="form-text" id="model-name-text">This is the name of the model instance. You can use the same model and train multiple instances.</div>
       </div>
       <div class="col-md-6">
-        <label for="model-syatem" class="form-label">System</label>
-        <textarea class="form-control" id="model-syatem" name="syatem" rows="3"></textarea>
+        <label for="model-model" class="form-label">Model</label>
+        <input type="text" class="form-control" id="model-model" name="model" required>
+        <div class="form-text" id="model-model-text">This is the name of the model from <a href="https://ollama.com/library" target="_blank">Ollama</a> Example: <a href="https://ollama.com/library/llama2" target="_blank">llama2</a>. You would add the name of the model in this field. It this eample the name is 'llama2'. When you click save a copy of this model will be downloaded and installed onto this computer if it does not already exist. You can see the list of downloaded models on <a href="{{ url_for('resources') }}">Resources</a></div>
+      </div>
+      <div class="col-md-6">
+        <label for="model-system" class="form-label">System</label>
+        <textarea class="form-control" id="model-system" name="system" rows="3"></textarea>
       </div>
       <div class="col-md-6">
         <label for="model-type" class="form-label">Type</label>
         <select class="form-select" id="model-type" name="type" required>
-          <option value="">Choose...</option>
           {% for value, label in model_types %}
             <option value="{{ value }}">{{ label }}</option>
           {% endfor %}
