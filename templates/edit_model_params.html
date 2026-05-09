@@ -1,0 +1,60 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Edit Model Instance Parameters{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Edit Model Instance Parameters</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-12">
+    <a href="{{ url_for('model_params') }}" class="btn btn-primary mb-3">back</a>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_model_params" method="POST" name="model_params" autocomplete="off">
+      <input type="hidden" class="form-control" id="model-params-id" name="id" value="{{ model_params.id }}" />
+      <div class="col-md-6">
+        <label for="model-params-name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="model-params-name" name="name" value="{{ model_params.name }}" required>
+      </div>
+      <div class="col-md-6">
+        <label for="model-params-value" class="form-label">Value</label>
+        <input type="text" class="form-control" id="model-params-value" name="value" value="{{ model_params.value }}" required>
+      </div>
+      <div class="col-md-4">
+        <label for="model-params-owner" class="form-label">Model</label>
+        <select class="form-select" id="model-params-owner" name="owner" required>
+          <option value="">Choose...</option>
+          {% for model in owners %}
+            {% if model_params.owner == model.id %}
+              <option value="{{ model.id }}" selected>{{ model.name }}</option>
+            {% else %}
+              <option value="{{ model.id }}">{{ model.name }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}

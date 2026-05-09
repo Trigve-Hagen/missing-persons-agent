@@ -1,0 +1,82 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Ollama Models{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Ollama Model Instances</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-3">
+    {% include 'includes/sidebar_menu.html' %}
+  </div>
+  <div class="col-md-9">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Type</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for model in models %}
+          <tr>
+              <td scope="row">{{ model.id }}</td>
+              <td>{{ model.name }}</td>
+              <td>{{ model.type }}</td>
+              <td><a class="btn btn-secondary" href="{{ url_for('edit_model', id=model.id) }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="model" data-bs-item-id="{{ model.id }}" data-bs-item="{{ model.name }}">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr>
+<h3 class="my-4">Add Model</h3>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_model" method="POST" name="model" autocomplete="off">
+      <input type="hidden" class="form-control" id="model-id" name="id" />
+      <div class="col-md-6">
+        <label for="model-name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="model-name" name="name" required>
+        <div class="form-text" id="model-name-text">When you click save a model of the type you selected will be downloaded and installed onto this computer if it does not already exist.</div>
+      </div>
+      <div class="col-md-6">
+        <label for="model-syatem" class="form-label">System</label>
+        <textarea class="form-control" id="model-syatem" name="syatem" rows="3"></textarea>
+      </div>
+      <div class="col-md-6">
+        <label for="model-type" class="form-label">Type</label>
+        <select class="form-select" id="model-type" name="type" required>
+          <option value="">Choose...</option>
+          {% for value, label in model_types %}
+            <option value="{{ value }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}

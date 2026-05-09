@@ -1,4 +1,3 @@
-# schema - event - eventId, personId, date, time, description
 from sqlalchemy import create_engine, ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func
 from database.base import Base, NullToEmptyString # Import shared base
 

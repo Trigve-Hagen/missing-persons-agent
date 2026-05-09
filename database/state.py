@@ -1,4 +1,3 @@
-# schema - apis - id, name, url, key, secret
 from sqlalchemy import create_engine, ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func, CheckConstraint
 from database.base import Base, NullToEmptyString # Import shared base
 

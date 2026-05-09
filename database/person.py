@@ -1,6 +1,3 @@
-# https://www.youtube.com/watch?v=AKQ3XEDI9Mw
-# schema - person - person of interest - id, iid - missing or POI, ssn, gender, dob
-
 from sqlalchemy import ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func
 from database.base import Base, NullToEmptyString
 

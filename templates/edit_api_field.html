@@ -44,7 +44,11 @@
         <select class="form-select" id="api-field-owner" name="owner" required>
           <option value="">Choose...</option>
           {% for api in owners %}
-            <option value="{{ api.id }}">{{ api.name }}</option>
+            {% if api_field_data.owner == api.id %}
+              <option value="{{ api.id }}" selected>{{ api.name }}</option>
+            {% else %}
+              <option value="{{ api.id }}">{{ api.name }}</option>
+            {% endif %}
           {% endfor %}
         </select>
       </div>

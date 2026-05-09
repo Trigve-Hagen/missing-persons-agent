@@ -1,6 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import types
-Base = declarative_base() # This instance is shared
+Base = declarative_base()
 
 class NullToEmptyString(types.TypeDecorator):
     impl = types.String

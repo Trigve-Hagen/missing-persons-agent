@@ -1,0 +1,79 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Model Instance Parameters{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Model Instance Parameters</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-3">
+    {% include 'includes/sidebar_menu.html' %}
+  </div>
+  <div class="col-md-9">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for param in params %}
+          <tr>
+              <td scope="row">{{ param.id }}</td>
+              <td>{{ param.name }}</td>
+              <td><a class="btn btn-secondary" href="{{ url_for('model_params', id=param.id) }}">Edit</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="model_params" data-bs-item-id="{{ param.id }}" data-bs-item="{{ param.name }}">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr>
+<h3 class="my-4">Add Model Parameter</h3>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_model_params" method="POST" name="model_params" autocomplete="off">
+      <input type="hidden" class="form-control" id="model_params-id" name="id" />
+      <div class="col-md-6">
+        <label for="model-params-name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="model-params-name" name="name" required>
+      </div>
+      <div class="col-md-6">
+        <label for="model-params-value" class="form-label">Value</label>
+        <input type="text" class="form-control" id="model-params-value" name="value" required>
+      </div>
+      <div class="col-md-4">
+        <label for="model-params-owner" class="form-label">Model</label>
+        <select class="form-select" id="model-params-owner" name="owner" required>
+          <option value="">Choose...</option>
+          {% for model in owners %}
+            <option value="{{ model.id }}">{{ model.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}

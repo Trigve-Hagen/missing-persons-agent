@@ -39,6 +39,8 @@ import webview
 import requests
 import os
 import sys
+import math
+from ollama_manager import OllamaManager
 from config import Config
 from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for, jsonify
 from sqlalchemy.exc import IntegrityError
@@ -48,6 +50,7 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from database.base import Base
 from database.state import State
+from database.model import Model, ModelParams
 from database.category import Category
 from database.event import Event, Url, Question
 from database.news import News
@@ -92,6 +95,117 @@ def add_nosniff_header_to_static(response):
 @app.route('/index')
 def index():
   return flask.render_template('index.html')
+
+@app.route('/model')
+def model():
+  all_models = session.query(Model).all()
+
+  model_types = [
+    ('ollama', 'Ollama'),
+  ]
+  return flask.render_template('model.html', models=all_models, model_types=model_types)
+
+@app.route('/edit/model/<int:id>', methods=['GET', 'POST'])
+def edit_model(id):
+  # Retrieve model or return 404
+  model = session.get(Model, id)
+  if not model:
+    return redirect(url_for('model'))
+
+  model_types = [
+    ('ollama', 'Ollama'),
+  ]
+  model_data = {
+      'id': model.id,
+      'type': model.type,
+      'name': model.name,
+      'system': model.system
+  }
+  return flask.render_template('edit_model.html', edit_id=id, model_data=model_data, model_types=model_types)
+
+@app.route('/set_model', methods=['POST'])
+def set_model():
+  form_data = request.form
+  try:
+    model = session.execute(select(Model).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if model:
+      uporadd = "updated"
+      model.type=form_data.get('type')
+      model.name=form_data.get('name')
+      model.system=form_data.get('system')
+    else:
+      uporadd = "added"
+      model = Model(
+        type=form_data.get('type'),
+        name=form_data.get('name'),
+        system=form_data.get('system')
+      )
+    session.merge(model)
+    session.commit()
+    flash("Model "+uporadd+" successfully!", "success")
+    return redirect(url_for('model'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('model'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('model'))
+
+@app.route('/model_params')
+def model_params():
+    all_model_params = session.query(ModelParams).all()
+    owner_select = session.query(Model).all()
+    return flask.render_template('model_params.html', model_paramss=all_model_params, owners=owner_select)
+
+@app.route('/edit/model_params/<int:id>', methods=['GET', 'POST'])
+def edit_model_params(id):
+    model_params = session.get(ModelParams, id)
+    if not model_params:
+      return redirect(url_for('model_params'))
+
+    model_params_data = {
+        'id': model_params.id,
+        'name': model_params.name,
+        'value': model_params.value,
+        'owner': model_params.owner
+    }
+
+    owner_select = session.query(Model).all()
+    return flask.render_template('edit_model_params.html', edit_id=id, model_params_data=model_params_data, owners=owner_select)
+
+@app.route('/set_model_params', methods=['POST'])
+def set_model_params():
+  form_data = request.form
+  try:
+    model_params = session.execute(select(ModelParams).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if model_params:
+      uporadd = "updated"
+      model_params.field=form_data.get('field')
+      model_params.value=form_data.get('value')
+      model_params.owner=form_data.get('owner')
+    else:
+      uporadd = "added"
+      model_params = ModelParams(
+        field=form_data.get('field'),
+        value=form_data.get('value'),
+        owner=form_data.get('owner'),
+      )
+    session.merge(model_params)
+    session.commit()
+    flash("Api Field "+uporadd+" successfully!", "success")
+    return redirect(url_for('model_params'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('model_params'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('model_params'))
 
 @app.route('/category')
 def category():
@@ -601,11 +715,10 @@ def set_api_field():
   form_data = request.form
   try:
     api_field = session.execute(select(ApiField).filter_by(id = form_data.get('id'))).scalar_one_or_none()
-    value_options = ValueOptions(session=session)
     if api_field:
       uporadd = "updated"
       api_field.field=form_data.get('field')
-      api_field.value=value_options.get_options_value(form_data.get('value'))
+      api_field.value=form_data.get('value')
       api_field.description=form_data.get('description')
       api_field.owner=form_data.get('owner')
     else:
@@ -751,15 +864,42 @@ def delete_item():
 @app.route('/resources')
 def resources():
   app_resources = Resources(session=session)
+  models, models_size = app_resources.ollama_models()
   resources = dict(
     files_size = app_resources.files_size(),
     initial_database = app_resources.initial_database(),
     eav_database = app_resources.eav_database(),
     vector_database = app_resources.vector_database(),
-    ollama_models = app_resources.ollama_models(),
+    ollama_models = models_size,
   )
 
-  return flask.render_template('resources.html', resources=resources)
+  return flask.render_template('resources.html', resources=resources, models=models['models'])
+
+@app.route('/delete_model', methods=['POST'])
+def delete_model():
+  form_data = request.form
+  item = form_data.get('item')
+
+  # Specific check for Api child records
+  model_count = session.query(Model).filter_by(type=item).count()
+  if model_count > 0:
+    flash(f"Cannot delete: {item} has {model_count} associated models. Delete them first.", "danger")
+    return redirect(url_for('resources'))
+
+  try:
+    manager = OllamaManager()
+    manager.remove_model(item)
+    flash(item + " deleted successfully!", "success")
+    return redirect(url_for('resources'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('resources'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('resources'))
 
 engine = create_engine(f"sqlite:///{DATABASE}", echo=True)
 Session = sessionmaker(bind=engine)
