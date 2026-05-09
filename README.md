@@ -16,6 +16,8 @@ I would think that using the RSS method described in the youtube video [Turn Fac
 
 Continue to collect and agregate the data daily to look for more clues.
 
+Was thinking this morning about having the program continue out wards in the tree from ground zero and automatically as it finds new aquaintences get an RSS feed for them and pulls in their data. So your computer would always be searching and indexing new people in hope of finding a connection. Could set parameters for levels out. Also was thinking about a fine tunner agent that gives suggestions for fine tuning the LLM.
+
 ### Donate
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=J8WY5PDLWGK6Y)
