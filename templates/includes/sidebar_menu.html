@@ -1,6 +1,6 @@
 <!-- templates/includes/sidebar_menu.html -->
 <nav class="nav flex-column">
-  <a class="nav-link{% if request.endpoint == 'resources' %} active{% endif %}" href="{{ url_for('resources') }}">Resouces</a>
-  <a class="nav-link{% if request.endpoint == 'data' %} active{% endif %}" href="{{ url_for('data') }}">Data</a>
+  <a class="nav-link{% if request.endpoint == 'resources' %} active{% endif %}" href="{{ url_for('resources') }}">Resources</a>
+  <a class="nav-link{% if request.endpoint == 'data_retrieval' %} active{% endif %}" href="{{ url_for('data_retrieval') }}">Data Retrieval</a>
   <!-- raw json, keys, table  -->
 </nav>

@@ -40,6 +40,8 @@ import requests
 import os
 import sys
 import math
+import time
+from werkzeug.utils import secure_filename
 from ollama_manager import OllamaManager
 from config import Config
 from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for, jsonify
@@ -55,10 +57,11 @@ from database.category import Category
 from database.event import Event, Url, Question
 from database.news import News
 from database.apis import Api, ApiField
-from database.person import Person, Alias, Email, Phone, Address
+from database.person import Person, Alias, Email, Phone, Address, File
 from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
 from resources import Resources
+from pdf_manager import PdfManager
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -73,7 +76,7 @@ def resource_path(relative_path):
       base_path = os.path.abspath(".")
 
   return os.path.join(base_path, relative_path)
-DATABASE = resource_path('database/db/database.db')
+DATABASE = resource_path('database/sql_alchemy/database.db')
 
 template_folder = resource_path('templates')
 static_folder = resource_path('assets')
@@ -96,12 +99,103 @@ def add_nosniff_header_to_static(response):
 def index():
   return flask.render_template('index.html')
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+
+@app.route('/file')
+def file():
+    all_files = session.query(File).all()
+    stmt = select(Category).where(Category.type == "fileType")
+    fileType_select = session.execute(stmt).scalars().all()
+    owner_select = session.query(Person).all()
+
+    return flask.render_template('file.html', files=all_files, fileTypes=fileType_select, owners=owner_select)
+
+@app.route('/edit/file/<int:id>', methods=['GET', 'POST'])
+def edit_file(id):
+    file = session.get(File, id)
+    if not file:
+      return redirect(url_for('file'))
+
+    file_data = {
+      'id': file.id,
+      'type': file.type,
+      'filename': file.filename,
+      'owner': file.owner
+    }
+
+    # get vectordb
+    pdf_manager = PdfManager(filename=file.filename)
+    pdf_manager.save()
+
+    stmt = select(Category).where(Category.type == "fileType")
+    fileType_select = session.execute(stmt).scalars().all()
+    owner_select = session.query(Person).all()
+    return flask.render_template('edit_file.html', edit_id=id, file_data=file_data, fileTypes=fileType_select, owners=owner_select)
+
+@app.route('/set_file', methods=['POST'])
+def set_file():
+  form_data = request.form
+
+  if 'file' not in request.files:
+    flash(f"No file part", "danger")
+    return redirect(url_for('file'))
+
+  file = request.files['file']
+
+  # 2. Check if user actually selected a file
+  if file.filename == '':
+    flash(f"No selected file", "danger")
+    return redirect(url_for('file'))
+
+  # 3. Secure and save the file
+  if file and allowed_file(file.filename):
+    sec_filename = secure_filename(file.filename)
+    filename, filename_ext = os.path.splitext(sec_filename)
+    safe_filename = f"{filename}_{time.time_ns()}{filename_ext}"
+    save_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
+    file.save(save_path)
+
+  pdf_manager = PdfManager(filename=safe_filename)
+  pdf_manager.save()
+
+  try:
+    file = session.execute(select(File).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if file:
+      uporadd = "updated"
+      file.type=form_data.get('type')
+      file.filename=safe_filename
+      file.owner=form_data.get('owner')
+    else:
+      uporadd = "added"
+      file = File(
+        type=form_data.get('type'),
+        filename=safe_filename,
+        owner=form_data.get('owner'),
+      )
+    session.merge(file)
+    session.commit()
+    flash(f"File {uporadd} successfully!", "success")
+    return redirect(url_for('file'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('file'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('file'))
+
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
   user_input = request.json.get('message')
   manager = OllamaManager(session=session)
-  response = manager.prompt(user_input)
-  return jsonify({'response': response['message']['content']})
+  qa_chain = manager.prompt()
+
+  # Run chain
+  response = qa_chain.invoke({"query": user_input})
+  return jsonify({'response': response['result']})
 
 @app.route('/chatbox')
 def chatbox():
@@ -772,8 +866,8 @@ def view_person():
   person, aliases, addresses, emails, phones = people_utils.get_all_person()
   return flask.render_template('view_person.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
 
-@app.route('/data')
-def data():
+@app.route('/data_retrieval')
+def data_retrieval():
   people_utils = PeopleUtils(session=session)
   person = people_utils.get_person()
   person_name = ""
@@ -786,13 +880,13 @@ def data():
   api_data = request_api.get_request()
   api_data, ifParsed = request_api.filter_data(api_data)
 
-  return flask.render_template('data.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=getRootNode(), display_type=getDisplayType(), if_parsed=ifParsed)
+  return flask.render_template('data_retrieval.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=getRootNode(), display_type=getDisplayType(), if_parsed=ifParsed)
 
 @app.route('/filter_data', methods=['POST'])
 def filter_data():
   form_data = request.form
   if form_data is None:
-    return redirect(url_for('data'))
+    return redirect(url_for('data_retrieval'))
 
   state = session.get(State, 1)
   if state:
@@ -813,7 +907,7 @@ def filter_data():
   api_data = request_api.get_request()
   api_data, ifParsed = request_api.filter_data(api_data)
 
-  return flask.render_template('data.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'), if_parsed=ifParsed)
+  return flask.render_template('data_retrieval.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'), if_parsed=ifParsed)
 
 @app.route('/create/instance/<int:id>', methods=['GET', 'POST'])
 def create_instance(id):
@@ -865,7 +959,7 @@ def delete_item():
   form_data = request.form
   id = form_data.get('id')
   table_type = form_data.get('type')
-  models = {'person': Person, 'alias': Alias, 'address': Address, 'email': Email, 'phone': Phone, 'category': Category, 'api': Api, 'api_field': ApiField, 'model': Model, 'model_params': ModelParams}
+  models = {'person': Person, 'alias': Alias, 'address': Address, 'email': Email, 'phone': Phone, 'file': File, 'category': Category, 'api': Api, 'api_field': ApiField, 'model': Model, 'model_params': ModelParams}
   model = models.get(table_type)
 
   # Specific check for Category child records
@@ -873,6 +967,7 @@ def delete_item():
   cat_address_count = session.query(Address).filter_by(type=id).count()
   cat_email_count = session.query(Email).filter_by(type=id).count()
   cat_phone_count = session.query(Phone).filter_by(type=id).count()
+  cat_file_count = session.query(File).filter_by(type=id).count()
   if table_type == 'category':
     if cat_person_count > 0:
       flash(f"Cannot delete: {table_type} has {cat_person_count} associated people. Delete them first.", "danger")
@@ -886,12 +981,16 @@ def delete_item():
     if cat_phone_count > 0:
       flash(f"Cannot delete: {table_type} has {cat_phone_count} associated phone numbers. Delete them first.", "danger")
       return redirect(url_for('category'))
+    if cat_file_count > 0:
+      flash(f"Cannot delete: {table_type} has {cat_file_count} associated files. Delete them first.", "danger")
+      return redirect(url_for('category'))
 
   # Specific check for Person child records
   alias_count = session.query(Alias).filter_by(owner=id).count()
   address_count = session.query(Address).filter_by(owner=id).count()
   email_count = session.query(Email).filter_by(owner=id).count()
   phone_count = session.query(Phone).filter_by(owner=id).count()
+  file_count = session.query(File).filter_by(type=id).count()
   if table_type == 'person':
     if alias_count > 0:
       flash(f"Cannot delete: {table_type} has {alias_count} associated aliases. Delete them first.", "danger")
@@ -904,6 +1003,9 @@ def delete_item():
       return redirect(url_for('person'))
     if phone_count > 0:
       flash(f"Cannot delete: {table_type} has {phone_count} associated phone numbers. Delete them first.", "danger")
+      return redirect(url_for('person'))
+    if file_count > 0:
+      flash(f"Cannot delete: {table_type} has {file_count} associated files. Delete them first.", "danger")
       return redirect(url_for('person'))
 
   # Specific check for Api child records
@@ -1075,10 +1177,22 @@ def initialize_database(engine):
     c2 = Category("addressType", "Home")
     c3 = Category("emailType", "Personal")
     c4 = Category("phoneType", "Home")
+    c5 = Category("fileType", "Image")
+    c6 = Category("fileType", "Csv")
+    c7 = Category("fileType", "Pdf")
+    c8 = Category("fileType", "Word")
+    c9 = Category("apiType", "Data API")
+    c10 = Category("apiType", "Model API")
     session.add(c1)
     session.add(c2)
     session.add(c3)
     session.add(c4)
+    session.add(c5)
+    session.add(c6)
+    session.add(c7)
+    session.add(c8)
+    session.add(c9)
+    session.add(c10)
     session.commit()
 
   settings = session.get(State, 1)
@@ -1086,6 +1200,15 @@ def initialize_database(engine):
     initial_settings = State(id=1)
     session.add(initial_settings)
     session.commit()
+
+  if session.query(Model).first() is None:
+    app_resources = Resources(session=session)
+    models, models_size = app_resources.ollama_models()
+    for model in models['models']:
+      m1 = Model(name=model.model, model=model.model, type="ollama", system="")
+      session.add(m1)
+      session.commit()
+
 
 if __name__ == '__main__':
   initialize_database(engine)

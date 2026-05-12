@@ -6,31 +6,71 @@ from flask import flash
 from sqlalchemy import create_engine, inspect, exc, select, update
 from database.state import State
 from database.model import Model
+from langchain_chroma import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_ollama import ChatOllama
+from langchain_classic.chains.retrieval_qa.base import RetrievalQA
 
 class OllamaManager:
   def __init__(self, session):
     self.session = session
     self.client = ollama.Client()
+    self.base_path = os.path.abspath(".")
+    self.persistent_directory = os.path.join(self.base_path, "database/chroma_db")
+    self.collection_name = "missing_persons"
+    self.model_name = "phi3:mini"
 
   def initialize():
     pass
 
-  def prompt(self, user_input):
+  def prompt(self):
     state = self.session.execute(select(State).filter_by(id = 1)).scalar_one_or_none()
     model = self.session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
 
     if model:
       try:
-        response = ollama.chat(model=model.model, messages=[
-          {'role': 'user', 'content': user_input},
-        ])
-        return response
+        # --- Initialize LangChain Components ---
+        # Load HuggingFace Embeddings
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+        # Load existing Chroma collection
+        if os.path.exists(self.persistent_directory):
+            vectorstore = Chroma(
+                persist_directory=self.persistent_directory,
+                embedding_function=embeddings,
+                collection_name=self.collection_name
+            )
+        else:
+            # raise ValueError(f"Chroma collection not found at {self.persistent_directory}")
+            flash(f"Chroma collection not found at {self.persistent_directory}", "danger")
+            return False
+
+        # Initialize Ollama model
+        llm = ChatOllama(model=model.model)
+
+        # Create Retriever
+        retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+
+        # Create Chain
+        qa_chain = RetrievalQA.from_chain_type(
+            llm=llm,
+            chain_type="stuff",
+            retriever=retriever,
+            return_source_documents=False
+        )
+
+        return qa_chain
       except Exception as e:
         flash(f"Error prompting models: {e}", "danger")
         return False
     else:
       flash(f"Error fetching models: Please set a model.", "danger")
       return False
+
+    """ response = ollama.chat(model=model.model, messages=[
+      {'role': 'user', 'content': user_input},
+    ])
+    return response """
 
   def get_models(self):
     """Lists all locally downloaded models."""
