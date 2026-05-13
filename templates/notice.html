@@ -6,7 +6,7 @@
 {% block content %}
 
 <h1 class="mt-4 mb-0">Notices</h1>
-<p>After training on the code base. The optimizer suggests 10 ways to optimize the code base for speed and performance. The deepseek-coder-v2 ollama model must be downloaded for this page to work. To run click the Run Optimizer button. 10 suggestions will be saved to the Notices table. A flag is set to alert that new notices are available and will remain until the notices have been marked as read. Each notice is the full script file so once this is working properly it will be easy just to replace the file with the new one.</p>
+<p><b>Code Optimizer:</b> After training on the code base. The optimizer suggests 10 ways to optimize the code base for speed and performance. The deepseek-coder-v2 ollama model must be downloaded for this page to work. To run click the Run Optimizer button. 10 suggestions will be saved to the Notices table. A flag is set to alert that new notices are available and will remain until the notices have been marked as read. Each notice is the full script file so once this is working properly it will be easy just to replace the file with the new one. <b>Investigation Optimizer:</b> After you have added as much data as you can find. Download the deepseek-r1 ollama model. 10 suggestions on how to improve the investigation. Once I complete the initial work using Ollama models I will open the app up via API so you can use OpenAI, Claude, Gemini or Grok depending on your preference.</p>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -50,9 +50,19 @@
 
 <div class="row mt-4">
   <div class="col-md-12">
-    <form class="row g-4" action="/run_optimizer" method="POST" name="code_optimizer" autocomplete="off">
+    <form class="row g-4" action="/run_code_optimizer" method="POST" name="code_optimizer" autocomplete="off">
       <div class="col-12">
-        <button class="btn btn-primary" type="submit">Run Optimizer</button>
+        <button class="btn btn-primary" type="submit">Run Code Optimizer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <form class="row g-4" action="/run_investigation_optimizer" method="POST" name="investigation_optimizer" autocomplete="off">
+      <div class="col-12">
+        <button class="btn btn-primary" type="submit">Run Investigation Optimizer</button>
       </div>
     </form>
   </div>

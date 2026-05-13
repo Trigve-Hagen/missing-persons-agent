@@ -230,13 +230,23 @@ def notice():
 
   return flask.render_template('notice.html', notices=all_notices, user_input=user_input, answer=answer)
 
-@app.route('/run_optimizer', methods=['POST'])
-def run_optimizer():
+@app.route('/run_code_optimizer', methods=['POST'])
+def run_code_optimizer():
   all_notices = session.query(Notice).all()
   user_input = ""
   answer = ""
 
-  flash(f"Be here soon!", "success")
+  flash(f"Code Optimizer. Be here soon!", "success")
+
+  return flask.render_template('notice.html', notices=all_notices, user_input=user_input, answer=answer)
+
+@app.route('/run_investigation_optimizer', methods=['POST'])
+def run_investigation_optimizer():
+  all_notices = session.query(Notice).all()
+  user_input = ""
+  answer = ""
+
+  flash(f"Investigation Optimizer. Be here soon!", "success")
 
   return flask.render_template('notice.html', notices=all_notices, user_input=user_input, answer=answer)
 
