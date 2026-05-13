@@ -46,7 +46,7 @@ class PdfManager():
     vectorstore = Chroma(
       persist_directory=self.database_path,
       embedding_function=HuggingFaceEmbeddings(),
-      collection_name="my_collection"
+      collection_name="missing_persons"
     )
 
     # Get documents specifically from 'example.txt'

@@ -7,6 +7,11 @@
 
 <h1 class="my-4">Resources</h1>
 
+<div id="loading" style="display:none;">
+    <div class="spinner"></div>
+    <p>Processing, please wait...</p>
+</div>
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
@@ -24,19 +29,31 @@
   <div class="col-md-9">
     <div class="row">
       <div class="col-md-6">
-        {% for key, value in resources.items() %}
+        {% for key, value in resources %}
           <p class="mt-0"><b>{{ key }}</b></p>
         {% endfor %}
       </div>
       <div class="col-md-6">
-        {% for key, value in resources.items() %}
+        {% for key, value in resources %}
           <p class="mt-0"><i>{{ value }}</i></p>
         {% endfor %}
       </div>
     </div>
   </div>
 </div>
-<div class="row mt-5">
+
+<hr>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_resources" method="POST" name="resources" autocomplete="off">
+      <div class="col-12">
+        <button class="btn btn-primary" type="submit">Calculate Resources Used</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row">
   <h3 class="mt-5">Ollama Models Installed</h3>
   <div class="col-md-12">
     {% if models %}
@@ -63,6 +80,7 @@
     {% endif %}
   </div>
 </div>
+
 <div class="row mt-5">
   <div class="col-md-12">
     <p><b>Model Types</b> - List built from AI - Be carefull of the size. Some are really big.</p>

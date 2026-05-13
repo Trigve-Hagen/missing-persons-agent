@@ -36,18 +36,21 @@ class Resources():
     size_in_bytes = self.get_folder_size('')
     return f"{(size_in_bytes / (1024*1024)) / 1000:.2f} GB"
 
-  def initial_database(self):
-    size_in_bytes = self.get_file_size('database\\db\\database.db')
+  def sql_alchemy_database(self):
+    size_in_bytes = self.get_file_size('database\\sql_alchemy\\database.db')
+    print(size_in_bytes)
     return f"{size_in_bytes / (1024*1024):.2f} MB"
 
-  def eav_database(self):
-    return "Be here soon.."
-
-  def vector_database(self):
-    size_in_bytes = self.get_file_size('chroma_db_nccn\\chroma.sqlite3')
+  def chroma_database(self):
+    size_in_bytes = self.get_file_size('database\\chroma_db\\chroma.sqlite3')
+    print(size_in_bytes)
     return f"{size_in_bytes / (1024*1024):.2f} MB"
 
   def ollama_models(self):
     manager = OllamaManager(session=self.session)
     models = manager.get_models()
-    return models, f"{manager.get_ollama_storage_gb():.2f} GB"
+    return models
+
+  def ollama_models_size(self):
+    manager = OllamaManager(session=self.session)
+    return f"{manager.get_ollama_storage_gb():.2f} GB"

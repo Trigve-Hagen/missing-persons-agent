@@ -51,15 +51,18 @@ class OllamaManager:
         # Create Retriever
         retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
-        # Create Chain
-        qa_chain = RetrievalQA.from_chain_type(
-            llm=llm,
-            chain_type="stuff",
-            retriever=retriever,
-            return_source_documents=False
-        )
-
-        return qa_chain
+        try:
+          # Create Chain
+          qa_chain = RetrievalQA.from_chain_type(
+              llm=llm,
+              chain_type="stuff",
+              retriever=retriever,
+              return_source_documents=False
+          )
+          return qa_chain
+        except Exception as e:
+          flash(f"Error fetching chain: {e}", "danger")
+          return False
       except Exception as e:
         flash(f"Error prompting models: {e}", "danger")
         return False
@@ -67,10 +70,51 @@ class OllamaManager:
       flash(f"Error fetching models: Please set a model.", "danger")
       return False
 
-    """ response = ollama.chat(model=model.model, messages=[
-      {'role': 'user', 'content': user_input},
-    ])
-    return response """
+  def suggestions(self):
+    model = "deepseek-coder-v2"
+
+    if model:
+      try:
+        # --- Initialize LangChain Components ---
+        # Load HuggingFace Embeddings
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+        # Load existing Chroma collection
+        if os.path.exists(self.persistent_directory):
+            vectorstore = Chroma(
+                persist_directory=self.persistent_directory,
+                embedding_function=embeddings,
+                collection_name=self.collection_name
+            )
+        else:
+            # raise ValueError(f"Chroma collection not found at {self.persistent_directory}")
+            flash(f"Chroma collection not found at {self.persistent_directory}", "danger")
+            return False
+
+        # Initialize Ollama model
+        llm = ChatOllama(model=model.model)
+
+        # Create Retriever
+        retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+
+        try:
+          # Create Chain
+          qa_chain = RetrievalQA.from_chain_type(
+              llm=llm,
+              chain_type="stuff",
+              retriever=retriever,
+              return_source_documents=False
+          )
+          return qa_chain
+        except Exception as e:
+          flash(f"Error fetching chain: {e}", "danger")
+          return False
+      except Exception as e:
+        flash(f"Error prompting models: {e}", "danger")
+        return False
+    else:
+      flash(f"Error fetching models: Please set a model.", "danger")
+      return False
 
   def get_models(self):
     """Lists all locally downloaded models."""

@@ -51,7 +51,7 @@ from sqlalchemy_utils import database_exists
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from database.base import Base
-from database.state import State
+from database.state import State, Notice
 from database.model import Model, ModelParams
 from database.category import Category
 from database.event import Event, Url, Question
@@ -192,9 +192,13 @@ def chat():
   user_input = request.json.get('message')
   manager = OllamaManager(session=session)
   qa_chain = manager.prompt()
+  response = dict()
+  if qa_chain:
+    # Run chain
+    response = qa_chain.invoke({"query": user_input})
+  else:
+    response['result'] = "No Chroma Database defined. To create database upload a pdf or save data from RSS or API."
 
-  # Run chain
-  response = qa_chain.invoke({"query": user_input})
   return jsonify({'response': response['result']})
 
 @app.route('/chatbox')
@@ -203,6 +207,60 @@ def chatbox():
   answer = ""
 
   return flask.render_template('chatbox.html', user_input=user_input, answer=answer)
+
+@app.route('/suggestions', methods=['GET', 'POST'])
+def suggestions():
+  user_input = request.json.get('message')
+  manager = OllamaManager(session=session)
+  qa_chain = manager.suggestions()
+  response = dict()
+  if qa_chain:
+    # Run chain
+    response = qa_chain.invoke({"query": user_input})
+  else:
+    response['result'] = "No data defined. To create data upload a pdf or save data from RSS or API."
+
+  return jsonify({'response': response['result']})
+
+@app.route('/notice')
+def notice():
+  all_notices = session.query(Notice).all()
+  user_input = ""
+  answer = ""
+
+  return flask.render_template('notice.html', notices=all_notices, user_input=user_input, answer=answer)
+
+@app.route('/run_optimizer', methods=['POST'])
+def run_optimizer():
+  all_notices = session.query(Notice).all()
+  user_input = ""
+  answer = ""
+
+  flash(f"Be here soon!", "success")
+
+  return flask.render_template('notice.html', notices=all_notices, user_input=user_input, answer=answer)
+
+@app.route('/set/notice/<int:id>', methods=['GET', 'POST'])
+def set_notice(id):
+
+  try:
+    notice = session.execute(select(Notice).filter_by(id = id)).scalar_one_or_none()
+    if notice:
+      notice.ifRead=1
+      session.merge(notice)
+      session.commit()
+
+    flash(f"Notice updated successfully!", "success")
+    return redirect(url_for('notice'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('notice'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('notice'))
 
 @app.route('/model')
 def model():
@@ -1041,16 +1099,30 @@ def delete_item():
 @app.route('/resources')
 def resources():
   app_resources = Resources(session=session)
-  models, models_size = app_resources.ollama_models()
-  resources = dict(
-    files_size = app_resources.files_size(),
-    initial_database = app_resources.initial_database(),
-    eav_database = app_resources.eav_database(),
-    vector_database = app_resources.vector_database(),
-    ollama_models = models_size,
-  )
+  models = app_resources.ollama_models()
+
+  state = session.get(State, 1)
+  resources = [
+    ("Files Size", state.files_size),
+    ("Sql Alchemy Database", state.sql_alchemy_database_size),
+    ("Chroma Database", state.chroma_database_size),
+    ("Ollama Models", state.ollama_models_size),
+  ]
 
   return flask.render_template('resources.html', resources=resources, models=models['models'])
+
+@app.route('/set_resources', methods=['POST'])
+def set_resources():
+  app_resources = Resources(session=session)
+  state = session.get(State, 1)
+  if state:
+    state.files_size = app_resources.files_size()
+    state.sql_alchemy_database_size = app_resources.sql_alchemy_database()
+    state.chroma_database_size = app_resources.chroma_database()
+    state.ollama_models_size = app_resources.ollama_models_size()
+    session.commit()
+
+  return redirect(url_for('resources'))
 
 @app.route('/delete_model', methods=['POST'])
 def delete_model():
@@ -1203,7 +1275,7 @@ def initialize_database(engine):
 
   if session.query(Model).first() is None:
     app_resources = Resources(session=session)
-    models, models_size = app_resources.ollama_models()
+    models = app_resources.ollama_models()
     for model in models['models']:
       m1 = Model(name=model.model, model=model.model, type="ollama", system="")
       session.add(m1)

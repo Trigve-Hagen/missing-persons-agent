@@ -1,0 +1,115 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Notices{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4 mb-0">Notices</h1>
+<p>After training on the code base. The optimizer suggests 10 ways to optimize the code base for speed and performance. The deepseek-coder-v2 ollama model must be downloaded for this page to work. To run click the Run Optimizer button. 10 suggestions will be saved to the Notices table. A flag is set to alert that new notices are available and will remain until the notices have been marked as read. Each notice is the full script file so once this is working properly it will be easy just to replace the file with the new one.</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-3">
+    {% include 'includes/sidebar_menu.html' %}
+  </div>
+  <div class="col-md-9">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Notice</th>
+          <th scope="col">If Read</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for notice in notices %}
+          <tr>
+              <td scope="row">{{ notice.id }}</td>
+              <td>{{ notice.notice }}</td>
+              <td>{{ notice.ifRead }}</td>
+              <td><a class="btn btn-secondary" href="{{ url_for('set_notice', id=notice.id) }}">Mark Read</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <form class="row g-4" action="/run_optimizer" method="POST" name="code_optimizer" autocomplete="off">
+      <div class="col-12">
+        <button class="btn btn-primary" type="submit">Run Optimizer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <div id="suggestions-content-box" style="border:1px solid #ccc; border-radius: 5px; height:300px; overflow-y:scroll; margin:0; padding:10px; padding-top:0"></div>
+    <div id="prompt-response"></div>
+  </div>
+  <div class="col-md-12 mt-3">
+    <form class="row g-4" id="suggestions-form" autocomplete="off">
+      <div class="col-md-12">
+        <textarea class="form-control" id="user-input" placeholder="Type a message..." rows="3"></textarea>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+ <script>
+    const suggestionsFormElement = document.getElementById('suggestions-form');
+    const suggestionsContentBox = document.getElementById('suggestions-content-box');
+    const botLabel = "Optitron"
+    const userLabel = "User"
+
+    let userInputField = document.getElementById('user-input');
+
+    function renderChatText(senderName, messageText) {
+      const messageHtml = `
+        <p><strong>${senderName}:</strong> ${messageText}</p>
+      `;
+      suggestionsContentBox.insertAdjacentHTML("beforeend", messageHtml);
+      suggestionsContentBox.scrollTop = suggestionsContentBox.scrollHeight;
+    }
+
+    async function fetchBotReply(userQuestion) {
+      const response = await fetch('suggestions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userQuestion })
+      });
+      const data = await response.json();
+      renderChatText(botLabel, data.response);
+
+    }
+
+    suggestionsFormElement.addEventListener("submit", (event) => {
+      event.preventDefault()
+      const userMessage = userInputField.value.trim();
+      if(!userMessage) return;
+      renderChatText(userLabel, userMessage);
+      userInputField.value = "";
+      fetchBotReply(userMessage);
+    })
+</script>
+
+{% endblock %}
