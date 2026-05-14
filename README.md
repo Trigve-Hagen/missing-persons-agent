@@ -46,16 +46,16 @@ Build out the database and pages for consuming APIs. Users use a form to run the
 - Api, ApiFields and State. I have just finished the basics and added Nancy Guthrie as an example of how to use it. There is still alot of work to do on this part of the system. Im going to move on though and complete the minimum of each Stage so I can have a fully working app before I go back and fully complete everything. This allows U.S to help if you want by taking on a section of it. Thanks.
   - Api - Fill in the information about the api here. Put the full url into the url field including the https:// and the url endpoint.
   - ApiFields - Fill in each field that will be used in the api call. Field is a query parameter and is used to filter results. The field is the query parameter name, value is the value that needs to be there. Everything associated with a person will eventually be an option in the value list. Right now there is only the persons name.
-  - State - The appication state is saved to help guild your workflow. The state form in the upper right corner and holds the person and the api that you are working on. When you create ApiFields or call Apis you need to have the Person and the Api selected and saved in state.
+  - State - The appication state is saved to help guild your workflow. The state form is included with every item listed in Person, Model, Api, prompt and question. Only one of each can be set at any time. Hit Set State to set an item in state. CPU/GPU is in the upper right corner. When you create ApiFields or call Apis you need to have the Person and the Api selected and saved in state. When using the Optomize buttons in notices you need to have some data stored in the Chroma vector database, the Prompt set and the question set.
 
 ### Stage 3
-Build out the vector database to save the API data for the Ollama model. Users can refine the data.
+The vector database is Chroma. The databases are in the database folder. There is the SqlAchemy database for everything not vectorized and the chroma_db for saving vectorized data for the RAG LLM. I added source for file names and ids for each chunk so they can be deleted. Implementing the reload Documents and the deleting chunks next.
 
 ### Stage 4
-Build out training functionality for the Ollama LLM. Users can train and retrain models as they build and refine the data.
+Ollama models can be downloaded on the Models page by creating an Ollama model. Models can be deleted on the Resources page but be careful you are not using them somewhere else. When you start the application it checks for Ollama models downloaded and adds them automatically to the Models database. The models are RAG LLM so they are pretrained and use the vector database as RAG Retrieval-Augmented Generation data source.
 
 ### Stage 5
-Build out prompt functionality for the Ollama LLM. Users can create questions to use when prompting the LLM.
+Users can create prompts and questions to use when prompting the LLM on The Prompts and Questions page.
 
 ### Stage 6
 Use the data gathered from the APIs to build timelines for each person.
