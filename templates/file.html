@@ -5,7 +5,8 @@
 
 {% block content %}
 
-<h1 class="my-4">Files</h1>
+<h1 class="my-4 mb-0">Files</h1>
+<p>Upload both Images and Documents for the AI model to use. When you upload a document it is added to the chroma db to be used by the RAG LLM automatically. I will add in deleting, editing and saving chunks individually soon. Will add in more doc types soon. Images will be used in the future for facial recognition. I also plan to add in video for profile recognition.</p>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}

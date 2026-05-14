@@ -1207,31 +1207,6 @@ def getDisplayType():
   default_value = "json"
   return current_value or default_value
 
-@app.route('/state')
-def state():
-  state = session.get(State, 1)
-  all_apis = session.query(Api).all()
-  all_models = session.query(Model).all()
-  all_people = session.query(Person).all()
-
-  return flask.render_template('state.html', state=state, apis=all_apis, models=all_models, people=all_people)
-
-@app.route('/set_application_state', methods=['POST'])
-def set_application_state():
-  form_data = request.form
-  if form_data is None:
-    return redirect(url_for('state'))
-
-  state = session.get(State, 1)
-  if state:
-    state.person = form_data.get('person')
-    state.processor = form_data.get('processor')
-    state.model = form_data.get('model')
-    state.api = form_data.get('api')
-    session.commit()
-
-  return redirect(url_for('state'))
-
 @app.route('/set_state', methods=['POST'])
 def set_state():
   form_data = request.form
