@@ -69,6 +69,31 @@ import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 
+available_devices = {
+  # Standard Devices
+  "cpu": "CPU", #Standard Central Processing Unit
+  "cuda": "NVIDIA GPU", # (shorthand for cuda:0)
+  # "cuda:0": "Specific NVIDIA GPU by index",
+
+  # Apple Silicon & Mobile
+  "mps": "MPS", # Metal Performance Shaders (Apple Silicon M1/M2/M3)
+  "npu": "NPU", # Neural Processing Unit (found in specialized AI hardware)
+
+  # Intel & Specialized Accelerators
+  "xpu": "XPU", # Intel Data Center or Arc GPU (requires Intel Extension for PyTorch)
+  "mlu": "MLU", # Cambricon MLU (requires Cambricon PyTorch extension)
+  "tpu": "TPU", # Google Cloud Tensor Processing Unit
+  "ipu": "IPU", # Graphcore Intelligence Processing Unit
+
+  # Emerging & Vendor Specific
+  "sdaa": "SDAA", # Metax specialized hardware accelerator
+  "musa": "MUSA", # Moore Threads MUSA GPU
+
+  # Automated Logic
+  "meta": "Meta", # Device used for loading large model skeletons without allocating RAM
+  None: "Auto-detects" # Auto-detects best available hardware (typically CUDA -> CPU)
+}
+
 def resource_path(relative_path):
   """ Get absolute path to resource, works for dev and for PyInstaller """
   try:
@@ -106,12 +131,12 @@ def allowed_file(filename):
 
 @app.route('/file')
 def file():
-    all_files = session.query(File).all()
-    stmt = select(Category).where(Category.type == "fileType")
-    fileType_select = session.execute(stmt).scalars().all()
-    owner_select = session.query(Person).all()
+  all_files = session.query(File).all()
+  stmt = select(Category).where(Category.type == "fileType")
+  fileType_select = session.execute(stmt).scalars().all()
+  owner_select = session.query(Person).all()
 
-    return flask.render_template('file.html', files=all_files, fileTypes=fileType_select, owners=owner_select)
+  return flask.render_template('file.html', files=all_files, fileTypes=fileType_select, owners=owner_select)
 
 @app.route('/edit/file/<int:id>', methods=['GET', 'POST'])
 def edit_file(id):
@@ -1359,6 +1384,34 @@ def getDisplayType():
   default_value = "json"
   return current_value or default_value
 
+@app.route('/application_state')
+def application_state():
+  all_apis = session.query(Api).all()
+  all_people = session.query(Person).all()
+  all_models = session.query(Person).all()
+  all_prompts = session.query(Prompt).all()
+  all_questions = session.query(Question).all()
+  state = session.get(State, 1)
+  return flask.render_template('application_state.html', state=state, available_devices=available_devices, people=all_people, apis=all_apis, models=all_models, prompts=all_prompts, questions=all_questions)
+
+@app.route('/set_application_state', methods=['POST'])
+def set_application_state():
+  form_data = request.form
+  if form_data is None:
+    return redirect(url_for('application_state'))
+
+  state = session.get(State, 1)
+  if state:
+    state.processor = form_data.get('processor')
+    state.person = form_data.get('person')
+    state.api = form_data.get('api')
+    state.model = form_data.get('model')
+    state.prompt = form_data.get('prompt')
+    state.question = form_data.get('question')
+    session.commit()
+
+  return redirect(url_for('application_state'))
+
 @app.route('/set_state', methods=['POST'])
 def set_state():
   form_data = request.form
@@ -1378,30 +1431,6 @@ def set_state():
 
 @app.context_processor
 def get_state_processor():
-  available_devices = {
-    # Standard Devices
-    "cpu": "CPU", #Standard Central Processing Unit
-    "cuda": "NVIDIA GPU", # (shorthand for cuda:0)
-    # "cuda:0": "Specific NVIDIA GPU by index",
-
-    # Apple Silicon & Mobile
-    "mps": "MPS", # Metal Performance Shaders (Apple Silicon M1/M2/M3)
-    "npu": "NPU", # Neural Processing Unit (found in specialized AI hardware)
-
-    # Intel & Specialized Accelerators
-    "xpu": "XPU", # Intel Data Center or Arc GPU (requires Intel Extension for PyTorch)
-    "mlu": "MLU", # Cambricon MLU (requires Cambricon PyTorch extension)
-    "tpu": "TPU", # Google Cloud Tensor Processing Unit
-    "ipu": "IPU", # Graphcore Intelligence Processing Unit
-
-    # Emerging & Vendor Specific
-    "sdaa": "SDAA", # Metax specialized hardware accelerator
-    "musa": "MUSA", # Moore Threads MUSA GPU
-
-    # Automated Logic
-    "meta": "Meta", # Device used for loading large model skeletons without allocating RAM
-    None: "Auto-detects" # Auto-detects best available hardware (typically CUDA -> CPU)
-  }
   return dict(state_processors=available_devices)
 
 @app.context_processor

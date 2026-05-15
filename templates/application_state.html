@@ -1,0 +1,108 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Application State{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Application State</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_application_state" method="POST" name="state" autocomplete="off">
+      <div class="col-md-6">
+        <label for="state-processor" class="form-label">If GPU</label>
+        <select class="form-select" id="state-processor" name="processor">
+          <option value="">Choose...</option>
+          {% if available_devices %}
+            {% for key, value in available_devices.items() %}
+              <option value="{{ key }}" {% if key == selected_processor %} selected {% endif %}>{{ value }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="state-person" class="form-label">Person</label>
+        <select class="form-select" id="state-person" name="person">
+          <option value="0">Choose...</option>
+          {% for person in people %}
+            {% if state.person == person.id %}
+              <option value="{{ person.id }}" selected>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
+            {% else %}
+              <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="state-api" class="form-label">Api</label>
+        <select class="form-select" id="state-api" name="api">
+          <option value="0">Choose...</option>
+          {% for api in apis %}
+            {% if state.api == api.id %}
+              <option value="{{ api.id }}" selected>{{ api.name }}</option>
+            {% else %}
+              <option value="{{ api.id }}">{{ api.api }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="state-model" class="form-label">Model</label>
+        <select class="form-select" id="state-model" name="model">
+          <option value="0">Choose...</option>
+          {% for model in models %}
+            {% if state.model == model.id %}
+              <option value="{{ model.id }}" selected>{{ model.model }}</option>
+            {% else %}
+              <option value="{{ model.id }}">{{ model.model }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="prompt-prompt" class="form-label">Prompt</label>
+        <select class="form-select" id="state-prompt" name="prompt">
+          <option value="0">Choose...</option>
+          {% for prompt in all_prompts %}
+            {% if state.prompt == prompt.id %}
+              <option value="{{ prompt.id }}" selected>{{ prompt.prompt }}</option>
+            {% else %}
+              <option value="{{ prompt.id }}">{{ prompt.prompt }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+        <div class="form-text" id="state-prompt-text">This is the part of the RAG LLM that defines what the models main directive is. It describes how the models robot will act and who it should believe it is. An investigator or web developer.</div>
+      </div>
+      <div class="col-md-6">
+        <label for="question-question" class="form-label">Question</label>
+        <select class="form-select" id="state-prompt" name="prompt">
+          <option value="0">Choose...</option>
+          {% for question in all_questions %}
+            {% if state.question == question.id %}
+              <option value="{{ question.id }}" selected>{{ question.question }}</option>
+            {% else %}
+              <option value="{{ question.id }}">{{ question.question }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+        <div class="form-text" id="state-question-text">This is the part of the RAG LLM that asks the question. It the query. </div>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
