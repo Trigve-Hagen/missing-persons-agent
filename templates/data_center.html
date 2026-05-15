@@ -1,11 +1,11 @@
 <!-- templates/view_person.html -->
 {% extends 'layout.html' %}
 
-{% block title %}Data Retrieval{% endblock %}
+{% block title %}Data Center{% endblock %}
 
 {% block content %}
 
-<h1 class="my-4">Data Retrieval</h1>
+<h1 class="my-4">Data Center</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -28,13 +28,19 @@
         <p class="mt-0">{{ person_name }}</p>
       </div>
       <div class="col-md-12">
-        <p class="my-4 mb-0"><b>{{ api.type|upper }}</b></p>
-        <p class="mt-0">{{ api.name }}</p>
-        <p class="mt-0">{{ api.url }}</p>
-        <p class="mt-0">{{ api_params }}</p>
+        <p class="my-0"><b>{{ api.type|upper }}</b> {{ api.name }}</p>
+        <p class="my-0"><b>Url</b>: {{ api.url }}</p>
+        {% if api_params %}
+          {% for api_param in api_params %}
+            <p class="mt-0"><b>{{ api_param.field }}</b>: {{ api_param.value }}</p>
+          {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>
+
+  <hr>
+
   <div class="row">
     <div class="col-md-12">
       <form class="row g-4" action="/filter_data" method="POST" name="filter_data" autocomplete="off">

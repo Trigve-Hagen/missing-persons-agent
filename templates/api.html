@@ -35,7 +35,7 @@
               <td scope="row">{{ api.id }}</td>
               <td>{{ api.name }}</td>
               <td>{{ api.type }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_api', id=api.id) }}">Edit</a><br /><a class="btn btn-secondary mt-2" href="{{ url_for('link_set_state', type='api', id=api.id) }}">Set State</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="api" data-bs-item-id="{{ api.id }}" data-bs-item="{{ api.name }}">Delete</a></td>
+              <td><a class="btn btn-secondary" href="{{ url_for('edit_api', id=api.id) }}">Edit</a><br /><a class="btn btn-secondary mt-2" href="{{ url_for('link_set_state', type='api', id=api.id) }}">Set State</a><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="api" data-bs-item-id="{{ api.id }}" data-bs-item="{{ api.name }}">Delete</a></td>
           </tr>
         {% endfor %}
       </tbody>

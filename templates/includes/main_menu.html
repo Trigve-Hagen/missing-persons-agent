@@ -10,9 +10,17 @@
         <li class="nav-item">
           <a class="nav-link{% if request.endpoint == 'index' %} active{% endif %}" href="{{ url_for('index') }}">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link{% if request.endpoint == 'category' %} active{% endif %}" href="{{ url_for('category') }}">Category</a>
-        </li>
+        <div class="dropdown">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'person' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Dashboard
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dashboard-dropdown">
+            <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('application_state') }}">Application State</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('resources') }}">Resources</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('category') }}">Category</a></li>
+          </ul>
+        </div>
         <div class="dropdown">
           <a class="nav-link dropdown-toggle{% if request.endpoint == 'person' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Person
@@ -24,32 +32,29 @@
             <li><a class="dropdown-item" href="{{ url_for('phone') }}">Phone</a></li>
             <li><a class="dropdown-item" href="{{ url_for('email') }}">Email</a></li>
             <li><a class="dropdown-item" href="{{ url_for('file') }}">File</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('view_person') }}">View Person</a></li>
           </ul>
         </div>
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle{% if request.endpoint == 'api' or request.endpoint == 'api_field' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'api' or request.endpoint == 'api_field' or request.endpoint == 'data_center' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
             APIs
           </a>
           <ul class="dropdown-menu" aria-labelledby="person-dropdown">
-            <li><a class="dropdown-item" href="{{ url_for('api') }}">Api</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('api_field') }}">Api Field</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('data_retrieval') }}">Data Retrieval</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'api' %} active{% endif %}" href="{{ url_for('api') }}">Api</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'api_field' %} active{% endif %}" href="{{ url_for('api_field') }}">Api Field</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'data_center' %} active{% endif %}" href="{{ url_for('data_center') }}">Data Center</a></li>
           </ul>
         </div>
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle{% if request.endpoint == 'api' or request.endpoint == 'api_field' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'model' or request.endpoint == 'model_params' or request.endpoint == 'prompt' or request.endpoint == 'question' or request.endpoint == 'chatbox' or request.endpoint == 'notice' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Models
           </a>
           <ul class="dropdown-menu" aria-labelledby="person-dropdown">
-            <li><a class="dropdown-item" href="{{ url_for('model') }}">Models</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('model_params') }}">Model Parameters</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('prompt') }}">Prompts</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('question') }}">Questions</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('resources') }}">Resources</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('chatbox') }}">Chat Box</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('notice') }}">Notices</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('application_state') }}">Application State</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'model' %} active{% endif %}" href="{{ url_for('model') }}">Models</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'model_params' %} active{% endif %}" href="{{ url_for('model_params') }}">Model Parameters</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'prompt' %} active{% endif %}" href="{{ url_for('prompt') }}">Prompts</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'question' %} active{% endif %}" href="{{ url_for('question') }}">Questions</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'chatbox' %} active{% endif %}" href="{{ url_for('chatbox') }}">Chat Box</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'notice' %} active{% endif %}" href="{{ url_for('notice') }}">Notices</a></li>
           </ul>
         </div>
       </ul>

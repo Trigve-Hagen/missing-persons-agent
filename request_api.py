@@ -3,51 +3,29 @@ import feedparser
 from jsonpath_ng import parse
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 from flask import flash
-from sqlalchemy import select
-from database.state import State
-from database.apis import Api, ApiField
 
 class RequestApi:
-  def __init__(self, session):
-    self.session = session
-    self.params = {}
-    self.state = self.session.execute(select(State).filter_by(id = 1)).scalar_one_or_none()
-    self.api = session.execute(select(Api).filter_by(id = self.state.api)).scalar_one_or_none()
-    self.api_id = 0
-    if self.api:
-      self.api_id = self.api.id
-    self.apiFields = session.scalars(select(ApiField).filter_by(owner = self.api_id)).all()
 
-  def get_api(self):
-    return self.session.execute(select(Api).filter_by(id = self.state.api)).scalar_one_or_none()
-
-  def get_params(self):
-    # Search for a person by title
-    for fields in self.apiFields:
-      self.params[fields.field] = fields.value
-
-  def get_api_params(self):
-    self.get_params()
-    return self.params
-
-  def filter_data(self, data):
-    if self.state.root_node:
-      filter = '$.'+self.state.root_node
+  def filter_data(self, data, state):
+    if state.root_node:
+      filter = '$.'+state.root_node
       if parse(filter).find(data):
         return parse(filter).find(data)[0].value, True
     return data, False
 
-  def get_request(self):
-    self.get_params()
+  def get_request(self, api, apiFields):
+    params = {}
+    for fields in apiFields:
+      params[fields.field] = fields.value
 
     try:
       # 1. Perform the request (always set a timeout to prevent hanging)
-      response = requests.get(self.api.url, params=self.params, timeout=10)
+      response = requests.get(api.url, params=params, timeout=10)
 
       # 2. Raise an exception for 4xx or 5xx status codes
       response.raise_for_status()
 
-      if self.api.type == 'api':
+      if api.type == 'api':
         # 3. Process the response if no exception was raised
         data = response.json()
 
@@ -65,9 +43,10 @@ class RequestApi:
         return "Request Exception. Please check that you are using correct api and field values."
     except Exception as e:
         flash(f"An unexpected non-requests error occurred: {e}", "danger")
+        flash(f"The unexpected non-requests error occurred because the api needs to be set in order to make the request so it errors.", "info")
         return "Exception. Request failed. Please check that you are using correct api and field values."
     else:
-        if self.api.type == 'rss':
+        if api.type == 'rss':
           # Parse the content with feedparser
           data = feedparser.parse(response.content)
           if data.bozo:

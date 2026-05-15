@@ -1134,39 +1134,42 @@ def set_api_field():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('api_field'))
 
-@app.route('/view_person')
-def view_person():
+@app.route('/dashboard')
+def dashboard():
   people_utils = PeopleUtils(session=session)
   person, aliases, addresses, emails, phones = people_utils.get_all_person()
-  return flask.render_template('view_person.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
+  return flask.render_template('dashboard.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
 
-@app.route('/data_retrieval')
-def data_retrieval():
+@app.route('/data_center')
+def data_center():
   people_utils = PeopleUtils(session=session)
   person = people_utils.get_person()
   person_name = ""
   if person:
     person_name = people_utils.get_person_name(person)
 
-  request_api = RequestApi(session=session)
-  api = request_api.get_api()
-  api_params = request_api.get_api_params()
-  api_data = request_api.get_request()
-  api_data, ifParsed = request_api.filter_data(api_data)
+  state = session.get(State, 1)
+  api = session.execute(select(Api).filter_by(id = state.api)).scalar_one_or_none()
+  api_params = session.scalars(select(ApiField).filter_by(owner = api.id)).all()
 
-  return flask.render_template('data_retrieval.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=getRootNode(), display_type=getDisplayType(), if_parsed=ifParsed)
+  request_api = RequestApi()
+  api_data = request_api.get_request(api, api_params)
+  api_data, ifParsed = request_api.filter_data(api_data, state)
+
+  return flask.render_template('data_center.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=getRootNode(), display_type=getDisplayType(), if_parsed=ifParsed)
 
 @app.route('/filter_data', methods=['POST'])
 def filter_data():
   form_data = request.form
   if form_data is None:
-    return redirect(url_for('data_retrieval'))
+    return redirect(url_for('data_center'))
 
   state = session.get(State, 1)
-  if state:
-    state.display_type = form_data.get('display_type')
-    state.root_node = form_data.get('root_node')
-    session.commit()
+  api = session.execute(select(Api).filter_by(id = state.api)).scalar_one_or_none()
+  api_params = session.scalars(select(ApiField).filter_by(owner = api.id)).all()
+  state.display_type = form_data.get('display_type')
+  state.root_node = form_data.get('root_node')
+  session.commit()
 
   people_utils = PeopleUtils(session=session)
   person = people_utils.get_person()
@@ -1175,13 +1178,11 @@ def filter_data():
   if person:
     person_name = people_utils.get_person_name(person)
 
-  request_api = RequestApi(session=session)
-  api = request_api.get_api()
-  api_params = request_api.get_api_params()
-  api_data = request_api.get_request()
-  api_data, ifParsed = request_api.filter_data(api_data)
+  request_api = RequestApi()
+  api_data = request_api.get_request(api, api_params)
+  api_data, ifParsed = request_api.filter_data(api_data, state)
 
-  return flask.render_template('data_retrieval.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'), if_parsed=ifParsed)
+  return flask.render_template('data_center.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'), if_parsed=ifParsed)
 
 @app.route('/create/instance/<int:id>', methods=['GET', 'POST'])
 def create_instance(id):
