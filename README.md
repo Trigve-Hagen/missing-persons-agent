@@ -4,7 +4,7 @@ I'm creating a installable application that is a tool to investigate a persons d
 
 It will use ChromaDB for storing data for the LLM to allow you to clean the data and minimize or completely remove hallucinations. It is open-source with no usage limits on local machines.
 
-It also uses Sqlite3 both as a storage for initial search data and Entity Attribute Value (EAV) for saving data returned from API searches that are user attributes. I am will probably also create a separate model for deciding what to choose when dealing with duplicate data.
+It also uses Sqlite3 both as a storage for initial search data. I am will probably also create a separate model for deciding what to choose when dealing with duplicate data.
 
 My hopes is that 1000s of people will work together using this tool to search through the tons of video footage for the missing person in the first couple days of their disappearance and find them because with everyone using it we were able to do something faster.
 
@@ -68,6 +68,9 @@ Build ability to train a model on video and images.
 
 ### Stage 8
 Build out functionality for testing and viewing data from videos and images.
+
+### Stage 9
+A messaging system like Linkedins where people who are searching for someone can share notes.
 
 ### Links
 

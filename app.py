@@ -150,16 +150,19 @@ def set_file():
     flash(f"No selected file", "danger")
     return redirect(url_for('file'))
 
-  # 3. Secure and save the file
+  pdf_manager = PdfManager()
+
+  # Secure and save the file to sql_alchemy
   if file and allowed_file(file.filename):
     sec_filename = secure_filename(file.filename)
     filename, filename_ext = os.path.splitext(sec_filename)
-    safe_filename = f"{filename}_{time.time_ns()}{filename_ext}"
+    clean_filename = pdf_manager.clean_filename(filename)
+    safe_filename = f"{clean_filename}_{time.time_ns()}{filename_ext}"
     save_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
     file.save(save_path)
 
-  pdf_manager = PdfManager(filename=safe_filename)
-  pdf_manager.save(getProcessor())
+  # save the file to vector_store
+  pdf_manager.save(getProcessor(), filename=safe_filename)
 
   try:
     file = session.execute(select(File).filter_by(id = form_data.get('id'))).scalar_one_or_none()
@@ -1355,10 +1358,31 @@ def set_state():
 
 @app.context_processor
 def get_state_processor():
-  processor_dict = {}
-  processor_dict["cpu"] = "CPU"
-  processor_dict["gpu"] = "GPU"
-  return dict(state_processors=processor_dict)
+  available_devices = {
+    # Standard Devices
+    "cpu": "CPU", #Standard Central Processing Unit
+    "cuda": "NVIDIA GPU", # (shorthand for cuda:0)
+    # "cuda:0": "Specific NVIDIA GPU by index",
+
+    # Apple Silicon & Mobile
+    "mps": "MPS", # Metal Performance Shaders (Apple Silicon M1/M2/M3)
+    "npu": "NPU", # Neural Processing Unit (found in specialized AI hardware)
+
+    # Intel & Specialized Accelerators
+    "xpu": "XPU", # Intel Data Center or Arc GPU (requires Intel Extension for PyTorch)
+    "mlu": "MLU", # Cambricon MLU (requires Cambricon PyTorch extension)
+    "tpu": "TPU", # Google Cloud Tensor Processing Unit
+    "ipu": "IPU", # Graphcore Intelligence Processing Unit
+
+    # Emerging & Vendor Specific
+    "sdaa": "SDAA", # Metax specialized hardware accelerator
+    "musa": "MUSA", # Moore Threads MUSA GPU
+
+    # Automated Logic
+    "meta": "Meta", # Device used for loading large model skeletons without allocating RAM
+    None: "Auto-detects" # Auto-detects best available hardware (typically CUDA -> CPU)
+  }
+  return dict(state_processors=available_devices)
 
 @app.context_processor
 def inject_site_settings():
