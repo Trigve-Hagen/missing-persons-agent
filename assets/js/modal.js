@@ -32,21 +32,21 @@ if (deleteVectorModal) {
     // Extract info from data-bs-* attributes
     const identifier = button.getAttribute('data-bs-item')
     const itemId = button.getAttribute('data-bs-item-id')
-    const itemType = button.getAttribute('data-bs-item-type')
+    const itemFileId = button.getAttribute('data-bs-item-file-id')
     // Update the hidden inputs
     const hiddenId = deleteVectorModal.querySelector('#delete-id')
-    const hiddenType = deleteVectorModal.querySelector('#delete-type')
+    const hiddenFileId = deleteVectorModal.querySelector('#delete-file-id')
     hiddenId.value = itemId
-    hiddenType.value = itemType
+    hiddenFileId.value = itemFileId
     // Update the modal's content.
     const modalTitle = deleteVectorModal.querySelector('.modal-title')
     const modalBodyItem = deleteVectorModal.querySelector('.modal-body p#delete-item')
-    const modalBodyItemType = deleteVectorModal.querySelector('.modal-body p#delete-item-type')
+    const modalBodyItemFileId = deleteVectorModal.querySelector('.modal-body p#delete-item-file-id')
     const modalBodyItemId = deleteVectorModal.querySelector('.modal-body p#delete-item-id')
     modalTitle.textContent = `Are you sure you want to delete this item?`
     modalBodyItem.innerHTML = identifier
-    modalBodyItemType.innerHTML = "Type: " + itemType
-    modalBodyItemId.innerHTML = "Id: " + itemId
+    modalBodyItemFileId.innerHTML = "File Id: " + itemFileId
+    modalBodyItemId.innerHTML = "Vector Id: " + itemId
   })
 }
 

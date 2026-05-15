@@ -49,13 +49,42 @@ Build out the database and pages for consuming APIs. Users use a form to run the
   - State - The appication state is saved to help guild your workflow. The state form is included with every item listed in Person, Model, Api, prompt and question. Only one of each can be set at any time. Hit Set State to set an item in state. CPU/GPU is in the upper right corner. When you create ApiFields or call Apis you need to have the Person and the Api selected and saved in state. When using the Optomize buttons in notices you need to have some data stored in the Chroma vector database, the Prompt set and the question set.
 
 ### Stage 3
-The vector database is Chroma. The databases are in the database folder. There is the SqlAchemy database for everything not vectorized and the chroma_db for saving vectorized data for the RAG LLM. I added source for file names and ids for each chunk so they can be deleted. Implementing the reload Documents and the deleting chunks next.
+
+Build out the vector database to save the API data for the Ollama model. Users can refine the data.
+- The vector database is Chroma.
+- The databases are in the database folder.
+- There is the SqlAchemy database for everything not vectorized.
+- chroma_db for saving vectorized data for the RAG LLM.
+- When you save data to the SqlAlchemy database, you also create a entry into the chroma vector database
+  - For text entered into the person or tables owned by person a chunk is created and saved to the vector database containing all information of that person entity, phone entity etc.. via a ValueObject class.
+  - For Documents the chunks are created and stored under the file name. Only finished pdf for the moment. Will work on more type soon.
+  - The collection name is missing_persons.
+  - You can edit and delete the chunks in the edit link of whatever entity you saved it in. Working on all this now.
 
 ### Stage 4
-Ollama models can be downloaded on the Models page by creating an Ollama model. Models can be deleted on the Resources page but be careful you are not using them somewhere else. When you start the application it checks for Ollama models downloaded and adds them automatically to the Models database. The models are RAG LLM so they are pretrained and use the vector database as RAG Retrieval-Augmented Generation data source.
+Build out training functionality for the Ollama LLM. Users can train and retrain models as they build and refine the data.
+- Ollama models can be downloaded on the Models page by creating an Ollama model.
+- Models can be deleted on the Resources page but be careful you are not using them somewhere else on your computer.
+When you start the application it checks for Ollama models downloaded and adds them automatically to the Models database.
+- The models are RAG LLM so they are pretrained and use the vector database as RAG Retrieval-Augmented Generation data source.
+- You will be able to choose any model you like when I'm done.
+- There is a setting for selecting the type of processor you are using in state.
+Look through the available models and choose models that are pretrained in the field you want them trained in.
+
+Im using ***HuggingFaceEmbeddings sentence-transformers/all-MiniLM-L6-v2*** for the RAG LLM. Will open this up for you to choose your emmbedings. This is used to chop the text of a document into smaller chunks that are saved into the vector database. The chunks are what the LLM uses when it searches for answers. There are chunking stategies you need to learn about when using this application. I will also add the ability for you to change chunking strategies.
+
+#### Chunk Strategies:
+#### ***Resumes: Thematic & Structural Chunking***
+
+Resumes are highly structured, data-dense, and context-sparse. Standard overlapping token chunking frequently shatters meaning across boundaries.
+ - Strategy: Use element-aware or section-level chunking. Instead of slicing text blindly, treat sections as indivisible units of information.
+#### ***Novels: Narrative & Semantic Chunking***
+Novels are continuous, unstructured narrative texts where meaning bleeds fluidly across paragraphs and chapters.
+ - Strategy: Use Semantic Chunking or Recursive Character Splitting. You are prioritizing the flow of ideas, character development, and plot points over hard structural layouts.
 
 ### Stage 5
-Users can create prompts and questions to use when prompting the LLM on The Prompts and Questions page.
+Build out prompt functionality for the Ollama LLM. Users can create questions to use when prompting the LLM.
+- Users can create prompts and questions to use when prompting the LLM on The Prompts and Questions page.
 
 ### Stage 6
 Use the data gathered from the APIs to build timelines for each person.

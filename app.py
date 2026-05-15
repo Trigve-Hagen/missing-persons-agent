@@ -167,18 +167,41 @@ def edit_file(id):
 def edit_file_vectors(id):
     try:
       pdf_manager = PdfManager()
-      data = pdf_manager.get_vector_by_id(id)
+      data = pdf_manager.get_vector_by_ids([id])
     except Exception as e:
       flash(f"Error connecting to database: {e}", "danger")
       return redirect(url_for('file'))
 
     vector_data = {
-      'id': data[0].id,
-      'text': data[0].text,
-      'source': data[0].source,
+      'file_id': id,
+      'vector_id': data[0]['id'],
+      'text': data[0]['text'],
+      'source': data[0]['source'],
     }
 
     return flask.render_template('edit_file_vector.html', edit_id=id, vector_data=vector_data)
+
+@app.route('/set_file_vector', methods=['POST'])
+def set_file_vector():
+  form_data = request.form
+  file_id = form_data.get('file_id')
+
+  try:
+    vector_id = form_data.get('vector_id')
+    pdf_manager = PdfManager()
+    pdf_manager.update_data_by_id(vector_id)
+
+    flash(f"{vector_id} updated successfully!", "success")
+    return redirect(url_for('edit_file_vectors', id=file_id))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('edit_file_vectors', id=file_id))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('edit_file_vectors', id=file_id))
 
 @app.route('/set_file', methods=['POST'])
 def set_file():
@@ -1208,6 +1231,28 @@ def link_set_state(type, id):
       session.rollback()
       flash(f"An unexpected error occurred: {str(e)}", "danger")
       return redirect(url_for(type))
+
+@app.route('/delete_vector_item', methods=['POST'])
+def delete_vector_item():
+  form_data = request.form
+  file_id = form_data.get('file_id')
+  vector_id = form_data.get('vector_id')
+
+  try:
+    manager = PdfManager()
+    manager.delete_vector_by_id(ids=[vector_id])
+    flash(vector_id + " deleted successfully!", "success")
+    return redirect(url_for('edit_file', id=file_id))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('edit_file', id=file_id))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('edit_file', id=file_id))
+
 
 @app.route('/delete_item', methods=['POST'])
 def delete_item():

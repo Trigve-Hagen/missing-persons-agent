@@ -25,11 +25,12 @@
 
 <div class="row mt-5">
   <div class="col-md-12">
-    <form class="row g-4" action="/set_file" method="post" enctype="multipart/form-data" autocomplete="off">
-      <input type="hidden" class="form-control" id="file-vector-id" name="id" value="{{ vector_data.id }}" />
-      <div class="col-md-6">
-        <label for="file-vector-file" class="form-label">Text</label>
-        <input type="text" class="form-control" id="file-vector-text" name="text" value="{{ vector_data.id }}"  required>
+    <form class="row g-4" action="/set_file_vector" method="post" enctype="multipart/form-data" autocomplete="off">
+      <input type="hidden" class="form-control" id="file-vector-file-id" name="file_id" value="{{ vector_data.file_id }}" />
+      <input type="hidden" class="form-control" id="file-vector-id" name="vector_id" value="{{ vector_data.vector_id }}" />
+      <div class="col-md-9">
+        <label for="file-vector-text" class="form-label">Text</label>
+        <textarea class="form-control" id="file-vector-text" name="text" rows="3" required>{{ vector_data.text }}</textarea>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>
