@@ -32,11 +32,22 @@
           <tr>
               <td scope="row">{{ question.id }}</td>
               <td>{{ question.question }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_question', id=question.id) }}">Edit</a><br /><a class="btn btn-secondary mt-2" href="{{ url_for('link_set_state', type='question', id=question.id) }}">Set State</a><a class="btn btn-danger ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="question" data-bs-item-id="{{ question.id }}" data-bs-item="{{ question.name }}">Delete</a></td>
+              <td><a class="btn btn-secondary" href="{{ url_for('edit_question', id=question.id) }}">Edit</a><br /><a class="btn btn-secondary mt-2" href="{{ url_for('link_set_state', type='question', id=question.id) }}">Set State</a><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="question" data-bs-item-id="{{ question.id }}" data-bs-item="{{ question.name }}">Delete</a></td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+    <div class="pagination d-flex align-items-center">
+      {% if page > 1 %}
+          <a class="btn btn-secondary me-2" href="{{ url_for('question', page=page-1) }}">Previous</a>
+      {% endif %}
+
+      <p class="mb-0">Page {{ page }} of {{ total_pages }}</p>
+
+      {% if page < total_pages %}
+          <a class="btn btn-secondary ms-2" href="{{ url_for('question', page=page+1) }}">Next</a>
+      {% endif %}
+    </div>
   </div>
 </div>
 

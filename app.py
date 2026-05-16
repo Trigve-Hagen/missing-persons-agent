@@ -69,7 +69,7 @@ import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 
-per_page = 2
+per_page = 10
 
 available_devices = {
   # Standard Devices
@@ -297,8 +297,18 @@ def chatbox():
 
 @app.route('/notice')
 def notice():
-  all_notices = session.query(Notice).all()
-  return flask.render_template('notice.html', notices=all_notices)
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_notices = session.query(Notice).limit(per_page).offset(offset).all()
+  total = session.query(Notice).count()
+  total_pages = (total + per_page - 1) // per_page
+
+  return flask.render_template(
+    'notice.html',
+    notices=all_notices,
+    page=page,
+    total_pages=total_pages
+  )
 
 @app.route('/run_code_optimizer', methods=['POST'])
 def run_code_optimizer():
@@ -400,12 +410,22 @@ def set_notice(id, ifComplete):
 
 @app.route('/model')
 def model():
-  all_models = session.query(Model).all()
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_models = session.query(Model).limit(per_page).offset(offset).all()
+  total = session.query(Model).count()
+  total_pages = (total + per_page - 1) // per_page
 
   model_types = [
     ('ollama', 'Ollama'),
   ]
-  return flask.render_template('model.html', models=all_models, model_types=model_types)
+  return flask.render_template(
+    'model.html',
+    models=all_models,
+    page=page,
+    total_pages=total_pages,
+    model_types=model_types
+  )
 
 @app.route('/edit/model/<int:id>', methods=['GET', 'POST'])
 def edit_model(id):
@@ -418,11 +438,11 @@ def edit_model(id):
     ('ollama', 'Ollama'),
   ]
   model_data = {
-      'id': model.id,
-      'name': model.name,
-      'model': model.model,
-      'type': model.type,
-      'system': model.system
+    'id': model.id,
+    'name': model.name,
+    'model': model.model,
+    'type': model.type,
+    'system': model.system
   }
   return flask.render_template('edit_model.html', edit_id=id, model_data=model_data, model_types=model_types)
 
@@ -467,9 +487,20 @@ def set_model():
 
 @app.route('/model_params')
 def model_params():
-  all_model_params = session.query(ModelParams).all()
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_model_params = session.query(ModelParams).limit(per_page).offset(offset).all()
+  total = session.query(ModelParams).count()
+  total_pages = (total + per_page - 1) // per_page
+
   owner_select = session.query(Model).all()
-  return flask.render_template('model_params.html', model_params=all_model_params, owners=owner_select)
+  return flask.render_template(
+    'model_params.html',
+    model_params=all_model_params,
+    page=page,
+    total_pages=total_pages,
+    owners=owner_select
+  )
 
 @app.route('/edit/model_params/<int:id>', methods=['GET', 'POST'])
 def edit_model_params(id):
@@ -520,8 +551,18 @@ def set_model_params():
 
 @app.route('/prompt')
 def prompt():
-  all_prompts = session.query(Prompt).all()
-  return flask.render_template('prompt.html', prompts=all_prompts)
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_prompts = session.query(Prompt).limit(per_page).offset(offset).all()
+  total = session.query(Prompt).count()
+  total_pages = (total + per_page - 1) // per_page
+
+  return flask.render_template(
+    'prompt.html',
+    prompts=all_prompts,
+    page=page,
+    total_pages=total_pages
+  )
 
 @app.route('/edit/prompt/<int:id>', methods=['GET', 'POST'])
 def edit_prompt(id):
@@ -567,8 +608,18 @@ def set_prompt():
 
 @app.route('/question')
 def question():
-  all_questions = session.query(Question).all()
-  return flask.render_template('question.html', questions=all_questions)
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_questions = session.query(Question).limit(per_page).offset(offset).all()
+  total = session.query(Question).count()
+  total_pages = (total + per_page - 1) // per_page
+
+  return flask.render_template(
+    'question.html',
+    questions=all_questions,
+    page=page,
+    total_pages=total_pages
+  )
 
 @app.route('/edit/question/<int:id>', methods=['GET', 'POST'])
 def edit_question(id):
@@ -1120,25 +1171,35 @@ def set_email():
 
 @app.route('/api')
 def api():
-    all_apis = session.query(Api).all()
-    return flask.render_template('api.html', apis=all_apis)
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_apis = session.query(Api).limit(per_page).offset(offset).all()
+  total = session.query(Api).count()
+  total_pages = (total + per_page - 1) // per_page
+
+  return flask.render_template(
+    'api.html',
+    apis=all_apis,
+    page=page,
+    total_pages=total_pages
+  )
 
 @app.route('/edit/api/<int:id>', methods=['GET', 'POST'])
 def edit_api(id):
-    api = session.get(Api, id)
-    if not api:
-      return redirect(url_for('api'))
+  api = session.get(Api, id)
+  if not api:
+    return redirect(url_for('api'))
 
-    api_data = {
-        'id': api.id,
-        'name': api.name,
-        'type': api.type,
-        'url': api.url,
-        'key': api.key,
-        'secret': api.secret,
-        'description': api.description
-    }
-    return flask.render_template('edit_api.html', edit_id=id, api_data=api_data)
+  api_data = {
+    'id': api.id,
+    'name': api.name,
+    'type': api.type,
+    'url': api.url,
+    'key': api.key,
+    'secret': api.secret,
+    'description': api.description
+  }
+  return flask.render_template('edit_api.html', edit_id=id, api_data=api_data)
 
 @app.route('/set_api', methods=['POST'])
 def set_api():
@@ -1179,11 +1240,23 @@ def set_api():
 
 @app.route('/api_field')
 def api_field():
-    all_api_fields = session.query(ApiField).all()
-    value_options = ValueOptions(session=session)
-    options = value_options.get_value_options()
-    owner_select = session.query(Api).all()
-    return flask.render_template('api_field.html', api_fields=all_api_fields, value_options=options, owners=owner_select)
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_api_fields = session.query(ApiField).limit(per_page).offset(offset).all()
+  total = session.query(ApiField).count()
+  total_pages = (total + per_page - 1) // per_page
+
+  value_options = ValueOptions(session=session)
+  options = value_options.get_value_options()
+  owner_select = session.query(Api).all()
+  return flask.render_template(
+    'api_field.html',
+    api_fields=all_api_fields,
+    page=page,
+    total_pages=total_pages,
+    value_options=options,
+    owners=owner_select
+  )
 
 @app.route('/edit/api_field/<int:id>', methods=['GET', 'POST'])
 def edit_api_field(id):
@@ -1236,6 +1309,12 @@ def set_api_field():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('api_field'))
+
+@app.route('/chunk')
+def chunk():
+  people_utils = PeopleUtils(session=session)
+  person, aliases, addresses, emails, phones = people_utils.get_all_person()
+  return flask.render_template('chunk.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
 
 @app.route('/dashboard')
 def dashboard():

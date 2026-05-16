@@ -1,0 +1,43 @@
+<!-- templates/view_person.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Chunks{% endblock %}
+
+{% block content %}
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <h1 class="my-2">Chunks</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h3 class="my-2">Finish up stuff</h3>
+
+    <p>Configuration page for chunk strategies. Last steps to Release:</p>
+    <ul>
+      <li>Create objects from all data in Person, Alias, Phone, etc.. entities.</li>
+      <li>Save them to the chroma db when you create them. Create the edit, delete functions.</li>
+      <li>Make sure that the models can be switched on all chats and prompts on the Notice page.</li>
+      <li>Build out configuration for chunk strategies.</li>
+      <li>Check for anything else in OllamaManager.
+        <ul>
+          <li>Update and remove the deprecated RetrievalQA.</li>
+          <li>Run the code optimizer and check for other deprecated code.</li>
+          <li>Look for unused code, find a python phpcs, phpstan, etc.., check if anything needs refactoring.</li>
+        </ul>
+      </li>
+      <li>Build probability functionality and the other functions for Dashboard.</li>
+      <li>Test and create release.</li>
+    </ul>
+  </div>
+</div>
+
+{% endblock %}
