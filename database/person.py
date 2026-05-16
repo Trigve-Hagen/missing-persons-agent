@@ -1,5 +1,18 @@
 from sqlalchemy import ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func
 from database.base import Base, NullToEmptyString
+from sqlalchemy.orm import relationship
+from datetime import datetime
+
+class Category(Base):
+  __tablename__ = "categories"
+
+  id = Column("id", Integer, primary_key=True)
+  type = Column(NullToEmptyString(20)) # contactType
+  name = Column(NullToEmptyString(255))
+
+  def __init__(self, type, name):
+    self.type = type
+    self.name = name
 
 class Person(Base):
   __tablename__ = "people"
@@ -10,7 +23,7 @@ class Person(Base):
   lastName = Column(NullToEmptyString)
   sirName = Column(NullToEmptyString)
   suffix = Column(NullToEmptyString)
-  type = Column(Integer)
+  type = Column(Integer, ForeignKey('categories.id'))
   height = Column(Integer)
   weight = Column(Integer)
   hairColor = Column(NullToEmptyString)
@@ -18,9 +31,16 @@ class Person(Base):
   ssn = Column(NullToEmptyString)
   gender = Column(NullToEmptyString)
   dob = Column("dob", DateTime)
+  missing = Column("missing", DateTime)
   owner = Column(Integer, default=0)
+  # Relationships
+  category = relationship(Category)
+  emails = relationship("Email", backref="person")
+  phones = relationship("Phone", backref="person")
+  addresses = relationship("Address", backref="person")
+  aliases = relationship("Alias", backref="person")
 
-  def __init__(self, firstName, middleName, lastName, sirName, suffix, type, height, weight, hairColor, eyeColor, ssn, gender, dob, owner):
+  def __init__(self, firstName, middleName, lastName, sirName, suffix, type, height, weight, hairColor, eyeColor, ssn, gender, dob, missing, owner):
     self.firstName = firstName
     self.middleName = middleName
     self.lastName = lastName
@@ -34,7 +54,31 @@ class Person(Base):
     self.ssn = ssn
     self.gender = gender
     self.dob = dob
+    self.missing = missing
     self.owner = owner
+
+  def __repr__(self):
+    # 1. Fetch related data and handle None values
+    cat_name = self.category.name if self.category else "Unknown"
+    age = str(datetime.now().year - self.dob.year) if self.dob else "Unknown"
+
+    emails_list = ", ".join([e.email for e in self.emails]) if self.emails else "None"
+    phones_list = ", ".join([p.phone for p in self.phones]) if self.phones else "None"
+    addresses_list = ", ".join([a.address for a in self.addresses]) if self.addresses else "None"
+    aliases_list = ", ".join([al.alias for al in self.aliases]) if self.aliases else "None"
+
+    s1, s2, s3, s4, s5 = self.sirName, self.firstName, self.middleName, self.lastName, self.suffix
+    name = " ".join([s for s in [s1, s2, s3, s4, s5] if s])
+
+    # 2. Build the sentence chunk
+    chunk = (
+        f"Person {name} is a {cat_name}. They are {age} years old."
+        f"Physical traits: {self.height} tall, {self.weight} weight, {self.eyeColor} eyes, {self.hairColor} hair. "
+        f"Contact information includes emails: {emails_list}, and phones: {phones_list}. "
+        f"Addresses are registered at: {addresses_list}. "
+        f"Known aliases for this person are: {aliases_list}."
+    )
+    return chunk
 
 class Alias(Base):
   __tablename__ = "aliases"

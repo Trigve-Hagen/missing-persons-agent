@@ -1,7 +1,6 @@
 from sqlalchemy import inspect, select
 from database.state import State
-from database.category import Category
-from database.person import Person, Alias, Email, Phone, Address
+from database.person import Category, Person, Alias, Email, Phone, Address
 
 def object_as_dict(obj):
   return {c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs}

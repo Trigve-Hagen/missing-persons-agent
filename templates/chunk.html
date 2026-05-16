@@ -5,22 +5,22 @@
 
 {% block content %}
 
-<div class="row mt-5">
+<h1 class="mt-4 mb-0">Chunks</h1>
+<p class="mt-1 mb-4">Alias, Address, Email, Phone and File need a person as an owner.</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
   <div class="col-md-12">
-    <h1 class="my-2">Chunks</h1>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
     <h3 class="my-2">Finish up stuff</h3>
-
     <p>Configuration page for chunk strategies. Last steps to Release:</p>
     <ul>
       <li>Create objects from all data in Person, Alias, Phone, etc.. entities.</li>
@@ -35,6 +35,7 @@
         </ul>
       </li>
       <li>Build probability functionality and the other functions for Dashboard.</li>
+      <li>Refactore managing the vector db for best resullts.</li>
       <li>Test and create release.</li>
     </ul>
   </div>

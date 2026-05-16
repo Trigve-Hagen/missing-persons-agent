@@ -55,10 +55,8 @@ from datetime import datetime
 from database.base import Base
 from database.state import State, Notice
 from database.model import Model, ModelParams, Prompt, Question
-from database.category import Category
-from database.news import News
 from database.apis import Api, ApiField
-from database.person import Person, Alias, Email, Phone, Address, File
+from database.person import Category, Person, Alias, Email, Phone, Address, File
 from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
 from resources import Resources
@@ -778,6 +776,8 @@ def edit_person(id):
   if not person:
     return redirect(url_for('person'))
 
+  print(repr(person))
+
   people_utils = PeopleUtils(session=session)
   height_options = people_utils.get_height_options()
   contactType_select, hair_color_codes, eye_colors = people_utils.people_params()
@@ -799,6 +799,7 @@ def edit_person(id):
     'ssn': person.ssn,
     'gender': person.gender,
     'dob': person.dob.strftime('%Y-%m-%d'),
+    'missing': person.dob.strftime('%Y-%m-%d'),
     'owner': person.owner
   }
   return flask.render_template('edit_person.html', edit_id=id, contactTypes=contactType_select, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, sir_names=sir_names, person_data=person_data)
@@ -808,7 +809,8 @@ def set_person():
   form_data = request.form
   try:
     user = session.execute(select(Person).filter_by(id = form_data.get('id'))).scalar_one_or_none()
-    formatted_date = datetime.strptime(form_data.get('dob'), '%Y-%m-%d')
+    formatted_dob_date = datetime.strptime(form_data.get('dob'), '%Y-%m-%d')
+    formatted_missing_date = datetime.strptime(form_data.get('missing'), '%Y-%m-%d')
     if user:
       uporadd = "updated"
       user.firstName=form_data.get('firstName')
@@ -823,7 +825,8 @@ def set_person():
       user.eyeColor=form_data.get('eyeColor')
       user.ssn=form_data.get('ssn')
       user.gender=form_data.get('gender')
-      user.dob=formatted_date
+      user.dob=formatted_dob_date
+      user.missing=formatted_missing_date
       user.owner=form_data.get('owner')
     else:
       uporadd = "added"
@@ -840,7 +843,8 @@ def set_person():
         eyeColor=form_data.get('eyeColor'),
         ssn=form_data.get('ssn'),
         gender=form_data.get('gender'),
-        dob=formatted_date,
+        dob=formatted_dob_date,
+        missing=formatted_missing_date,
         owner=form_data.get('owner')
       )
 
