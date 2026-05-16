@@ -11,27 +11,27 @@
           <a class="nav-link{% if request.endpoint == 'index' %} active{% endif %}" href="{{ url_for('index') }}">Home</a>
         </li>
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle{% if request.endpoint == 'person' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'dashboard' or request.endpoint == 'application_state' or request.endpoint == 'resources' or request.endpoint == 'category' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Dashboard
           </a>
           <ul class="dropdown-menu" aria-labelledby="dashboard-dropdown">
-            <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('application_state') }}">Application State</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('resources') }}">Resources</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('category') }}">Category</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'dashboard' %} active{% endif %}" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'application_state' %} active{% endif %}" href="{{ url_for('application_state') }}">Application State</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'resources' %} active{% endif %}" href="{{ url_for('resources') }}">Resources</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'category' %} active{% endif %}" href="{{ url_for('category') }}">Category</a></li>
           </ul>
         </div>
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle{% if request.endpoint == 'person' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'person' or request.endpoint == 'alias' or request.endpoint == 'address' or request.endpoint == 'phone' or request.endpoint == 'email' or request.endpoint == 'file' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Person
           </a>
           <ul class="dropdown-menu" aria-labelledby="person-dropdown">
-            <li><a class="dropdown-item" href="{{ url_for('person') }}">Person</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('alias') }}">Alias</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('address') }}">Address</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('phone') }}">Phone</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('email') }}">Email</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('file') }}">File</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'person' %} active{% endif %}" href="{{ url_for('person') }}">Person</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'alias' %} active{% endif %}" href="{{ url_for('alias') }}">Alias</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'address' %} active{% endif %}" href="{{ url_for('address') }}">Address</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'phone' %} active{% endif %}" href="{{ url_for('phone') }}">Phone</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'email' %} active{% endif %}" href="{{ url_for('email') }}">Email</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'file' %} active{% endif %}" href="{{ url_for('file') }}">File</a></li>
           </ul>
         </div>
         <div class="dropdown">

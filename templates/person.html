@@ -40,24 +40,17 @@
         {% endfor %}
       </tbody>
     </table>
-    {% macro render_pagination(pagination, endpoint) %}
-      <div class="page-items">
-        {{ pagination.first }} - {{ pagination.last }} of {{ pagination.total }}
-      </div>
-      <div class=pagination>
-        {% for page in pagination.iter_pages() %}
-          {% if page %}
-            {% if page != pagination.page %}
-              <a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a>
-            {% else %}
-              <strong>{{ page }}</strong>
-            {% endif %}
-          {% else %}
-            <span class=ellipsis>…</span>
-          {% endif %}
-        {% endfor %}
-      </div>
-    {% endmacro %}
+    <div class="pagination d-flex align-items-center">
+      {% if page > 1 %}
+          <a class="btn btn-secondary me-2" href="{{ url_for('person', page=page-1) }}">Previous</a>
+      {% endif %}
+
+      <p class="mb-0">Page {{ page }} of {{ total_pages }}</p>
+
+      {% if page < total_pages %}
+          <a class="btn btn-secondary ms-2" href="{{ url_for('person', page=page+1) }}">Next</a>
+      {% endif %}
+    </div>
   </div>
 </div>
 
@@ -79,11 +72,29 @@
         </select>
       </div>
       <div class="col-md-6">
+        <label for="person-owner" class="form-label">Person</label>
+        <select class="form-select" id="person-owner" name="owner">
+          <option value="0">Choose...</option>
+          {% for person in owners %}
+            <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
         <label for="person-sirName" class="form-label">Sir Name</label>
         <select class="form-select" id="person-sirName" name="sirName">
           <option value="">Choose...</option>
           {% for name in sir_names %}
             <option value="{{ name }}">{{ name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="person-suffix" class="form-label">Suffix</label>
+        <select class="form-select" id="person-suffix" name="suffix">
+          <option value="">Choose...</option>
+          {% for s in suffixes %}
+            <option value="{{ s }}">{{ s }}</option>
           {% endfor %}
         </select>
       </div>
@@ -98,15 +109,6 @@
       <div class="col-md-3">
         <label for="person-lastName" class="form-label">Last name</label>
         <input type="text" class="form-control" id="person-lastName" name="lastName" value="" required>
-      </div>
-      <div class="col-md-3">
-        <label for="person-suffix" class="form-label">Suffix</label>
-        <select class="form-select" id="person-suffix" name="suffix">
-          <option value="">Choose...</option>
-          {% for s in suffixes %}
-            <option value="{{ s }}">{{ s }}</option>
-          {% endfor %}
-        </select>
       </div>
       <div class="col-md-3">
         <label for="person-height" class="form-label">Height - In Feet and Inches</label>

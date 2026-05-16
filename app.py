@@ -48,7 +48,7 @@ from ollama_manager import OllamaManager
 from config import Config
 from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for, jsonify
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import create_engine, inspect, exc, select, update
+from sqlalchemy import create_engine, inspect, exc, select, update, func
 from sqlalchemy_utils import database_exists
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -68,6 +68,8 @@ from code_loader import CodeLoader
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
+
+per_page = 2
 
 available_devices = {
   # Standard Devices
@@ -93,6 +95,9 @@ available_devices = {
   "meta": "Meta", # Device used for loading large model skeletons without allocating RAM
   None: "Auto-detects" # Auto-detects best available hardware (typically CUDA -> CPU)
 }
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 def resource_path(relative_path):
   """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -126,17 +131,26 @@ def add_nosniff_header_to_static(response):
 def index():
   return flask.render_template('index.html')
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
-
 @app.route('/file')
 def file():
-  all_files = session.query(File).all()
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_files = session.query(File).limit(per_page).offset(offset).all()
+  total = session.query(File).count()
+  total_pages = (total + per_page - 1) // per_page
+
   stmt = select(Category).where(Category.type == "fileType")
   fileType_select = session.execute(stmt).scalars().all()
   owner_select = session.query(Person).all()
 
-  return flask.render_template('file.html', files=all_files, fileTypes=fileType_select, owners=owner_select)
+  return flask.render_template(
+    'file.html',
+    files=all_files,
+    page=page,
+    total_pages=total_pages,
+    fileTypes=fileType_select,
+    owners=owner_select
+  )
 
 @app.route('/edit/file/<int:id>', methods=['GET', 'POST'])
 def edit_file(id):
@@ -600,7 +614,11 @@ def set_question():
 
 @app.route('/category')
 def category():
-  all_categories = session.query(Category).all()
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_categories = session.query(Category).limit(per_page).offset(offset).all()
+  total = session.query(Category).count()
+  total_pages = (total + per_page - 1) // per_page
 
   category_types = [
     ('addressType', 'Address Type'),
@@ -608,7 +626,13 @@ def category():
     ('emailType', 'Email Type'),
     ('phoneType', 'Phone Type')
   ]
-  return flask.render_template('category.html', categories=all_categories, category_types=category_types)
+  return flask.render_template(
+    'category.html',
+    categories=all_categories,
+    page=page,
+    total_pages=total_pages,
+    category_types=category_types
+  )
 
 @app.route('/edit/category/<int:id>', methods=['GET', 'POST'])
 def edit_category(id):
@@ -661,17 +685,40 @@ def set_category():
 
 @app.route('/person')
 def person():
-  page = 1
-  per_page = 20  # Number of items per page
+  # Define pagination settings
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+
   stmt = select(Person, Category.name).join(Category, Person.type == Category.id)
-  paginated_stmt = stmt.limit(per_page).offset((page - 1) * per_page)
-  all_people = session.execute(paginated_stmt).all()
+
+  # 2. Get total items and calculate total pages (math.ceil ensures partial pages count as 1)
+  total_items = session.scalar(select(func.count()).select_from(stmt.subquery()))
+  total_pages = math.ceil(total_items / per_page)
+
+  # 3. Apply pagination to your statement and execute
+  paged_stmt = stmt.limit(per_page).offset(offset)
+  all_people = session.execute(paged_stmt).all()
+
   people_utils = PeopleUtils(session=session)
   height_options = people_utils.get_height_options()
   contactType_select, hair_color_codes, eye_colors = people_utils.people_params()
   sir_names, name_suffixes = people_utils.name_params()
+  owner_select = session.query(Person).all()
 
-  return flask.render_template('person.html', people=all_people, contactTypes=contactType_select, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, sir_names=sir_names)
+  return flask.render_template(
+    'person.html',
+    people=all_people,
+    page=page,
+    total_pages=total_pages,
+    contactTypes=contactType_select,
+    height_options=height_options,
+    weight_options=range(10, 401),
+    hair_color_codes=hair_color_codes,
+    eye_colors=eye_colors,
+    suffixes=name_suffixes,
+    sir_names=sir_names,
+    owners=owner_select
+  )
 
 @app.route('/edit/person/<int:id>', methods=['GET', 'POST'])
 def edit_person(id):
@@ -687,20 +734,21 @@ def edit_person(id):
 
   # Serialize to JSON (assuming basic dictionary serialization)
   person_data = {
-      'id': person.id,
-      'firstName': person.firstName,
-      'middleName': person.middleName,
-      'lastName': person.lastName,
-      'sirName': person.sirName,
-      'suffix': person.suffix,
-      'type': person.type,
-      'height': person.height,
-      'weight': person.weight,
-      'hairColor': person.hairColor,
-      'eyeColor': person.eyeColor,
-      'ssn': person.ssn,
-      'gender': person.gender,
-      'dob': person.dob.strftime('%Y-%m-%d'),
+    'id': person.id,
+    'firstName': person.firstName,
+    'middleName': person.middleName,
+    'lastName': person.lastName,
+    'sirName': person.sirName,
+    'suffix': person.suffix,
+    'type': person.type,
+    'height': person.height,
+    'weight': person.weight,
+    'hairColor': person.hairColor,
+    'eyeColor': person.eyeColor,
+    'ssn': person.ssn,
+    'gender': person.gender,
+    'dob': person.dob.strftime('%Y-%m-%d'),
+    'owner': person.owner
   }
   return flask.render_template('edit_person.html', edit_id=id, contactTypes=contactType_select, height_options=height_options, weight_options=range(10, 401), hair_color_codes=hair_color_codes, eye_colors=eye_colors, suffixes=name_suffixes, sir_names=sir_names, person_data=person_data)
 
@@ -725,6 +773,7 @@ def set_person():
       user.ssn=form_data.get('ssn')
       user.gender=form_data.get('gender')
       user.dob=formatted_date
+      user.owner=form_data.get('owner')
     else:
       uporadd = "added"
       user = Person(
@@ -740,7 +789,8 @@ def set_person():
         eyeColor=form_data.get('eyeColor'),
         ssn=form_data.get('ssn'),
         gender=form_data.get('gender'),
-        dob=formatted_date
+        dob=formatted_date,
+        owner=form_data.get('owner')
       )
 
     session.merge(user)
@@ -759,35 +809,48 @@ def set_person():
 
 @app.route('/alias')
 def alias():
-  all_aliases = session.query(Alias).all()
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_aliases = session.query(Alias).limit(per_page).offset(offset).all()
+  total = session.query(Alias).count()
+  total_pages = (total + per_page - 1) // per_page
+
   owner_select = session.query(Person).all()
   people_utils = PeopleUtils(session=session)
   sir_names, name_suffixes = people_utils.name_params()
 
-  return flask.render_template('alias.html', aliases=all_aliases, suffixes=name_suffixes, sir_names=sir_names, owners=owner_select)
+  return flask.render_template(
+    'alias.html',
+    aliases=all_aliases,
+    page=page,
+    total_pages=total_pages,
+    suffixes=name_suffixes,
+    sir_names=sir_names,
+    owners=owner_select
+  )
 
 @app.route('/edit/alias/<int:id>', methods=['GET', 'POST'])
 def edit_alias(id):
-    # Retrieve alias or return 404
-    alias = session.get(Alias, id)
-    if not alias:
-      return redirect(url_for('alias'))
+  # Retrieve alias or return 404
+  alias = session.get(Alias, id)
+  if not alias:
+    return redirect(url_for('alias'))
 
-    # Serialize to JSON (assuming basic dictionary serialization)
-    alias_data = {
-        'id': alias.id,
-        'firstName': alias.firstName,
-        'middleName': alias.middleName,
-        'lastName': alias.lastName,
-        'sirName': alias.sirName,
-        'suffix': alias.suffix,
-        'owner': alias.owner
-    }
-    people_utils = PeopleUtils(session=session)
-    sir_names, name_suffixes = people_utils.name_params()
-    owner_select = session.query(Person).all()
+  # Serialize to JSON (assuming basic dictionary serialization)
+  alias_data = {
+    'id': alias.id,
+    'firstName': alias.firstName,
+    'middleName': alias.middleName,
+    'lastName': alias.lastName,
+    'sirName': alias.sirName,
+    'suffix': alias.suffix,
+    'owner': alias.owner
+  }
+  people_utils = PeopleUtils(session=session)
+  sir_names, name_suffixes = people_utils.name_params()
+  owner_select = session.query(Person).all()
 
-    return flask.render_template('edit_alias.html', edit_id=id, alias_data=alias_data, suffixes=name_suffixes, sir_names=sir_names, owners=owner_select)
+  return flask.render_template('edit_alias.html', edit_id=id, alias_data=alias_data, suffixes=name_suffixes, sir_names=sir_names, owners=owner_select)
 
 @app.route('/set_alias', methods=['POST'])
 def set_alias():
@@ -828,39 +891,51 @@ def set_alias():
 
 @app.route('/address')
 def address():
-    all_addresses = session.query(Address).all()
-    stmt = select(Category).where(Category.type == "addressType")
-    addressType_select = session.execute(stmt).scalars().all()
-    owner_select = session.query(Person).all()
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_addresses = session.query(Address).limit(per_page).offset(offset).all()
+  total = session.query(Address).count()
+  total_pages = (total + per_page - 1) // per_page
 
-    return flask.render_template('address.html', addresses=all_addresses, addressTypes=addressType_select, owners=owner_select)
+  stmt = select(Category).where(Category.type == "addressType")
+  addressType_select = session.execute(stmt).scalars().all()
+  owner_select = session.query(Person).all()
+
+  return flask.render_template(
+    'address.html',
+    addresses=all_addresses,
+    page=page,
+    total_pages=total_pages,
+    addressTypes=addressType_select,
+    owners=owner_select
+  )
 
 @app.route('/edit/address/<int:id>', methods=['GET', 'POST'])
 def edit_address(id):
-    # Retrieve address or return 404
-    address = session.get(Address, id)
-    if not address:
-      return redirect(url_for('address'))
+  # Retrieve address or return 404
+  address = session.get(Address, id)
+  if not address:
+    return redirect(url_for('address'))
 
-    stmt = select(Category).where(Category.type == "addressType")
-    addressType_select = session.execute(stmt).scalars().all()
-    owner_select = session.query(Person).all()
+  stmt = select(Category).where(Category.type == "addressType")
+  addressType_select = session.execute(stmt).scalars().all()
+  owner_select = session.query(Person).all()
 
-    # Serialize to JSON (assuming basic dictionary serialization)
-    address_data = {
-        'id': address.id,
-        'addressType': address.type,
-        'name': address.name,
-        'type': address.type,
-        'address1': address.address1,
-        'address2': address.address2,
-        'city': address.city,
-        'state': address.state,
-        'zip5': address.zip5,
-        'zip4': address.zip4,
-        'owner': address.owner
-    }
-    return flask.render_template('edit_address.html', edit_id=id, address_data=address_data, addressTypes=addressType_select, owners=owner_select)
+  # Serialize to JSON (assuming basic dictionary serialization)
+  address_data = {
+    'id': address.id,
+    'addressType': address.type,
+    'name': address.name,
+    'type': address.type,
+    'address1': address.address1,
+    'address2': address.address2,
+    'city': address.city,
+    'state': address.state,
+    'zip5': address.zip5,
+    'zip4': address.zip4,
+    'owner': address.owner
+  }
+  return flask.render_template('edit_address.html', edit_id=id, address_data=address_data, addressTypes=addressType_select, owners=owner_select)
 
 @app.route('/set_address', methods=['POST'])
 def set_address():
@@ -907,29 +982,41 @@ def set_address():
 
 @app.route('/phone')
 def phone():
-    all_phones = session.query(Phone).all()
-    stmt = select(Category).where(Category.type == "phoneType")
-    phoneType_select = session.execute(stmt).scalars().all()
-    owner_select = session.query(Person).all()
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_phones = session.query(Phone).limit(per_page).offset(offset).all()
+  total = session.query(Phone).count()
+  total_pages = (total + per_page - 1) // per_page
 
-    return flask.render_template('phone.html', phones=all_phones, phoneTypes=phoneType_select, owners=owner_select)
+  stmt = select(Category).where(Category.type == "phoneType")
+  phoneType_select = session.execute(stmt).scalars().all()
+  owner_select = session.query(Person).all()
+
+  return flask.render_template(
+    'phone.html',
+    phones=all_phones,
+    page=page,
+    total_pages=total_pages,
+    phoneTypes=phoneType_select,
+    owners=owner_select
+  )
 
 @app.route('/edit/phone/<int:id>', methods=['GET', 'POST'])
 def edit_phone(id):
-    phone = session.get(Phone, id)
-    if not phone:
-      return redirect(url_for('phone'))
+  phone = session.get(Phone, id)
+  if not phone:
+    return redirect(url_for('phone'))
 
-    phone_data = {
-        'id': phone.id,
-        'type': phone.type,
-        'phone': phone.phone,
-        'owner': phone.owner
-    }
-    stmt = select(Category).where(Category.type == "phoneType")
-    phoneType_select = session.execute(stmt).scalars().all()
-    owner_select = session.query(Person).all()
-    return flask.render_template('edit_phone.html', edit_id=id, phone_data=phone_data, phoneTypes=phoneType_select, owners=owner_select)
+  phone_data = {
+    'id': phone.id,
+    'type': phone.type,
+    'phone': phone.phone,
+    'owner': phone.owner
+  }
+  stmt = select(Category).where(Category.type == "phoneType")
+  phoneType_select = session.execute(stmt).scalars().all()
+  owner_select = session.query(Person).all()
+  return flask.render_template('edit_phone.html', edit_id=id, phone_data=phone_data, phoneTypes=phoneType_select, owners=owner_select)
 
 @app.route('/set_phone', methods=['POST'])
 def set_phone():
@@ -964,11 +1051,24 @@ def set_phone():
 
 @app.route('/email')
 def email():
-    all_emails = session.query(Email).all()
-    stmt = select(Category).where(Category.type == "emailType")
-    emailType_select = session.execute(stmt).scalars().all()
-    owner_select = session.query(Person).all()
-    return flask.render_template('email.html', emails=all_emails, emailTypes=emailType_select, owners=owner_select)
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * per_page
+  all_emails = session.query(Email).limit(per_page).offset(offset).all()
+  total = session.query(Email).count()
+  total_pages = (total + per_page - 1) // per_page
+
+  stmt = select(Category).where(Category.type == "emailType")
+  emailType_select = session.execute(stmt).scalars().all()
+  owner_select = session.query(Person).all()
+
+  return flask.render_template(
+    'email.html',
+    emails=all_emails,
+    page=page,
+    total_pages=total_pages,
+    emailTypes=emailType_select,
+    owners=owner_select
+  )
 
 @app.route('/edit/email/<int:id>', methods=['GET', 'POST'])
 def edit_email(id):

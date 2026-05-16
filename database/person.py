@@ -18,8 +18,9 @@ class Person(Base):
   ssn = Column(NullToEmptyString)
   gender = Column(NullToEmptyString)
   dob = Column("dob", DateTime)
+  owner = Column(Integer, default=0)
 
-  def __init__(self, firstName, middleName, lastName, sirName, suffix, type, height, weight, hairColor, eyeColor, ssn, gender, dob):
+  def __init__(self, firstName, middleName, lastName, sirName, suffix, type, height, weight, hairColor, eyeColor, ssn, gender, dob, owner):
     self.firstName = firstName
     self.middleName = middleName
     self.lastName = lastName
@@ -33,6 +34,7 @@ class Person(Base):
     self.ssn = ssn
     self.gender = gender
     self.dob = dob
+    self.owner = owner
 
 class Alias(Base):
   __tablename__ = "aliases"
@@ -83,7 +85,7 @@ class Email(Base):
 
   id = Column("id", Integer, primary_key=True)
   type = Column(Integer) # personel, work
-  email = Column(NullToEmptyString(255), unique=True, nullable=False)
+  email = Column(NullToEmptyString(255), nullable=False)
   owner = Column(Integer, ForeignKey("people.id"))
 
   def __init__(self, type, email, owner):
@@ -96,7 +98,7 @@ class Phone(Base):
 
   id = Column("id", Integer, primary_key=True)
   type = Column(Integer) # cell, home, work
-  phone = Column(NullToEmptyString(20), unique=True, nullable=False)
+  phone = Column(NullToEmptyString(20), nullable=False)
   owner = Column(Integer, ForeignKey("people.id"))
 
   def __init__(self, type, phone, owner):

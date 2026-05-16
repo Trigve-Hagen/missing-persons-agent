@@ -5,24 +5,22 @@
 
 {% block content %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="row mt-5">
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">
-          {{ message }}
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
-
 <div class="row mt-5">
   <div class="col-md-3">
     {% include 'includes/sidebar_menu.html' %}
   </div>
   <div class="col-md-9">
     <h1 class="my-4">Data Center</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     <div class="row">
       <div class="col-md-12">
         <p class="my-4 mb-0"><b>Person</b></p>

@@ -43,6 +43,19 @@
             </select>
           </div>
           <div class="col-md-6">
+            <label for="person-owner" class="form-label">Person</label>
+            <select class="form-select" id="person-owner" name="owner">
+              <option value="0">Choose...</option>
+              {% for person in owners %}
+                {% if person_data.owner == person.id %}
+                  <option value="{{ person.id }}" selected>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
+                {% else %}
+                  <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
             <label for="person-sirName" class="form-label">Sir Name</label>
             <select class="form-select" id="person-sirName" name="sirName">
               <option value="">Choose...</option>

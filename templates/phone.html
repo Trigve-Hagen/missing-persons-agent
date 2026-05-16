@@ -43,6 +43,17 @@
         {% endfor %}
       </tbody>
     </table>
+    <div class="pagination d-flex align-items-center">
+      {% if page > 1 %}
+          <a class="btn btn-secondary me-2" href="{{ url_for('phone', page=page-1) }}">Previous</a>
+      {% endif %}
+
+      <p class="mb-0">Page {{ page }} of {{ total_pages }}</p>
+
+      {% if page < total_pages %}
+          <a class="btn btn-secondary ms-2" href="{{ url_for('phone', page=page+1) }}">Next</a>
+      {% endif %}
+    </div>
   </div>
 </div>
 
