@@ -1,4 +1,37 @@
 # Missing Persons Agent
+Gather information by filling out the Person, Phones, Emails, Addresses, Aliases and uploading any Pdfs, Excels or Word docs with information on the case. You can use and APIs or Rss feeds. The forms make it easy to connect and save the data you find online.<br /><br />You can also upload information on how to investigate a missing person and train the model on how you want it done. The prompts work this way too. You can create a way of doing things based upon your own ideas. There is also a model that gives 10 sugestions on anything you ask it for. By providing really precise prompts and questions you can get really detailed answers. Study prompt engineering.<br /><br />The data gets saved to a Chroma vector database that the LLM using RAG trains on and learns from. Files and Person when saved automatically saves data to the Chroma vector database. The person consolidates all the data in the list of entites under the Person menu into one chunk per person. The files saves separately.
+
+- Categories
+  - Categories - You can have different categories for people, phones, emails, addresses, Events and Notes. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
+- Person
+  - Person - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Notes that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Notes and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data to and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database. Once you have created a Person fill in Emails, Phones, Addresses, Aliases, Events, and Notes and edit the Person again and save it so all the data will be edited into the chunk.<br /><br />Make sure to choose the person you want to add the data to.
+  - Addresses - Addresses is any address used by the person. Create a Type for it in Categories first. Example Category: Home, Work, etc..
+  - Emails - Emails are any emails used by the person. Create a Type for it in Categories first. Example Category: Personal, Work, etc..
+  - Phones - Phones are any phone number used by the person. Create a Type for it in Categories first. Example Category: Cell, Work, etc..
+  - Aliases - Alias are any aliases used by the person.
+  - Events - Events are any event that happens related to the person. Create a Type for it in Categories first. Example Category: Alibi, Court Date, etc..
+  - Notes - Notes are any other data related to the person.
+
+- Files - You can upload any of these files. They will be added as data for the LLM.
+  - Pdf
+  - Excel
+  - Csv
+  - Word
+  - gif, webp, jpg, jpeg, png
+  - mp3 - Audio files
+  - mp4 - Movie files
+
+- Data APIs
+  - RSS Feeds - Use RSS Feeds to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.
+  - Data APIs - Use APIs to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.
+
+- Model APIs
+  - Ollama - This is the initial Model I used because it all runs on local and is testable without paid subscription. Can be a bit slow.. You can speed this up by selecting GPU in the form on the upper right corner.
+  - OpenAI - If you don't have GPUs then I plan to give you the ability to connect with OpenAI so you can run data on their models with their GPUs if you like.
+  - Grok - Same with Grok.
+  - Claude - Same with Claude.</li>
+
+## Description
 
 I'm creating a installable application that is a tool to investigate a persons disappearance. its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. The models its going to use are [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
 
@@ -28,10 +61,6 @@ I'm unemployed at the moment and looking for work. Help keep me going. Any suppo
 
 I'm not done yet but this will be the downloads page.
 Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
-
-## Helping me build
-
-If you are interested in contributing please do! You are welcome to build in features to help get this done.
 
 ## The Build
 
