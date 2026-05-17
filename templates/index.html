@@ -16,52 +16,49 @@
 {% endwith %}
 
 <h1 class="my-4 mb-0">Missing Persons</h1>
-<p class="mt-0">The plan is to create a release for each stage. Write and test the stage. Create an .exe file. Build it into an installer. Write docs for installation and usage. Upload to my website so it can be downloaded.</p>
-
-<h3 class="my-3 mb-0">Stage 1</h3>
-<p class="mt-0 mb-3">Build out the database for Person and Categories.</p>
-<ul>
-  <li>Eack link is a separate entity.
+<p class="mt-0 mb-3">Gather information by filling out the Person, Phones, Emails, Addresses, Aliases and uploading any Pdfs, Excels or Word docs with information on the case. You can use and APIs or Rss feeds. The forms make it easy to connect and save the data you find online.<br /><br />You can also upload information on how to investigate a missing person and train the model on how you want it done. The prompts work this way too. You can create a way of doing things based upon your own ideas. There is also a model that gives 10 sugestions on anything you ask it for. By providing really precise prompts and questions you can get really detailed answers. Study prompt engineering.<br /><br />The data gets saved to a Chroma vector database that the LLM using RAG trains on and learns from. Files and Person when saved automatically saves data to the Chroma vector database. The person consolidates all the data in the list of entites under the Person menu into one chunk per person. The files saves separately.</p>
+<ul class="mb-5">
+  <li>Categories
     <ul>
-      <li>Categories - You can have different categories for people, phones, emails and addresses. Define your categories for each and they will show up in each of them when you add or edit rows.</li>
-      <li>Person - A person is anyone you will search for information on through the APIs(next stage). The initial category I created for person was 'Missing Person'. You can change it or create others like 'Person of Interest' etc..</li>
-      <li>The rest are parts of a person, addresses, emails, phones and alias. They all have an owner which is a person entity.</li>
-      <li>View Person - A page to view people. Going to finish the main work first.</li>
+      <li>Categories - You can have different categories for people, phones, emails, addresses, Events and Notes. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system. </li>
+    </ul>
+  </li>
+  <li>Person
+    <ul>
+      <li>Person - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Notes that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Notes and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data to and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database. Once you have created a Person fill in Emails, Phones, Addresses, Aliases, Events, and Notes and edit the Person again and save it so all the data will be edited into the chunk.<br /><br />Make sure to choose the person you want to add the data to.</li>
+      <li>Addresses - Addresses is any address used by the person. Create a Type for it in Categories first. Example Category: Home, Work, etc..</li>
+      <li>Emails - Emails are any emails used by the person. Create a Type for it in Categories first. Example Category: Personal, Work, etc..</li>
+      <li>Phones - Phones are any phone number used by the person. Create a Type for it in Categories first. Example Category: Cell, Work, etc..</li>
+      <li>Aliases - Alias are any aliases used by the person.</li>
+      <li>Events - Events are any event that happens related to the person. Create a Type for it in Categories first. Example Category: Alibi, Court Date, etc..</li>
+      <li>Notes - Notes are any other data related to the person.</li>
+    </ul>
+  </li>
+  <li>Files - You can upload any of these files. They will be added as data for the LLM.
+    <ul>
+      <li>Pdf</li>
+      <li>Excel</li>
+      <li>Csv</li>
+      <li>Word</li>
+      <li>gif, webp, jpg, jpeg, png</li>
+      <li>mp3 - Audio files</li>
+      <li>mp4 - Movie files</li>
+    </ul>
+  </li>
+  <li>Data APIs
+    <ul>
+      <li>RSS Feeds - Use RSS Feeds to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.</li>
+      <li>Data APIs - Use APIs to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.</li>
+    </ul>
+  </li>
+  <li>Model APIs
+    <ul>
+      <li>Ollama - This is the initial Model I used because it all runs on local and is testable without paid subscription. Can be a bit slow.. You can speed this up by selecting GPU in the form on the upper right corner.</li>
+      <li>OpenAI - If you don't have GPUs then I plan to give you the ability to connect with OpenAI so you can run data on their models with their GPUs if you like.</li>
+      <li>Grok - Same with Grok.</li>
+      <li>Claude - Same with Claude.</li>
     </ul>
   </li>
 </ul>
-
-<h3 class="my-3 mb-0">Stage 2</h3>
-<p class="mt-0">Build out the database and pages for consuming APIs.</p>
-<ul>
-  <li>Api, ApiFields and State. I have just finished the basics and added Nancy Guthrie as an example of how to use it. There is still alot of work to do on this part of the system. Im going to move on though and complete the minimum of each Stage so I can have a fully working app before I go back and fully complete everything. This allows U.S to help if you want by taking on a section of it. Thanks.
-    <ul>
-      <li>Api - Fill in the information about the api here. Put the full url into the url field including the https:// and the url endpoint.</li>
-      <li>ApiFields - Fill in each field that will be used in the api call. Field is a query parameter and is used to filter results. The field is the query parameter name, value is the value that needs to be there. Everything associated with a person will eventually be an option in the value list. Right now there is only the persons name.</li>
-      <li>State - The appication state is saved to help guild your workflow. The state form in the upper right corner and holds the person and the api that you are working on. When you create ApiFields or call Apis you need to have the Person and the Api selected and saved in state.</li>
-    </ul>
-  </li>
-</ul>
-
-<h3 class="my-3 mb-0">Stage 3</h3>
-<p class="mt-0">Build out the vector database to save the API data for the Ollama model. Users can refine the data.</p>
-
-<h3 class="my-3 mb-0">Stage 4</h3>
-<p class="mt-0">Build out training functionality for the Ollama LLM. Users can train and retrain models as they build and refine the data.</p>
-
-<h3 class="my-3 mb-0">Stage 5</h3>
-<p class="mt-0">Build out prompt functionality for the Ollama LLM. Users can create questions to use when prompting the LLM.</p>
-
-<h3 class="my-3 mb-0">Stage 6</h3>
-<p class="mt-0">Use the data gathered from the APIs to build timelines for each person.</p>
-
-<h3 class="my-3 mb-0">Stage 7</h3>
-<p class="mt-0">Add images and video to the person object to use when looking though images and videos for matching.</p>
-
-<h3 class="my-3 mb-0">Stage 8</h3>
-<p class="mt-0">Build ability to train a model on video and images.</p>
-
-<h3 class="my-3 mb-0">Stage 8</h3>
-<p class="mt-0">Build out functionality for testing and viewing data from videos and images.</p>
 
 {% endblock %}

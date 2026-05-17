@@ -1822,11 +1822,11 @@ def initialize_database(engine):
 
   if session.query(Category).first() is None:
     c1 = Category("contactType", "Missing Person")
-    c2 = Category("addressType", "Home")
-    c3 = Category("emailType", "Personal")
-    c4 = Category("phoneType", "Home")
-    c5 = Category("eventType", "Alibi")
-    c6 = Category("eventType", "Court")
+    c2 = Category("contactType", "Person of Interest")
+    c3 = Category("addressType", "Home")
+    c4 = Category("emailType", "Personal")
+    c5 = Category("phoneType", "Home")
+    c6 = Category("eventType", "Alibi")
     session.add(c1)
     session.add(c2)
     session.add(c3)
