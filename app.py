@@ -103,6 +103,105 @@ def add_nosniff_header_to_static(response):
 def index():
   return flask.render_template('index.html')
 
+@app.route('/get_rows', methods=['GET', 'POST'])
+def get_rows():
+  # Parse the JSON data sent in the POST request
+  data = request.get_json()
+
+  # Extract the scalar value (e.g., an ID or a name)
+  entity_value = data.get('entity')
+  match entity_value:
+    case "person":
+      entities = session.query(Person).all()
+      entity_data = [{"id": n.id, "label": PeopleUtils(session=session).get_person_name(n)} for n in entities]
+      fields = [c.name for c in Person.__table__.columns if c.name != 'id']
+    case "alias":
+      entities = session.query(Alias).all()
+      entity_data = [{"id": n.id, "label": PeopleUtils(session=session).get_person_name(n)} for n in entities]
+      fields = [c.name for c in Alias.__table__.columns if c.name != 'id']
+    case "address":
+      entities = session.query(Address).all()
+      entity_data = [{"id": n.id, "label": n.name} for n in entities]
+      fields = [c.name for c in Address.__table__.columns if c.name != 'id']
+    case "email":
+      entities = session.query(Email).all()
+      entity_data = [{"id": n.id, "label": n.email} for n in entities]
+      fields = [c.name for c in Email.__table__.columns if c.name != 'id']
+    case "phone":
+      entities = session.query(Phone).all()
+      entity_data = [{"id": n.id, "label": n.phone} for n in entities]
+      fields = [c.name for c in Phone.__table__.columns if c.name != 'id']
+    case "event":
+      entities = session.query(Event).all()
+      entity_data = [{"id": n.id, "label": n.name} for n in entities]
+      fields = [c.name for c in Event.__table__.columns if c.name != 'id']
+    case "note":
+      entities = session.query(Note).all()
+      entity_data = [{"id": n.id, "label": n.name} for n in entities]
+      fields = [c.name for c in Note.__table__.columns if c.name != 'id']
+
+  # jsonify converts the list into a valid JSON response
+  return jsonify({
+    "fields": fields,
+    "entity_data": entity_data
+  })
+
+@app.route('/set_entity', methods=['POST'])
+def set_entity():
+    # Retrieve base identifiers & entity type from the submitted form
+    entity_type = request.form.get('entity_type')
+    entity_id = request.form.get('entity_id')
+    field = request.form.get('field')
+    value = request.form.get('value')
+    save_new = request.form.get('save_new')
+    edit = request.form.get('edit')
+
+    flash(f"{entity_type} - {entity_id} - {field} - {value} - {save_new} - {edit}", 'info')
+
+    """ if not all([entity_type, entity_id, field]):
+        flash('Missing required form parameters.', 'error')
+        return redirect(url_for('index'))
+
+    # Map the requested entity type string to the actual SQLAlchemy model
+    models = {
+        'Person': Person,
+        'Address': Address,
+        'Phone': Phone,
+        'Email': Email,
+        'Alias': Alias,
+        'event': Event,
+        'Note': Note
+    }
+
+    model_class = models.get(entity_type)
+
+    if not model_class:
+        flash(f'Invalid entity type: {entity_type}', 'error')
+        return redirect(url_for('index'))
+
+    # Fetch the specific record from the database
+    record = model_class.query.get_or_404(entity_id)
+
+    # Verify that the model actually has the requested column/field
+    if not hasattr(record, field):
+        flash(f'Field "{field}" does not exist for {entity_type}.', 'error')
+        return redirect(url_for('index'))
+
+    # Dynamically update the field and commit to the database
+    try:
+        setattr(record, field, value)
+        session.commit()
+        flash(f'{entity_type} updated successfully!', 'success')
+    except Exception as e:
+        session.rollback()
+        flash(f'An error occurred: {str(e)}', 'error') """
+
+
+    flash(f'Be here soon!', 'success')
+
+    # Redirect to the dashboard or the specific entity view
+    return redirect(url_for('data_center'))
+
 @app.route('/file')
 def file():
   page = request.args.get('page', 1, type=int)
@@ -1257,6 +1356,7 @@ def edit_note(id):
 
   note_data = {
     'id': note.id,
+    'name': note.name,
     'note': note.note,
     'owner': note.owner,
   }
@@ -1272,11 +1372,13 @@ def set_note():
     note = session.execute(select(Note).filter_by(id = form_data.get('id'))).scalar_one_or_none()
     if note:
       uporadd = "updated"
+      note.name=form_data.get('name')
       note.note=form_data.get('note')
       note.owner=form_data.get('owner')
     else:
       uporadd = "added"
       note = Note(
+        name=form_data.get('name'),
         note=form_data.get('note'),
         owner=form_data.get('owner'),
       )
@@ -1566,14 +1668,16 @@ def delete_item():
   form_data = request.form
   id = form_data.get('id')
   table_type = form_data.get('type')
-  models = {
+
+  available_models = {
     'person': Person, 'alias': Alias, 'address': Address, 'email': Email,
     'phone': Phone, 'file': File, 'category': Category, 'api': Api,
     'notice': Notice, 'event': Event, 'note': Note,
     'api_field': ApiField, 'model': Model, 'model_params': ModelParams,
     'prompt': Prompt, 'question': Question
   }
-  model = models.get(table_type)
+
+  model = available_models.get(table_type)
 
   # Specific check for Category child records
   cat_person_count = session.query(Person).filter_by(type=id).count()

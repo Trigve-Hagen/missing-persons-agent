@@ -224,9 +224,11 @@ class Note(Base):
   __tablename__ = "notes"
 
   id = Column("id", Integer, primary_key=True)
+  name = Column(NullToEmptyString) # name of business if work address
   note = Column(Text)
   owner = Column(Integer, ForeignKey("people.id"))
 
-  def __init__(self, note, owner):
+  def __init__(self, name, note, owner):
+    self.name = name
     self.note = note
     self.owner = owner
