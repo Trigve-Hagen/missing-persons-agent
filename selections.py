@@ -58,7 +58,12 @@ class Selection():
     None: "Auto-detects" # Auto-detects best available hardware (typically CUDA -> CPU)
   }
 
-  fileType_select = {
+  fileType_select = [
+    ("image", "Image"),
+    ("pdf", "Pdf")
+  ]
+
+  """ fileType_select = {
     "svg": "SVG",
     "gif": "GIF",
     "jpg": "JPG",
@@ -70,4 +75,4 @@ class Selection():
     "xlsx": ".xlsx / Excel",
     "xls": ".xls / Excel",
     "word": "Word"
-  }
+  } """

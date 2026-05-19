@@ -188,7 +188,7 @@ class File(Base):
   __tablename__ = 'files'
 
   id = Column(Integer, primary_key=True)
-  type = Column(Integer)
+  type = Column(NullToEmptyString)
   filename = Column(NullToEmptyString, unique=True, nullable=False)
   owner = Column(Integer, ForeignKey("people.id"))
 

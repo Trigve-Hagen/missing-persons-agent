@@ -65,8 +65,8 @@
         <label for="file-type" class="form-label">Type</label>
         <select class="form-select" id="file-type" name="type" required>
           <option value="">Choose...</option>
-          {% for type in fileTypes %}
-            <option value="{{ type.id }}">{{ type.name }}</option>
+          {% for key, label in fileTypes %}
+            <option value="{{ key }}">{{ label }}</option>
           {% endfor %}
         </select>
       </div>

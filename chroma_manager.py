@@ -2,7 +2,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 import os
 
-class ChromaDatabase():
+class ChromaManager():
   def __init__(self):
     self.persist_directory = os.path.join(os.path.abspath("."), "database\\chroma_db")
     self.collection_name = 'missing_persons'
@@ -108,6 +108,6 @@ class ChromaDatabase():
 
 
 if __name__ == "__main__":
-  db = ChromaDatabase()
+  db = ChromaManager()
   db.get_stored_pdfs()
   db.list_chunks()

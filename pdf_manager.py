@@ -24,9 +24,10 @@ class PdfManager():
     )
 
   def save_document(self, processor, filename):
-    loader = PyPDFLoader(os.path.join(os.path.abspath("."), 'assets/files/', filename))
+    loader = PyPDFLoader(os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
     pages = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(
+      separators=["\n\n", "\n", ' ', ''],
       chunk_size=500,
       chunk_overlap=50
     )

@@ -31,11 +31,11 @@
         <label for="file-type" class="form-label">Type</label>
         <select class="form-select" id="file-type" name="type">
           <option value="0">Choose...</option>
-          {% for type in fileTypes %}
-            {% if file_data.type == type.id %}
-              <option value="{{ type.id }}" selected>{{ type.name }}</option>
+          {% for key, label in fileTypes %}
+            {% if file_data.type == key %}
+              <option value="{{ key }}" selected>{{ label }}</option>
             {% else %}
-              <option value="{{ type.id }}">{{ type.name }}</option>
+              <option value="{{ key }}">{{ label }}</option>
             {% endif %}
           {% endfor %}
         </select>

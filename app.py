@@ -303,10 +303,10 @@ def set_file():
     clean_filename = pdf_manager.clean_filename(filename)
     safe_filename = f"{clean_filename}_{time.time_ns()}{filename_ext}"
     save_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
-    file.save_document(save_path)
+    file.save(save_path)
 
   # save the file to vector_store
-  pdf_manager.save(getProcessor(), filename=safe_filename)
+  pdf_manager.save_document(getProcessor(), filename=safe_filename)
 
   try:
     file = session.execute(select(File).filter_by(id = form_data.get('id'))).scalar_one_or_none()
