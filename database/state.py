@@ -20,6 +20,8 @@ class State(Base):
   prompt = Column(Integer, default=0)
   question = Column(Integer, default=0)
   processor = Column(NullToEmptyString, default="cpu")
+  chunk_size = Column(Integer, default=1000)
+  chunk_overlap = Column(Integer, default=200)
   root_node = Column(NullToEmptyString, default="")
   display_type = Column(NullToEmptyString, default="")
   files_size = Column(Integer, default=0)

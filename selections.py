@@ -60,19 +60,10 @@ class Selection():
 
   fileType_select = [
     ("image", "Image"),
-    ("pdf", "Pdf")
+    ("pdf", "Pdf"),
   ]
 
-  """ fileType_select = {
-    "svg": "SVG",
-    "gif": "GIF",
-    "jpg": "JPG",
-    "jpeg": "JPEG",
-    "png": "PNG",
-    "webp": "WebP",
-    "csv": "CSV",
-    "pdf": "PDF",
-    "xlsx": ".xlsx / Excel",
-    "xls": ".xls / Excel",
-    "word": "Word"
-  } """
+  chunkStrategy_select = [
+    ("docling", "DoclingLoader"),
+    ("pypdf", "PyPDFLoader")
+  ]

@@ -64,12 +64,12 @@
 <h3 class="my-4 mb-2">Chunking</h3>
 <p>When chunking, do periods or commas matter when separating expressions like 'Attribute: value' and is that experssion the best way to add mutiple expressions to a chunk?</p>
 <p class="mt-0 mb-3">Yes. Periods and commas matter when chunking text for an LLM, primarily because they dictate semantic flow and structural coherence. The expression 'Attribute: value' is a highly effective way to add metadata, but it requires specific handling in your chunking strategy.</p>
-<h3 class="my-4 mb-2">Do Periods and Commas Matter?</h3>
+<h4 class="my-4 mb-2">Do Periods and Commas Matter?</h4>
 <ul>
   <li><b>Periods:</b> Yes. During recursive character splitting, splitters often use periods as natural separators. If you arbitrarily truncate chunks without respecting sentence-ending punctuation, you risk cutting off thoughts midway and confusing the LLM.</li>
   <li><b>Commas:</b> Yes, but more for the language model's comprehension than the raw chunking logic. Commas delineate items in a list or within an 'Attribute: value' expression, ensuring the model parses them as distinct points.</li>
 </ul>
-<h3 class="my-4 mb-2">Is 'Attribute: value' the Best Strategy?</h3>
+<h4 class="my-4 mb-2">Is 'Attribute: value' the Best Strategy?</h4>
   Using key-value pairs ('Attribute: value') is an excellent strategy for adding context, but you should not append a raw list of them at the end of a long, otherwise unrelated text chunk.
   To get the most out of this approach, apply it properly using metadata injection:
 <ol>
@@ -80,17 +80,30 @@
   </li>
   <li><b>Document Metadata (The Cleanest Approach)</b><br />Most vector database tools (like LangChain or LlamaIndex) support dedicated metadata dictionaries. Instead of writing 'Author: John Doe' in the text itself, you can store {"Author": "John Doe"} as a property of the chunk.</li>
 </ol>
-<h3 class="my-4 mb-2">Why Metadata Dictionaries Are Better Than Raw Text</h3>
+<h4 class="my-4 mb-2">Why Metadata Dictionaries Are Better Than Raw Text</h4>
 <ul>
   <li><b>Cleaner Embeddings:</b> It prevents your embedding model from getting confused by literal text attributes mixed into the document's narrative.</li>
   <li><b>Filterable Search:</b> It allows you to filter search results by exact metadata before even passing the chunk to the LLM (e.g., "Only search chunks where Document_Type = Policy").</li>
   <li><b>Saves Tokens:</b> It prevents you from wasting expensive context window tokens on long lists of attributes.</li>
 </ul>
-<h3 class="my-4 mb-2">Best Practices to Remember</h3>
+<h4 class="my-4 mb-2">Best Practices to Remember</h4>
 <ol class="mb-5">
   <li><b>Never break mid-expression:</b> If you are building chunks manually, write a custom script that ensures 'Attribute: value' groups are kept together entirely within a single chunk, rather than split across two.</li>
   <li><b>Limit to 3-5 key expressions:</b> Overloading your chunks with too many attributes can dilute the importance of the actual content.</li>
   <li><b>Use sentence boundaries:</b> If you use punctuation-aware chunking, make sure your code accounts for abbreviations or decimals so the splitter doesn't mistakenly create a new chunk mid-sentence</li>
 </ol>
+
+<p>Ensure the text fits your language model's context window. What does this mean?</p>
+
+<p>When a text "fits your language model's context window," it means the total length of the text you provide does not exceed the maximum amount of information the AI can process at one time.</p>
+<p>Think of the context window as the AI's "working memory" or a highly restricted desktop space.</p>
+<p>Here is exactly what that means and why it matters:</p>
+<ul>
+  <li><b>What it includes:</b> The context window encompasses both the prompt you type (the input) and the response the AI generates (the output).</li>
+  <li><b>Token limits:</b> AI models process text in chunks called "tokens" (roughly equal to 4 characters, or about 0.75 words). Context windows range from a few thousand tokens for older models to millions of tokens in newer ones.</li>
+  <li><b>What happens if it's too big:</b> If your text exceeds the limit, the AI will reject the prompt entirely, crash, or ask you to shorten it.</li>
+  <li><b>What happens if it's near the limit:</b> Even if the text fits, pushing the absolute maximum limit can sometimes cause the AI to "forget" details from the beginning of the text or lose focus during generation.</li>
+</ul>
+<p class="mb-5"><b>How to fix it:</b> If a document is too large, you can summarize it in chunks, share only the most relevant paragraphs, or use external file-reading tools if your platform supports them.</p>
 
 {% endblock %}

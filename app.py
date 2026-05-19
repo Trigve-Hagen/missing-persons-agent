@@ -213,6 +213,7 @@ def file():
     page=page,
     total_pages=total_pages,
     fileTypes=Selection.fileType_select,
+    chunkStrategies=Selection.chunkStrategy_select,
     owners=owner_select
   )
 
@@ -225,6 +226,7 @@ def edit_file(id):
     file_data = {
       'id': file.id,
       'type': file.type,
+      'chunkStrategy': file.chunkStrategy,
       'filename': file.filename,
       'owner': file.owner
     }
@@ -237,7 +239,15 @@ def edit_file(id):
       return redirect(url_for('file'))
 
     owner_select = session.query(Person).all()
-    return flask.render_template('edit_file.html', edit_id=id, file_data=file_data, data=data, fileTypes=Selection.fileType_select, owners=owner_select)
+    return flask.render_template(
+      'edit_file.html',
+      edit_id=id,
+      file_data=file_data,
+      data=data,
+      fileTypes=Selection.fileType_select,
+      chunkStrategies=Selection.chunkStrategy_select,
+      owners=owner_select
+    )
 
 @app.route('/edit/file/vectors/<string:id>', methods=['GET', 'POST'])
 def edit_file_vectors(id):
@@ -306,23 +316,31 @@ def set_file():
     file.save(save_path)
 
   # save the file to vector_store
-  pdf_manager.save_document(getProcessor(), filename=safe_filename)
+  pdf_manager.save_document(
+    processor=getProcessor(),
+    filename=safe_filename,
+    chunk=form_data.get('chunk_strategy'),
+    chunk_size=getChunkSize(),
+    chunk_overlap=getChunkOverlap()
+  )
 
   try:
-    file = session.execute(select(File).filter_by(id = form_data.get('id'))).scalar_one_or_none()
-    if file:
+    file_record = session.execute(select(File).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if file_record:
       uporadd = "updated"
-      file.type=form_data.get('type')
-      file.filename=safe_filename
-      file.owner=form_data.get('owner')
+      file_record.type=form_data.get('type')
+      file_record.chunkStrategy=form_data.get('chunk_strategy')
+      file_record.filename=safe_filename
+      file_record.owner=form_data.get('owner')
     else:
       uporadd = "added"
-      file = File(
+      file_record = File(
         type=form_data.get('type'),
+        chunkStrategy=form_data.get('chunk_strategy'),
         filename=safe_filename,
         owner=form_data.get('owner'),
       )
-    session.merge(file)
+    session.merge(file_record)
     session.commit()
     flash(f"File {uporadd} successfully!", "success")
     return redirect(url_for('file'))
@@ -1832,6 +1850,18 @@ def getQuestion():
   prompt = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
   return prompt
 
+def getChunkSize():
+  state = session.get(State, 1)
+  current_value = state.chunk_size
+  default_value = 2000
+  return current_value or default_value
+
+def getChunkOverlap():
+  state = session.get(State, 1)
+  current_value = state.chunk_overlap
+  default_value = 100
+  return current_value or default_value
+
 def getProcessor():
   state = session.get(State, 1)
   current_value = state.processor
@@ -1950,7 +1980,15 @@ def initialize_database(engine):
       missing=datetime(2026, 2, 1), owner=0, ethnicity="white",
       primaryLanguage="english"
     )
+    p2 = Person(
+      type=1, sirName="", firstName="Trigve", middleName="", lastName="Hagen",
+      suffix="", height="", weight="", hairColor="", eyeColor="", ssn="",
+      description="", gender="male", dob=datetime(1972, 10, 2),
+      missing=datetime(2026, 10, 2), owner=0, ethnicity="white",
+      primaryLanguage="english"
+    )
     session.add(p1)
+    session.add(p2)
 
     state = session.get(State, 1)
     state.person = 1

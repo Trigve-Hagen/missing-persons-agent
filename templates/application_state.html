@@ -50,19 +50,6 @@
         </select>
       </div>
       <div class="col-md-6">
-        <label for="state-api" class="form-label">Api</label>
-        <select class="form-select" id="state-api" name="api">
-          <option value="0">Choose...</option>
-          {% for api in apis %}
-            {% if state.api == api.id %}
-              <option value="{{ api.id }}" selected>{{ api.name }}</option>
-            {% else %}
-              <option value="{{ api.id }}">{{ api.api }}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-6">
         <label for="state-model" class="form-label">Model</label>
         <select class="form-select" id="state-model" name="model">
           <option value="0">Choose...</option>
@@ -76,7 +63,20 @@
         </select>
       </div>
       <div class="col-md-6">
-        <label for="prompt-prompt" class="form-label">Prompt</label>
+        <label for="state-api" class="form-label">Api</label>
+        <select class="form-select" id="state-api" name="api">
+          <option value="0">Choose...</option>
+          {% for api in apis %}
+            {% if state.api == api.id %}
+              <option value="{{ api.id }}" selected>{{ api.name }}</option>
+            {% else %}
+              <option value="{{ api.id }}">{{ api.api }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="state-prompt" class="form-label">Prompt</label>
         <select class="form-select" id="state-prompt" name="prompt">
           <option value="0">Choose...</option>
           {% for prompt in all_prompts %}
@@ -90,7 +90,7 @@
         <div class="form-text" id="state-prompt-text">This is the part of the RAG LLM that defines what the models main directive is. It describes how the models robot will act and who it should believe it is. An investigator or web developer.</div>
       </div>
       <div class="col-md-6">
-        <label for="question-question" class="form-label">Question</label>
+        <label for="state-question" class="form-label">Question</label>
         <select class="form-select" id="state-prompt" name="prompt">
           <option value="0">Choose...</option>
           {% for question in all_questions %}
@@ -102,6 +102,14 @@
           {% endfor %}
         </select>
         <div class="form-text" id="state-question-text">This is the part of the RAG LLM that asks the question. It the query. </div>
+      </div>
+      <div class="col-md-6">
+        <label for="state-chunk-size" class="form-label">Chunk Size</label>
+        <input type="text" class="form-control" id="state-chunk-size" name="chunk_size" pattern="^\d+$" value="{{ state.chunk_size }}" required>
+      </div>
+      <div class="col-md-6">
+        <label for="state-chunk-overlap" class="form-label">Chunk Overlap</label>
+        <input type="text" class="form-control" id="state-chunk-overlap" name="chunk_overlap" pattern="^\d+$" value="{{ state.chunk_overlap }}" required>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

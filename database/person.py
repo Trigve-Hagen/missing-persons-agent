@@ -189,11 +189,13 @@ class File(Base):
 
   id = Column(Integer, primary_key=True)
   type = Column(NullToEmptyString)
+  chunkStrategy = Column("chunk_strategy",NullToEmptyString)
   filename = Column(NullToEmptyString, unique=True, nullable=False)
   owner = Column(Integer, ForeignKey("people.id"))
 
-  def __init__(self, type, filename, owner):
+  def __init__(self, type, chunkStrategy, filename, owner):
     self.type = type
+    self.chunkStrategy = chunkStrategy
     self.filename = filename
     self.owner = owner
 

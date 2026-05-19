@@ -1,13 +1,15 @@
 import os
-import uuid
 import re
 import unicodedata
 from flask import flash
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.document_loaders import PyPDFLoader, PyPDFDirectoryLoader, TextLoader, DirectoryLoader, PythonLoader, UnstructuredHTMLLoader
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_docling.loader import DoclingLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
+
 
 class PdfManager():
   def __init__(self):
@@ -23,15 +25,28 @@ class PdfManager():
       embedding_function=self.embeddings
     )
 
-  def save_document(self, processor, filename):
-    loader = PyPDFLoader(os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
-    pages = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(
-      separators=["\n\n", "\n", ' ', ''],
-      chunk_size=500,
-      chunk_overlap=50
-    )
-    chunks = text_splitter.split_documents(pages)
+  def save_document(self, processor, filename, chunk, chunk_size, chunk_overlap):
+    if chunk == 'docling':
+      loader = DoclingLoader(file_path=os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
+      pages = loader.load()
+      cleaned_pages = filter_complex_metadata(pages)
+      text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        separators=["\n\n", "\n", " ", ""]
+      )
+      chunks = text_splitter.split_documents(cleaned_pages)
+    else:
+      loader = PyPDFLoader(os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
+      pages = loader.load()
+      cleaned_pages = filter_complex_metadata(pages)
+      text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        separators=["\n\n", "\n", " ", ""]
+      )
+      chunks = text_splitter.split_documents(cleaned_pages)
+
 
     # 4. Create deterministic composite string IDs
     # Format: path_to_file_page_index_chunk_index
