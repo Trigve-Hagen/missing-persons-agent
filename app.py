@@ -148,59 +148,54 @@ def get_rows():
 
 @app.route('/set_entity', methods=['POST'])
 def set_entity():
-    # Retrieve base identifiers & entity type from the submitted form
-    entity_type = request.form.get('entity_type')
-    entity_id = request.form.get('entity_id')
-    field = request.form.get('field')
-    value = request.form.get('value')
-    save_new = request.form.get('save_new')
-    edit = request.form.get('edit')
+  # Retrieve base identifiers & entity type from the submitted form
+  entity_type = request.form.get('entity_type')
+  entity_id = request.form.get('entity_id')
+  field = request.form.get('field')
+  value = request.form.get('value')
 
-    flash(f"{entity_type} - {entity_id} - {field} - {value} - {save_new} - {edit}", 'info')
+  flash(f"{entity_type} - {entity_id} - {field} - {value}", 'info')
 
-    """ if not all([entity_type, entity_id, field]):
-        flash('Missing required form parameters.', 'error')
-        return redirect(url_for('index'))
+  """ if not all([entity_type, entity_id, field]):
+    flash('Missing required form parameters.', 'error')
+    return redirect(url_for('index'))
 
-    # Map the requested entity type string to the actual SQLAlchemy model
-    models = {
-        'Person': Person,
-        'Address': Address,
-        'Phone': Phone,
-        'Email': Email,
-        'Alias': Alias,
-        'event': Event,
-        'Note': Note
-    }
+  # Map the requested entity type string to the actual SQLAlchemy model
+  models = {
+    'Person': Person,
+    'Address': Address,
+    'Phone': Phone,
+    'Email': Email,
+    'Alias': Alias,
+    'event': Event,
+    'Note': Note
+  }
 
-    model_class = models.get(entity_type)
+  model_class = models.get(entity_type)
 
-    if not model_class:
-        flash(f'Invalid entity type: {entity_type}', 'error')
-        return redirect(url_for('index'))
+  if not model_class:
+      flash(f'Invalid entity type: {entity_type}', 'error')
+      return redirect(url_for('index'))
 
-    # Fetch the specific record from the database
-    record = model_class.query.get_or_404(entity_id)
+  # Fetch the specific record from the database
+  record = model_class.query.get_or_404(entity_id)
 
-    # Verify that the model actually has the requested column/field
-    if not hasattr(record, field):
-        flash(f'Field "{field}" does not exist for {entity_type}.', 'error')
-        return redirect(url_for('index'))
+  # Verify that the model actually has the requested column/field
+  if not hasattr(record, field):
+      flash(f'Field "{field}" does not exist for {entity_type}.', 'error')
+      return redirect(url_for('index'))
 
-    # Dynamically update the field and commit to the database
-    try:
-        setattr(record, field, value)
-        session.commit()
-        flash(f'{entity_type} updated successfully!', 'success')
-    except Exception as e:
-        session.rollback()
-        flash(f'An error occurred: {str(e)}', 'error') """
+  # Dynamically update the field and commit to the database
+  try:
+      setattr(record, field, value)
+      session.commit()
+      flash(f'{entity_type} updated successfully!', 'success')
+  except Exception as e:
+      session.rollback()
+      flash(f'An error occurred: {str(e)}', 'error') """
 
-
-    flash(f'Be here soon!', 'success')
-
-    # Redirect to the dashboard or the specific entity view
-    return redirect(url_for('data_center'))
+  # Redirect to the dashboard or the specific entity view
+  return redirect(url_for('data_center'))
 
 @app.route('/file')
 def file():
@@ -1591,6 +1586,8 @@ def filter_data():
   request_api = RequestApi()
   api_data = request_api.get_request(api, api_params)
   api_data, ifParsed = request_api.filter_data(api_data, state)
+
+  # flash(f"Variables: {api_data} and {ifParsed}", "danger")
 
   return flask.render_template('data_center.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'), if_parsed=ifParsed)
 

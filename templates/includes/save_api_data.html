@@ -1,6 +1,6 @@
 
 <!-- Modal -->
-<div class="modal fade" id="saveApiDataModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+<div class="modal modal-lg fade" id="saveApiDataModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -18,18 +18,8 @@
           <div class="col-12">
             <label for="save-edit-value" id="save-edit-value-label" class="form-label">Value</label>
             <textarea class="form-control" id="save-edit-value" name="value" rows="3"></textarea>
-            <div class="form-text" id="save-edit-value-text">This is the part of the RAG LLM that asks the question. It the query. </div>
+            <div class="form-text" id="save-edit-value-text">This form is for editing a single field. First create the item you want to update. Then come back here and add this data to it.</div>
           </div>
-
-          <div class="col-12">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="save-edit-save-new" name="save_new">
-              <label class="form-check-label" for="gridCheck">
-                Save New
-              </label>
-            </div>
-          </div>
-
           <div class="col-12 mt-3">
             <label for="save-edit-entity" class="form-label">Entity</label>
             <select id="save-edit-entity" class="form-select" name="entity_id">
@@ -41,14 +31,6 @@
             <select id="save-edit-field" class="form-select" name="field">
               <option selected>Choose...</option>
             </select>
-          </div>
-          <div class="col-12">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="save-edit-edit" name="edit">
-              <label class="form-check-label" for="gridCheck">
-                Edit
-              </label>
-            </div>
           </div>
           <div class="col-12">
             <button type="submit" class="btn btn-success">Save</button>
