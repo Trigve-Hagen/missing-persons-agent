@@ -172,8 +172,6 @@
     const attributeCapitalized = attributeValue.charAt(0).toUpperCase() + attributeValue.slice(1);
     document.getElementById('save-edit-value-label').textContent = attributeCapitalized;
 
-    console.log(entityValue)
-
     // Call the Flask endpoint
     fetch('/get_rows', {
       method: 'POST',
@@ -211,28 +209,28 @@
 
   // Generic listener for ALL modals on the page
   document.addEventListener('hidden.bs.modal', function (event) {
-      const closedModal = event.target; // The specific modal that just closed
-      const specificForm = closedModal.querySelector('.save-edit-form');
-      const entitySelectElement = closedModal.querySelector('#save-edit-entity');
-      const fieldSelectElement = closedModal.querySelector('#save-edit-field');
+    const closedModal = event.target; // The specific modal that just closed
+    const specificForm = closedModal.querySelector('.save-edit-form');
+    const entitySelectElement = closedModal.querySelector('#save-edit-entity');
+    const fieldSelectElement = closedModal.querySelector('#save-edit-field');
 
-      if (specificForm) {
-          console.log("Form in closed modal found:", specificForm.id);
-          // Erase all options
-          entitySelectElement.options.length = 0;
-          const option1 = document.createElement('option');
-          option1.value = "";
-          option1.textContent = "Choose...";
-          entitySelectElement.appendChild(option1);
+    if (specificForm) {
+      console.log("Form in closed modal found:", specificForm.id);
+      // Erase all options
+      entitySelectElement.options.length = 0;
+      const option1 = document.createElement('option');
+      option1.value = "";
+      option1.textContent = "Choose...";
+      entitySelectElement.appendChild(option1);
 
-          fieldSelectElement.options.length = 0;
-          const option2 = document.createElement('option');
-          option2.value = "";
-          option2.textContent = "Choose...";
-          fieldSelectElement.appendChild(option2);
+      fieldSelectElement.options.length = 0;
+      const option2 = document.createElement('option');
+      option2.value = "";
+      option2.textContent = "Choose...";
+      fieldSelectElement.appendChild(option2);
 
-          specificForm.reset();
-      }
+      specificForm.reset();
+    }
   });
 </script>
 
