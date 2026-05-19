@@ -189,7 +189,7 @@ class File(Base):
 
   id = Column(Integer, primary_key=True)
   type = Column(NullToEmptyString)
-  chunkStrategy = Column("chunk_strategy",NullToEmptyString)
+  chunkStrategy = Column("chunk_strategy", NullToEmptyString, default="docling")
   filename = Column(NullToEmptyString, unique=True, nullable=False)
   owner = Column(Integer, ForeignKey("people.id"))
 

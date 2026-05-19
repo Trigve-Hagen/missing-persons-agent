@@ -24,6 +24,27 @@ if (deleteModal) {
   })
 }
 
+const deleteFileVectorModal = document.getElementById('deleteFileVectorModal')
+if (deleteFileVectorModal) {
+  deleteFileVectorModal.addEventListener('show.bs.modal', event => {
+    // Button that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const itemSource = button.getAttribute('data-bs-item-source')
+    const itemFileId = button.getAttribute('data-bs-item-file-id')
+    // Update the hidden inputs
+    const hiddenSource = deleteFileVectorModal.querySelector('#delete-source')
+    const hiddenFileId = deleteFileVectorModal.querySelector('#delete-file-id')
+    hiddenSource.value = itemSource
+    hiddenFileId.value = itemFileId
+    // Update the modal's content.
+    const modalTitle = deleteFileVectorModal.querySelector('.modal-title')
+    const modalBodyItemFileSource = deleteFileVectorModal.querySelector('.modal-body p#delete-item-file-source')
+    modalTitle.textContent = `Are you sure you want to delete this item?`
+    modalBodyItemFileSource.innerHTML = "Source Id: " + itemSource
+  })
+}
+
 const deleteVectorModal = document.getElementById('deleteVectorModal')
 if (deleteVectorModal) {
   deleteVectorModal.addEventListener('show.bs.modal', event => {

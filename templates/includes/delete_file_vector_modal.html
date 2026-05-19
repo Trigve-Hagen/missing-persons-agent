@@ -1,0 +1,22 @@
+<div class="modal modal-lg fade" id="deleteFileVectorModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteModalLabel">Delete</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-4" action="/delete_file_vector_item" method="POST" name="delete">
+          <input type="hidden" class="form-control" id="delete-source" name="source" />
+          <input type="hidden" class="form-control" id="delete-file-id" name="file_id" />
+          <div class="mb-3">
+            <p id="delete-item-file-source"></p>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-danger" type="submit">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

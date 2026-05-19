@@ -127,13 +127,16 @@ class PdfManager():
     # Retrieve all documents and their associated metadata
     # include=["documents", "metadatas"] ensures we get the text and file info
     collection = vector_db._client.get_collection(name=self.collection_name)
-    results = collection.get(include=["documents"])
+    results = collection.get(include=["documents", "metadatas"])
+
+    # 2. Access the list of metadata dictionaries
+    metadatas = results["metadatas"]
 
     data = []
     if results and 'documents' in results:
         for doc_id, doc_text in zip(results['ids'], results['documents']):
           data.append({'id': doc_id, 'text': doc_text})
-    return data
+    return data, metadatas
 
   def get_vector_by_ids(self, ids):
     vector_store = self.get_vector_store()
@@ -183,6 +186,19 @@ class PdfManager():
       return True
     except Exception as e:
       flash(f"Error deleting vectors: {e}", "danger")
+      return False
+
+  def delete_file_vector_by_id(self, source):
+    try:
+      vector_db = self.get_vector_store()
+      collection = vector_db._client.get_collection(name=self.collection_name)
+      collection.delete(
+          where={"source": source}
+      )
+      flash(f"Successfully deleted File: {source}", "success")
+      return True
+    except Exception as e:
+      flash(f"Error deleting file: {e}", "danger")
       return False
 
   def clean_filename(self, filename):

@@ -226,14 +226,14 @@ def edit_file(id):
     file_data = {
       'id': file.id,
       'type': file.type,
-      'chunkStrategy': file.chunkStrategy,
+      'chunk_strategy': file.chunkStrategy,
       'filename': file.filename,
       'owner': file.owner
     }
 
     try:
       pdf_manager = PdfManager()
-      data = pdf_manager.get_chroma_data()
+      data, metadatas = pdf_manager.get_chroma_data()
     except Exception as e:
       flash(f"Error connecting to database: {e}", "danger")
       return redirect(url_for('file'))
@@ -244,6 +244,7 @@ def edit_file(id):
       edit_id=id,
       file_data=file_data,
       data=data,
+      metadatas=metadatas,
       fileTypes=Selection.fileType_select,
       chunkStrategies=Selection.chunkStrategy_select,
       owners=owner_select
@@ -1666,6 +1667,55 @@ def delete_vector_item():
     manager = PdfManager()
     manager.delete_vector_by_id(ids=[vector_id])
     flash(vector_id + " deleted successfully!", "success")
+    return redirect(url_for('edit_file', id=file_id))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('edit_file', id=file_id))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('edit_file', id=file_id))
+
+@app.route('/delete_file_vector_item', methods=['POST'])
+def delete_file_vector_item():
+  form_data = request.form
+  file_id = form_data.get('file_id')
+  source = form_data.get('source')
+
+  try:
+    manager = PdfManager()
+    manager.delete_file_vector_by_id(source)
+    flash(source + " deleted successfully!", "success")
+    return redirect(url_for('edit_file', id=file_id))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('edit_file', id=file_id))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('edit_file', id=file_id))
+
+@app.route('/save_to_vector_file', methods=['POST'])
+def save_to_vector_file():
+  form_data = request.form
+  file_id=form_data.get('file_id')
+  filename=form_data.get('filename')
+
+  try:
+    pdf_manager = PdfManager()
+    # save the file to vector_store
+    pdf_manager.save_document(
+      processor=getProcessor(),
+      filename=filename,
+      chunk=form_data.get('chunk_strategy'),
+      chunk_size=getChunkSize(),
+      chunk_overlap=getChunkOverlap()
+    )
+    flash(filename + " saved to vector db successfully!", "success")
     return redirect(url_for('edit_file', id=file_id))
   except IntegrityError as e:
     session.rollback()
