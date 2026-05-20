@@ -1,11 +1,11 @@
 <!-- templates/search.html -->
 {% extends 'layout.html' %}
 
-{% block title %}Edit Files{% endblock %}
+{% block title %}Edit File Vector{% endblock %}
 
 {% block content %}
 
-<h1 class="my-4">Edit Files</h1>
+<h1 class="my-4">Edit File Vector</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -19,13 +19,14 @@
 
 <div class="row">
   <div class="col-md-12">
-    <a href="{{ url_for('file') }}" class="btn btn-primary mb-3">back</a>
+    <a href="{{ url_for('edit_file', id=vector_data.id) }}" class="btn btn-primary mb-3">back</a>
   </div>
 </div>
 
+<h3 class="my-4">Document</h3>
 <div class="row mt-5">
   <div class="col-md-12">
-    <form class="row g-4" action="/set_file_vector" method="post" enctype="multipart/form-data" autocomplete="off">
+    <form class="row g-4" action="/set_file_vector" method="post" autocomplete="off">
       <input type="hidden" class="form-control" id="file-vector-file-id" name="file_id" value="{{ vector_data.file_id }}" />
       <input type="hidden" class="form-control" id="file-vector-id" name="vector_id" value="{{ vector_data.vector_id }}" />
       <div class="col-md-9">
@@ -38,5 +39,117 @@
     </form>
   </div>
 </div>
+
+<h3 class="my-4">Metadata</h3>
+<div class="row mt-5">
+  <div class="col-12">
+    <form action="/set_file_metadata" method="post" autocomplete="off">
+      <input type="hidden" class="form-control" name="id" value="{{ vector_data.id }}" />
+      <input type="hidden" class="form-control" name="file_id" value="{{ vector_data.file_id }}" />
+      <input type="hidden" class="form-control" name="vector_id" value="{{ vector_data.vector_id }}" />
+      <div id="file-vector-new-metadata">
+      {% for name, value in meta %}
+        {% if name == 'source' or name == 'custom_id' or name == 'chunk_index' %}
+        <div class="row g-4 mt-2">
+          <div class="col-5">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name[]" value="{{ name }}" readonly required>
+          </div>
+          <div class="col-5">
+            <label class="form-label">Value</label>
+            <textarea class="form-control" name="value[]" rows="3" readonly required>{{ value }}</textarea>
+          </div>
+          <div class="col-2 d-flex flex-column align-items-start">
+            <label class="form-label">Actions</label>
+            <button class="btn btn-primary" type="button" class="file-vector-remove-metadata" disabled>Remove</button>
+          </div>
+        </div>
+        {% else %}
+        <div class="row g-4 mt-2">
+          <div class="col-5">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" name="name[]" value="{{ name }}" required>
+          </div>
+          <div class="col-5">
+            <label class="form-label">Value</label>
+            <textarea class="form-control" name="value[]" rows="3" required>{{ value }}</textarea>
+          </div>
+          <div class="col-2 d-flex flex-column align-items-start">
+            <label class="form-label">Actions</label>
+            <button class="btn btn-primary" type="button" class="file-vector-remove-metadata">Remove</button>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary me-2" type="submit">Save</button>
+        <button class="btn btn-primary" type="button" id="file-vector-add-metadata">Add New</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function createFileVectorRow() {
+    const row = document.createElement('div');
+    row.className = 'row g-4 mt-2';
+    // Helper to create columns
+    const createCol = (labelTxt, inputType, attrName = '') => {
+      const col12 = document.createElement('div');
+      col12.className = 'col-5';
+
+      const col3 = document.createElement('div');
+      col3.className = 'col-2 d-flex flex-column align-items-start';
+
+      const label = document.createElement('label');
+      label.className = 'form-label';
+      label.textContent = labelTxt;
+
+      if(inputType === 'button') {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-primary file-vector-remove-metadata';
+        button.textContent = 'Remove';
+        button.addEventListener('click', function() {
+          this.closest('.row').remove();
+        });
+        col3.append(label, button)
+        return col3;
+      } else {
+        const input = document.createElement(inputType);
+        input.className = 'form-control';
+        input.name = `${attrName}[]`;
+        input.required = true;
+        if (inputType === 'textarea') {
+          input.rows = 3;
+          input.value = '';
+        }
+        if (inputType === 'input') {
+          input.value = '';
+        }
+        col12.append(label, input);
+        return col12;
+      }
+    };
+
+    row.append(
+      createCol('Name', 'input', 'name'),
+      createCol('Value', 'textarea', 'value'),
+      createCol('Actions', 'button')
+    );
+
+    return row;
+  }
+
+  // Generic listener for ALL modals on the page
+  const addMetadata = document.getElementById('file-vector-add-metadata');
+  addMetadata.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    const myRow = createFileVectorRow();
+    document.getElementById('file-vector-new-metadata').appendChild(myRow);
+  });
+</script>
 
 {% endblock %}

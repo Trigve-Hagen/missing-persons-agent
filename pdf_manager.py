@@ -18,7 +18,6 @@ class PdfManager():
     self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
   def get_vector_store(self):
-    # Initialize the vector store
     return Chroma(
       persist_directory=self.persist_directory,
       collection_name=self.collection_name,
@@ -46,7 +45,6 @@ class PdfManager():
         separators=["\n\n", "\n", " ", ""]
       )
       chunks = text_splitter.split_documents(cleaned_pages)
-
 
     # 4. Create deterministic composite string IDs
     # Format: path_to_file_page_index_chunk_index
@@ -83,7 +81,6 @@ class PdfManager():
     flash(f"Collection missing_persons saved {os.path.basename(filename)} successfully!", "success")
     return True
 
-  # @TODO the owner is a person and only if the main person is not a missing person.
   def save_person(self, person, processor):
     documents = []
     text_chunk = repr(person)
@@ -120,30 +117,20 @@ class PdfManager():
     return True
 
   def get_chroma_data(self):
-    # Load the existing database
-    # Note: Use the same embedding function used when creating the DB
     vector_db = self.get_vector_store()
-
-    # Retrieve all documents and their associated metadata
-    # include=["documents", "metadatas"] ensures we get the text and file info
     collection = vector_db._client.get_collection(name=self.collection_name)
     results = collection.get(include=["documents", "metadatas"])
-
-    # 2. Access the list of metadata dictionaries
     metadatas = results["metadatas"]
 
     data = []
     if results and 'documents' in results:
-        for doc_id, doc_text in zip(results['ids'], results['documents']):
-          data.append({'id': doc_id, 'text': doc_text})
+      for doc_id, doc_text, doc_metas in zip(results['ids'], results['documents'], results['metadatas']):
+        data.append({'id': doc_id, 'text': doc_text, 'meta': doc_metas})
     return data, metadatas
 
   def get_vector_by_ids(self, ids):
     vector_store = self.get_vector_store()
 
-    # Perform a similarity search to get matching Document objects
-    # You can also use vector_store.get(ids=["id1"]) if you have specific IDs
-    # results = vector_store.similarity_search(query, k=3)
     results = vector_store.get(ids=ids)
     view_data = []
     if results and results.get("documents"):
@@ -152,7 +139,8 @@ class PdfManager():
 
       view_data.append({
         "id": id,
-        "text": text,  # Directly accessing the text from the dict
+        "text": text,
+        "meta": metadata,
         "source": metadata.get("source", "Unknown")
       })
 
@@ -162,17 +150,12 @@ class PdfManager():
     flash(f"Be here soon..", "info")
     return True
 
+  # Deletes all document chunks from Chroma that match a specific source name.
   def delete_pdf_by_source(vector_store, source_name):
-    """
-    Deletes all document chunks from Chroma that match a specific source name.
-    """
-    # 1. Fetch all document IDs associated with the specific source
-    # Most LangChain loaders use 'source' as the default metadata key for filenames
     results = vector_store.get(where={"source": source_name})
     ids_to_delete = results.get('ids')
 
     if ids_to_delete:
-        # 2. Delete the retrieved IDs from the vector store
         vector_store.delete(ids=ids_to_delete)
         print(f"Deleted {len(ids_to_delete)} chunks for source: {source_name}")
     else:

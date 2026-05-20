@@ -155,6 +155,7 @@ def set_entity():
   value = request.form.get('value')
 
   flash(f"{entity_type} - {entity_id} - {field} - {value}", 'info')
+  flash(f"Will Save shortly. I need to create allowed values for each field.", "success")
 
   """ if not all([entity_type, entity_id, field]):
     flash('Missing required form parameters.', 'error')
@@ -219,54 +220,66 @@ def file():
 
 @app.route('/edit/file/<int:id>', methods=['GET', 'POST'])
 def edit_file(id):
-    file = session.get(File, id)
-    if not file:
-      return redirect(url_for('file'))
+  file = session.get(File, id)
+  if not file:
+    return redirect(url_for('file'))
 
-    file_data = {
-      'id': file.id,
-      'type': file.type,
-      'chunk_strategy': file.chunkStrategy,
-      'filename': file.filename,
-      'owner': file.owner
-    }
+  file_data = {
+    'id': id,
+    'file_id': file.id,
+    'type': file.type,
+    'chunk_strategy': file.chunkStrategy,
+    'filename': file.filename,
+    'owner': file.owner
+  }
 
-    try:
-      pdf_manager = PdfManager()
-      data, metadatas = pdf_manager.get_chroma_data()
-    except Exception as e:
-      flash(f"Error connecting to database: {e}", "danger")
-      return redirect(url_for('file'))
+  try:
+    pdf_manager = PdfManager()
+    data, metadatas = pdf_manager.get_chroma_data()
+  except Exception as e:
+    flash(f"Error connecting to database: {e}", "danger")
+    return redirect(url_for('file'))
 
-    owner_select = session.query(Person).all()
-    return flask.render_template(
-      'edit_file.html',
-      edit_id=id,
-      file_data=file_data,
-      data=data,
-      metadatas=metadatas,
-      fileTypes=Selection.fileType_select,
-      chunkStrategies=Selection.chunkStrategy_select,
-      owners=owner_select
-    )
+  owner_select = session.query(Person).all()
+  return flask.render_template(
+    'edit_file.html',
+    edit_id=id,
+    file_data=file_data,
+    data=data,
+    metadatas=metadatas,
+    fileTypes=Selection.fileType_select,
+    chunkStrategies=Selection.chunkStrategy_select,
+    owners=owner_select
+  )
 
-@app.route('/edit/file/vectors/<string:id>', methods=['GET', 'POST'])
-def edit_file_vectors(id):
-    try:
-      pdf_manager = PdfManager()
-      data = pdf_manager.get_vector_by_ids([id])
-    except Exception as e:
-      flash(f"Error connecting to database: {e}", "danger")
-      return redirect(url_for('file'))
+@app.route('/edit/file/vectors/<int:id>/<string:file_id>', methods=['GET', 'POST'])
+def edit_file_vectors(id, file_id):
+  try:
+    pdf_manager = PdfManager()
+    data = pdf_manager.get_vector_by_ids([file_id])
+  except Exception as e:
+    flash(f"Error connecting to database: {e}", "danger")
+    return redirect(url_for('file'))
 
-    vector_data = {
-      'file_id': id,
-      'vector_id': data[0]['id'],
-      'text': data[0]['text'],
-      'source': data[0]['source'],
-    }
+  vector_data = {
+    'id': id,
+    'file_id': file_id,
+    'vector_id': data[0]['id'],
+    'text': data[0]['text'],
+    'meta': data[0]['meta'],
+    'source': data[0]['source'],
+  }
+  metadata_dict = data[0]['meta']
 
-    return flask.render_template('edit_file_vector.html', edit_id=id, vector_data=vector_data)
+  # 1. Convert to a list of (name, value) tuples:
+  # [('author', 'John Doe'), ('year', 2026)]
+  metadata_tuples = list(metadata_dict.items())
+
+  # 2. Alternatively, format as a list of dictionaries for JSON
+  # [{"name": "author", "value": "John Doe"}, {"name": "year", "value": 2026}]
+  # metadata_list = [{"name": key, "value": val} for key, val in metadata_dict.items()]
+
+  return flask.render_template('edit_file_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
 
 @app.route('/set_file_vector', methods=['POST'])
 def set_file_vector():
@@ -289,6 +302,37 @@ def set_file_vector():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('edit_file_vectors', id=file_id))
+
+@app.route('/set_file_metadata', methods=['POST'])
+def set_file_metadata():
+  # 1. Grab single IDs
+  id = request.form.get('id')
+  file_id = request.form.get('file_id')
+  vecotr_id = request.form.get('vecotr_id')
+
+  # 2. Grab dynamic lists
+  keys = request.form.getlist('keys[]')
+  values = request.form.getlist('values[]')
+
+  # 3. Zip them into a dictionary for easy processing
+  paired_data = dict(zip(keys, values))
+
+  try:
+    """ vector_id = form_data.get('vector_id')
+    pdf_manager = PdfManager()
+    pdf_manager.update_data_by_id(vector_id) """
+
+    flash(f"Will Save shortly. Working out the best way to do things for chunking.", "success")
+    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id))
 
 @app.route('/set_file', methods=['POST'])
 def set_file():
