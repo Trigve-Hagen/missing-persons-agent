@@ -28,10 +28,9 @@
       <li>Make sure that the models can be switched on all chats and prompts on the Notice page.</li>
       <li>Check for anything else in OllamaManager.
         <ul>
-          <li>Build classes for each component you might want to add more to in future releaseses (scalability)
+          <li>Build classes for each component you might want to add more to in future releaseses.
             <ul>
               <li>Documents loaders</li>
-              <li>See if it makes sense to have users adjust the chunk strategy Definately default for each type of chunk.</li>
               <li>Embedding types</li>
               <li>Models and Model Types</li>
             </ul>
@@ -49,6 +48,8 @@
           <li>apiTypes need to be hard coded, RSS and APIs need to hard coded. Key and secret fields and different configurations of API calls. Still needs work.</li>
           <li>Hooking in OpenAI, Grok or Claude so you can run the investigation on there models with their GPUs but using your RAG data for a faster experience.</li>
         </ul>
+      </li>
+      <li>Look again for code to delete Metadata items. Delete the whole chunk and resave it.</li>
       <li>Test and create release.</li>
     </ul>
   </div>

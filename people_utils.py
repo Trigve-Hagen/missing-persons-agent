@@ -24,20 +24,20 @@ class PeopleUtils:
   def people_params(self):
     stmt = select(Category).where(Category.type == "contactType")
     contactType_select = self.session.execute(stmt).scalars().all()
-    hair_color_codes = [
-      ("BLK", "Black"),
-      ("BLN", "Blond"),
-      ("BRN", "Brown"),
-      ("DBR", "Dark Brown"),
-      ("LBR", "Light Brown"),
-      ("RED", "Red or Auburn"),
-      ("GRY", "Gray"),
-      ("WHI", "White"),
-      ("XXX", "Unknown/Bald")
+    hair_colors = [
+      "Black",
+      "Blond",
+      "Brown",
+      "Dark Brown",
+      "Light Brown",
+      "Red",
+      "Gray",
+      "White",
+      "Unknown/Bald"
     ]
     eye_colors = ["Brown", "Blue", "Hazel", "Green", "Grey", "Amber", "Other"]
 
-    return contactType_select, hair_color_codes, eye_colors
+    return contactType_select, hair_colors, eye_colors
 
   def name_params(self):
     name_suffixes = ["Jr.", "Sr.", "II", "III", "IV", "V", "MD", "PhD", "JD", "DDS"]

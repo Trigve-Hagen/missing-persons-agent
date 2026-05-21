@@ -112,7 +112,7 @@
       </div>
       <div class="col-md-3">
         <label for="person-height" class="form-label">Height - In Feet and Inches</label>
-        <select class="form-select" id="person-height" name="height">
+        <select class="form-select" id="person-height" name="height" required>
           <option value="">Choose...</option>
           {% for value, label in height_options %}
             <option value="{{ value }}">{{ label }}</option>
@@ -121,7 +121,7 @@
       </div>
       <div class="col-md-3">
         <label for="person-weight" class="form-label">Weight - In Pounds</label>
-        <select class="form-select" id="person-weight" name="weight">
+        <select class="form-select" id="person-weight" name="weight" required>
           <option value="">Choose...</option>
           {% for w in weight_options %}
             <option value="{{ w }}">{{ w }}</option>
@@ -130,25 +130,25 @@
       </div>
       <div class="col-md-3">
         <label for="person-hairColor" class="form-label">Hair Color</label>
-        <select class="form-select" id="person-hairColor" name="hairColor">
+        <select class="form-select" id="person-hairColor" name="hairColor" required>
           <option value="">Choose...</option>
-          {% for value, label in hair_color_codes %}
-            <option value="{{ value }}">{{ label }}</option>
+          {% for hair in hair_colors %}
+            <option value="{{ hair }}">{{ hair }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-3">
         <label for="person-eyeColor" class="form-label">Eye Color</label>
-        <select class="form-select" id="person-eyeColor" name="eyeColor">
+        <select class="form-select" id="person-eyeColor" name="eyeColor" required>
           <option value="">Choose...</option>
-          {% for color in eye_colors %}
-            <option value="{{ color }}">{{ color }}</option>
+          {% for eye in eye_colors %}
+            <option value="{{ eye }}">{{ eye }}</option>
           {% endfor %}
         </select>
       </div>
       <div class="col-md-6">
         <label for="person-ethnicity" class="form-label">Ethnicity</label>
-        <select class="form-select" id="person-ethnicity" name="ethnicity">
+        <select class="form-select" id="person-ethnicity" name="ethnicity" required>
           <option value="">Choose...</option>
           {% for value, label in ethnicites %}
             <option value="{{ value }}">{{ label }}</option>
@@ -157,7 +157,7 @@
       </div>
       <div class="col-md-6">
         <label for="person-primary-language" class="form-label">Primary Language</label>
-        <select class="form-select" id="person-primary-language" name="primaryLanguage">
+        <select class="form-select" id="person-primary-language" name="primaryLanguage" required>
           <option value="">Choose...</option>
           {% for key, label in primary_languages %}
             <option value="{{ value }}">{{ label }}</option>

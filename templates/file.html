@@ -75,15 +75,6 @@
         <input type="file" class="form-control" id="file-file" name="file" required>
       </div>
       <div class="col-md-6">
-        <label for="file-chunk-strategy" class="form-label">Chunk Strategy</label>
-        <select class="form-select" id="file-chunk-strategy" name="chunk_strategy" required>
-          <option value="">Choose...</option>
-          {% for key, label in chunkStrategies %}
-            <option value="{{ key }}">{{ label }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-6">
         <label for="file-owner" class="form-label">Person</label>
         <select class="form-select" id="file-owner" name="owner" required>
           <option value="">Choose...</option>

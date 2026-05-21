@@ -45,19 +45,6 @@
         <input type="file" class="form-control" id="file-file" name="file" required>
       </div>
       <div class="col-md-6">
-        <label for="file-chunk-strategy" class="form-label">Chunk Strategy</label>
-        <select class="form-select" id="file-chunk-strategy" name="chunk_strategy" required>
-          <option value="">Choose...</option>
-          {% for key, label in chunkStrategies %}
-            {% if file_data.chunk_strategy == key %}
-              <option value="{{ key }}" selected>{{ label }}</option>
-            {% else %}
-              <option value="{{ key }}">{{ label }}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-6">
         <label for="file-owner" class="form-label">Person</label>
         <select class="form-select" id="file-owner" name="owner" required>
           <option value="">Choose...</option>
@@ -112,11 +99,10 @@
 
 {% endif %}
   <form class="row g-4" action="/save_to_vector_file" method="post" autocomplete="off">
-    <input type="hidden" class="form-control" name="chunk_strategy" value="{{ file_data.chunk_strategy }}" />
     <input type="hidden" class="form-control" name="file_id" value="{{ file_data.file_id }}" />
     <input type="hidden" class="form-control" name="filename" value="{{ file_data.filename }}" />
     <div class="col-12 mb-5">
-      <button class="btn btn-success" type="submit">Save Document Vector Database</button>
+      <button class="btn btn-success" type="submit">Save document to vector database.</button>
     </div>
   </form>
 {% endblock %}

@@ -47,8 +47,6 @@ class Person(Base):
   phones = relationship("Phone", backref="person")
   addresses = relationship("Address", backref="person")
   aliases = relationship("Alias", backref="person")
-  events = relationship("Event", backref="person")
-  notes = relationship("Note", backref="person")
 
   def __init__(self, firstName, middleName, lastName, sirName, suffix, type, height, weight, hairColor, eyeColor, ssn, gender, dob, ethnicity, primaryLanguage, missing, description, owner):
     self.firstName = firstName
@@ -72,19 +70,32 @@ class Person(Base):
 
   def __repr__(self):
     # 1. Fetch related data and handle None values
+    s1, s2, s3, s4, s5 = self.sirName, self.firstName, self.middleName, self.lastName, self.suffix
+    name = " ".join([s for s in [s1, s2, s3, s4, s5] if s])
     cat_name = self.category.name if self.category else "Unknown"
     age = str(datetime.now().year - self.dob.year) if self.dob else "Unknown"
     missing_date = self.missing.strftime("%B %d, %Y at %I:%M %p")
 
+    aliases_list = ""
+    for index, al in enumerate(self.aliases):
+      s1, s2, s3, s4, s5 = al.sirName, al.firstName, al.middleName, al.lastName, al.suffix
+      name = " ".join([s for s in [s1, s2, s3, s4, s5] if s])
+      if index == 0:
+        aliases_list = name
+      else:
+        aliases_list += ", "+name
+
+    addresses_list = ""
+    for index, ad in enumerate(self.addresses):
+      s1, s2, s3, s4, s5 = ad.address1, ad.address2, ad.city, ad.state, ad.zip5
+      name = " ".join([s for s in [s1, s2, s3, s4, str(s5)] if s])
+      if index == 0:
+        addresses_list = name
+      else:
+        addresses_list += ", "+name
+
     emails_list = ", ".join([e.email for e in self.emails]) if self.emails else "None"
     phones_list = ", ".join([p.phone for p in self.phones]) if self.phones else "None"
-    addresses_list = ", ".join([a.address for a in self.addresses]) if self.addresses else "None"
-    aliases_list = ", ".join([al.alias for al in self.aliases]) if self.aliases else "None"
-    events_list = ", ".join([al.alias for al in self.events]) if self.events else "None"
-    notes_list = ", ".join([al.alias for al in self.notes]) if self.notes else "None"
-
-    s1, s2, s3, s4, s5 = self.sirName, self.firstName, self.middleName, self.lastName, self.suffix
-    name = " ".join([s for s in [s1, s2, s3, s4, s5] if s])
 
     gender = 'She'
     if self.gender == 'male':
@@ -94,18 +105,33 @@ class Person(Base):
     if cat_name == "Missing Person":
       missing_text = "went missing on"
 
-    # 2. Build the sentence chunk
-    chunk = (
-      f"Person: {name} is a {cat_name}. {gender} is {age} years old. {gender} {missing_text} {missing_date}. {self.description}. "
-      f"Physical traits: {self.height} tall, {self.weight} weight, {self.eyeColor} eyes, {self.hairColor} hair. "
-      f"Ethnicity: of {self.ethnicity} decent, primary language is {self.primaryLanguage}. "
-      f"Contact information includes emails: {emails_list}, and phones: {phones_list}. "
-      f"Addresses are registered at: {addresses_list}. "
-      f"Known aliases for this person are: {aliases_list}."
-      f"Events for this person are: {events_list}."
-      f"Notes for this person are: {notes_list}."
+    feet = (self.height // 12)
+    inches = (self.height % 12)
+    display_label = f"{feet}' {inches}\""
+
+    # Start with an empty list
+    chunks = []
+
+    # Append strings
+    chunks.append(
+      f"Person: {name} is a {cat_name}. {gender} is {age} years old. {gender} {missing_text} {missing_date}. "
+      f"Physical traits: {display_label} tall, {self.weight} lbs, {self.eyeColor} eyes, {self.hairColor} hair. "
+      f"Ethnicity: {self.ethnicity}, primary language is {self.primaryLanguage}. "
     )
-    return chunk
+    if self.ssn != "" and self.ssn != 'None':
+      chunks.append(f"Social Security Number: {self.ssn}. ")
+    if self.description != "" and self.description != 'None':
+      chunks.append(f"Other descriptive information: {self.description}. ")
+    if emails_list != "" and emails_list != 'None':
+      chunks.append(f"Contact emails: {emails_list}. ")
+    if phones_list != "" and phones_list != 'None':
+      chunks.append(f"Contact phones: {phones_list}. ")
+    if addresses_list != "" and addresses_list != 'None':
+      chunks.append(f"Addresses are registered at: {addresses_list}. ")
+    if aliases_list != "" and aliases_list != 'None':
+      chunks.append(f"Known aliases for this person are: {aliases_list}. ")
+
+    return " ".join(chunks)
 
 # Aliases associated with the person.
 class Alias(Base):
@@ -209,7 +235,7 @@ class Call(Base):
     self.date = date
     self.owner = owner
 
-# Images, PDFs, Excels, Word, Videos
+# Images, PDFs, Excels, Word, Audios, Videos
 # All get added to the investigation vector database to be
 # used in the investigation.
 class File(Base):
@@ -217,13 +243,11 @@ class File(Base):
 
   id = Column(Integer, primary_key=True)
   type = Column(NullToEmptyString)
-  chunkStrategy = Column("chunk_strategy", NullToEmptyString, default="docling")
   filename = Column(NullToEmptyString, unique=True, nullable=False)
   owner = Column(Integer, ForeignKey("people.id"))
 
-  def __init__(self, type, chunkStrategy, filename, owner):
+  def __init__(self, type, filename, owner):
     self.type = type
-    self.chunkStrategy = chunkStrategy
     self.filename = filename
     self.owner = owner
 
@@ -248,6 +272,15 @@ class Event(Base):
     self.dateTo = dateTo
     self.owner = owner
 
+  def __repr__(self):
+    dates = ""
+    if self.dateTo != "" and self.dateTo != 'None':
+      dates = f"Event Dates: from {self.dateFrom} to {self.dateTo}. "
+    elif self.dateFrom != "" and self.dateFrom != 'None':
+      dates = f"Event Date: on {self.dateFrom}. "
+
+    return f"Event: {self.name} Event Details: {self.description} {dates}"
+
 # Notes related to the missing person
 # that might hold weight in the investigation.
 class Note(Base):
@@ -262,3 +295,6 @@ class Note(Base):
     self.name = name
     self.note = note
     self.owner = owner
+
+  def __repr__(self):
+    return f"Note: {self.name} Note Details: {self.note} "

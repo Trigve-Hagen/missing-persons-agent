@@ -1,0 +1,259 @@
+import os
+import re
+import unicodedata
+import chromadb
+from flask import flash
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_docling.loader import DoclingLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores.utils import filter_complex_metadata
+from langchain_chroma import Chroma
+from langchain_core.documents import Document
+
+# Base class (Parent)
+class VectorDb:
+  def __init__(self):
+    self.persist_directory = os.path.join(os.path.abspath("."), "database\\chroma_db")
+    self.collection_name = 'missing_persons'
+    self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
+  def get_vector_store(self):
+    return Chroma(
+      persist_directory=self.persist_directory,
+      collection_name=self.collection_name,
+      embedding_function=self.embeddings
+    )
+
+  def get_loader(self, chunk_loader, filename):
+    if chunk_loader == 'docling':
+      loader = DoclingLoader(file_path=os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
+    else:
+      loader = DoclingLoader(file_path=os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
+
+    pages = loader.load()
+    return filter_complex_metadata(pages)
+
+  def get_text_splitter(self, pages, chunk_size, chunk_overlap):
+    text_splitter = RecursiveCharacterTextSplitter(
+      chunk_size=chunk_size,
+      chunk_overlap=chunk_overlap,
+      separators=["\n\n", "\n", " ", ""]
+    )
+    return text_splitter.split_documents(pages)
+
+  def get_chroma_data(self):
+    vector_store = self.get_vector_store()
+    collection = vector_store._client.get_collection(name=self.collection_name)
+    results = collection.get(include=["documents", "metadatas"])
+    metadatas = results["metadatas"]
+
+    data = []
+    if results and 'documents' in results:
+      for doc_id, doc_text, doc_metas in zip(results['ids'], results['documents'], results['metadatas']):
+        data.append({'id': doc_id, 'text': doc_text, 'meta': doc_metas})
+    return data, metadatas
+
+  def get_vector_by_ids(self, ids):
+    vector_store = self.get_vector_store()
+
+    results = vector_store.get(ids=ids)
+    view_data = []
+    if results and results.get("documents"):
+      text = results["documents"][0]
+      metadata = results["metadatas"][0]
+
+      view_data.append({
+        "id": id,
+        "text": text,
+        "meta": metadata,
+        "source": metadata.get("source", "Unknown")
+      })
+
+    return view_data
+
+  def update_data_by_id(self, vector_id: str, content: str, metadata: dict):
+    # 1. Initialize your vector store
+    vector_store = self.get_vector_store()
+
+    updated_doc = Document(page_content=content, metadata=metadata)
+
+    try:
+      # 3. Perform the update
+      vector_store.update_document(document_id=vector_id, document=updated_doc)
+      flash(f"Successfully updated {vector_id}!", "success")
+      return True
+    except Exception as e:
+      flash(f"Error deleting vectors: {e}", "danger")
+      return False
+
+  def delete_vector_by_id(self, ids: list[str]):
+    vector_store = self.get_vector_store()
+    try:
+      vector_store.delete(ids=ids)
+      flash(f"Successfully deleted IDs: {ids}", "success")
+      return True
+    except Exception as e:
+      flash(f"Error deleting vectors: {e}", "danger")
+      return False
+
+  def delete_file_by_source(self, source):
+    try:
+      vector_db = self.get_vector_store()
+      collection = vector_db._client.get_collection(name=self.collection_name)
+      collection.delete(
+          where={"source": source}
+      )
+      flash(f"Successfully deleted File: {source}", "success")
+      return True
+    except Exception as e:
+      flash(f"Error deleting file: {e}", "danger")
+      return False
+
+  def clean_filename(self, filename):
+    # 1. Convert accented characters to ASCII equivalents (e.g., 'é' -> 'e')
+    filename = unicodedata.normalize('NFKD', filename).encode('ascii', 'ignore').decode('ascii')
+    # 2. Keep only alphanumeric characters, underscores, hyphens, and dots
+    # This strips dangerous symbols like /, \, :, *, ?, ", <, >, |
+    filename = re.sub(r'[^\w\s.-]', '', filename).strip()
+    # 3. Replace internal spaces or multiple separators with a single underscore
+    filename = re.sub(r'[-\s]+', '_', filename)
+    # 4. Remove leading dots to prevent hidden files or directory traversal
+    filename = filename.lstrip('.')
+    return filename or "default_filename"
+
+class PdfRepository(VectorDb):
+
+  def save_document(self, processor, filename, chunk_loader, chunk_size, chunk_overlap):
+    pages = self.get_loader(chunk_loader, filename)
+    chunks = self.get_text_splitter(pages, chunk_size, chunk_overlap)
+
+    # 4. Create deterministic composite string IDs
+    # Format: path_to_file_page_index_chunk_index
+    ids = []
+    chunk_counts = {}
+
+    for idx, chunk in enumerate(chunks):
+      # Extract source path and page number from metadata (note: page is 0-indexed)
+      source = chunk.metadata.get("source", "unknown_source")
+      page = chunk.metadata.get("page", 0)
+
+      # Track chunk occurrences per page to ensure uniqueness
+      page_key = (source, page)
+      chunk_counts[page_key] = chunk_counts.get(page_key, 0) + 1
+      chunk_num = chunk_counts[page_key]
+
+      # Create composite ID
+      composite_id = f"{os.path.basename(source)}_page{page}_chunk{chunk_num}"
+      ids.append(composite_id)
+
+      # Optionally attach this ID to the document metadata
+      chunk.metadata["custom_id"] = composite_id
+      chunk.metadata["source"] = os.path.basename(filename)
+      chunk.metadata["chunk_index"] = idx
+
+    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": processor})
+    Chroma.from_documents(
+      documents=chunks,
+      embedding=embedding_function,
+      ids=ids,
+      collection_name=self.collection_name,
+      persist_directory=self.persist_directory
+    )
+    flash(f"Collection missing_persons saved {os.path.basename(filename)} successfully!", "success")
+    return True
+
+class PersonRepository(VectorDb):
+
+  def save_person(self, person, processor):
+    content = repr(person)
+
+    flash(f"{content}", "success")
+
+    metadata = {
+      "id": person.id,
+      "firstName": person.firstName,
+      "middleName": person.middleName,
+      "lastName": person.lastName,
+      "sirName": person.sirName,
+      "suffix": person.suffix,
+      "type": person.type,
+      "height": person.height,
+      "weight": person.weight,
+      "hairColor": person.hairColor,
+      "eyeColor": person.eyeColor,
+      "ssn": person.ssn,
+      "gender": person.gender,
+      "dob": person.dob,
+      "missing": person.missing,
+      "category": person.category.name if person.category else "Unknown",
+    }
+
+    # updated_doc = Document(page_content=content, metadata=metadata)
+
+    # embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": processor})
+    # Chroma.from_documents(
+    #   documents=documents,
+    #   embedding=embedding_function,
+    #   collection_name=self.collection_name,
+    #   persist_directory=self.persist_directory
+    # )
+
+    # flash(f"Person saved to missing_persons successfully!", "success")
+    return True
+
+class EventRepository(VectorDb):
+
+  def save_event(self, event, processor):
+    content = repr(event)
+
+    flash(f"{content}", "success")
+
+    metadata = {
+      "id": event.id,
+      "type": event.type,
+      "name": event.name,
+      "description": event.description,
+      "dateFrom": event.dateFrom,
+      "dateTo": event.dateTo,
+    }
+
+    # updated_doc = Document(page_content=content, metadata=metadata)
+
+    # embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": processor})
+    # Chroma.from_documents(
+    #   documents=documents,
+    #   embedding=embedding_function,
+    #   collection_name=self.collection_name,
+    #   persist_directory=self.persist_directory
+    # )
+
+    # flash(f"Person saved to missing_persons successfully!", "success")
+    return True
+
+class NoteRepository(VectorDb):
+
+  def save_note(self, note, processor):
+    content = repr(note)
+
+    flash(f"{content}", "success")
+
+    metadata = {
+      "id": note.id,
+      "name": note.name,
+      "note": note.note,
+    }
+
+    # updated_doc = Document(page_content=content, metadata=metadata)
+
+    # embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": processor})
+    # Chroma.from_documents(
+    #   documents=documents,
+    #   embedding=embedding_function,
+    #   collection_name=self.collection_name,
+    #   persist_directory=self.persist_directory
+    # )
+
+    # flash(f"Person saved to missing_persons successfully!", "success")
+    return True
+

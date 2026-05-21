@@ -60,7 +60,7 @@ from database.person import Category, Person, Alias, Email, EmailMessage, Phone,
 from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
 from resources import Resources
-from pdf_manager import PdfManager
+from vector_repository import PdfRepository, PersonRepository, EventRepository, NoteRepository
 from code_loader import CodeLoader
 from selections import Selection
 
@@ -214,7 +214,6 @@ def file():
     page=page,
     total_pages=total_pages,
     fileTypes=Selection.fileType_select,
-    chunkStrategies=Selection.chunkStrategy_select,
     owners=owner_select
   )
 
@@ -228,14 +227,13 @@ def edit_file(id):
     'id': id,
     'file_id': file.id,
     'type': file.type,
-    'chunk_strategy': file.chunkStrategy,
     'filename': file.filename,
     'owner': file.owner
   }
 
   try:
-    pdf_manager = PdfManager()
-    data, metadatas = pdf_manager.get_chroma_data()
+    pdf_repo = PdfRepository()
+    data, metadatas = pdf_repo.get_chroma_data()
   except Exception as e:
     flash(f"Error connecting to database: {e}", "danger")
     return redirect(url_for('file'))
@@ -248,15 +246,14 @@ def edit_file(id):
     data=data,
     metadatas=metadatas,
     fileTypes=Selection.fileType_select,
-    chunkStrategies=Selection.chunkStrategy_select,
     owners=owner_select
   )
 
 @app.route('/edit/file/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
 def edit_file_vectors(id, file_id, vector_id):
   try:
-    pdf_manager = PdfManager()
-    data = pdf_manager.get_vector_by_ids([vector_id])
+    pdf_repo = PdfRepository()
+    data = pdf_repo.get_vector_by_ids([vector_id])
   except Exception as e:
     flash(f"Error connecting to database: {e}", "danger")
     return redirect(url_for('file'))
@@ -291,8 +288,8 @@ def set_file_vector():
 
   try:
     vector_id = form_data.get('vector_id')
-    pdf_manager = PdfManager()
-    pdf_manager.update_data_by_id(vector_id)
+    pdf_repo = PdfRepository()
+    pdf_repo.update_data_by_id(vector_id)
 
     flash(f"{vector_id} updated successfully!", "success")
     return redirect(url_for('edit_file_vectors', id=file_id))
@@ -322,8 +319,8 @@ def set_file_metadata():
   metadata = dict(zip(keys, values))
 
   try:
-    pdf_manager = PdfManager()
-    pdf_manager.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
+    pdf_repo = PdfRepository()
+    pdf_repo.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
     return redirect(url_for('edit_file_vectors', id=id, file_id=file_id, vector_id=vector_id))
   except IntegrityError as e:
     session.rollback()
@@ -350,22 +347,22 @@ def set_file():
     flash(f"No selected file", "danger")
     return redirect(url_for('file'))
 
-  pdf_manager = PdfManager()
+  pdf_repo = PdfRepository()
 
   # Secure and save the file to sql_alchemy
   if file and allowed_file(file.filename):
     sec_filename = secure_filename(file.filename)
     filename, filename_ext = os.path.splitext(sec_filename)
-    clean_filename = pdf_manager.clean_filename(filename)
+    clean_filename = pdf_repo.clean_filename(filename)
     safe_filename = f"{clean_filename}_{time.time_ns()}{filename_ext}"
     save_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
     file.save(save_path)
 
   # save the file to vector_store
-  pdf_manager.save_document(
+  pdf_repo.save_document(
     processor=getProcessor(),
     filename=safe_filename,
-    chunk=form_data.get('chunk_strategy'),
+    chunk_loader=getLoader(),
     chunk_size=getChunkSize(),
     chunk_overlap=getChunkOverlap()
   )
@@ -375,14 +372,12 @@ def set_file():
     if file_record:
       uporadd = "updated"
       file_record.type=form_data.get('type')
-      file_record.chunkStrategy=form_data.get('chunk_strategy')
       file_record.filename=safe_filename
       file_record.owner=form_data.get('owner')
     else:
       uporadd = "added"
       file_record = File(
         type=form_data.get('type'),
-        chunkStrategy=form_data.get('chunk_strategy'),
         filename=safe_filename,
         owner=form_data.get('owner'),
       )
@@ -860,7 +855,7 @@ def person():
 
   people_utils = PeopleUtils(session=session)
   height_options = people_utils.get_height_options()
-  contactType_select, hair_color_codes, eye_colors = people_utils.people_params()
+  contactType_select, hair_colors, eye_colors = people_utils.people_params()
   sir_names, name_suffixes = people_utils.name_params()
   owner_select = session.query(Person).all()
 
@@ -874,7 +869,7 @@ def person():
     primary_languages=Selection.primary_languages,
     height_options=height_options,
     weight_options=range(10, 401),
-    hair_color_codes=hair_color_codes,
+    hair_colors=hair_colors,
     eye_colors=eye_colors,
     suffixes=name_suffixes,
     sir_names=sir_names,
@@ -888,11 +883,9 @@ def edit_person(id):
   if not person:
     return redirect(url_for('person'))
 
-  print(repr(person))
-
   people_utils = PeopleUtils(session=session)
   height_options = people_utils.get_height_options()
-  contactType_select, hair_color_codes, eye_colors = people_utils.people_params()
+  contactType_select, hair_colors, eye_colors = people_utils.people_params()
   sir_names, name_suffixes = people_utils.name_params()
 
   # Serialize to JSON (assuming basic dictionary serialization)
@@ -917,6 +910,11 @@ def edit_person(id):
     'description': person.description,
     'owner': person.owner
   }
+
+  personManager = PersonRepository()
+  personManager.save_person(person, getProcessor())
+  data, metadatas = personManager.get_chroma_data()
+
   return flask.render_template(
     'edit_person.html',
     edit_id=id,
@@ -925,12 +923,13 @@ def edit_person(id):
     contactTypes=contactType_select,
     height_options=height_options,
     weight_options=range(10, 401),
-    hair_color_codes=hair_color_codes,
+    hair_colors=hair_colors,
     eye_colors=eye_colors,
     suffixes=name_suffixes,
     sir_names=sir_names,
     person_data=person_data,
-    data=[]
+    data=data,
+    metadatas=metadatas,
   )
 
 @app.route('/set_person', methods=['POST'])
@@ -996,6 +995,17 @@ def set_person():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('person'))
+
+@app.route('/edit_person_vectors')
+def edit_person_vectors():
+  flash(f"Be edit_person_vectors soon!", "success")
+  return redirect(url_for('person'))
+
+@app.route('/save_to_vector_person', methods=['POST'])
+def save_to_vector_person():
+  form_data = request.form
+  flash(f"Be save_to_vector_person soon!", "success")
+  return redirect(url_for('person'))
 
 @app.route('/alias')
 def alias():
@@ -1344,6 +1354,10 @@ def edit_event(id):
       'event': event.description,
       'owner': event.owner
     }
+
+    eventManager = EventRepository()
+    eventManager.save_event(event, getProcessor())
+
     stmt = select(Category).where(Category.type == "eventType")
     eventType_select = session.execute(stmt).scalars().all()
     owner_select = session.query(Person).all()
@@ -1388,6 +1402,17 @@ def set_event():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('event'))
 
+@app.route('/edit_event_vectors')
+def edit_event_vectors():
+  flash(f"Be edit_event_vectors soon!", "success")
+  return redirect(url_for('event'))
+
+@app.route('/save_to_vector_event', methods=['POST'])
+def save_to_vector_event():
+  form_data = request.form
+  flash(f"Be save_to_vector_event soon!", "success")
+  return redirect(url_for('event'))
+
 @app.route('/note')
 def note():
   page = request.args.get('page', 1, type=int)
@@ -1419,6 +1444,9 @@ def edit_note(id):
     'note': note.note,
     'owner': note.owner,
   }
+
+  noteManager = NoteRepository()
+  noteManager.save_note(note, getProcessor())
 
   owner_select = session.query(Person).all()
   return flask.render_template('edit_note.html', edit_id=id, note_data=note_data, owners=owner_select)
@@ -1455,6 +1483,17 @@ def set_note():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('note'))
+
+@app.route('/edit_note_vectors')
+def edit_note_vectors():
+  flash(f"Be edit_note_vectors soon!", "success")
+  return redirect(url_for('note'))
+
+@app.route('/save_to_vector_note', methods=['POST'])
+def save_to_vector_note():
+  form_data = request.form
+  flash(f"Be save_to_vector_note soon!", "success")
+  return redirect(url_for('note'))
 
 @app.route('/api')
 def api():
@@ -1709,7 +1748,7 @@ def delete_vector_item():
   vector_id = form_data.get('vector_id')
 
   try:
-    manager = PdfManager()
+    manager = PdfRepository()
     manager.delete_vector_by_id(ids=[vector_id])
     flash(vector_id + " deleted successfully!", "success")
     return redirect(url_for('edit_file', id=file_id))
@@ -1730,8 +1769,8 @@ def delete_file_vector_item():
   source = form_data.get('source')
 
   try:
-    manager = PdfManager()
-    manager.delete_file_vector_by_id(source)
+    manager = PdfRepository()
+    manager.delete_file_by_source(source)
     flash(source + " deleted successfully!", "success")
     return redirect(url_for('edit_file', id=file_id))
   except IntegrityError as e:
@@ -1751,12 +1790,12 @@ def save_to_vector_file():
   filename=form_data.get('filename')
 
   try:
-    pdf_manager = PdfManager()
+    pdf_repo = PdfRepository()
     # save the file to vector_store
-    pdf_manager.save_document(
+    pdf_repo.save_document(
       processor=getProcessor(),
       filename=filename,
-      chunk=form_data.get('chunk_strategy'),
+      chunk_loader=getLoader(),
       chunk_size=getChunkSize(),
       chunk_overlap=getChunkOverlap()
     )
@@ -1945,6 +1984,12 @@ def getQuestion():
   prompt = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
   return prompt
 
+def getLoader():
+  state = session.get(State, 1)
+  current_value = state.loader
+  default_value = "docling"
+  return current_value or default_value
+
 def getChunkSize():
   state = session.get(State, 1)
   current_value = state.chunk_size
@@ -2070,14 +2115,14 @@ def initialize_database(engine):
   if session.query(Person).first() is None:
     p1 = Person(
       type=1, sirName="", firstName="Nancy", middleName="", lastName="Guthrie",
-      suffix="", height="", weight="", hairColor="", eyeColor="", ssn="",
+      suffix="", height="64", weight="150", hairColor="Brown", eyeColor="Blue", ssn="",
       description="", gender="female", dob=datetime(1942, 1, 27),
       missing=datetime(2026, 2, 1), owner=0, ethnicity="white",
       primaryLanguage="english"
     )
     p2 = Person(
       type=1, sirName="", firstName="Trigve", middleName="", lastName="Hagen",
-      suffix="", height="", weight="", hairColor="", eyeColor="", ssn="",
+      suffix="", height="67", weight="190", hairColor="Brown", eyeColor="Blue", ssn="",
       description="", gender="male", dob=datetime(1972, 10, 2),
       missing=datetime(2026, 10, 2), owner=0, ethnicity="white",
       primaryLanguage="english"

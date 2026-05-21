@@ -55,10 +55,10 @@
 <h3 class="my-4">Add Event</h3>
 
 <div class="row mt-5">
-  <div class="col-md-12">
+  <div class="col-12">
     <form class="row g-4" action="/set_event" method="POST" name="event" autocomplete="off">
       <input type="hidden" class="form-control" id="event-id" name="id" />
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="event-type" class="form-label">Event Type</label>
         <select class="form-select" id="event-type" name="type" required>
           <option value="">Choose...</option>
@@ -67,7 +67,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="event-owner" class="form-label">Person</label>
         <select class="form-select" id="event-owner" name="owner">
           <option value="0">Choose...</option>
@@ -76,19 +76,19 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-4">
+      <div class="col-12">
         <label for="event-name" class="form-label">Name</label>
         <input type="text" class="form-control" id="event-name" name="name" value="" required>
       </div>
-      <div class="col-md-4">
+      <div class="col-6">
         <label for="event-date-from" class="form-label">Date From or Date</label>
         <input type="date" class="form-control" id="event-date-from" name="dateFrom" required>
       </div>
-      <div class="col-md-4">
+      <div class="col-6">
         <label for="event-date-to" class="form-label">Date To</label>
         <input type="date" class="form-control" id="event-date-to" name="dateTo">
       </div>
-      <div class="col-md-12">
+      <div class="col-12">
         <label for="event-description" class="form-label">Description</label>
         <textarea class="form-control" id="event-description" name="description" rows="3"></textarea>
         <div class="form-text" id="event-description-text">Events related to the missing person that might hold weight in the investigation.</div>

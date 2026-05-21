@@ -96,7 +96,7 @@
 
           <div class="col-md-3">
             <label for="person-height" class="form-label">Height</label>
-            <select class="form-select" id="person-height" name="height">
+            <select class="form-select" id="person-height" name="height" required>
               <option value="">Choose...</option>
               {% for value, label in height_options %}
                 {% if person_data.height == value %}
@@ -109,7 +109,7 @@
           </div>
           <div class="col-md-3">
             <label for="person-weight" class="form-label">Weight - Lbs</label>
-            <select class="form-select" id="person-weight" name="weight">
+            <select class="form-select" id="person-weight" name="weight" required>
               <option value="">Choose...</option>
               {% for w in weight_options %}
                 {% if person_data.weight == w %}
@@ -122,33 +122,33 @@
           </div>
           <div class="col-md-3">
             <label for="person-hairColor" class="form-label">Hair Color</label>
-            <select class="form-select" id="person-hairColor" name="hairColor">
+            <select class="form-select" id="person-hairColor" name="hairColor" required>
               <option value="">Choose...</option>
-              {% for value, label in hair_color_codes %}
-                {% if person_data.hairColor == value %}
-                  <option value="{{ value }}" selected>{{ label }}</option>
+              {% for hair in hair_colors %}
+                {% if person_data.hairColor == hair %}
+                  <option value="{{ hair }}" data-color="{{ person_data.hairColor }}"  selected>{{ hair }}</option>
                 {% else %}
-                  <option value="{{ value }}">{{ label }}</option>
+                  <option value="{{ hair }}" data-color="{{ person_data.hairColor }}" >{{ hair }}</option>
                 {% endif %}
               {% endfor %}
             </select>
           </div>
           <div class="col-md-3">
             <label for="person-eyeColor" class="form-label">Eye Color</label>
-            <select class="form-select" id="person-eyeColor" name="eyeColor">
+            <select class="form-select" id="person-eyeColor" name="eyeColor" required>
               <option value="">Choose...</option>
-              {% for color in eye_colors %}
-                {% if person_data.eyeColor == color %}
-                  <option value="{{ color }}" selected>{{ color }}</option>
+              {% for eye in eye_colors %}
+                {% if person_data.eyeColor == eye %}
+                  <option value="{{ eye }}" data-color="{{ person_data.eyeColor }}" selected>{{ eye }}</option>
                 {% else %}
-                  <option value="{{ color }}">{{ color }}</option>
+                  <option value="{{ eye }}" data-color="{{ person_data.eyeColor }}">{{ eye }}</option>
                 {% endif %}
               {% endfor %}
             </select>
           </div>
           <div class="col-md-6">
             <label for="person-ethnicity" class="form-label">Ethnicity</label>
-            <select class="form-select" id="person-ethnicity" name="ethnicity">
+            <select class="form-select" id="person-ethnicity" name="ethnicity" required>
               <option value="">Choose...</option>
               {% for value, label in ethnicities %}
                 {% if person_data.ethnicity == value %}
@@ -161,7 +161,7 @@
           </div>
           <div class="col-md-6">
             <label for="person-primary-language" class="form-label">Primary Language</label>
-            <select class="form-select" id="person-primary-language" name="primaryLanguage">
+            <select class="form-select" id="person-primary-language" name="primaryLanguage" required>
               <option value="">Choose...</option>
               {% for value, label in primary_languages %}
                 {% if person_data.primaryLanguage == value %}
@@ -214,6 +214,7 @@
   </div>
 </div>
 
+{% if metadatas %}
 <hr>
 <h3 class="my-4">Chunks</h3>
 
@@ -222,7 +223,7 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th scope="col">#</th>
+          <th scope="col">Metadata</th>
           <th scope="col">Extracted Text (Preview)</th>
           <th scope="col" class="col-2">Actions</th>
         </tr>
@@ -232,7 +233,7 @@
           <tr>
               <td scope="row">{{ item.id }}</td>
               <td>{{ item.text }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_file_vectors', id=item.id) }}">Edit</a><br /><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-item-file-id="{{ file_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+              <td><a class="btn btn-secondary" href="{{ url_for('edit_person_vectors') }}">Edit</a><br /><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -242,4 +243,11 @@
 
 {% include 'includes/delete_vector_modal.html' %}
 
+{% include 'includes/delete_file_vector_modal.html' %}
+{% endif %}
+  <form class="row g-4" action="/save_to_vector_person" method="post" autocomplete="off">
+    <div class="col-12 mb-5">
+      <button class="btn btn-success" type="submit">Save person to vector database.</button>
+    </div>
+  </form>
 {% endblock %}

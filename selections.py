@@ -63,7 +63,7 @@ class Selection():
     ("pdf", "Pdf"),
   ]
 
-  chunkStrategy_select = [
+  loader_select = [
     ("docling", "DoclingLoader"),
     ("pypdf", "PyPDFLoader")
   ]
