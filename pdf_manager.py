@@ -1,6 +1,7 @@
 import os
 import re
 import unicodedata
+import chromadb
 from flask import flash
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
@@ -9,7 +10,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
-
 
 class PdfManager():
   def __init__(self):
@@ -107,18 +107,18 @@ class PdfManager():
 
     embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": processor})
     Chroma.from_documents(
-        documents=documents,
-        embedding=embedding_function,
-        collection_name=self.collection_name,
-        persist_directory=self.persist_directory
+      documents=documents,
+      embedding=embedding_function,
+      collection_name=self.collection_name,
+      persist_directory=self.persist_directory
     )
 
     flash(f"Person saved to missing_persons successfully!", "success")
     return True
 
   def get_chroma_data(self):
-    vector_db = self.get_vector_store()
-    collection = vector_db._client.get_collection(name=self.collection_name)
+    vector_store = self.get_vector_store()
+    collection = vector_store._client.get_collection(name=self.collection_name)
     results = collection.get(include=["documents", "metadatas"])
     metadatas = results["metadatas"]
 
@@ -146,9 +146,20 @@ class PdfManager():
 
     return view_data
 
-  def update_data_by_id(self, id):
-    flash(f"Be here soon..", "info")
-    return True
+  def update_data_by_id(self, vector_id: str, content: str, metadata: dict):
+    # 1. Initialize your vector store
+    vector_store = self.get_vector_store()
+
+    updated_doc = Document(page_content=content, metadata=metadata)
+
+    try:
+      # 3. Perform the update
+      vector_store.update_document(document_id=vector_id, document=updated_doc)
+      flash(f"Successfully updated {vector_id}!", "success")
+      return True
+    except Exception as e:
+      flash(f"Error deleting vectors: {e}", "danger")
+      return False
 
   # Deletes all document chunks from Chroma that match a specific source name.
   def delete_pdf_by_source(vector_store, source_name):

@@ -6,6 +6,7 @@
 {% block content %}
 
 <h1 class="my-4">Edit File Vector</h1>
+<p>You can only add new metadata. No updating or deleting. The Remove button is only for removing the new elements before submitting. If you add something and need to delete it you will need to delete and save the file to vector again.</p>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -24,32 +25,20 @@
 </div>
 
 <h3 class="my-4">Document</h3>
-<div class="row mt-5">
-  <div class="col-md-12">
-    <form class="row g-4" action="/set_file_vector" method="post" autocomplete="off">
-      <input type="hidden" class="form-control" id="file-vector-file-id" name="file_id" value="{{ vector_data.file_id }}" />
-      <input type="hidden" class="form-control" id="file-vector-id" name="vector_id" value="{{ vector_data.vector_id }}" />
-      <div class="col-md-9">
-        <label for="file-vector-text" class="form-label">Text</label>
-        <textarea class="form-control" id="file-vector-text" name="text" rows="3" required>{{ vector_data.text }}</textarea>
-      </div>
-      <div class="col-12 mb-5">
-        <button class="btn btn-primary" type="submit">Save</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<h3 class="my-4">Metadata</h3>
-<div class="row mt-5">
+<div class="row">
   <div class="col-12">
     <form action="/set_file_metadata" method="post" autocomplete="off">
       <input type="hidden" class="form-control" name="id" value="{{ vector_data.id }}" />
       <input type="hidden" class="form-control" name="file_id" value="{{ vector_data.file_id }}" />
       <input type="hidden" class="form-control" name="vector_id" value="{{ vector_data.vector_id }}" />
+      <div class="row g-4">
+        <div class="col-md-9">
+          <label for="file-vector-content" class="form-label">Content</label>
+          <textarea class="form-control" id="file-vector-content" name="content" rows="5" required>{{ vector_data.text }}</textarea>
+        </div>
+      </div>
       <div id="file-vector-new-metadata">
       {% for name, value in meta %}
-        {% if name == 'source' or name == 'custom_id' or name == 'chunk_index' %}
         <div class="row g-4 mt-2">
           <div class="col-5">
             <label class="form-label">Name</label>
@@ -64,22 +53,6 @@
             <button class="btn btn-primary" type="button" class="file-vector-remove-metadata" disabled>Remove</button>
           </div>
         </div>
-        {% else %}
-        <div class="row g-4 mt-2">
-          <div class="col-5">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-control" name="name[]" value="{{ name }}" required>
-          </div>
-          <div class="col-5">
-            <label class="form-label">Value</label>
-            <textarea class="form-control" name="value[]" rows="3" required>{{ value }}</textarea>
-          </div>
-          <div class="col-2 d-flex flex-column align-items-start">
-            <label class="form-label">Actions</label>
-            <button class="btn btn-primary" type="button" class="file-vector-remove-metadata">Remove</button>
-          </div>
-        </div>
-        {% endif %}
       {% endfor %}
       </div>
       <div class="col-12 mb-5">

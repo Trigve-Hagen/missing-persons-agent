@@ -167,6 +167,19 @@ class Email(Base):
     self.email = email
     self.owner = owner
 
+class EmailMessage(Base):
+  __tablename__ = "email_messages"
+
+  id = Column("id", Integer, primary_key=True)
+  message = Column(Text)
+  date = Column(DateTime)
+  owner = Column(Integer, ForeignKey("emails.id"))
+
+  def __init__(self, message, date, owner):
+    self.message = message
+    self.date = date
+    self.owner = owner
+
 # Phone numbers associated with the person.
 class Phone(Base):
   __tablename__ = "phones"
@@ -179,6 +192,21 @@ class Phone(Base):
   def __init__(self, type, phone, owner):
     self.type = type
     self.phone = phone
+    self.owner = owner
+
+# Calls made from a Phone numbers.
+class Call(Base):
+  __tablename__ = "calls"
+
+  id = Column("id", Integer, primary_key=True)
+  type = Column(NullToEmptyString(20)) # text, call
+  file = Column(Integer)
+  date = Column(DateTime)
+  owner = Column(Integer, ForeignKey("phones.id"))
+
+  def __init__(self, file, date, owner):
+    self.file = file
+    self.date = date
     self.owner = owner
 
 # Images, PDFs, Excels, Word, Videos

@@ -57,7 +57,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-6">
         <label for="file-owner" class="form-label">Person</label>
         <select class="form-select" id="file-owner" name="owner" required>
           <option value="">Choose...</option>
@@ -97,7 +97,7 @@
             <tr>
               <td scope="row">{{ item.meta }}</td>
               <td>{{ item.text }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_file_vectors', id=file_data.id, file_id=item.id) }}">Edit</a><br /><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-item-file-id="{{ file_data.file_id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+              <td><a class="btn btn-secondary" href="{{ url_for('edit_file_vectors', id=file_data.id, file_id=metadatas[0].source, vector_id=item.id) }}">Edit</a><br /><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-item-file-id="{{ file_data.file_id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
             </tr>
           {% endfor %}
         </tbody>

@@ -56,7 +56,7 @@ from database.base import Base
 from database.state import State, Notice
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField
-from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Note
+from database.person import Category, Person, Alias, Email, EmailMessage, Phone, Call, Text, Address, File, Event, Note
 from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
 from resources import Resources
@@ -252,19 +252,22 @@ def edit_file(id):
     owners=owner_select
   )
 
-@app.route('/edit/file/vectors/<int:id>/<string:file_id>', methods=['GET', 'POST'])
-def edit_file_vectors(id, file_id):
+@app.route('/edit/file/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
+def edit_file_vectors(id, file_id, vector_id):
   try:
     pdf_manager = PdfManager()
-    data = pdf_manager.get_vector_by_ids([file_id])
+    data = pdf_manager.get_vector_by_ids([vector_id])
   except Exception as e:
     flash(f"Error connecting to database: {e}", "danger")
     return redirect(url_for('file'))
 
+  # flash(f"data: {data}", "info")
+  # flash(f"vector_id: {vector_id}", "info")
+
   vector_data = {
     'id': id,
     'file_id': file_id,
-    'vector_id': data[0]['id'],
+    'vector_id': vector_id,
     'text': data[0]['text'],
     'meta': data[0]['meta'],
     'source': data[0]['source'],
@@ -281,7 +284,7 @@ def edit_file_vectors(id, file_id):
 
   return flask.render_template('edit_file_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
 
-@app.route('/set_file_vector', methods=['POST'])
+""" @app.route('/set_file_vector', methods=['POST'])
 def set_file_vector():
   form_data = request.form
   file_id = form_data.get('file_id')
@@ -301,38 +304,36 @@ def set_file_vector():
   except Exception as e:
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('edit_file_vectors', id=file_id))
+    return redirect(url_for('edit_file_vectors', id=file_id)) """
 
 @app.route('/set_file_metadata', methods=['POST'])
 def set_file_metadata():
   # 1. Grab single IDs
   id = request.form.get('id')
   file_id = request.form.get('file_id')
-  vecotr_id = request.form.get('vecotr_id')
+  vector_id = request.form.get('vector_id')
+  content = request.form.get('content')
 
   # 2. Grab dynamic lists
-  keys = request.form.getlist('keys[]')
-  values = request.form.getlist('values[]')
+  keys = request.form.getlist('name[]')
+  values = request.form.getlist('value[]')
 
   # 3. Zip them into a dictionary for easy processing
-  paired_data = dict(zip(keys, values))
+  metadata = dict(zip(keys, values))
 
   try:
-    """ vector_id = form_data.get('vector_id')
     pdf_manager = PdfManager()
-    pdf_manager.update_data_by_id(vector_id) """
-
-    flash(f"Will Save shortly. Working out the best way to do things for chunking.", "success")
-    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id))
+    pdf_manager.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
+    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id, vector_id=vector_id))
   except IntegrityError as e:
     session.rollback()
     error_msg = str(e.orig)
     flash(f"Database Error: {error_msg}", "danger")
-    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id))
+    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id, vector_id=vector_id))
   except Exception as e:
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id))
+    return redirect(url_for('edit_file_vectors', id=id, file_id=file_id, vector_id=vector_id))
 
 @app.route('/set_file', methods=['POST'])
 def set_file():
