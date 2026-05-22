@@ -477,7 +477,7 @@ def run_investigation_optimizer():
     return redirect(url_for('notice'))
 
   manager = OllamaManager(session=session)
-  response = manager.suggestions(type='investigation', prompt=getPrompt().prompt, query=getQuestion().question)
+  response = manager.suggestions(type='investigation')
   if response:
     try:
       for item in response.suggestions:
@@ -2202,7 +2202,7 @@ def getDisplayType():
 def application_state():
   all_apis = session.query(Api).all()
   all_people = session.query(Person).all()
-  all_models = session.query(Person).all()
+  all_models = session.query(Model).all()
   all_prompts = session.query(Prompt).all()
   all_questions = session.query(Question).all()
   state = session.get(State, 1)

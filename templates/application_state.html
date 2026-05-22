@@ -55,9 +55,9 @@
           <option value="0">Choose...</option>
           {% for model in models %}
             {% if state.model == model.id %}
-              <option value="{{ model.id }}" selected>{{ model.model }}</option>
+              <option value="{{ model.id }}" selected>{{ model.name }}</option>
             {% else %}
-              <option value="{{ model.id }}">{{ model.model }}</option>
+              <option value="{{ model.id }}">{{ model.name }}</option>
             {% endif %}
           {% endfor %}
         </select>
@@ -70,7 +70,7 @@
             {% if state.api == api.id %}
               <option value="{{ api.id }}" selected>{{ api.name }}</option>
             {% else %}
-              <option value="{{ api.id }}">{{ api.api }}</option>
+              <option value="{{ api.id }}">{{ api.name }}</option>
             {% endif %}
           {% endfor %}
         </select>
@@ -79,11 +79,11 @@
         <label for="state-prompt" class="form-label">Prompt</label>
         <select class="form-select" id="state-prompt" name="prompt">
           <option value="0">Choose...</option>
-          {% for prompt in all_prompts %}
+          {% for prompt in prompts %}
             {% if state.prompt == prompt.id %}
-              <option value="{{ prompt.id }}" selected>{{ prompt.prompt }}</option>
+              <option value="{{ prompt.id }}" selected>{{ prompt.prompt[:50] }}...</option>
             {% else %}
-              <option value="{{ prompt.id }}">{{ prompt.prompt }}</option>
+              <option value="{{ prompt.id }}">{{ prompt.prompt[:50] }}...</option>
             {% endif %}
           {% endfor %}
         </select>
@@ -91,13 +91,13 @@
       </div>
       <div class="col-md-6">
         <label for="state-question" class="form-label">Question</label>
-        <select class="form-select" id="state-prompt" name="prompt">
+        <select class="form-select" id="state-question" name="question">
           <option value="0">Choose...</option>
-          {% for question in all_questions %}
+          {% for question in questions %}
             {% if state.question == question.id %}
-              <option value="{{ question.id }}" selected>{{ question.question }}</option>
+              <option value="{{ question.id }}" selected>{{ question.question[:50] }}...</option>
             {% else %}
-              <option value="{{ question.id }}">{{ question.question }}</option>
+              <option value="{{ question.id }}">{{ question.question[:50] }}...</option>
             {% endif %}
           {% endfor %}
         </select>

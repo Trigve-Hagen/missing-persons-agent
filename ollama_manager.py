@@ -5,7 +5,7 @@ import ollama
 from flask import flash
 from sqlalchemy import select
 from database.state import State
-from database.model import Model
+from database.model import Model, Prompt, Question
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_ollama import ChatOllama
@@ -30,41 +30,34 @@ class OllamaManager:
     self.investigation_directory = os.path.join(self.base_path, "database\\chroma_db")
     self.code_optimize_directory = os.path.join(self.base_path, "database\\code_optimize_db")
     self.collection_name = "missing_persons"
-    self.model_name = "phi3:mini"
+    state = session.get(State, 1)
+    self.model = state.model
+    self.model_prompt = state.prompt
+    self.model_question = state.question
 
   def initialize():
     pass
 
   def prompt(self):
-    state = self.session.execute(select(State).filter_by(id = 1)).scalar_one_or_none()
-    model = self.session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+    model = self.session.execute(select(Model).filter_by(id = self.model)).scalar_one_or_none()
 
     if model:
       try:
-        # --- Initialize LangChain Components ---
-        # Load HuggingFace Embeddings
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-
-        # Load existing Chroma collection
-        if os.path.exists(self.self.investigation_directory):
+        if os.path.exists(self.investigation_directory):
             vectorstore = Chroma(
-                persist_directory=self.self.investigation_directory,
+                persist_directory=self.investigation_directory,
                 embedding_function=embeddings,
                 collection_name=self.collection_name
             )
         else:
-            # raise ValueError(f"Chroma collection not found at {self.self.investigation_directory}")
-            flash(f"Chroma collection not found at {self.self.investigation_directory}", "danger")
+            flash(f"Chroma collection not found at {self.investigation_directory}", "danger")
             return False
 
-        # Create Retriever
         retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
-
-        # Initialize Ollama model
         llm = ChatOllama(model=model.model)
 
         try:
-          # Create Chain
           qa_chain = RetrievalQA.from_chain_type(
               llm=llm,
               chain_type="stuff",
@@ -82,8 +75,16 @@ class OllamaManager:
       flash(f"Error fetching models: Please set a model.", "danger")
       return False
 
-  def suggestions(self, type, prompt, query):
-    model = "deepseek-coder-v2"
+  def suggestions(self, type):
+    model = self.session.execute(select(Model).filter_by(id = self.model)).scalar_one_or_none()
+    prompt = self.session.execute(select(Prompt).filter_by(id = self.model_prompt)).scalar_one_or_none()
+    question = self.session.execute(select(Question).filter_by(id = self.model_question)).scalar_one_or_none()
+
+    # flash(f"Type: {type}", "info")
+    # flash(f"Model: {model.model}", "info")
+    # flash(f"Prompt: {prompt.prompt}", "info")
+    # flash(f"Question: {question.question}", "info")
+
     if type == 'code':
       selected_directory = self.code_optimize_directory
     else:
@@ -91,11 +92,7 @@ class OllamaManager:
 
     if model:
       try:
-        # --- Initialize LangChain Components ---
-        # Load HuggingFace Embeddings
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-
-        # Load existing Chroma collection
         if os.path.exists(selected_directory):
             vectorstore = Chroma(
                 persist_directory=selected_directory,
@@ -106,11 +103,8 @@ class OllamaManager:
             flash(f"Chroma collection not found at {selected_directory}", "danger")
             return False
 
-        # Create Retriever
         retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
-
-        # Initialize Ollama model
-        llm = ChatOllama(model=model, format="json", temperature=0.7)
+        llm = ChatOllama(model=model.model, format="json", temperature=0.7)
 
         parser = PydanticOutputParser(pydantic_object=TaskList)
         chat_prompt_template = ChatPromptTemplate.from_template(
@@ -121,14 +115,13 @@ class OllamaManager:
         )
 
         try:
-          # 4. Execute Chain
-          context_docs = retriever.invoke(query)
+          context_docs = retriever.invoke(question.question)
           context_text = "\n".join([doc.page_content for doc in context_docs])
           chain = chat_prompt_template | llm | parser
           response = chain.invoke({
-            "prompt": prompt,
+            "prompt": prompt.prompt,
             "context": context_text,
-            "query": query,
+            "query": question.question,
             "format_instructions": parser.get_format_instructions()
           })
           return response
