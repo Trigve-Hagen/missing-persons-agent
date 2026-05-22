@@ -1385,17 +1385,25 @@ def edit_event(id):
       'name': event.name,
       'dateFrom': event.dateFrom.strftime('%Y-%m-%d'),
       'dateTo': to.strftime('%Y-%m-%d') if (to := event.dateTo) else None,
-      'event': event.description,
+      'description': event.description,
       'owner': event.owner
     }
 
-    eventManager = EventRepository()
-    eventManager.save_event(event, getProcessor())
+    repo = EventRepository(session=session)
+    data, metadatas = repo.get_chroma_data('event', id)
 
     stmt = select(Category).where(Category.type == "eventType")
     eventType_select = session.execute(stmt).scalars().all()
     owner_select = session.query(Person).all()
-    return flask.render_template('edit_event.html', edit_id=id, event_data=event_data, eventTypes=eventType_select, owners=owner_select)
+    return flask.render_template(
+      'edit_event.html',
+      edit_id=id,
+      event_data=event_data,
+      eventTypes=eventType_select,
+      owners=owner_select,
+      data=data,
+      metadatas=metadatas,
+    )
 
 @app.route('/set_event', methods=['POST'])
 def set_event():
@@ -1436,16 +1444,70 @@ def set_event():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('event'))
 
-@app.route('/edit_event_vectors')
-def edit_event_vectors():
-  flash(f"Be edit_event_vectors soon!", "success")
-  return redirect(url_for('event'))
+@app.route('/edit/event/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
+def edit_event_vectors(id, file_id, vector_id):
+  try:
+    repo = EventRepository(session=session)
+    data = repo.get_vector_by_ids([vector_id])
+  except Exception as e:
+    flash(f"Error connecting to database: {e}", "danger")
+    return redirect(url_for('event'))
+
+  vector_data = {
+    'id': id,
+    'file_id': file_id,
+    'vector_id': vector_id,
+    'text': data[0]['text'],
+    'meta': data[0]['meta'],
+    'source': data[0]['source'],
+  }
+
+  metadata_dict = data[0]['meta']
+  metadata_tuples = list(metadata_dict.items())
+
+  return flask.render_template('edit_event_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
 
 @app.route('/save_to_vector_event', methods=['POST'])
 def save_to_vector_event():
   form_data = request.form
-  flash(f"Be save_to_vector_event soon!", "success")
-  return redirect(url_for('event'))
+
+  event = session.execute(select(Event).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+  repo = EventRepository(session=session)
+  repo.save_event(event)
+
+  return redirect(url_for('edit_event', id=form_data.get('id')))
+
+@app.route('/set_event_metadata', methods=['POST'])
+def set_event_metadata():
+  # 1. Grab single IDs
+  id = request.form.get('id')
+  file_id = request.form.get('file_id')
+  vector_id = request.form.get('vector_id')
+  content = request.form.get('content')
+
+  # 2. Grab dynamic lists
+  keys = request.form.getlist('name[]')
+  values = request.form.getlist('value[]')
+
+  # 3. Zip them into a dictionary for easy processing
+  metadata = dict(zip(keys, values))
+  flash(f"Vector Id: {vector_id}", "info")
+  flash(f"Metadata: {metadata}", "info")
+  flash(f"Content: {content}", "info")
+
+  try:
+    repo = PersonRepository(session=session)
+    repo.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
+    return redirect(url_for('edit_event_vectors', id=id, file_id=file_id, vector_id=vector_id))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('edit_event_vectors', id=id, file_id=file_id, vector_id=vector_id))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('edit_event_vectors', id=id, file_id=file_id, vector_id=vector_id))
 
 @app.route('/note')
 def note():
@@ -1479,11 +1541,18 @@ def edit_note(id):
     'owner': note.owner,
   }
 
-  noteManager = NoteRepository()
-  noteManager.save_note(note, getProcessor())
+  repo = NoteRepository(session=session)
+  data, metadatas = repo.get_chroma_data('note', id)
 
   owner_select = session.query(Person).all()
-  return flask.render_template('edit_note.html', edit_id=id, note_data=note_data, owners=owner_select)
+  return flask.render_template(
+    'edit_note.html',
+    edit_id=id,
+    note_data=note_data,
+    owners=owner_select,
+    data=data,
+    metadatas=metadatas,
+  )
 
 @app.route('/set_note', methods=['POST'])
 def set_note():
@@ -1518,16 +1587,70 @@ def set_note():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('note'))
 
-@app.route('/edit_note_vectors')
-def edit_note_vectors():
-  flash(f"Be edit_note_vectors soon!", "success")
-  return redirect(url_for('note'))
+@app.route('/edit/note/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
+def edit_note_vectors(id, file_id, vector_id):
+  try:
+    repo = NoteRepository(session=session)
+    data = repo.get_vector_by_ids([vector_id])
+  except Exception as e:
+    flash(f"Error connecting to database: {e}", "danger")
+    return redirect(url_for('note'))
+
+  vector_data = {
+    'id': id,
+    'file_id': file_id,
+    'vector_id': vector_id,
+    'text': data[0]['text'],
+    'meta': data[0]['meta'],
+    'source': data[0]['source'],
+  }
+
+  metadata_dict = data[0]['meta']
+  metadata_tuples = list(metadata_dict.items())
+
+  return flask.render_template('edit_note_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
 
 @app.route('/save_to_vector_note', methods=['POST'])
 def save_to_vector_note():
   form_data = request.form
-  flash(f"Be save_to_vector_note soon!", "success")
-  return redirect(url_for('note'))
+
+  note = session.execute(select(Note).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+  repo = NoteRepository(session=session)
+  repo.save_note(note)
+
+  return redirect(url_for('edit_note', id=form_data.get('id')))
+
+@app.route('/set_note_metadata', methods=['POST'])
+def set_note_metadata():
+  # 1. Grab single IDs
+  id = request.form.get('id')
+  file_id = request.form.get('file_id')
+  vector_id = request.form.get('vector_id')
+  content = request.form.get('content')
+
+  # 2. Grab dynamic lists
+  keys = request.form.getlist('name[]')
+  values = request.form.getlist('value[]')
+
+  # 3. Zip them into a dictionary for easy processing
+  metadata = dict(zip(keys, values))
+  flash(f"Vector Id: {vector_id}", "info")
+  flash(f"Metadata: {metadata}", "info")
+  flash(f"Content: {content}", "info")
+
+  try:
+    repo = PersonRepository(session=session)
+    repo.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
+    return redirect(url_for('edit_note_vectors', id=id, file_id=file_id, vector_id=vector_id))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('edit_note_vectors', id=id, file_id=file_id, vector_id=vector_id))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('edit_note_vectors', id=id, file_id=file_id, vector_id=vector_id))
 
 @app.route('/api')
 def api():

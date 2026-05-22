@@ -127,7 +127,7 @@ class Person(Base):
     if phones_list != "" and phones_list != 'None':
       chunks.append(f"Contact phones: {phones_list}. ")
     if addresses_list != "" and addresses_list != 'None':
-      chunks.append(f"Addresses are registered at: {addresses_list}. ")
+      chunks.append(f"Addresses registered at: {addresses_list}. ")
     if aliases_list != "" and aliases_list != 'None':
       chunks.append(f"Known aliases for this person are: {aliases_list}. ")
 

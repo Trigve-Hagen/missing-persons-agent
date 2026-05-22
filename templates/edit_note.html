@@ -23,6 +23,15 @@
   </div>
 </div>
 
+{% if not data %}
+  <form class="row" action="/save_to_vector_note" method="post" autocomplete="off">
+    <input type="hidden" class="form-control" name="id" value="{{ note_data.id }}" />
+    <div class="col-12 mb-2">
+      <button class="btn btn-success" type="submit">Add notes to vector database.</button>
+    </div>
+  </form>
+{% endif %}
+
 <div class="row mt-5">
   <div class="col-md-12">
     <form class="row g-4" action="/set_note" method="POST" name="note" autocomplete="off">
@@ -60,7 +69,7 @@
 <hr>
 <h3 class="my-4">Chunks</h3>
 
-<div class="row">
+<div class="row mb-5">
   <div class="col-md-12">
     <table class="table table-striped">
       <thead>
@@ -75,7 +84,7 @@
           <tr>
               <td scope="row">{{ item.id }}</td>
               <td>{{ item.text }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_note_vectors') }}">Edit</a><br /><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+              <td><!-- <a class="btn btn-secondary" href="{{ url_for('edit_note_vectors', id=note_data.id, file_id=metadatas[0].source, vector_id=item.id) }}">Edit</a><br /> --><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_note" data-bs-item-entity-id="{{ note_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -86,10 +95,7 @@
 {% include 'includes/delete_vector_modal.html' %}
 
 {% include 'includes/delete_file_vector_modal.html' %}
+
 {% endif %}
-  <form class="row g-4" action="/save_to_vector_note" method="post" autocomplete="off">
-    <div class="col-12 mb-5">
-      <button class="btn btn-success" type="submit">Save note to vector database.</button>
-    </div>
-  </form>
+
 {% endblock %}

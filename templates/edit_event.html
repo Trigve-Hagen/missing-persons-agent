@@ -23,6 +23,15 @@
   </div>
 </div>
 
+{% if not data %}
+  <form class="row" action="/save_to_vector_event" method="post" autocomplete="off">
+    <input type="hidden" class="form-control" name="id" value="{{ event_data.id }}" />
+    <div class="col-12 mb-2">
+      <button class="btn btn-success" type="submit">Save events to vector database.</button>
+    </div>
+  </form>
+{% endif %}
+
 <div class="row mt-5">
   <div class="col-12">
     <form class="row g-4" action="/set_event" method="POST" name="event" autocomplete="off">
@@ -81,7 +90,7 @@
 <hr>
 <h3 class="my-4">Chunks</h3>
 
-<div class="row">
+<div class="row mb-5">
   <div class="col-md-12">
     <table class="table table-striped">
       <thead>
@@ -96,7 +105,7 @@
           <tr>
               <td scope="row">{{ item.id }}</td>
               <td>{{ item.text }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_event_vectors') }}">Edit</a><br /><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+              <td><!-- <a class="btn btn-secondary" href="{{ url_for('edit_event_vectors', id=event_data.id, file_id=metadatas[0].source, vector_id=item.id) }}">Edit</a><br /> --><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_event" data-bs-item-entity-id="{{ event_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -107,10 +116,7 @@
 {% include 'includes/delete_vector_modal.html' %}
 
 {% include 'includes/delete_file_vector_modal.html' %}
+
 {% endif %}
-  <form class="row g-4" action="/save_to_vector_event" method="post" autocomplete="off">
-    <div class="col-12 mb-5">
-      <button class="btn btn-success" type="submit">Save event to vector database.</button>
-    </div>
-  </form>
+
 {% endblock %}

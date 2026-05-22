@@ -236,7 +236,33 @@ class EventRepository(VectorDb):
   def save_event(self, event):
     event_content = repr(event)
 
-    self.save([event_content], 'event', event.name)
+    ids = []
+
+    # Create composite ID
+    composite_id = f"{self.machine_name(event.name)}_{time.time_ns()}_chunk1"
+    ids.append(composite_id)
+
+    document = Document(
+      page_content=event_content,
+      metadata={
+        "vector_type": "event",
+        "chunk_index": 1,
+        "custom_id": composite_id,
+        "source": f"{self.machine_name(event.name)}_{time.time_ns()}",
+        "entity_id": event.id
+      }
+    )
+
+    chunks = self.get_text_splitter([document])
+
+    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
+    Chroma.from_documents(
+      documents=chunks,
+      embedding=embedding_function,
+      ids=ids,
+      collection_name=self.collection_name,
+      persist_directory=self.persist_directory
+    )
 
     flash(f"{event_content} saved successfully!", "success")
     return True
@@ -246,7 +272,33 @@ class NoteRepository(VectorDb):
   def save_note(self, note):
     note_content = repr(note)
 
-    self.save([note_content], 'event', note.name)
+    ids = []
+
+    # Create composite ID
+    composite_id = f"{self.machine_name(note.name)}_{time.time_ns()}_chunk1"
+    ids.append(composite_id)
+
+    document = Document(
+      page_content=note_content,
+      metadata={
+        "vector_type": "note",
+        "chunk_index": 1,
+        "custom_id": composite_id,
+        "source": f"{self.machine_name(note.name)}_{time.time_ns()}",
+        "entity_id": note.id
+      }
+    )
+
+    chunks = self.get_text_splitter([document])
+
+    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
+    Chroma.from_documents(
+      documents=chunks,
+      embedding=embedding_function,
+      ids=ids,
+      collection_name=self.collection_name,
+      persist_directory=self.persist_directory
+    )
 
     flash(f"{note_content} saved successfully!", "success")
     return True
