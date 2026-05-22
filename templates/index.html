@@ -106,4 +106,42 @@
 </ul>
 <p class="mb-5"><b>How to fix it:</b> If a document is too large, you can summarize it in chunks, share only the most relevant paragraphs, or use external file-reading tools if your platform supports them.</p>
 
+<div class="row">
+  <div class="col-md-12">
+    <h3 class="my-2">Finish up stuff</h3>
+    <p>Configuration page for chunk strategies. Last steps to Release:</p>
+    <ul>
+      <li>Have a logic error in the edit_person_vector and edit_file_vector pages where if you save new data in a document then hit the back button it looses/deletes the vector.</li>
+      <li>Create value objects/strings from all data in Person, Alias, Phone, etc.. entities to give as suggestions for the value field in Api Field so you don't have to remember or type them out.</li>
+      <li>Finish chroma db when you create person and get data from Api. Create the edit, delete functions for person and get data from Api.</li>
+      <li>Make sure that the models can be switched on all chats and prompts on the Notice page.</li>
+      <li>Check for anything else in OllamaManager.
+        <ul>
+          <li>Build classes for each component you might want to add more to in future releaseses.
+            <ul>
+              <li>Documents loaders</li>
+              <li>Embedding types</li>
+              <li>Models and Model Types</li>
+            </ul>
+          </li>
+          <li>Update and remove the deprecated RetrievalQA.</li>
+          <li>Run the code optimizer and check for other deprecated code.</li>
+          <li>Look for unused code, find a python phpcs, phpstan, etc.., check if anything needs refactoring.</li>
+        </ul>
+      </li>
+      <li>Build probability functionality and the other functions for Dashboard.</li>
+      <li>Refactore deleting the vector db for best resullts.</li>
+      <li>Running multiple instances of a model?</li>
+      <li>Refactor Categories to feel right. Something about its design feels off..
+        <ul>
+          <li>apiTypes need to be hard coded, RSS and APIs need to hard coded. Key and secret fields and different configurations of API calls. Still needs work.</li>
+          <li>Hooking in OpenAI, Grok or Claude so you can run the investigation on there models with their GPUs but using your RAG data for a faster experience.</li>
+        </ul>
+      </li>
+      <li>Look again for code to delete Metadata items. Delete the whole chunk and resave it.</li>
+      <li>Test and create release.</li>
+    </ul>
+  </div>
+</div>
+
 {% endblock %}

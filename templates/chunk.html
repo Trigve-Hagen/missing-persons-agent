@@ -1,12 +1,12 @@
 <!-- templates/view_person.html -->
 {% extends 'layout.html' %}
 
-{% block title %}Chunks{% endblock %}
+{% block title %}All Chunks{% endblock %}
 
 {% block content %}
 
-<h1 class="mt-4 mb-0">Chunks</h1>
-<p class="mt-1 mb-4">Im thinking that the chunk strategies will need to be made by me unless there are configurations like chunk_size. If they do end up using configurations I will add a form here for you to update them.</p>
+<h1 class="mt-4 mb-0">All Chunks</h1>
+<p class="mt-1 mb-4">All chunks saved to the database.</p>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -18,41 +18,37 @@
   {% endif %}
 {% endwith %}
 
-<div class="row">
+<div class="row mb-5">
   <div class="col-md-12">
-    <h3 class="my-2">Finish up stuff</h3>
-    <p>Configuration page for chunk strategies. Last steps to Release:</p>
-    <ul>
-      <li>Have a logic error in the edit_person_vector and edit_file_vector pages where if you save new data in a document then hit the back button it looses/deletes the vector.</li>
-      <li>Create value objects/strings from all data in Person, Alias, Phone, etc.. entities to give as suggestions for the value field in Api Field so you don't have to remember or type them out.</li>
-      <li>Finish chroma db when you create person and get data from Api. Create the edit, delete functions for person and get data from Api.</li>
-      <li>Make sure that the models can be switched on all chats and prompts on the Notice page.</li>
-      <li>Check for anything else in OllamaManager.
-        <ul>
-          <li>Build classes for each component you might want to add more to in future releaseses.
-            <ul>
-              <li>Documents loaders</li>
-              <li>Embedding types</li>
-              <li>Models and Model Types</li>
-            </ul>
-          </li>
-          <li>Update and remove the deprecated RetrievalQA.</li>
-          <li>Run the code optimizer and check for other deprecated code.</li>
-          <li>Look for unused code, find a python phpcs, phpstan, etc.., check if anything needs refactoring.</li>
-        </ul>
-      </li>
-      <li>Build probability functionality and the other functions for Dashboard.</li>
-      <li>Refactore deleting the vector db for best resullts.</li>
-      <li>Running multiple instances of a model?</li>
-      <li>Refactor Categories to feel right. Something about its design feels off..
-        <ul>
-          <li>apiTypes need to be hard coded, RSS and APIs need to hard coded. Key and secret fields and different configurations of API calls. Still needs work.</li>
-          <li>Hooking in OpenAI, Grok or Claude so you can run the investigation on there models with their GPUs but using your RAG data for a faster experience.</li>
-        </ul>
-      </li>
-      <li>Look again for code to delete Metadata items. Delete the whole chunk and resave it.</li>
-      <li>Test and create release.</li>
-    </ul>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Metadata</th>
+          <th scope="col">Extracted Text (Preview)</th>
+          <th scope="col" class="col-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in data %}
+          <tr>
+            <td scope="row">{{ item.meta }}</td>
+            <td>{{ item.text }}</td>
+            <td><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="chunk" data-bs-item-entity-id="0" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="pagination d-flex align-items-center mb-5">
+      {% if page > 1 %}
+          <a class="btn btn-secondary me-2" href="{{ url_for('chunk', page=page-1) }}">Previous</a>
+      {% endif %}
+
+      <p class="mb-0">Page {{ page }} of {{ total_pages }}</p>
+
+      {% if page < total_pages %}
+          <a class="btn btn-secondary ms-2" href="{{ url_for('chunk', page=page+1) }}">Next</a>
+      {% endif %}
+    </div>
   </div>
 </div>
 

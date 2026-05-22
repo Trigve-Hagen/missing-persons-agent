@@ -231,9 +231,17 @@ def edit_file(id):
     'owner': file.owner
   }
 
+  page = request.args.get("page", 1, type=int)
+  per_page = request.args.get("per_page", 10, type=int)
+  offset = (page - 1) * per_page
+
   try:
     pdf_repo = PdfRepository(session=session)
     data, metadatas = pdf_repo.get_chroma_data('file', id)
+
+    total_items = len(data)
+    paginated_data = data[offset : offset + Selection.per_page]
+    total_pages = math.ceil(total_items / Selection.per_page)
   except Exception as e:
     flash(f"Error connecting to database: {e}", "danger")
     return redirect(url_for('file'))
@@ -243,8 +251,10 @@ def edit_file(id):
     'edit_file.html',
     edit_id=id,
     file_data=file_data,
-    data=data,
+    data=paginated_data,
     metadatas=metadatas,
+    page=page,
+    total_pages=total_pages,
     fileTypes=Selection.fileType_select,
     owners=owner_select
   )
@@ -1795,9 +1805,24 @@ def set_api_field():
 
 @app.route('/chunk')
 def chunk():
-  people_utils = PeopleUtils(session=session)
-  person, aliases, addresses, emails, phones = people_utils.get_all_person()
-  return flask.render_template('chunk.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
+  page = request.args.get("page", 1, type=int)
+  per_page = request.args.get("per_page", 10, type=int)
+  offset = (page - 1) * per_page
+
+  repo = VectorDb(session=session)
+  data, metadatas = repo.get_all_chroma_data()
+
+  total_items = len(data)
+  paginated_data = data[offset : offset + Selection.per_page]
+  total_pages = math.ceil(total_items / Selection.per_page)
+
+  return flask.render_template(
+    'chunk.html',
+    data=paginated_data,
+    metadatas=metadatas,
+    page=page,
+    total_pages=total_pages,
+  )
 
 @app.route('/dashboard')
 def dashboard():

@@ -49,18 +49,37 @@ class VectorDb:
     )
     return text_splitter.split_documents(pages)
 
-  def get_chroma_data(self, type, id):
+  def get_all_chroma_data(self):
     vector_store = self.get_vector_store()
+
     collection = vector_store._client.get_collection(name=self.collection_name)
     # Retrieve records matching both param1 AND param2
     results = collection.get(
       include=["documents", "metadatas"],
-      where={
+    )
+    metadatas = results["metadatas"]
+
+    data = []
+    if results and 'documents' in results:
+      for doc_id, doc_text, doc_metas in zip(results['ids'], results['documents'], results['metadatas']):
+        data.append({'id': doc_id, 'text': doc_text, 'meta': doc_metas})
+    return data, metadatas
+
+  def get_chroma_data(self, type, id):
+    vector_store = self.get_vector_store()
+    collection = vector_store._client.get_collection(name=self.collection_name)
+    # Retrieve records matching both param1 AND param2
+    where = {}
+    if type is not "" and type is not 'None':
+      where = {
         "$and": [
             {"vector_type": type},
             {"entity_id": id}
         ]
       }
+    results = collection.get(
+      include=["documents", "metadatas"],
+      where=where
     )
     metadatas = results["metadatas"]
 
