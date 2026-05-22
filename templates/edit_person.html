@@ -23,12 +23,21 @@
   </div>
 </div>
 
+{% if not data %}
+  <form class="row g-4" action="/save_to_vector_person" method="post" autocomplete="off">
+    <input type="hidden" class="form-control" name="id" value="{{ person_data.id }}" />
+    <div class="col-12 mb-5">
+      <button class="btn btn-success" type="submit">Save person to vector database.</button>
+    </div>
+  </form>
+{% endif %}
+
 <div class="row mt-5">
   <div class="col-md-12">
     <div class="row">
       <div class="col-md-12">
         <form class="row g-4" action="/set_person" method="POST" name="person" autocomplete="off">
-          <input type="hidden" class="form-control" id="person-id" name="id" value="{{ person_data.id }}" />
+          <input type="hidden" class="form-control" name="id" value="{{ person_data.id }}" />
           <div class="col-md-6">
             <label for="person-type" class="form-label">Contact Type</label>
             <select class="form-select" id="person-type" name="type" required>
@@ -215,39 +224,36 @@
 </div>
 
 {% if metadatas %}
-<hr>
-<h3 class="my-4">Chunks</h3>
+  <hr>
+  <h3 class="my-4">Chunks</h3>
 
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Metadata</th>
-          <th scope="col">Extracted Text (Preview)</th>
-          <th scope="col" class="col-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in data %}
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
           <tr>
-              <td scope="row">{{ item.id }}</td>
-              <td>{{ item.text }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_person_vectors') }}">Edit</a><br /><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+            <th scope="col">Metadata</th>
+            <th scope="col">Extracted Text (Preview)</th>
+            <th scope="col" class="col-2">Actions</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-{% include 'includes/delete_vector_modal.html' %}
-
-{% include 'includes/delete_file_vector_modal.html' %}
-{% endif %}
-  <form class="row g-4" action="/save_to_vector_person" method="post" autocomplete="off">
-    <div class="col-12 mb-5">
-      <button class="btn btn-success" type="submit">Save person to vector database.</button>
+        </thead>
+        <tbody>
+          {% for item in data %}
+            <tr>
+                <td scope="row">{{ item.meta }}</td>
+                <td>{{ item.text }}</td>
+                <td><!-- <a class="btn btn-secondary" href="{{ url_for('edit_person_vectors', id=person_data.id, file_id=metadatas[0].source, vector_id=item.id) }}">Edit</a><br /> --><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_person" data-bs-item-entity-id="{{ person_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-  </form>
+  </div>
+
+  {% include 'includes/delete_vector_modal.html' %}
+
+  {% include 'includes/delete_file_vector_modal.html' %}
+
+{% endif %}
+
 {% endblock %}

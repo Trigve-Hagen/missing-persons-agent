@@ -60,7 +60,7 @@ from database.person import Category, Person, Alias, Email, EmailMessage, Phone,
 from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
 from resources import Resources
-from vector_repository import PdfRepository, PersonRepository, EventRepository, NoteRepository
+from vector_repository import VectorDb, PdfRepository, PersonRepository, EventRepository, NoteRepository
 from code_loader import CodeLoader
 from selections import Selection
 
@@ -232,8 +232,8 @@ def edit_file(id):
   }
 
   try:
-    pdf_repo = PdfRepository()
-    data, metadatas = pdf_repo.get_chroma_data()
+    pdf_repo = PdfRepository(session=session)
+    data, metadatas = pdf_repo.get_chroma_data('file', id)
   except Exception as e:
     flash(f"Error connecting to database: {e}", "danger")
     return redirect(url_for('file'))
@@ -252,14 +252,11 @@ def edit_file(id):
 @app.route('/edit/file/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
 def edit_file_vectors(id, file_id, vector_id):
   try:
-    pdf_repo = PdfRepository()
+    pdf_repo = PdfRepository(session=session)
     data = pdf_repo.get_vector_by_ids([vector_id])
   except Exception as e:
     flash(f"Error connecting to database: {e}", "danger")
     return redirect(url_for('file'))
-
-  # flash(f"data: {data}", "info")
-  # flash(f"vector_id: {vector_id}", "info")
 
   vector_data = {
     'id': id,
@@ -270,14 +267,7 @@ def edit_file_vectors(id, file_id, vector_id):
     'source': data[0]['source'],
   }
   metadata_dict = data[0]['meta']
-
-  # 1. Convert to a list of (name, value) tuples:
-  # [('author', 'John Doe'), ('year', 2026)]
   metadata_tuples = list(metadata_dict.items())
-
-  # 2. Alternatively, format as a list of dictionaries for JSON
-  # [{"name": "author", "value": "John Doe"}, {"name": "year", "value": 2026}]
-  # metadata_list = [{"name": key, "value": val} for key, val in metadata_dict.items()]
 
   return flask.render_template('edit_file_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
 
@@ -288,7 +278,7 @@ def set_file_vector():
 
   try:
     vector_id = form_data.get('vector_id')
-    pdf_repo = PdfRepository()
+    pdf_repo = PdfRepository(session=session)
     pdf_repo.update_data_by_id(vector_id)
 
     flash(f"{vector_id} updated successfully!", "success")
@@ -319,7 +309,7 @@ def set_file_metadata():
   metadata = dict(zip(keys, values))
 
   try:
-    pdf_repo = PdfRepository()
+    pdf_repo = PdfRepository(session=session)
     pdf_repo.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
     return redirect(url_for('edit_file_vectors', id=id, file_id=file_id, vector_id=vector_id))
   except IntegrityError as e:
@@ -347,25 +337,16 @@ def set_file():
     flash(f"No selected file", "danger")
     return redirect(url_for('file'))
 
-  pdf_repo = PdfRepository()
+  pdf_repo = PdfRepository(session=session)
 
   # Secure and save the file to sql_alchemy
   if file and allowed_file(file.filename):
     sec_filename = secure_filename(file.filename)
     filename, filename_ext = os.path.splitext(sec_filename)
-    clean_filename = pdf_repo.clean_filename(filename)
+    clean_filename = pdf_repo.machine_name(filename)
     safe_filename = f"{clean_filename}_{time.time_ns()}{filename_ext}"
     save_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
     file.save(save_path)
-
-  # save the file to vector_store
-  pdf_repo.save_document(
-    processor=getProcessor(),
-    filename=safe_filename,
-    chunk_loader=getLoader(),
-    chunk_size=getChunkSize(),
-    chunk_overlap=getChunkOverlap()
-  )
 
   try:
     file_record = session.execute(select(File).filter_by(id = form_data.get('id'))).scalar_one_or_none()
@@ -911,9 +892,8 @@ def edit_person(id):
     'owner': person.owner
   }
 
-  personManager = PersonRepository()
-  personManager.save_person(person, getProcessor())
-  data, metadatas = personManager.get_chroma_data()
+  repo = PersonRepository(session=session)
+  data, metadatas = repo.get_chroma_data('person', id)
 
   return flask.render_template(
     'edit_person.html',
@@ -996,16 +976,70 @@ def set_person():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('person'))
 
-@app.route('/edit_person_vectors')
-def edit_person_vectors():
-  flash(f"Be edit_person_vectors soon!", "success")
-  return redirect(url_for('person'))
+@app.route('/edit/person/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
+def edit_person_vectors(id, file_id, vector_id):
+  try:
+    repo = PersonRepository(session=session)
+    data = repo.get_vector_by_ids([vector_id])
+  except Exception as e:
+    flash(f"Error connecting to database: {e}", "danger")
+    return redirect(url_for('file'))
+
+  vector_data = {
+    'id': id,
+    'file_id': file_id,
+    'vector_id': vector_id,
+    'text': data[0]['text'],
+    'meta': data[0]['meta'],
+    'source': data[0]['source'],
+  }
+
+  metadata_dict = data[0]['meta']
+  metadata_tuples = list(metadata_dict.items())
+
+  return flask.render_template('edit_person_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
 
 @app.route('/save_to_vector_person', methods=['POST'])
 def save_to_vector_person():
   form_data = request.form
-  flash(f"Be save_to_vector_person soon!", "success")
-  return redirect(url_for('person'))
+
+  person = session.execute(select(Person).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+  repo = PersonRepository(session=session)
+  repo.save_person(person)
+
+  return redirect(url_for('edit_person', id=form_data.get('id')))
+
+@app.route('/set_person_metadata', methods=['POST'])
+def set_person_metadata():
+  # 1. Grab single IDs
+  id = request.form.get('id')
+  file_id = request.form.get('file_id')
+  vector_id = request.form.get('vector_id')
+  content = request.form.get('content')
+
+  # 2. Grab dynamic lists
+  keys = request.form.getlist('name[]')
+  values = request.form.getlist('value[]')
+
+  # 3. Zip them into a dictionary for easy processing
+  metadata = dict(zip(keys, values))
+  flash(f"Vector Id: {vector_id}", "info")
+  flash(f"Metadata: {metadata}", "info")
+  flash(f"Content: {content}", "info")
+
+  try:
+    repo = PersonRepository(session=session)
+    repo.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
+    return redirect(url_for('edit_person_vectors', id=id, file_id=file_id, vector_id=vector_id))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('edit_person_vectors', id=id, file_id=file_id, vector_id=vector_id))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('edit_person_vectors', id=id, file_id=file_id, vector_id=vector_id))
 
 @app.route('/alias')
 def alias():
@@ -1744,23 +1778,24 @@ def link_set_state(type, id):
 @app.route('/delete_vector_item', methods=['POST'])
 def delete_vector_item():
   form_data = request.form
-  file_id = form_data.get('file_id')
+  entity_id = form_data.get('entity_id')
   vector_id = form_data.get('vector_id')
+  edit_path = form_data.get('edit_path')
 
   try:
-    manager = PdfRepository()
+    manager = VectorDb(session=session)
     manager.delete_vector_by_id(ids=[vector_id])
     flash(vector_id + " deleted successfully!", "success")
-    return redirect(url_for('edit_file', id=file_id))
+    return redirect(url_for(edit_path, id=entity_id))
   except IntegrityError as e:
     session.rollback()
     error_msg = str(e.orig)
     flash(f"Database Error: {error_msg}", "danger")
-    return redirect(url_for('edit_file', id=file_id))
+    return redirect(url_for(edit_path, id=entity_id))
   except Exception as e:
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('edit_file', id=file_id))
+    return redirect(url_for(edit_path, id=entity_id))
 
 @app.route('/delete_file_vector_item', methods=['POST'])
 def delete_file_vector_item():
@@ -1769,7 +1804,7 @@ def delete_file_vector_item():
   source = form_data.get('source')
 
   try:
-    manager = PdfRepository()
+    manager = PdfRepository(session=session)
     manager.delete_file_by_source(source)
     flash(source + " deleted successfully!", "success")
     return redirect(url_for('edit_file', id=file_id))
@@ -1790,15 +1825,10 @@ def save_to_vector_file():
   filename=form_data.get('filename')
 
   try:
-    pdf_repo = PdfRepository()
+    pdf_repo = PdfRepository(session=session)
+    file_record = session.execute(select(File).filter_by(id = file_id)).scalar_one_or_none()
     # save the file to vector_store
-    pdf_repo.save_document(
-      processor=getProcessor(),
-      filename=filename,
-      chunk_loader=getLoader(),
-      chunk_size=getChunkSize(),
-      chunk_overlap=getChunkOverlap()
-    )
+    pdf_repo.save_document(record=file_record, filename=filename)
     flash(filename + " saved to vector db successfully!", "success")
     return redirect(url_for('edit_file', id=file_id))
   except IntegrityError as e:

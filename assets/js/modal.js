@@ -40,7 +40,7 @@ if (deleteFileVectorModal) {
     // Update the modal's content.
     const modalTitle = deleteFileVectorModal.querySelector('.modal-title')
     const modalBodyItemFileSource = deleteFileVectorModal.querySelector('.modal-body p#delete-item-file-source')
-    modalTitle.textContent = `Are you sure you want to delete this item?`
+    modalTitle.textContent = `Are you sure you want to delete all chunks of this item? Only the chunks in the vector database will be deleted the uploaded file will remain.`
     modalBodyItemFileSource.innerHTML = "Source Id: " + itemSource
   })
 }
@@ -52,21 +52,22 @@ if (deleteVectorModal) {
     const button = event.relatedTarget
     // Extract info from data-bs-* attributes
     const identifier = button.getAttribute('data-bs-item')
+    const editPath = button.getAttribute('data-bs-edit-path')
     const itemId = button.getAttribute('data-bs-item-id')
-    const itemFileId = button.getAttribute('data-bs-item-file-id')
+    const itemFileId = button.getAttribute('data-bs-item-entity-id')
     // Update the hidden inputs
     const hiddenId = deleteVectorModal.querySelector('#delete-id')
-    const hiddenFileId = deleteVectorModal.querySelector('#delete-file-id')
+    const hiddenEditPath = deleteVectorModal.querySelector('#delete-edit-path')
+    const hiddenFileId = deleteVectorModal.querySelector('#delete-entity-id')
     hiddenId.value = itemId
+    hiddenEditPath.value = editPath
     hiddenFileId.value = itemFileId
     // Update the modal's content.
     const modalTitle = deleteVectorModal.querySelector('.modal-title')
     const modalBodyItem = deleteVectorModal.querySelector('.modal-body p#delete-item')
-    const modalBodyItemFileId = deleteVectorModal.querySelector('.modal-body p#delete-item-file-id')
     const modalBodyItemId = deleteVectorModal.querySelector('.modal-body p#delete-item-id')
     modalTitle.textContent = `Are you sure you want to delete this item?`
     modalBodyItem.innerHTML = identifier
-    modalBodyItemFileId.innerHTML = "File Id: " + itemFileId
     modalBodyItemId.innerHTML = "Vector Id: " + itemId
   })
 }
