@@ -35,7 +35,7 @@ class Resources():
     return f"{size_in_bytes / (1024*1024):.2f} MB"
 
   def chroma_database(self):
-    size_in_bytes = self.get_file_size('database\\chroma_db\\chroma.sqlite3')
+    size_in_bytes = self.get_file_size('database\\investigation_db\\chroma.sqlite3')
     print(size_in_bytes)
     return f"{size_in_bytes / (1024*1024):.2f} MB"
 

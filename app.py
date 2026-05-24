@@ -61,7 +61,7 @@ from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
 from resources import Resources
 from vector_repository import VectorDb, PdfRepository, PersonRepository, EventRepository, NoteRepository
-from code_loader import CodeLoader
+from process_files import ProcessFiles
 from selections import Selection
 
 import mimetypes
@@ -155,7 +155,7 @@ def set_entity():
   value = request.form.get('value')
 
   flash(f"{entity_type} - {entity_id} - {field} - {value}", 'info')
-  flash(f"Will Save shortly. I need to create allowed values for each field.", "success")
+  flash(f"Will finish shortly. I was thinking to have this work on a level that you can micro manage the data. If I have an agent parse the data though it will save it to the sqlAlchemy database and you can adjust it there.. I'll leave the Data Center page so you can look throuh it and manuually copy data. I need to have an agent parse large bodies of returned data to look for Events to save. I need to have it pull Images and Documents into the database. I need to pull bodies of text into Notes.", "success")
 
   """ if not all([entity_type, entity_id, field]):
     flash('Missing required form parameters.', 'error')
@@ -405,7 +405,12 @@ def chatbox():
   user_input = ""
   answer = ""
 
-  return flask.render_template('chatbox.html', user_input=user_input, answer=answer)
+  return flask.render_template(
+    'chatbox.html',
+    user_input=user_input,
+    answer=answer,
+    database=getDatabase()
+  )
 
 @app.route('/notice')
 def notice():
@@ -422,14 +427,18 @@ def notice():
     total_pages=total_pages
   )
 
+@app.route('/load_code', methods=['POST'])
+def run_code_questions():
+  process_files = ProcessFiles(session=session)
+  process_files.delete_code_chroma()
+  process_files.process_and_save_code()
+  return redirect(url_for('chatbox'))
+
 @app.route('/run_code_optimizer', methods=['POST'])
 def run_code_optimizer():
-  code_loader = CodeLoader()
-  code_loader.delete_code_chroma()
-
-  # all_notices = session.query(Notice).all()
-
-  code_loader.ingest_python_repo(getProcessor())
+  process_files = ProcessFiles()
+  process_files.delete_code_chroma()
+  process_files.process_and_save_code()
 
   if not getPrompt():
     flash(f"Upload a prompt and then set it in State.", "danger")
@@ -440,7 +449,7 @@ def run_code_optimizer():
     return redirect(url_for('notice'))
 
   manager = OllamaManager(session=session)
-  response = manager.suggestions(type='code', prompt=getPrompt().prompt, query=getQuestion().question)
+  response = manager.suggestions()
   if response:
     try:
       for item in response.suggestions:
@@ -451,7 +460,6 @@ def run_code_optimizer():
           ifComplete=0,
         )
         session.add(new_suggestion)
-
       session.commit()
       flash(f"Successfully saved 10 code suggestions.", "success")
     except json.JSONDecodeError:
@@ -464,7 +472,7 @@ def run_code_optimizer():
 @app.route('/run_investigation_optimizer', methods=['POST'])
 def run_investigation_optimizer():
 
-  if not os.path.exists(os.path.join(os.path.abspath("."), "database\\chroma_db")):
+  if not os.path.exists(os.path.join(os.path.abspath("."), "database\\investigation_db")):
     flash(f"Upload data to optimize investigation.", "danger")
     return redirect(url_for('notice'))
 
@@ -477,7 +485,7 @@ def run_investigation_optimizer():
     return redirect(url_for('notice'))
 
   manager = OllamaManager(session=session)
-  response = manager.suggestions(type='investigation')
+  response = manager.suggestions()
   if response:
     try:
       for item in response.suggestions:
@@ -1846,7 +1854,18 @@ def data_center():
   api_data = request_api.get_request(api, api_params)
   api_data, ifParsed = request_api.filter_data(api_data, state)
 
-  return flask.render_template('data_center.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=getRootNode(), display_type=getDisplayType(), if_parsed=ifParsed)
+  flash(f"Will finish shortly. I was thinking to have this work on a level that you can micro manage the data. If I have an agent parse the data though it will save it to the sqlAlchemy database and you can adjust it there.. I'll leave the Data Center page so you can look throuh it and manually copy data. I need to have an agent parse large bodies of returned data to look for Events to save. I need to have it pull Images and Documents into the database. I need to pull bodies of text into Notes.", "success")
+
+  return flask.render_template(
+    'data_center.html',
+    api=api,
+    person_name=person_name,
+    api_params=api_params,
+    api_data=api_data,
+    root_node=getRootNode(),
+    display_type=getDisplayType(),
+    if_parsed=ifParsed
+  )
 
 @app.route('/filter_data', methods=['POST'])
 def filter_data():
@@ -2162,6 +2181,12 @@ def getQuestion():
   prompt = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
   return prompt
 
+def getDatabase():
+  state = session.get(State, 1)
+  current_value = state.database
+  default_value = "investigation"
+  return current_value or default_value
+
 def getLoader():
   state = session.get(State, 1)
   current_value = state.loader
@@ -2211,6 +2236,7 @@ def application_state():
     'application_state.html',
     state=state,
     available_devices=Selection.available_devices,
+    available_databases=Selection.available_databases,
     people=all_people,
     apis=all_apis,
     models=all_models,
@@ -2232,6 +2258,7 @@ def set_application_state():
     state.model = form_data.get('model')
     state.prompt = form_data.get('prompt')
     state.question = form_data.get('question')
+    state.database = form_data.get('database')
     session.commit()
 
   return redirect(url_for('application_state'))
@@ -2260,9 +2287,11 @@ def get_state_processor():
 @app.context_processor
 def inject_site_settings():
   processor = getProcessor()
+  database = getDatabase()
   return dict(
     state_path = request.endpoint,
     selected_processor = processor,
+    selected_database = database,
   )
 
 def initialize_database(engine):
@@ -2339,6 +2368,28 @@ def initialize_database(engine):
       m1 = Model(name=model.model, model=model.model, type="ollama", system="")
       session.add(m1)
       session.commit()
+
+  if session.query(Prompt).first() is None:
+    p1 = Prompt(
+      prompt="You are an expert criminal investigator, forensic analyst, and search-and-rescue strategist. Your objective is to help me optimize my approach to an active missing person case. Analyze the scenario detailed in the question below and provide 10 highly actionable, evidence-based suggestions that prioritize investigative efficiency and subject safety."
+    )
+    session.add(p1)
+    p2 = Prompt(
+      prompt="Act as an expert software optimizer. The code in the following context is a flask application that uses data from form uploads and external sources combined with AI to aid in the search for missing persons."
+    )
+    session.add(p2)
+    session.commit()
+
+  if session.query(Question).first() is None:
+    q1 = Question(
+      question="I am investigating the disappearance of Nancy Guthrie. What are 10 specific investigative steps, technological strategies, or procedural optimizations I can use to maximize our chances of locating her safely?"
+    )
+    session.add(q1)
+    q2 = Question(
+      question="I am looking to build documentation. Create html page describing the usage of the tables and columns of the defined models based upon the comments."
+    )
+    session.add(q2)
+    session.commit()
 
 if __name__ == '__main__':
   initialize_database(engine)

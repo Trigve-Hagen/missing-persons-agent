@@ -111,6 +111,17 @@
         <label for="state-chunk-overlap" class="form-label">Chunk Overlap</label>
         <input type="text" class="form-control" id="state-chunk-overlap" name="chunk_overlap" pattern="^\d+$" value="{{ state.chunk_overlap }}" required>
       </div>
+      <div class="col-md-6">
+        <label for="state-database" class="form-label">Database</label>
+        <select class="form-select" id="state-database" name="database">
+          {% if available_databases %}
+            {% for key, value in available_databases.items() %}
+              <option value="{{ key }}" {% if key == selected_database %} selected {% endif %}>{{ value }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+        <div class="form-text" id="state-question-text">This is the part of the RAG LLM that asks the question. It the query. </div>
+      </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>
       </div>

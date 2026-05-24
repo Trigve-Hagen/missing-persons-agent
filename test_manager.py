@@ -4,7 +4,7 @@ import os
 
 class TestManager():
   def __init__(self):
-    self.persist_directory = os.path.join(os.path.abspath("."), "database\\chroma_db")
+    self.persist_directory = os.path.join(os.path.abspath("."), "database\\investigation_db")
     self.collection_name = 'missing_persons'
     self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 

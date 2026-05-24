@@ -27,13 +27,15 @@ class OllamaManager:
     self.session = session
     self.client = ollama.Client()
     self.base_path = os.path.abspath(".")
-    self.investigation_directory = os.path.join(self.base_path, "database\\chroma_db")
-    self.code_optimize_directory = os.path.join(self.base_path, "database\\code_optimize_db")
+    # self.investigation_directory = os.path.join(self.base_path, "database\\investigation_db")
+    # self.code_optimize_directory = os.path.join(self.base_path, "database\\code_optimize_db")
     self.collection_name = "missing_persons"
     state = session.get(State, 1)
     self.model = state.model
     self.model_prompt = state.prompt
     self.model_question = state.question
+    self.directory = os.path.join(self.base_path, "database", state.database)
+
 
   def initialize():
     pass
@@ -44,14 +46,14 @@ class OllamaManager:
     if model:
       try:
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-        if os.path.exists(self.investigation_directory):
+        if os.path.exists(self.directory):
             vectorstore = Chroma(
-                persist_directory=self.investigation_directory,
+                persist_directory=self.directory,
                 embedding_function=embeddings,
                 collection_name=self.collection_name
             )
         else:
-            flash(f"Chroma collection not found at {self.investigation_directory}", "danger")
+            flash(f"Chroma collection not found at {self.directory}", "danger")
             return False
 
         retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
@@ -75,7 +77,7 @@ class OllamaManager:
       flash(f"Error fetching models: Please set a model.", "danger")
       return False
 
-  def suggestions(self, type):
+  def suggestions(self):
     model = self.session.execute(select(Model).filter_by(id = self.model)).scalar_one_or_none()
     prompt = self.session.execute(select(Prompt).filter_by(id = self.model_prompt)).scalar_one_or_none()
     question = self.session.execute(select(Question).filter_by(id = self.model_question)).scalar_one_or_none()
@@ -85,22 +87,17 @@ class OllamaManager:
     # flash(f"Prompt: {prompt.prompt}", "info")
     # flash(f"Question: {question.question}", "info")
 
-    if type == 'code':
-      selected_directory = self.code_optimize_directory
-    else:
-      selected_directory = self.investigation_directory
-
     if model:
       try:
         embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-        if os.path.exists(selected_directory):
+        if os.path.exists(self.directory):
             vectorstore = Chroma(
-                persist_directory=selected_directory,
+                persist_directory=self.directory,
                 embedding_function=embeddings,
                 collection_name=self.collection_name
             )
         else:
-            flash(f"Chroma collection not found at {selected_directory}", "danger")
+            flash(f"Chroma collection not found at {self.directory}", "danger")
             return False
 
         retriever = vectorstore.as_retriever(search_kwargs={"k": 5})

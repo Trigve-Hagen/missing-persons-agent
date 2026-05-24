@@ -28,12 +28,24 @@
       <div class="col-md-12">
         <textarea class="form-control" id="user-input" placeholder="Type a message..." rows="3"></textarea>
       </div>
-      <div class="col-12 mb-5">
+      <div class="col-12">
         <button class="btn btn-primary" type="submit">Send</button>
       </div>
     </form>
   </div>
 </div>
+
+{% if database == 'code_optimize_db' %}
+  <div class="row mt-4 mb-5">
+    <div class="col-md-12">
+      <form class="row g-4" action="/load_code" method="POST" name="code_loader" autocomplete="off">
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Load Code</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endif %}
 
  <script>
     const chatFormElement = document.getElementById('chatbox-form');

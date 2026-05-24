@@ -32,6 +32,11 @@ class Selection():
     ('korean', 'Korean'),
   ]
 
+  available_databases = {
+    "investigation_db": "Investigation",
+    "code_optimize_db": "Code"
+  }
+
   # GPU selections
   available_devices = {
     # Standard Devices

@@ -16,7 +16,7 @@ from langchain_core.documents import Document
 # Base class (Parent)
 class VectorDb:
   def __init__(self, session):
-    self.persist_directory = os.path.join(os.path.abspath("."), "database\\chroma_db")
+    self.persist_directory = os.path.join(os.path.abspath("."), "database\\investigation_db")
     self.collection_name = 'missing_persons'
     self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     state = session.get(State, 1)
@@ -24,6 +24,7 @@ class VectorDb:
     self.chunk_loader = state.loader
     self.chunk_size = state.chunk_size
     self.chunk_overlap = state.chunk_overlap
+    self.directory = os.path.join(os.path.abspath("."), "database", state.database)
 
   def get_vector_store(self):
     return Chroma(
@@ -50,7 +51,11 @@ class VectorDb:
     return text_splitter.split_documents(pages)
 
   def get_all_chroma_data(self):
-    vector_store = self.get_vector_store()
+    vector_store = Chroma(
+      persist_directory=self.directory,
+      collection_name=self.collection_name,
+      embedding_function=self.embeddings
+    )
 
     collection = vector_store._client.get_collection(name=self.collection_name)
     # Retrieve records matching both param1 AND param2
@@ -70,7 +75,7 @@ class VectorDb:
     collection = vector_store._client.get_collection(name=self.collection_name)
     # Retrieve records matching both param1 AND param2
     where = {}
-    if type is not "" and type is not 'None':
+    if type != "" and type != 'None':
       where = {
         "$and": [
             {"vector_type": type},
@@ -301,6 +306,42 @@ class NoteRepository(VectorDb):
       page_content=note_content,
       metadata={
         "vector_type": "note",
+        "chunk_index": 1,
+        "custom_id": composite_id,
+        "source": f"{self.machine_name(note.name)}_{time.time_ns()}",
+        "entity_id": note.id
+      }
+    )
+
+    chunks = self.get_text_splitter([document])
+
+    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
+    Chroma.from_documents(
+      documents=chunks,
+      embedding=embedding_function,
+      ids=ids,
+      collection_name=self.collection_name,
+      persist_directory=self.persist_directory
+    )
+
+    flash(f"{note_content} saved successfully!", "success")
+    return True
+
+class JsonRepository(VectorDb):
+
+  def save_json(self, note):
+    note_content = repr(note)
+
+    ids = []
+
+    # Create composite ID
+    composite_id = f"{self.machine_name(note.name)}_{time.time_ns()}_chunk1"
+    ids.append(composite_id)
+
+    document = Document(
+      page_content=note_content,
+      metadata={
+        "vector_type": "json",
         "chunk_index": 1,
         "custom_id": composite_id,
         "source": f"{self.machine_name(note.name)}_{time.time_ns()}",

@@ -20,7 +20,44 @@
 <ul class="mb-5">
   <li>Categories
     <ul>
-      <li>Categories - You can have different categories for people, phones, emails, addresses, Events and Notes. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system. </li>
+      <li>Categories - You can have different categories for people, phones, emails, addresses, Events and Notes. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
+        <ul>
+          <li>id = Column("id", Integer, primary_key=True)
+            <ul>
+              <li>Description: The unique, auto increment, primary key id.</li>
+              <li>Allowed Values:
+                <ul>
+                  <li>Integer</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>type = Column(NullToEmptyString(20))
+            <ul>
+              <li>Description: Categorize the types of Person, Email, Phone, Address and Event.</li>
+              <li>Allowed Values:
+                <ul>
+                  <li>addressType</li>
+                  <li>contactType</li>
+                  <li>emailType</li>
+                  <li>phoneType</li>
+                  <li>eventType</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>name = Column(NullToEmptyString(255))
+            <ul>
+              <li>Description: The String name of the Category.</li>
+              <li>Allowed Values:
+                <ul>
+                  <li>String</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
     </ul>
   </li>
   <li>Person
@@ -36,13 +73,13 @@
   </li>
   <li>Files - You can upload any of these files. They will be added as data for the LLM.
     <ul>
-      <li>Pdf</li>
-      <li>Excel</li>
-      <li>Csv</li>
-      <li>Word</li>
-      <li>gif, webp, jpg, jpeg, png</li>
-      <li>mp3 - Audio files</li>
-      <li>mp4 - Movie files</li>
+      <li>Pdf - Works in testing.</li>
+      <li>Excel - Coming soon..</li>
+      <li>Csv - Coming soon..</li>
+      <li>Word - Coming soon..</li>
+      <li>Images - Works in testing.</li>
+      <li>mp3 - Coming soon..</li>
+      <li>mp4 - Coming soon..</li>
     </ul>
   </li>
   <li>Data APIs
@@ -109,34 +146,32 @@
 <div class="row">
   <div class="col-md-12">
     <h3 class="my-2">Finish up stuff</h3>
-    <p>Configuration page for chunk strategies. Last steps to Release:</p>
+    <p>Last steps to Release:</p>
     <ul>
-      <li>Have a logic error in the edit_person_vector and edit_file_vector pages where if you save new data in a document then hit the back button it looses/deletes the vector.</li>
-      <li>Create value objects/strings from all data in Person, Alias, Phone, etc.. entities to give as suggestions for the value field in Api Field so you don't have to remember or type them out.</li>
-      <li>Finish chroma db when you create person and get data from Api. Create the edit, delete functions for person and get data from Api.</li>
-      <li>Check for anything else in OllamaManager.
+      <li>Build out pdf, Word, Excel</li>
+      <li>Data Center
         <ul>
-          <li>Build classes for each component you might want to add more to in future releaseses.
-            <ul>
-              <li>Documents loaders</li>
-              <li>Embedding types</li>
-              <li>Models and Model Types</li>
-            </ul>
-          </li>
-          <li>Update and remove the deprecated RetrievalQA.</li>
-          <li>Run the code optimizer and check for other deprecated code.</li>
-          <li>Look for unused code, find a python phpcs, phpstan, etc.., check if anything needs refactoring.</li>
+          <li>I want to create the model below for doing this automatically once inserted into the SqlAlchemy database you can edit it there before saving it into the Vector Database for use by the RAG LLM.</li>
         </ul>
       </li>
+      <li>Get a model to filter through, separate and list all the people and all the 'Attribute: Value' pairs it finds in the json from APIs and RSS Feeds that can be saved to the sqlalchemy database. Have it insert them into Notice. When you hit complete it saves it to the intended table in the database.
+        <ul>
+          <li>Get a model to look for and list people that can be added into Person from the json.</li>
+          <li>Get a model to look for and list Emails that can be added into Email from the json.</li>
+          <li>Get a model to look for and list Phones that can be added into Phone from the json.</li>
+          <li>Get a model to look for and list Addresses that can be added into Address from the json.</li>
+          <li>Get a model to look for and list Aliases that can be added into Alias from the json.</li>
+          <li>Get a model to look for and list Events from the json, and documents to build the timeline.</li>
+          <li>Get a model to look for and list Images and Documents that can be added into Files from the json.</li>
+          <li>Get a model to look for and list bodies of important text that can be added into Note from the json.</li>
+        </ul>
+      </li>
+      <li>Only pull data from the Missing Person and their People of Interest instead of the whole database when using the model.</li>
+      <li>Create documentation that explain the resources available in this application so the investigation analyzer will know the tools it can use. Also find documents on organizing and implementing a successful investigation to train the model on.</li>
       <li>Build probability functionality and the other functions for Dashboard.</li>
-      <li>Running multiple instances of a model?</li>
-      <li>Refactor Categories to feel right. Something about its design feels off..
-        <ul>
-          <li>apiTypes need to be hard coded, RSS and APIs need to hard coded. Key and secret fields and different configurations of API calls. Still needs work.</li>
-          <li>Hooking in OpenAI, Grok or Claude so you can run the investigation on there models with their GPUs but using your RAG data for a faster experience.</li>
-        </ul>
-      </li>
-      <li>Create files that explain the resources available in this system so the investigation analyzer will know the tools it can use. Also find documents on organizing and implementing a successful investigation.</li>
+      <li>Running multiple instances of a model? The Model Params database is for this. I need to work in a place with GPUs and losts of memory so this can really move forward if we want to run models in parallel.</li>
+      <li>Hooking in OpenAI, Grok or Claude so you can run the investigation on there models with their GPUs but using your RAG data for a faster experience.</li>
+      <li>I need to hook in OpenAI. This what the Key and Secret fields are for. Still need to work on this.</li>
       <li>Test and create release.</li>
     </ul>
   </div>

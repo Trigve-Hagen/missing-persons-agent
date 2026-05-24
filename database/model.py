@@ -3,11 +3,12 @@ from database.base import Base, NullToEmptyString # Import shared base
 
 class Model(Base):
   __tablename__ = "models"
+  __table_args__ = {"comment": "This table stores the model information"}
 
   id = Column("id", Integer, primary_key=True)
-  name = Column(NullToEmptyString)
-  model = Column(NullToEmptyString)
-  type = Column(NullToEmptyString, default="ollama")
+  name = Column(NullToEmptyString, comment="The name of the model.")
+  model = Column(NullToEmptyString, comment="The model.")
+  type = Column(NullToEmptyString, default="ollama", comment="The type of model. Allowed values are ollama and openai.")
 
   def __init__(self, name, model, type, system):
     self.name = name # instance
@@ -16,10 +17,11 @@ class Model(Base):
 
 class ModelParams(Base):
   __tablename__ = "model_params"
+  __table_args__ = {"comment": "This table stores the model parameters if creating multiple instances of the same model."}
 
   id = Column("id", Integer, primary_key=True)
-  name = Column(NullToEmptyString)
-  value = Column(NullToEmptyString)
+  name = Column(NullToEmptyString, comment="The name of the model parameter.")
+  value = Column(NullToEmptyString, comment="The value of the model parameter.")
   owner = Column(Integer, ForeignKey("models.id"))
 
   def __init__(self, name, value, owner):
@@ -27,23 +29,30 @@ class ModelParams(Base):
     self.value = value
     self.owner = owner
 
-# prompt are what the RAG LLM uses to define itself.
 class Prompt(Base):
+  """
+  Prompt are what the RAG LLM uses to define itself.
+  """
+
   __tablename__ = "prompts"
+  __table_args__ = {"comment": "This table stores a list of prompts for use in LLMs"}
 
   id = Column("id", Integer, primary_key=True)
-  prompt = Column(Text)
+  prompt = Column(Text, comment="The prompt for the LLM.")
 
   def __init__(self, prompt):
     self.prompt = prompt
 
-# Questions are the query part of RAG LLM. They are what the user would type
-# into te chat
 class Question(Base):
+  """
+  Questions are the query part of RAG LLM. They are what the user would type into te chat.
+  """
+
   __tablename__ = "questions"
+  __table_args__ = {"comment": "This table stores a list of questions for use in LLMs"}
 
   id = Column("id", Integer, primary_key=True)
-  question = Column(Text)
+  question = Column(Text, comment="The user question for the LLM.")
 
   def __init__(self, question):
     self.question = question

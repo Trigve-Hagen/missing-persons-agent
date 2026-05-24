@@ -65,15 +65,17 @@
 <!-- @TODO add forms -->
 <p>Going to add forms soon so you can also use it as a @TODO list.</p>
 
-<div class="row mt-4">
-  <div class="col-md-12">
-    <form class="row g-4" action="/run_code_optimizer" method="POST" name="code_optimizer" autocomplete="off">
-      <div class="col-12">
-        <button class="btn btn-primary" type="submit">Run Code Analyzer</button>
-      </div>
-    </form>
+{% if database == 'code_optimize_db' %}
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <form class="row g-4" action="/run_code_optimizer" method="POST" name="code_optimizer" autocomplete="off">
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Run Code Analyzer</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
+{% endif %}
 
 <div class="row mt-4 mb-5">
   <div class="col-md-12">
