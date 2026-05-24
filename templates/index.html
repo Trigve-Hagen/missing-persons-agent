@@ -15,85 +15,63 @@
   {% endif %}
 {% endwith %}
 
-<h1 class="my-4 mb-0">Missing Persons</h1>
-<p class="mt-0 mb-3">Gather information by filling out the Person, Phones, Emails, Addresses, Aliases and uploading any Pdfs, Excels or Word docs with information on the case. You can use and APIs or Rss feeds. The forms make it easy to connect and save the data you find online.<br /><br />You can also upload information on how to investigate a missing person and train the model on how you want it done. The prompts work this way too. You can create a way of doing things based upon your own ideas. There is also a model that gives 10 sugestions on anything you ask it for. By providing really precise prompts and questions you can get really detailed answers. Study prompt engineering.<br /><br />The data gets saved to a Chroma vector database that the LLM using RAG trains on and learns from. Files and Person when saved automatically saves data to the Chroma vector database. The person consolidates all the data in the list of entites under the Person menu into one chunk per person. The files saves separately.</p>
+<h1 class="my-4 mb-2">Missing Persons</h1>
+<p class="mt-0 mb-3">Gather information by filling out the Person, Phones, Emails, Addresses, Aliases and uploading Pdfs with information on the case. I will add Excels and Word docs in the future. You can also use APIs and Rss feeds to find data although this is not finished yet. Once you have uploaded the data use agents, promts and Qestions to find connections.<br /><br />The models at this time are Ollama models. You will need to find models trained on missing person investigating or find information on how to investigate a missing person and train the model on how to get it done.<br /><br />By training the model I mean uploading documents and save them to the vector database. RAGs are unique models that are pre-trained but have the ability to use data saved in the vector database to continue learning on. You can create your own way of doing things based upon your own ideas by creating a pdf with your own strategy.<br /><br />There is a model on the Notice page that gives 10 sugestions on anything you ask it for. By providing really precise prompts and questions you can get really detailed answers. Study prompt engineering.<br /><br />Files and Person have a save to vector database button that you will need to click to save the data to the Chroma vector database. The person consolidates all the data in the list of entites under the Person menu into one chunk per person. The files saves separately.</p>
+<h3 class="my-4 mb-2">Sections</h3>
 <ul class="mb-5">
-  <li>Categories
+  <li><b><i>Application State</i></b> - You will need to set the state when ever you switch what you are doing depending on the task. I will be adjusting the content to be loaded by the state that you have set.
     <ul>
-      <li>Categories - You can have different categories for people, phones, emails, addresses, Events and Notes. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
-        <ul>
-          <li>id = Column("id", Integer, primary_key=True)
-            <ul>
-              <li>Description: The unique, auto increment, primary key id.</li>
-              <li>Allowed Values:
-                <ul>
-                  <li>Integer</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li>type = Column(NullToEmptyString(20))
-            <ul>
-              <li>Description: Categorize the types of Person, Email, Phone, Address and Event.</li>
-              <li>Allowed Values:
-                <ul>
-                  <li>addressType</li>
-                  <li>contactType</li>
-                  <li>emailType</li>
-                  <li>phoneType</li>
-                  <li>eventType</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li>name = Column(NullToEmptyString(255))
-            <ul>
-              <li>Description: The String name of the Category.</li>
-              <li>Allowed Values:
-                <ul>
-                  <li>String</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
+      <li><b>Processor</b> - This value defaults to CPU. It is used when creating embeddings anywhere where you are saving data to the vector database.</li>
+      <li><b>Person</b> - When you are working on a certain person set them as State. You can also set the Person on the Person page by clicking Set State in the list of people.</li>
+      <li><b>Model</b> - This is the list of local Ollama models available. They are used when ever you use anything in the application thats using an LLM. You can switch these around and try the different models from ollama. When you add data to the vector database you must have a model selected. When you use Chat on the Chat Box page or ask for suggestions in Notice Page(Ill refactor this for clarity and better UI/UX soon) you must have the same model you save the data to selected. You can also set the Model on the Models page by clicking Set State in the list of models.</li>
+      <li><b>Api</b> - When you are working on APIs or RSS Feeds on the Data Center page set the API you will be using as State. You can also set the Api on the Api page by clicking Set State in the list of apis.</li>
+      <li><b>Prompt</b> - When you are working on Chat Box page or ask for suggestions in Notice Page set the Prompt you will be using as State. You can also set the Prompt on the Prompts page by clicking Set State in the list of prompts.</li>
+      <li><b>Question</b> - When you are working on Chat Box page or ask for suggestions in Notice Page set the Question you will be using as State. You can also set the Question on the Questions page by clicking Set State in the list of questions.</li>
+      <li><b>Chunk Size</b> - This allows you to change the size of a chunk(of text) that the model will save as a value in the vector database.</li>
+      <li><b>Chunk Overlap</b> - Reference: <a href="https://www.youtube.com/watch?v=8OJC21T2SL4" target="_blank">The 5 Levels Of Text Splitting For Retrieval</a> This allows you to change the size of the chunk overlap that the model use.</li>
+      <li><b>Database</b> - There are two databases in this test release but in the real release there will only be one. The first is investigation_db and the other is code_optimize_db. Im trying to see how I can use the code optimize to help in developing this application.</li>
+    </ul>
+  </li>
+  <li><b><i>Categories</i></b>
+    <ul>
+      <li><b>Categories</b> - You can have different categories for people, phones, emails, addresses, Events and Notes. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
       </li>
     </ul>
   </li>
-  <li>Person
+  <li><b><i>Person</i></b>
     <ul>
-      <li>Person - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Notes that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Notes and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data to and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database. Once you have created a Person fill in Emails, Phones, Addresses, Aliases, Events, and Notes and edit the Person again and save it so all the data will be edited into the chunk.<br /><br />Make sure to choose the person you want to add the data to.</li>
-      <li>Addresses - Addresses is any address used by the person. Create a Type for it in Categories first. Example Category: Home, Work, etc..</li>
-      <li>Emails - Emails are any emails used by the person. Create a Type for it in Categories first. Example Category: Personal, Work, etc..</li>
-      <li>Phones - Phones are any phone number used by the person. Create a Type for it in Categories first. Example Category: Cell, Work, etc..</li>
-      <li>Aliases - Alias are any aliases used by the person.</li>
-      <li>Events - Events are any event that happens related to the person. Create a Type for it in Categories first. Example Category: Alibi, Court Date, etc..</li>
-      <li>Notes - Notes are any other data related to the person.</li>
+      <li><b>Person</b> - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Notes that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Notes and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data to and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database. Once you have created a Person fill in Emails, Phones, Addresses, Aliases, Events, and Notes and edit the Person again and save it so all the data will be edited into the chunk.<br /><br />Make sure to choose the person you want to add the data to.</li>
+      <li><b>Addresses</b> - Addresses is any address used by the person. Create a Type for it in Categories first. Example Category: Home, Work, etc..</li>
+      <li><b>Emails</b> - Emails are any emails used by the person. Create a Type for it in Categories first. Example Category: Personal, Work, etc..</li>
+      <li><b>Phones</b> - Phones are any phone number used by the person. Create a Type for it in Categories first. Example Category: Cell, Work, etc..</li>
+      <li><b>Aliases</b> - Alias are any aliases used by the person.</li>
+      <li><b>Events</b> - Events are any event that happens related to the person. Create a Type for it in Categories first. Example Category: Alibi, Court Date, etc..</li>
+      <li><b>Notes</b> - Notes are any other data related to the person.</li>
     </ul>
   </li>
-  <li>Files - You can upload any of these files. They will be added as data for the LLM.
+  <li><b><i>Files</i></b> - You can upload any of these files. They will be added as data for the LLM.
     <ul>
-      <li>Pdf - Works in testing.</li>
-      <li>Excel - Coming soon..</li>
-      <li>Csv - Coming soon..</li>
-      <li>Word - Coming soon..</li>
-      <li>Images - Works in testing.</li>
-      <li>mp3 - Coming soon..</li>
-      <li>mp4 - Coming soon..</li>
+      <li><b>Pdf</b> - Works in testing.</li>
+      <li><b>Excel</b> - Coming soon..</li>
+      <li><b>Csv</b> - Coming soon..</li>
+      <li><b>Word</b> - Coming soon..</li>
+      <li><b>Images</b> - Works in testing.</li>
+      <li><b>mp3</b> - Coming soon..</li>
+      <li><b>mp4</b> - Coming soon..</li>
     </ul>
   </li>
-  <li>Data APIs
+  <li><b><i>Data APIs</i></b>
     <ul>
-      <li>RSS Feeds - Use RSS Feeds to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.</li>
-      <li>Data APIs - Use APIs to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.</li>
+      <li><b>RSS Feeds</b> - Use RSS Feeds to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.</li>
+      <li><b>Data APIs</b> - Use APIs to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.</li>
     </ul>
   </li>
-  <li>Model APIs
+  <li><b><i>Model APIs</i></b>
     <ul>
-      <li>Ollama - This is the initial Model I used because it all runs on local and is testable without paid subscription. Can be a bit slow.. You can speed this up by selecting GPU in the form on the upper right corner.</li>
-      <li>OpenAI - If you don't have GPUs then I plan to give you the ability to connect with OpenAI so you can run data on their models with their GPUs if you like.</li>
-      <li>Grok - Same with Grok.</li>
-      <li>Claude - Same with Claude.</li>
+      <li><b>Ollama</b> - This is the initial Model I used because it all runs on local and is testable without paid subscription. Can be a bit slow.. You can speed this up by selecting GPU in the form on the upper right corner.</li>
+      <li><b>OpenAI</b> - If you don't have GPUs then I plan to give you the ability to connect with OpenAI so you can run data on their models with their GPUs if you like. Coming soon..</li>
+      <li><b>Grok</b> - Same with Grok. Coming soon..</li>
+      <li><b>Claude</b> - Same with Claude. Coming soon..</li>
     </ul>
   </li>
 </ul>
@@ -101,12 +79,12 @@
 <h3 class="my-4 mb-2">Chunking</h3>
 <p>When chunking, do periods or commas matter when separating expressions like 'Attribute: value' and is that experssion the best way to add mutiple expressions to a chunk?</p>
 <p class="mt-0 mb-3">Yes. Periods and commas matter when chunking text for an LLM, primarily because they dictate semantic flow and structural coherence. The expression 'Attribute: value' is a highly effective way to add metadata, but it requires specific handling in your chunking strategy.</p>
-<h4 class="my-4 mb-2">Do Periods and Commas Matter?</h4>
+<h5 class="my-4 mb-2">Do Periods and Commas Matter?</h5>
 <ul>
   <li><b>Periods:</b> Yes. During recursive character splitting, splitters often use periods as natural separators. If you arbitrarily truncate chunks without respecting sentence-ending punctuation, you risk cutting off thoughts midway and confusing the LLM.</li>
   <li><b>Commas:</b> Yes, but more for the language model's comprehension than the raw chunking logic. Commas delineate items in a list or within an 'Attribute: value' expression, ensuring the model parses them as distinct points.</li>
 </ul>
-<h4 class="my-4 mb-2">Is 'Attribute: value' the Best Strategy?</h4>
+<h5 class="my-4 mb-2">Is 'Attribute: value' the Best Strategy?</h5>
   Using key-value pairs ('Attribute: value') is an excellent strategy for adding context, but you should not append a raw list of them at the end of a long, otherwise unrelated text chunk.
   To get the most out of this approach, apply it properly using metadata injection:
 <ol>
@@ -117,13 +95,13 @@
   </li>
   <li><b>Document Metadata (The Cleanest Approach)</b><br />Most vector database tools (like LangChain or LlamaIndex) support dedicated metadata dictionaries. Instead of writing 'Author: John Doe' in the text itself, you can store {"Author": "John Doe"} as a property of the chunk.</li>
 </ol>
-<h4 class="my-4 mb-2">Why Metadata Dictionaries Are Better Than Raw Text</h4>
+<h5 class="my-4 mb-2">Why Metadata Dictionaries Are Better Than Raw Text</h5>
 <ul>
   <li><b>Cleaner Embeddings:</b> It prevents your embedding model from getting confused by literal text attributes mixed into the document's narrative.</li>
   <li><b>Filterable Search:</b> It allows you to filter search results by exact metadata before even passing the chunk to the LLM (e.g., "Only search chunks where Document_Type = Policy").</li>
   <li><b>Saves Tokens:</b> It prevents you from wasting expensive context window tokens on long lists of attributes.</li>
 </ul>
-<h4 class="my-4 mb-2">Best Practices to Remember</h4>
+<h5 class="my-4 mb-2">Best Practices to Remember</h5>
 <ol class="mb-5">
   <li><b>Never break mid-expression:</b> If you are building chunks manually, write a custom script that ensures 'Attribute: value' groups are kept together entirely within a single chunk, rather than split across two.</li>
   <li><b>Limit to 3-5 key expressions:</b> Overloading your chunks with too many attributes can dilute the importance of the actual content.</li>
@@ -148,13 +126,8 @@
     <h3 class="my-2">Finish up stuff</h3>
     <p>Last steps to Release:</p>
     <ul>
-      <li>Build out pdf, Word, Excel</li>
-      <li>Data Center
-        <ul>
-          <li>I want to create the model below for doing this automatically once inserted into the SqlAlchemy database you can edit it there before saving it into the Vector Database for use by the RAG LLM.</li>
-        </ul>
-      </li>
-      <li>Get a model to filter through, separate and list all the people and all the 'Attribute: Value' pairs it finds in the json from APIs and RSS Feeds that can be saved to the sqlalchemy database. Have it insert them into Notice. When you hit complete it saves it to the intended table in the database.
+      <li>Build out Word, Excel</li>
+      <li>Data Center: Get a model to filter through, separate and list all the people and all the 'Attribute: Value' pairs it finds in the json from APIs and RSS Feeds that can be saved to the sqlalchemy database. Have it insert them into Notice once it has found the right entity and field it can be added to. When you hit complete it saves it to the intended entity and field in the database.
         <ul>
           <li>Get a model to look for and list people that can be added into Person from the json.</li>
           <li>Get a model to look for and list Emails that can be added into Email from the json.</li>
