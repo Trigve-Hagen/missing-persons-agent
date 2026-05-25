@@ -63,6 +63,7 @@ from resources import Resources
 from vector_repository import VectorDb, PdfRepository, PersonRepository, EventRepository, NoteRepository
 from process_files import ProcessFiles
 from selections import Selection
+from pathlib import Path
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -72,14 +73,18 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
 
 def resource_path(relative_path):
-  """ Get absolute path to resource, works for dev and for PyInstaller """
-  try:
-      # PyInstaller creates a temp folder and stores path in _MEIPASS
-      base_path = sys._MEIPASS
-  except Exception:
-      base_path = os.path.abspath(".")
+  """
+  Resolves a relative path to an absolute path in the Windows AppData
+  Roaming folder for compiled apps, or a local 'data' folder for development.
+  """
 
-  return os.path.join(base_path, relative_path)
+  if getattr(sys, 'frozen', False):
+    base_dir = Path(os.environ['APPDATA']) / "missing_persons"
+  else:
+    base_dir = Path(__file__).resolve().parent
+  base_dir.mkdir(parents=True, exist_ok=True)
+  return base_dir / relative_path
+
 DATABASE = resource_path('database/sql_alchemy/database.db')
 
 template_folder = resource_path('templates')
@@ -355,7 +360,8 @@ def set_file():
     filename, filename_ext = os.path.splitext(sec_filename)
     clean_filename = pdf_repo.machine_name(filename)
     safe_filename = f"{clean_filename}_{time.time_ns()}{filename_ext}"
-    save_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
+    save_path = resource_path(app.config['UPLOAD_FOLDER']) / safe_filename
+    # save_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
     file.save(save_path)
 
   try:
@@ -2395,8 +2401,15 @@ def initialize_database(engine):
     state.question = 1
     session.commit()
 
+
+
+if getattr(sys, 'frozen', False):
+  import pyi_splash
+  if pyi_splash.is_alive():
+    pyi_splash.close()
+
 if __name__ == '__main__':
-  # initialize_database(engine)
+  initialize_database(engine)
   webview.create_window('Missing Persons', app, min_size=(1180, 600), resizable=True, fullscreen=False, text_select=True)
   webview.start(debug=False)
 

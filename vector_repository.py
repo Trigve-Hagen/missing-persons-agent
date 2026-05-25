@@ -13,12 +13,13 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
+from pathlib import Path
 
 # Base class (Parent)
 class VectorDb:
   def __init__(self, session):
     self.persist_directory = self.resource_path("database\\investigation_db")
-    self.collection_name = 'missing_persons'
+    self.collection_name = "missing_persons"
     state = session.get(State, 1)
     self.processor = state.processor
     self.chunk_size = state.chunk_size
@@ -27,14 +28,17 @@ class VectorDb:
     # self.directory = self.resource_path(f"database\\{state.database}")
 
   def resource_path(self, relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
+    """
+    Resolves a relative path to an absolute path in the Windows AppData
+    Roaming folder for compiled apps, or a local 'data' folder for development.
+    """
 
-    return os.path.join(base_path, relative_path)
+    if getattr(sys, 'frozen', False):
+      base_dir = Path(os.environ['APPDATA']) / self.collection_name
+    else:
+      base_dir = Path(__file__).resolve().parent
+    base_dir.mkdir(parents=True, exist_ok=True)
+    return base_dir / relative_path
 
   def get_vector_store(self):
     return Chroma(
@@ -44,7 +48,7 @@ class VectorDb:
     )
 
   def load_pages(self, filename):
-    loader = DoclingLoader(file_path=os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
+    loader = DoclingLoader(file_path=self.resource_path(f"uploads\\files\\{filename}"))
 
     pages = loader.load()
     return filter_complex_metadata(pages)

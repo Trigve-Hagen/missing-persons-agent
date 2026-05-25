@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 from typing import List
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
+from pathlib import Path
 
 class TaskSuggestion(BaseModel):
     title: str = Field(description="Short title of the task")
@@ -37,14 +38,17 @@ class OllamaManager:
     # self.directory = self.resource_path(f"database\\{state.database}")
 
   def resource_path(self, relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
+    """
+    Resolves a relative path to an absolute path in the Windows AppData
+    Roaming folder for compiled apps, or a local 'data' folder for development.
+    """
 
-    return os.path.join(base_path, relative_path)
+    if getattr(sys, 'frozen', False):
+        base_dir = Path(os.environ['APPDATA']) / self.collection_name
+    else:
+        base_dir = Path(__file__).resolve().parent
+    base_dir.mkdir(parents=True, exist_ok=True)
+    return base_dir / relative_path
 
   def prompt(self):
     model = self.session.execute(select(Model).filter_by(id = self.model)).scalar_one_or_none()
