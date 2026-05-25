@@ -396,7 +396,7 @@ def chat():
     # Run chain
     response = qa_chain.invoke({"query": user_input})
   else:
-    response['result'] = "No Chroma Database defined. To create database upload a pdf or save data from RSS or API."
+    response['result'] = "No Chroma Database or Model defined. To create database upload a pdf or save data from RSS or API. If you have saved data set a model in Either Aplication State or Models."
 
   return jsonify({'response': response['result']})
 
@@ -2327,15 +2327,15 @@ def initialize_database(engine):
       missing=datetime(2026, 2, 1), owner=0, ethnicity="white",
       primaryLanguage="english"
     )
-    p2 = Person(
+    session.add(p1)
+    """ p2 = Person(
       type=1, sirName="", firstName="Trigve", middleName="", lastName="Hagen",
       suffix="", height="67", weight="190", hairColor="Brown", eyeColor="Blue", ssn="",
       description="", gender="male", dob=datetime(1972, 10, 2),
       missing=datetime(2026, 10, 2), owner=0, ethnicity="white",
       primaryLanguage="english"
     )
-    session.add(p1)
-    session.add(p2)
+    session.add(p2) """
 
     state = session.get(State, 1)
     state.person = 1
@@ -2361,23 +2361,25 @@ def initialize_database(engine):
     session.add(a1)
     session.commit()
 
-  if session.query(Model).first() is None:
+  """ if session.query(Model).first() is None:
     app_resources = Resources(session=session)
     models = app_resources.ollama_models()
     for model in models['models']:
       m1 = Model(name=model.model, model=model.model, type="ollama", system="")
       session.add(m1)
-      session.commit()
+      session.commit() """
 
   if session.query(Prompt).first() is None:
     p1 = Prompt(
       prompt="You are an expert criminal investigator, forensic analyst, and search-and-rescue strategist. Your objective is to help me optimize my approach to an active missing person case. Analyze the scenario detailed in the question below and provide 10 highly actionable, evidence-based suggestions that prioritize investigative efficiency and subject safety."
     )
     session.add(p1)
-    p2 = Prompt(
+    """ p2 = Prompt(
       prompt="Act as an expert software optimizer. The code in the following context is a flask application that uses data from form uploads and external sources combined with AI to aid in the search for missing persons."
     )
-    session.add(p2)
+    session.add(p2) """
+    state = session.get(State, 1)
+    state.prompt = 1
     session.commit()
 
   if session.query(Question).first() is None:
@@ -2385,16 +2387,18 @@ def initialize_database(engine):
       question="I am investigating the disappearance of Nancy Guthrie. What are 10 specific investigative steps, technological strategies, or procedural optimizations I can use to maximize our chances of locating her safely?"
     )
     session.add(q1)
-    q2 = Question(
+    """ q2 = Question(
       question="I am looking to build documentation. Create html page describing the usage of the tables and columns of the defined models based upon the comments."
     )
-    session.add(q2)
+    session.add(q2) """
+    state = session.get(State, 1)
+    state.question = 1
     session.commit()
 
 if __name__ == '__main__':
-  initialize_database(engine)
+  # initialize_database(engine)
   webview.create_window('Missing Persons', app, min_size=(1180, 600), resizable=True, fullscreen=False, text_select=True)
-  webview.start(debug=True)
+  webview.start(debug=False)
 
 # python -m venv .venv
 # .\.venv\Scripts\Activate.ps1

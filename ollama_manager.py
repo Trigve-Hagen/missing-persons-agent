@@ -2,6 +2,7 @@ import os
 import re
 import platform
 import ollama
+import sys
 from flask import flash
 from sqlalchemy import select
 from database.state import State
@@ -25,35 +26,40 @@ class TaskList(BaseModel):
 class OllamaManager:
   def __init__(self, session):
     self.session = session
+    self.persist_directory = self.resource_path("database\\investigation_db")
     self.client = ollama.Client()
     self.base_path = os.path.abspath(".")
-    # self.investigation_directory = os.path.join(self.base_path, "database\\investigation_db")
-    # self.code_optimize_directory = os.path.join(self.base_path, "database\\code_optimize_db")
     self.collection_name = "missing_persons"
     state = session.get(State, 1)
     self.model = state.model
     self.model_prompt = state.prompt
     self.model_question = state.question
-    self.directory = os.path.join(self.base_path, "database", state.database)
+    # self.directory = self.resource_path(f"database\\{state.database}")
 
+  def resource_path(self, relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
-  def initialize():
-    pass
+    return os.path.join(base_path, relative_path)
 
   def prompt(self):
     model = self.session.execute(select(Model).filter_by(id = self.model)).scalar_one_or_none()
 
     if model:
       try:
-        embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-        if os.path.exists(self.directory):
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        if os.path.exists(self.persist_directory):
             vectorstore = Chroma(
-                persist_directory=self.directory,
+                persist_directory=self.persist_directory,
                 embedding_function=embeddings,
                 collection_name=self.collection_name
             )
         else:
-            flash(f"Chroma collection not found at {self.directory}", "danger")
+            flash(f"Chroma collection not found at {self.persist_directory}", "danger")
             return False
 
         retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
@@ -89,15 +95,15 @@ class OllamaManager:
 
     if model:
       try:
-        embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-        if os.path.exists(self.directory):
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        if os.path.exists(self.persist_directory):
             vectorstore = Chroma(
-                persist_directory=self.directory,
+                persist_directory=self.persist_directory,
                 embedding_function=embeddings,
                 collection_name=self.collection_name
             )
         else:
-            flash(f"Chroma collection not found at {self.directory}", "danger")
+            flash(f"Chroma collection not found at {self.persist_directory}", "danger")
             return False
 
         retriever = vectorstore.as_retriever(search_kwargs={"k": 5})

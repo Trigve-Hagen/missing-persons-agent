@@ -16,10 +16,14 @@
 {% endwith %}
 
 <h1 class="my-4 mb-2">Missing Persons</h1>
-<p class="mt-0 mb-3">Gather information by filling out the Person, Phones, Emails, Addresses, Aliases and uploading Pdfs with information on the case. I will add Excels and Word docs in the future. You can also use APIs and Rss feeds to find data although this is not finished yet. Once you have uploaded the data use agents, promts and Qestions to find connections.<br /><br />The models at this time are Ollama models. You will need to find models trained on missing person investigating or find information on how to investigate a missing person and train the model on how to get it done.<br /><br />By training the model I mean uploading documents and save them to the vector database. RAGs are unique models that are pre-trained but have the ability to use data saved in the vector database to continue learning on. You can create your own way of doing things based upon your own ideas by creating a pdf with your own strategy.<br /><br />There is a model on the Notice page that gives 10 sugestions on anything you ask it for. By providing really precise prompts and questions you can get really detailed answers. Study prompt engineering.<br /><br />Files and Person have a save to vector database button that you will need to click to save the data to the Chroma vector database. The person consolidates all the data in the list of entites under the Person menu into one chunk per person. The files saves separately.</p>
+<p class="mt-0 mb-3">Everything works perfectly but its slow. You will have to wait for the responses. The end result will be way faster once I program in OpenAI, Grok and Claude APIs.<br /><br /><b>Quick start:</b> Go to the Person click the Edit button and then click the Save person to database. Click Set State button on the Person page to set the person as state. Download Ollama from <a href="https://ollama.com/download" target="_blank">Ollama</a>. Make sure its on. Go to Models ad set both name and Model to <a href="https://ollama.com/library/phi3:mini" target="_blank">phi3:mini</a> and click the Save button. Click Set State button on the Models page to set the person as state. Got to the Chat Box page, type Hello where it says Type a message... and click the Send button.<br /><br />Gather information by filling out the Person, Phones, Emails, Addresses, Aliases and uploading Pdfs with information on the case. I will add Excels and Word docs in the future. You can also use APIs and Rss feeds to find data although this is not finished yet. Once you have uploaded the data use agents, promts and Qestions to find connections.<br /><br />The models at this time are Ollama models. You will need to find models trained on missing person investigating or find information on how to investigate a missing person and train the model on how to get it done.<br /><br />By training the model I mean uploading documents and save them to the vector database. RAGs are unique models that are pre-trained but have the ability to use data saved in the vector database to continue learning on. You can create your own way of doing things based upon your own ideas by creating a pdf with your own strategy.<br /><br />There is a model on the Notice page that gives 10 sugestions on anything you ask it for. By providing really precise prompts and questions you can get really detailed answers. Study prompt engineering.<br /><br />Files and Person have a save to vector database button that you will need to click to save the data to the Chroma vector database. The person consolidates all the data in the list of entites under the Person menu into one chunk per person. The files saves separately.</p>
+
 <h3 class="my-4 mb-2">Sections</h3>
 <ul class="mb-5">
-  <li><b><i>Application State</i></b> - You will need to set the state when ever you switch what you are doing depending on the task. I will be adjusting the content to be loaded by the state that you have set.
+  <li><b>Chat Box</b> - Need a full page response box with the small user input box at the bottom.</li>
+  <li><b>Data Center</b> - Im still working on the Data Center page. The result I am working on is an agent that pulls apart the json returned from APIs and RSS Feeds and creates notices out of the key, value nodes. When you click complete the values are saved in the database where you can adjust them if needed. After you adjust them they can then be saved to the Vector Database to be used by a RAG LLM.</li>
+  <li><b>Notices</b> - I created this page with the idea of an Agent giving suggestions on optimizing the investigation based upon the saved data about the people involved, the tools available in this application and pdfs on how to investigate a missing person. The suggestions are saved into the database as notices to be completed.</li>
+  <li><b>Application State</b> - You will need to set the state when ever you switch what you are doing depending on the task. I will be adjusting the content to be loaded by the state that you have set.
     <ul>
       <li><b>Processor</b> - This value defaults to CPU. It is used when creating embeddings anywhere where you are saving data to the vector database.</li>
       <li><b>Person</b> - When you are working on a certain person set them as State. You can also set the Person on the Person page by clicking Set State in the list of people.</li>
@@ -29,16 +33,16 @@
       <li><b>Question</b> - When you are working on Chat Box page or ask for suggestions in Notice Page set the Question you will be using as State. You can also set the Question on the Questions page by clicking Set State in the list of questions.</li>
       <li><b>Chunk Size</b> - This allows you to change the size of a chunk(of text) that the model will save as a value in the vector database.</li>
       <li><b>Chunk Overlap</b> - Reference: <a href="https://www.youtube.com/watch?v=8OJC21T2SL4" target="_blank">The 5 Levels Of Text Splitting For Retrieval</a> This allows you to change the size of the chunk overlap that the model use.</li>
-      <li><b>Database</b> - There are two databases in this test release but in the real release there will only be one. The first is investigation_db and the other is code_optimize_db. Im trying to see how I can use the code optimize to help in developing this application.</li>
+      <!-- <li><b>Database</b> - There are two databases in this test release but in the real release there will only be one. The first is investigation_db and the other is code_optimize_db. Im trying to see how I can use the code optimize to help in developing this application.</li> -->
     </ul>
   </li>
-  <li><b><i>Categories</i></b>
+  <li><b>Categories</b>
     <ul>
       <li><b>Categories</b> - You can have different categories for people, phones, emails, addresses, Events and Notes. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
       </li>
     </ul>
   </li>
-  <li><b><i>Person</i></b>
+  <li><b>Person</b>
     <ul>
       <li><b>Person</b> - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Notes that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Notes and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data to and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database. Once you have created a Person fill in Emails, Phones, Addresses, Aliases, Events, and Notes and edit the Person again and save it so all the data will be edited into the chunk.<br /><br />Make sure to choose the person you want to add the data to.</li>
       <li><b>Addresses</b> - Addresses is any address used by the person. Create a Type for it in Categories first. Example Category: Home, Work, etc..</li>
@@ -49,7 +53,7 @@
       <li><b>Notes</b> - Notes are any other data related to the person.</li>
     </ul>
   </li>
-  <li><b><i>Files</i></b> - You can upload any of these files. They will be added as data for the LLM.
+  <li><b>Files</b> - You can upload any of these files. They will be added as data for the LLM.
     <ul>
       <li><b>Pdf</b> - Works in testing.</li>
       <li><b>Excel</b> - Coming soon..</li>
@@ -60,13 +64,13 @@
       <li><b>mp4</b> - Coming soon..</li>
     </ul>
   </li>
-  <li><b><i>Data APIs</i></b>
+  <li><b>Data APIs</b>
     <ul>
       <li><b>RSS Feeds</b> - Use RSS Feeds to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.</li>
       <li><b>Data APIs</b> - Use APIs to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.</li>
     </ul>
   </li>
-  <li><b><i>Model APIs</i></b>
+  <li><b>Model APIs</b>
     <ul>
       <li><b>Ollama</b> - This is the initial Model I used because it all runs on local and is testable without paid subscription. Can be a bit slow.. You can speed this up by selecting GPU in the form on the upper right corner.</li>
       <li><b>OpenAI</b> - If you don't have GPUs then I plan to give you the ability to connect with OpenAI so you can run data on their models with their GPUs if you like. Coming soon..</li>

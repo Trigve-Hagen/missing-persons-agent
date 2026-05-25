@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import sys
 import unicodedata
 from flask import flash
 from database.state import State
@@ -16,28 +17,34 @@ from langchain_core.documents import Document
 # Base class (Parent)
 class VectorDb:
   def __init__(self, session):
-    self.persist_directory = os.path.join(os.path.abspath("."), "database\\investigation_db")
+    self.persist_directory = self.resource_path("database\\investigation_db")
     self.collection_name = 'missing_persons'
-    self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     state = session.get(State, 1)
     self.processor = state.processor
-    self.chunk_loader = state.loader
     self.chunk_size = state.chunk_size
     self.chunk_overlap = state.chunk_overlap
-    self.directory = os.path.join(os.path.abspath("."), "database", state.database)
+    self.embedding_function = self.get_embeddings()
+    # self.directory = self.resource_path(f"database\\{state.database}")
+
+  def resource_path(self, relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
   def get_vector_store(self):
     return Chroma(
       persist_directory=self.persist_directory,
       collection_name=self.collection_name,
-      embedding_function=self.embeddings
+      embedding_function=self.embedding_function
     )
 
   def load_pages(self, filename):
-    if self.chunk_loader == 'docling':
-      loader = DoclingLoader(file_path=os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
-    else:
-      loader = DoclingLoader(file_path=os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
+    loader = DoclingLoader(file_path=os.path.join(os.path.abspath("."), 'assets\\files\\', filename))
 
     pages = loader.load()
     return filter_complex_metadata(pages)
@@ -50,11 +57,20 @@ class VectorDb:
     )
     return text_splitter.split_documents(pages)
 
+  def get_embeddings(self):
+    # flash(f"Processor: {self.processor}", "info")
+    if not self.processor or self.processor == "None":
+      embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    else:
+      embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
+
+    return embedding_function
+
   def get_all_chroma_data(self):
     vector_store = Chroma(
-      persist_directory=self.directory,
+      persist_directory=self.persist_directory,
       collection_name=self.collection_name,
-      embedding_function=self.embeddings
+      embedding_function=self.embedding_function
     )
 
     collection = vector_store._client.get_collection(name=self.collection_name)
@@ -72,50 +88,58 @@ class VectorDb:
 
   def get_chroma_data(self, type, id):
     vector_store = self.get_vector_store()
-    collection = vector_store._client.get_collection(name=self.collection_name)
-    # Retrieve records matching both param1 AND param2
-    where = {}
-    if type != "" and type != 'None':
-      where = {
-        "$and": [
-            {"vector_type": type},
-            {"entity_id": id}
-        ]
-      }
-    results = collection.get(
-      include=["documents", "metadatas"],
-      where=where
-    )
-    metadatas = results["metadatas"]
+    try:
+      collection = vector_store._client.get_collection(name=self.collection_name)
+      # Retrieve records matching both param1 AND param2
+      where = {}
+      if type != "" and type != 'None':
+        where = {
+          "$and": [
+              {"vector_type": type},
+              {"entity_id": id}
+          ]
+        }
 
-    data = []
-    if results and 'documents' in results:
-      for doc_id, doc_text, doc_metas in zip(results['ids'], results['documents'], results['metadatas']):
-        data.append({'id': doc_id, 'text': doc_text, 'meta': doc_metas})
-    return data, metadatas
+      results = collection.get(
+        include=["documents", "metadatas"],
+        where=where
+      )
+      metadatas = results["metadatas"]
+
+      data = []
+      if results and 'documents' in results:
+        for doc_id, doc_text, doc_metas in zip(results['ids'], results['documents'], results['metadatas']):
+          data.append({'id': doc_id, 'text': doc_text, 'meta': doc_metas})
+      return data, metadatas
+    except Exception as e:
+      flash(f"Error retrieving data: {e}", "danger")
+      return [], []
 
   def get_vector_by_ids(self, ids):
     vector_store = self.get_vector_store()
+    try:
+      results = vector_store.get(ids=ids)
+      view_data = []
+      if results and results.get("documents"):
+        text = results["documents"][0]
+        metadata = results["metadatas"][0]
 
-    results = vector_store.get(ids=ids)
-    view_data = []
-    if results and results.get("documents"):
-      text = results["documents"][0]
-      metadata = results["metadatas"][0]
+        view_data.append({
+          "id": id,
+          "text": text,
+          "meta": metadata,
+          "source": metadata.get("source", "Unknown")
+        })
 
-      view_data.append({
-        "id": id,
-        "text": text,
-        "meta": metadata,
-        "source": metadata.get("source", "Unknown")
-      })
-
-    return view_data
+      return view_data
+    except Exception as e:
+      flash(f"Error retrieving data: {e}", "danger")
+      return []
 
   def update_data_by_id(self, vector_id: str, content: str, metadata: dict):
     vector_store = self.get_vector_store()
-    collection = vector_store._collection
     try:
+      collection = vector_store._collection
       collection.upsert(
           ids=[vector_id],
           documents=[content],
@@ -140,9 +164,9 @@ class VectorDb:
       return False
 
   def delete_file_by_source(self, source):
+    vector_store = self.get_vector_store()
     try:
-      vector_db = self.get_vector_store()
-      collection = vector_db._client.get_collection(name=self.collection_name)
+      collection = vector_store._client.get_collection(name=self.collection_name)
       collection.delete(
           where={"source": source}
       )
@@ -198,10 +222,10 @@ class VectorDb:
 
       chunk.metadata["chunk_index"] = (idx + 1)
 
-    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
+
     Chroma.from_documents(
       documents=chunks,
-      embedding=embedding_function,
+      embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
       persist_directory=self.persist_directory
@@ -243,10 +267,9 @@ class PersonRepository(VectorDb):
 
     chunks = self.get_text_splitter([document])
 
-    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
     Chroma.from_documents(
       documents=chunks,
-      embedding=embedding_function,
+      embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
       persist_directory=self.persist_directory
@@ -279,10 +302,9 @@ class EventRepository(VectorDb):
 
     chunks = self.get_text_splitter([document])
 
-    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
     Chroma.from_documents(
       documents=chunks,
-      embedding=embedding_function,
+      embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
       persist_directory=self.persist_directory
@@ -315,10 +337,9 @@ class NoteRepository(VectorDb):
 
     chunks = self.get_text_splitter([document])
 
-    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
     Chroma.from_documents(
       documents=chunks,
-      embedding=embedding_function,
+      embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
       persist_directory=self.persist_directory
@@ -351,10 +372,9 @@ class JsonRepository(VectorDb):
 
     chunks = self.get_text_splitter([document])
 
-    embedding_function = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.processor})
     Chroma.from_documents(
       documents=chunks,
-      embedding=embedding_function,
+      embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
       persist_directory=self.persist_directory

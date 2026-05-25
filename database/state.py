@@ -23,7 +23,7 @@ class State(Base):
   api = Column(Integer, default=0, comment="The id of the Api set entity active in state.")
   prompt = Column(Integer, default=0, comment="The id of the Prompt set entity active in state.")
   question = Column(Integer, default=0, comment="The id of the Question set entity active in state.")
-  database = Column(NullToEmptyString, default="investigation", comment="The name of the vector database active in state. Allowed values are investigation_db and code_optimize_db.")
+  database = Column(NullToEmptyString, default="investigation_db", comment="The name of the vector database active in state. Allowed values are investigation_db and code_optimize_db.")
   processor = Column(NullToEmptyString, default="cpu", comment="The name of the processor active in state. Allowed values are in the Selection class available_devices property.")
   loader = Column(NullToEmptyString, default="docling", comment="The name of the document loader active in state.")
   chunk_size = Column(Integer, default=1000, comment="The chunk size of the document splitter active in state.")

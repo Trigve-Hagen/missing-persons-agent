@@ -53,7 +53,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="person-dropdown">
             <li><a class="dropdown-item{% if request.endpoint == 'model' %} active{% endif %}" href="{{ url_for('model') }}">Models</a></li>
-            <li><a class="dropdown-item{% if request.endpoint == 'model_params' %} active{% endif %}" href="{{ url_for('model_params') }}">Model Parameters</a></li>
+            <!-- <li><a class="dropdown-item{% if request.endpoint == 'model_params' %} active{% endif %}" href="{{ url_for('model_params') }}">Model Parameters</a></li> -->
             <li><a class="dropdown-item{% if request.endpoint == 'prompt' %} active{% endif %}" href="{{ url_for('prompt') }}">Prompts</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'question' %} active{% endif %}" href="{{ url_for('question') }}">Questions</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'chatbox' %} active{% endif %}" href="{{ url_for('chatbox') }}">Chat Box</a></li>

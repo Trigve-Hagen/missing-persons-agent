@@ -6,7 +6,7 @@
 {% block content %}
 
 <h1 class="mt-4 mb-0">Chat Box</h1>
-<p>Download <a href="https://ollama.com/download" target="_blank">Ollama</a>. You need the desktop application as well as the models. Go to <a href="{{ url_for('model') }}" target="_blank">Models</a> and create the <a href="https://ollama.com/library/phi3:mini" target="_blank">phi3:mini</a> model. Give it a name and phi3:mini as the model. Leave system empty for now, it has to do with ollama.create() which I want to get working so you can have different instances of the same model. It will download the model so let it work it might take a minute. Especially for larger ones. Set the state by clicking the Set State button in the list once the page refreshes. Then come back here to chat box. The model will work a little slow because you are most likely using a CPU instead of a GPU and I have not configured it to work with GPUs yet. I will add support for GPUs soon.</p>
+<p>Download <a href="https://ollama.com/download" target="_blank">Ollama</a>. You need the desktop application as well as the models. Go to <a href="{{ url_for('model') }}" target="_blank">Models</a> and create the <a href="https://ollama.com/library/phi3:mini" target="_blank">phi3:mini</a> model. Give it a name and phi3:mini as the model.  Bear with me. You will need to wait a few for responses. Just let it run. It will download the model so let it work. Set the state by clicking the Set State button in the list once the page refreshes. Then come back here to chat box. The model will work a little slow because you are most likely using a CPU instead of a GPU and I have not configured it to work with GPUs yet. I will add support for GPUs soon.</p>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -18,7 +18,7 @@
   {% endif %}
 {% endwith %}
 
-<div class="row mt-5">
+<div class="row mt-5 mb-4">
   <div class="col-md-12">
     <div id="chat-content-box" style="border:1px solid #ccc; border-radius: 5px; height:300px; overflow-y:scroll; margin:0; padding:10px; padding-top:0"></div>
     <div id="prompt-response"></div>
@@ -36,7 +36,7 @@
 </div>
 
 {% if database == 'code_optimize_db' %}
-  <div class="row mt-4 mb-5">
+  <div class="row mb-5">
     <div class="col-md-12">
       <form class="row g-4" action="/load_code" method="POST" name="code_loader" autocomplete="off">
         <div class="col-12">
