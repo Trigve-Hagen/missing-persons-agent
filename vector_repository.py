@@ -5,40 +5,24 @@ import sys
 import unicodedata
 from flask import flash
 from database.state import State
-from database.person import Person, Event, Note
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.document_loaders import PyPDFLoader
 from langchain_docling.loader import DoclingLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
-from pathlib import Path
+from model_utils import ModelUtils
 
 # Base class (Parent)
 class VectorDb:
   def __init__(self, session):
-    self.persist_directory = self.resource_path("database\\investigation_db")
+    self.persist_directory = ModelUtils.resource_path(os.path.join("database", "investigation_db"))
     self.collection_name = "missing_persons"
     state = session.get(State, 1)
     self.processor = state.processor
     self.chunk_size = state.chunk_size
     self.chunk_overlap = state.chunk_overlap
     self.embedding_function = self.get_embeddings()
-    # self.directory = self.resource_path(f"database\\{state.database}")
-
-  def resource_path(self, relative_path):
-    """
-    Resolves a relative path to an absolute path in the Windows AppData
-    Roaming folder for compiled apps, or a local 'data' folder for development.
-    """
-
-    if getattr(sys, 'frozen', False):
-      base_dir = Path(os.environ['APPDATA']) / self.collection_name
-    else:
-      base_dir = Path(__file__).resolve().parent
-    base_dir.mkdir(parents=True, exist_ok=True)
-    return base_dir / relative_path
 
   def get_vector_store(self):
     return Chroma(
@@ -48,7 +32,9 @@ class VectorDb:
     )
 
   def load_pages(self, filename):
-    loader = DoclingLoader(file_path=self.resource_path(f"uploads\\files\\{filename}"))
+    file_path = ModelUtils.resource_path(os.path.join("uploads", "files", filename))
+    print(file_path)
+    loader = DoclingLoader(file_path=file_path)
 
     pages = loader.load()
     return filter_complex_metadata(pages)

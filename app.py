@@ -56,36 +56,30 @@ from database.base import Base
 from database.state import State, Notice
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField
-from database.person import Category, Person, Alias, Email, EmailMessage, Phone, Call, Text, Address, File, Event, Note
+from database.person import Category, Person, Alias, Email, EmailMessage, Phone, Call, Address, File, Event, Note
 from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
 from resources import Resources
 from vector_repository import VectorDb, PdfRepository, PersonRepository, EventRepository, NoteRepository
 from process_files import ProcessFiles
 from selections import Selection
-from pathlib import Path
+from model_utils import ModelUtils
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
 mimetypes.add_type('text/css', '.css')
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+DATABASE = ModelUtils.resource_path(os.path.join("database", "sql_alchemy", "database.db"))
 
 def resource_path(relative_path):
-  """
-  Resolves a relative path to an absolute path in the Windows AppData
-  Roaming folder for compiled apps, or a local 'data' folder for development.
-  """
+  """ Get absolute path to resource, works for dev and for PyInstaller """
+  try:
+      # PyInstaller creates a temp folder and stores path in _MEIPASS
+      base_path = sys._MEIPASS
+  except Exception:
+      base_path = os.path.abspath(".")
 
-  if getattr(sys, 'frozen', False):
-    base_dir = Path(os.environ['APPDATA']) / "missing_persons"
-  else:
-    base_dir = Path(__file__).resolve().parent
-  base_dir.mkdir(parents=True, exist_ok=True)
-  return base_dir / relative_path
-
-DATABASE = resource_path('database/sql_alchemy/database.db')
+  return os.path.join(base_path, relative_path)
 
 template_folder = resource_path('templates')
 static_folder = resource_path('assets')
@@ -106,7 +100,7 @@ def add_nosniff_header_to_static(response):
 @app.route('/')
 @app.route('/index')
 def index():
-  return flask.render_template('index.html')
+  return flask.render_template('index.html', appData=os.path.join(os.environ['LOCALAPPDATA'], "MissingPersons"))
 
 @app.route('/get_rows', methods=['GET', 'POST'])
 def get_rows():
@@ -355,13 +349,12 @@ def set_file():
   pdf_repo = PdfRepository(session=session)
 
   # Secure and save the file to sql_alchemy
-  if file and allowed_file(file.filename):
+  if file and ModelUtils.allowed_file(file.filename):
     sec_filename = secure_filename(file.filename)
     filename, filename_ext = os.path.splitext(sec_filename)
     clean_filename = pdf_repo.machine_name(filename)
     safe_filename = f"{clean_filename}_{time.time_ns()}{filename_ext}"
-    save_path = resource_path(app.config['UPLOAD_FOLDER']) / safe_filename
-    # save_path = os.path.join(app.config['UPLOAD_FOLDER'], safe_filename)
+    save_path = ModelUtils.resource_path(os.path.join("uploads", "files", safe_filename))
     file.save(save_path)
 
   try:
@@ -1917,7 +1910,6 @@ def create_instance(id):
   ]
   return flask.render_template('model.html', models=all_models, model_types=model_types)
 
-
 @app.route('/set/state/<string:type>/<int:id>', methods=['GET', 'POST'])
 def link_set_state(type, id):
 
@@ -2013,7 +2005,6 @@ def save_to_vector_file():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('edit_file', id=file_id))
-
 
 @app.route('/delete_item', methods=['POST'])
 def delete_item():
@@ -2301,6 +2292,7 @@ def inject_site_settings():
   )
 
 def initialize_database(engine):
+  print(engine.url)
   if not database_exists(engine.url):
     Base.metadata.create_all(bind=engine)
 
@@ -2401,10 +2393,9 @@ def initialize_database(engine):
     state.question = 1
     session.commit()
 
-
-
 if getattr(sys, 'frozen', False):
   import pyi_splash
+
   if pyi_splash.is_alive():
     pyi_splash.close()
 

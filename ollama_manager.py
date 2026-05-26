@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 from typing import List
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
-from pathlib import Path
+from model_utils import ModelUtils
 
 class TaskSuggestion(BaseModel):
     title: str = Field(description="Short title of the task")
@@ -27,28 +27,13 @@ class TaskList(BaseModel):
 class OllamaManager:
   def __init__(self, session):
     self.session = session
-    self.persist_directory = self.resource_path("database\\investigation_db")
-    self.client = ollama.Client()
-    self.base_path = os.path.abspath(".")
     self.collection_name = "missing_persons"
+    self.persist_directory = ModelUtils.resource_path(os.path.join("database", "investigation_db"))
+    self.client = ollama.Client()
     state = session.get(State, 1)
     self.model = state.model
     self.model_prompt = state.prompt
     self.model_question = state.question
-    # self.directory = self.resource_path(f"database\\{state.database}")
-
-  def resource_path(self, relative_path):
-    """
-    Resolves a relative path to an absolute path in the Windows AppData
-    Roaming folder for compiled apps, or a local 'data' folder for development.
-    """
-
-    if getattr(sys, 'frozen', False):
-        base_dir = Path(os.environ['APPDATA']) / self.collection_name
-    else:
-        base_dir = Path(__file__).resolve().parent
-    base_dir.mkdir(parents=True, exist_ok=True)
-    return base_dir / relative_path
 
   def prompt(self):
     model = self.session.execute(select(Model).filter_by(id = self.model)).scalar_one_or_none()
