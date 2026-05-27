@@ -63,7 +63,7 @@ from resources import Resources
 from vector_repository import VectorDb, PdfRepository, PersonRepository, EventRepository, NoteRepository
 from process_files import ProcessFiles
 from selections import Selection
-from model_utils import ModelUtils
+from model_utils import ModelUtils, Logging
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -2401,6 +2401,7 @@ if getattr(sys, 'frozen', False):
 
 if __name__ == '__main__':
   initialize_database(engine)
+  Logging.setup_appdata_logging()
   webview.create_window('Missing Persons', app, min_size=(1180, 600), resizable=True, fullscreen=False, text_select=True)
   webview.start(debug=False)
 

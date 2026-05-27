@@ -2,6 +2,7 @@ import os
 import re
 import time
 import sys
+import logging
 import unicodedata
 from flask import flash
 from database.state import State
@@ -33,11 +34,20 @@ class VectorDb:
 
   def load_pages(self, filename):
     file_path = ModelUtils.resource_path(os.path.join("uploads", "files", filename))
-    print(file_path)
-    loader = DoclingLoader(file_path=file_path)
+    try:
+      loader = DoclingLoader(file_path=file_path)
+      pages = loader.load()
+    except Exception as e:
+      logging.error(f"Docling conversion failed: {str(e)}", exc_info=True)
+      flash(f"DoclingLoader: {e}", "danger")
 
-    pages = loader.load()
-    return filter_complex_metadata(pages)
+    try:
+      filtered_pages = filter_complex_metadata(pages)
+    except Exception as e:
+      logging.error(f"filter_complex_metadata failed: {str(e)}", exc_info=True)
+      flash(f"filter_complex_metadata: {e}", "danger")
+
+    return filtered_pages
 
   def get_text_splitter(self, pages):
     text_splitter = RecursiveCharacterTextSplitter(
