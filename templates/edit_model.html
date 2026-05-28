@@ -18,26 +18,26 @@
 {% endwith %}
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-12">
     <a href="{{ url_for('model') }}" class="btn btn-primary mb-3">back</a>
   </div>
 </div>
 
-<div class="row mt-5">
-  <div class="col-md-12">
+<div class="row mt-4">
+  <div class="col-12">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-12">
         <form class="row g-4" action="/set_model" method="POST" name="model" autocomplete="off">
           <input type="hidden" class="form-control" id="model-id" name="id" value="{{ model_data.id }}" />
-          <div class="col-md-6">
+          <div class="col-6">
             <label for="model-name" class="form-label">Name</label>
             <input type="text" class="form-control" id="model-name" name="name" value="{{ model_data.name }}" required>
           </div>
-          <div class="col-md-6">
+          <div class="col-6">
             <label for="model-model" class="form-label">Model</label>
             <input type="text" class="form-control" id="model-model" name="model" value="{{ model_data.model }}" required>
           </div>
-          <div class="col-md-6">
+          <div class="col-6">
             <label for="model-type" class="form-label">Type</label>
             <select class="form-select" id="model-type" name="type" required>
               {% for value, label in model_types %}

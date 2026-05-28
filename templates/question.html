@@ -63,14 +63,41 @@
     <form class="row g-4" action="/set_question" method="POST" name="question" autocomplete="off">
       <input type="hidden" class="form-control" id="question-id" name="id" />
       <div class="col-md-9">
-        <label for="question-question" class="form-label">Question</label>
+        <label for="question-question" class="form-label">Question or Query</label>
         <textarea class="form-control" id="question-question" name="question" rows="3"></textarea>
-        <div class="form-text" id="question-question-text">This is the part of the RAG LLM that asks the question. It the query. Example 1: I am investigating the disappearance of Nancy Guthrie. What are 10 specific investigative steps, technological strategies, or procedural optimizations I can use to maximize our chances of locating her safely? Example 2: What are 10 specific things I can do to optimize this code base?</div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>
       </div>
     </form>
+  </div>
+</div>
+
+<div class="form-text mb-5" id="question-question-text">
+  <h3>Prompts vrs User query?</h3>
+  <p>A <b>User Query</b> is the specific <b>Question</b> or task a person wants the AI to complete (e.g., "Write a resume"). A <b>Prompt</b> is the complete set of instructions provided to the AI. It usually combines the user query with a system prompt that dictates the AI's persona, tone, and formatting rules.</p>
+  <p>Understanding the differences between these concepts helps you communicate better with AI models and build stronger AI applications.<p>
+  <ol>
+    <li>User Query (The "What")
+      <ul>
+        <li><b>Definition:</b> The raw question, task, or request inputted by the end-user.</li>
+        <li><b>Purpose:</b> Dictates the immediate goal or the specific problem to be solved.</li>
+        <li><b>Characteristics:</b> Short, task-specific, and changes with every new interaction.</li>
+        <li><b>Example:</b> <i>"Summarize this article and explain it to a five-year-old."</i></li>
+      </ul>
+    </li>
+    <li>Prompt (The "How" and "Why")
+      <ul>
+        <li><b>Definition:</b> The entire package of information sent to the AI model. It typically contains both the user query and underlying foundational instructions.</li>
+        <li><b>Purpose:</b> Establishes the AI's role, ethical guidelines, style, and boundaries.</li>
+        <li><b>Characteristics:</b> Often broken down into System Prompts (job description/rules) and User Prompts (the actual task).</li>
+        <li><b>Example:</b> <i>"You are an award-winning children's author. Be enthusiastic, use simple words, and avoid complex jargon."</i></li>
+      </ul>
+    </li>
+  </ol>
+  <div class="alert alert-secondary" role="alert">
+    <b>System Prompt:</b> <i>"You are an award-winning children's author. Be enthusiastic, use simple words, and avoid complex jargon."</i><br />
+    <b>User Query:</b> <i>"Summarize this article and explain it to a five-year-old."</i>
   </div>
 </div>
 

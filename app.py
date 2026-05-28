@@ -622,8 +622,7 @@ def edit_model(id):
     'id': model.id,
     'name': model.name,
     'model': model.model,
-    'type': model.type,
-    'system': model.system
+    'type': model.type
   }
   return flask.render_template('edit_model.html', edit_id=id, model_data=model_data, model_types=Selection.model_types)
 
@@ -642,14 +641,12 @@ def set_model():
       model.name=form_data.get('name')
       model.model=ollama_model
       model.type=form_data.get('type')
-      model.system=form_data.get('system')
     else:
       uporadd = "added"
       model = Model(
         name=form_data.get('name'),
         model=ollama_model,
-        type=form_data.get('type'),
-        system=form_data.get('system')
+        type=form_data.get('type')
       )
     session.merge(model)
     session.commit()
@@ -2465,6 +2462,23 @@ def initialize_database(engine):
     state.question = 1
     session.commit()
 
+def update_height(window):
+    """Fetches height and passes it to the active HTML page."""
+    height = window.height
+    # Executes JS function defined in your HTML
+    window.evaluate_js(f"if (typeof updateHtmlHeight === 'function') {{ updateHtmlHeight({height}); }}")
+
+def on_loaded(window):
+    """Triggered when the page finishes loading."""
+    update_height(window)
+
+def on_resized(width, height):
+    """Triggered whenever the user resizes the window."""
+    # active_window gets the current window object
+    window = webview.active_window()
+    if window:
+        update_height(window)
+
 if getattr(sys, 'frozen', False):
   import pyi_splash
 
@@ -2474,7 +2488,11 @@ if getattr(sys, 'frozen', False):
 if __name__ == '__main__':
   initialize_database(engine)
   Logging.setup_appdata_logging()
-  webview.create_window('Missing Persons', app, min_size=(1180, 650), resizable=True, fullscreen=False, text_select=True)
+  window = webview.create_window('Missing Persons', app, min_size=(1180, 650), resizable=True, fullscreen=False, text_select=True)
+  # Bind the events to the Python functions
+  window.events.resized += on_resized
+  window.events.loaded += on_loaded
+
   webview.start(debug=True)
 
 # python -m venv .venv

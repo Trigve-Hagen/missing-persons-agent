@@ -18,7 +18,7 @@
 {% endwith %}
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-12">
     <a href="{{ url_for('note') }}" class="btn btn-primary mb-3">back</a>
   </div>
 </div>
@@ -32,15 +32,15 @@
   </form>
 {% endif %}
 
-<div class="row mt-5">
-  <div class="col-md-12">
+<div class="row mt-4">
+  <div class="col-12">
     <form class="row g-4" action="/set_note" method="POST" name="note" autocomplete="off">
       <input type="hidden" class="form-control" id="note-id" name="id" value="{{ note_data.id }}" />
-      <div class="col-md-8">
+      <div class="col-8">
         <label for="note-name" class="form-label">Name</label>
         <input type="text" class="form-control" id="note-name" name="name" value="{{ note_data.name }}" required>
       </div>
-      <div class="col-md-4">
+      <div class="col-4">
         <label for="note-owner" class="form-label">Person</label>
         <select class="form-select" id="note-owner" name="owner">
           <option value="0">Choose...</option>
@@ -53,7 +53,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-9">
+      <div class="col-9">
         <label for="note-note" class="form-label">Note</label>
         <textarea class="form-control" id="note-note" name="note" rows="3">{{ note_data.note }}</textarea>
         <div class="form-text" id="note-note-text">Notes related to the missing person that might hold weight in the investigation.</div>
@@ -70,13 +70,13 @@
 <h3 class="my-4">Chunks</h3>
 
 <div class="row mb-5">
-  <div class="col-md-12">
+  <div class="col-12">
     <table class="table table-striped">
       <thead>
         <tr>
           <th scope="col">Metadata</th>
           <th scope="col">Extracted Text (Preview)</th>
-          <th scope="col" class="col-1">Actions</th>
+          <th scope="col" class="col-2">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -84,7 +84,9 @@
           <tr>
               <td scope="row">{{ item.id }}</td>
               <td>{{ item.text }}</td>
-              <td><!-- <a class="btn btn-secondary" href="{{ url_for('edit_note_vectors', id=note_data.id, file_id=metadatas[0].source, vector_id=item.id) }}">Edit</a><br /> --><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_note" data-bs-item-entity-id="{{ note_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+              <td>
+                <a class="btn btn-danger w-100 text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_note" data-bs-item-entity-id="{{ note_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a>
+              </td>
           </tr>
         {% endfor %}
       </tbody>

@@ -6,7 +6,7 @@
 {% block content %}
 
 <div class="row mt-5">
-  <div class="col-md-12">
+  <div class="col-12">
     <h1 class="my-4">Application State</h1>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -19,10 +19,10 @@
     {% endwith %}
   </div>
 </div>
-<div class="row mt-5">
-  <div class="col-md-12">
+<div class="row mt-4">
+  <div class="col-12">
     <form class="row g-4" action="/set_application_state" method="POST" name="state" autocomplete="off">
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="state-processor" class="form-label">Processor</label>
         <select class="form-select" id="state-processor" name="processor">
           <option value="">Choose...</option>
@@ -33,7 +33,7 @@
           {% endif %}
         </select>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="state-person" class="form-label">Person</label>
         <select class="form-select" id="state-person" name="person">
           <option value="0">Choose...</option>
@@ -46,7 +46,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="state-model" class="form-label">Model</label>
         <select class="form-select" id="state-model" name="model">
           <option value="0">Choose...</option>
@@ -59,7 +59,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="state-api" class="form-label">Api</label>
         <select class="form-select" id="state-api" name="api">
           <option value="0">Choose...</option>
@@ -72,7 +72,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="state-prompt" class="form-label">Prompt</label>
         <select class="form-select" id="state-prompt" name="prompt">
           <option value="0">Choose...</option>
@@ -86,7 +86,7 @@
         </select>
         <div class="form-text" id="state-prompt-text">This is the part of the RAG LLM that defines what the models main directive is. It describes how the models robot will act and who it should believe it is. An investigator or web developer.</div>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="state-question" class="form-label">Question</label>
         <select class="form-select" id="state-question" name="question">
           <option value="0">Choose...</option>
@@ -100,15 +100,15 @@
         </select>
         <div class="form-text" id="state-question-text">This is the part of the RAG LLM that asks the question. It the query. </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="state-chunk-size" class="form-label">Chunk Size</label>
         <input type="text" class="form-control" id="state-chunk-size" name="chunk_size" pattern="^\d+$" value="{{ state.chunk_size }}" required>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="state-chunk-overlap" class="form-label">Chunk Overlap</label>
         <input type="text" class="form-control" id="state-chunk-overlap" name="chunk_overlap" pattern="^\d+$" value="{{ state.chunk_overlap }}" required>
       </div>
-      <!-- <div class="col-md-6">
+      <!-- <div class="col-6">
         <label for="state-database" class="form-label">Database</label>
         <select class="form-select" id="state-database" name="database">
           {% if available_databases %}

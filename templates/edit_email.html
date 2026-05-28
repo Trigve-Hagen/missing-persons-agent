@@ -18,16 +18,16 @@
 {% endwith %}
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-12">
     <a href="{{ url_for('email') }}" class="btn btn-primary mb-3">back</a>
   </div>
 </div>
 
-<div class="row mt-5">
-  <div class="col-md-12">
+<div class="row mt-4">
+  <div class="col-12">
     <form class="row g-4" action="/set_email" method="POST" name="email" autocomplete="off">
       <input type="hidden" class="form-control" id="email-id" name="id" value="{{ email_data.id }}" />
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="email-type" class="form-label">Type</label>
         <select class="form-select" id="email-type" name="type" required>
           <option value="">Choose...</option>
@@ -40,11 +40,11 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="email-email" class="form-label">Email</label>
         <input type="email" class="form-control" id="email-email" name="email" value="{{ email_data.email }}" required>
       </div>
-      <div class="col-md-4">
+      <div class="col-4">
         <label for="email-owner" class="form-label">Person</label>
         <select class="form-select" id="email-owner" name="owner" required>
           <option value="">Choose...</option>

@@ -18,20 +18,20 @@
 {% endwith %}
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-12">
     <a href="{{ url_for('api') }}" class="btn btn-primary mb-3">back</a>
   </div>
 </div>
 
-<div class="row mt-5">
-  <div class="col-md-12">
+<div class="row mt-4">
+  <div class="col-12">
     <form class="row g-4" action="/set_api" method="POST" name="api" autocomplete="off">
       <input type="hidden" class="form-control" id="api-id" name="id" value="{{ api_data.id }}" />
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="api-name" class="form-label">Name</label>
         <input type="text" class="form-control" id="api-name" name="name" value="{{ api_data.name }}" required>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="api-type" class="form-label">Type</label>
         <select class="form-select" id="api-type" name="type" required>
           {% if api_data.type == 'api' %}
@@ -46,19 +46,19 @@
           {% endif %}
         </select>
       </div>
-      <div class="col-md-12">
+      <div class="col-12">
         <label for="api-url" class="form-label">URL</label>
         <input type="text" class="form-control" id="api-url" name="url" value="{{ api_data.url }}" required>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="api-key" class="form-label">Key</label>
         <input type="text" class="form-control" id="api-key" value="{{ api_data.key }}" name="key">
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="api-secret" class="form-label">Secret</label>
         <input type="text" class="form-control" id="api-secret" value="{{ api_data.secret }}" name="secret">
       </div>
-      <div class="col-md-12">
+      <div class="col-12">
         <label for="api-description" class="form-label">Description</label>
         <textarea class="form-control" id="api-description" name="description" rows="3">{{ api_data.description }}</textarea>
       </div>

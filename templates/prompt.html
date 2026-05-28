@@ -65,13 +65,42 @@
       <div class="col-md-9">
         <label for="prompt-prompt" class="form-label">Prompt</label>
         <textarea class="form-control" id="prompt-prompt" name="prompt" rows="3"></textarea>
-        <div class="form-text" id="prompt-prompt-text">This is the part of the RAG LLM that defines what the models main directive is. It describes how the models robot will act and who it should believe it is. Play with this and take a course in Prompt Enginearing for better results. Example 1: You are an expert criminal investigator, forensic analyst, and search-and-rescue strategist. Your objective is to help me optimize my approach to an active missing person case. Analyze the scenario detailed in the question below and provide 10 highly actionable, evidence-based suggestions that prioritize investigative efficiency and subject safety. Example 2: Act as an expert software optimizer. The code in the following context is a flask application that uses data from form uploads and external sources combined with AI to aid in the search for missing persons. The external data comes from APIs, RSS feeds and uploaded data including text, images and documents. The application is converted to a console application using pywebview. The application needs to be as versatile as possible. Analyze the following code context and provide 10 specific, actionable suggestions to improve performance, readability, versatility, or security.</div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>
       </div>
     </form>
   </div>
+</div>
+
+<div class="form-text" id="prompt-prompt-text">
+<h3>IBM's</h3>
+<p><a href="https://www.ibm.com/think/topics/prompt-engineering" target="_target">What is prompt engineering?</a></p>
+<p>A prompt is the input text or query provided to an AI model, such as a large language model to generate a response. It serves as the primary mechanism for guiding the model’s behavior, defining the task and setting the context for the interaction. The design of a prompt significantly impacts the quality and relevance of the output, making it essential to choose the right type of prompt for specific tasks.</p>
+
+<p>To achieve the best results from AI models, it is essential to understand the various ways prompts can be structured to suit different tasks and objectives. There are three primary ways to structure the prompt: direct instructions, open-ended instructions and task-specific instructions.</p>
+
+<p><b>Direct instructions</b> are clear and specific commands that tell the AI exactly what to do. These prompts are ideal for straightforward tasks where the user has a clear expectation of the output. <b>Direct prompts</b> rely on the model's ability to parse explicit instructions and generate responses that align closely with the command. The more detailed the instruction, the more likely the output will meet expectations.</p>
+
+<p><i>Example:</i></p>
+
+<p>Write a poem about nature.</p>
+
+<p>In this case, the AI knows the exact format [a poem] and topic [nature] to generate the text.</p>
+
+<p><b>Open-ended instructions</b> are less restrictive and encourage the AI to explore broader ideas or provide creative and interpretive responses. These prompts are useful for brainstorming, storytelling or exploratory discussions where the user values variety and originality in the output. <b>Open-ended prompts</b> tap into the model's generative capabilities without imposing constraints. The model relies on its training data to infer the best approach to the prompt, which can produce diverse or unexpected results.</p>
+
+<p><i>Example:</i></p>
+
+<p>Tell me about the universe.</p>
+
+<p>Here, the AI has the freedom to decide what aspects of the universe to discuss, such as its origin, structure or scientific theories.</p>
+
+<p><b>Task-specific instructions</b> are designed for precise, goal-oriented tasks, such as translations, summarization or calculations. These prompts are often crafted with clarity and can include additional context or examples to help ensure accurate responses. <b>Task-specific prompts</b> leverage the model's understanding of specialized tasks. They can incorporate advanced prompting techniques like few-shot prompting (providing examples) or zero-shot prompting (providing no examples but relying on the model's pretrained knowledge).</p>
+
+<p><i>Example:</i></p>
+
+<p>Translate this text into French: 'Hello.'</p>
 </div>
 
 {% include 'includes/delete_modal.html' %}

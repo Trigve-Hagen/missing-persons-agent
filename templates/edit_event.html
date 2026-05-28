@@ -32,7 +32,7 @@
   </form>
 {% endif %}
 
-<div class="row mt-5">
+<div class="row mt-4">
   <div class="col-12">
     <form class="row g-4" action="/set_event" method="POST" name="event" autocomplete="off">
       <input type="hidden" class="form-control" id="event-id" name="id" value="{{ event_data.id }}" />
@@ -91,21 +91,23 @@
 <h3 class="my-4">Chunks</h3>
 
 <div class="row mb-5">
-  <div class="col-md-12">
+  <div class="col-12">
     <table class="table table-striped">
       <thead>
         <tr>
           <th scope="col">Metadata</th>
           <th scope="col">Extracted Text (Preview)</th>
-          <th scope="col" class="col-1">Actions</th>
+          <th scope="col" class="col-2">Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for item in data %}
           <tr>
-              <td scope="row">{{ item.id }}</td>
-              <td>{{ item.text }}</td>
-              <td><!-- <a class="btn btn-secondary" href="{{ url_for('edit_event_vectors', id=event_data.id, file_id=metadatas[0].source, vector_id=item.id) }}">Edit</a><br /> --><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_event" data-bs-item-entity-id="{{ event_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+            <td scope="row">{{ item.id }}</td>
+            <td>{{ item.text }}</td>
+            <td>
+              <a class="btn btn-danger w-100 text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_event" data-bs-item-entity-id="{{ event_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a>
+            </td>
           </tr>
         {% endfor %}
       </tbody>

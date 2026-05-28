@@ -1,6 +1,15 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: var(--window-height);
+  max-height: var(--window-height);
+}
+
 /* Constrain chatbox structure */
 .chat-card {
-  height: 500px;
+  height: var(--window-height);
+  max-height: var(--window-height);
   border-radius: 12px;
   overflow: hidden;
 }

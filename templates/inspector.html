@@ -9,9 +9,6 @@
 
 {% block content %}
 
-<h1 class="mt-4 mb-4">Chat Inspector</h1>
-<p>Download <a href="https://ollama.com/download" target="_blank">Ollama</a>. You need the desktop application as well as the models. Go to <a href="{{ url_for('model') }}">Models</a> and create the <a href="https://ollama.com/library/phi3:mini" target="_blank">phi3:mini</a> model. Give it a name and phi3:mini as the model. It might take a minute to load. Set the state by clicking the Set State button in the list once the page refreshes. Then come back here to chat box. You can also set the model in <a href="{{ url_for('application_state') }}">Application State</a></p>
-
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
@@ -22,13 +19,9 @@
   {% endif %}
 {% endwith %}
 
-<div class="row justify-content-center mb-5">
+<div class="row justify-content-center mt-4 mb-5">
   <div class="col-md-12">
-
-    <!-- Chat Wrapper Card -->
     <div class="card chat-card shadow-sm">
-
-      <!-- Header -->
       <div class="card-header bg-dark text-white d-flex align-items-center">
         <div class="position-relative me-2">
           <span class="bg-success position-absolute bottom-0 end-0 p-1 border border-white rounded-circle"></span>
@@ -36,20 +29,13 @@
         </div>
         <h6 class="mb-0">Inspector</h6>
       </div>
-
-      <!-- Chat Scrollable Body -->
       <div id="chat-content-box" class="card-body chat-body d-flex flex-column gap-3">
-
-        <!-- Incoming Message -->
         <div class="d-flex align-items-start msg-incoming">
           <div class="p-3 msg-bubble incoming rounded-3">
             Hello! How can I assist you today?
           </div>
         </div>
-
       </div>
-
-      <!-- Chat Footer Input -->
       <div class="card-footer bg-white border-top-0">
         <form class="row g-4" id="chatbox-form" autocomplete="off">
           <div class="input-group">
@@ -90,7 +76,6 @@
         classesOuter = "d-flex align-items-start msg-incoming";
         classesInner = "p-3 msg-bubble incoming rounded-3";
       }
-
       const messageHtml = `
         <div class="${classesOuter}">
           <div class="${classesInner}">
@@ -98,7 +83,6 @@
           </div>
         </div>
       `;
-
       chatContentBox.insertAdjacentHTML("beforeend", messageHtml);
       chatContentBox.scrollTop = chatContentBox.scrollHeight;
     }
@@ -121,6 +105,11 @@
       userInputField.value = "";
       fetchBotReply(userMessage);
     })
+
+    function updateHtmlHeight(height) {
+      let adjHeight = (height - 150)
+      document.documentElement.style.setProperty('--window-height', adjHeight + 'px');
+    }
 </script>
 
 {% endblock %}

@@ -18,16 +18,16 @@
 {% endwith %}
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-12">
     <a href="{{ url_for('alias') }}" class="btn btn-primary mb-3">back</a>
   </div>
 </div>
 
-<div class="row mt-5">
-  <div class="col-md-12">
+<div class="row mt-4">
+  <div class="col-12">
     <form class="row g-4" action="/set_alias" method="POST" name="alias" autocomplete="off">
       <input type="hidden" class="form-control" id="alias-id" name="id" value="{{ alias_data.id }}" />
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="alias-sirName" class="form-label">Sir Name</label>
         <select class="form-select" id="alias-sirName" name="sirName">
           <option value="">Choose...</option>
@@ -40,7 +40,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="alias-suffix" class="form-label">Suffix</label>
         <select class="form-select" id="alias-suffix" name="suffix">
           <option value="">Choose...</option>
@@ -53,19 +53,19 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-4">
+      <div class="col-4">
         <label for="alias-firstName" class="form-label">First name</label>
         <input type="text" class="form-control" id="alias-firstName" name="firstName" value="{{ alias_data.firstName }}" required>
       </div>
-      <div class="col-md-4">
+      <div class="col-4">
         <label for="alias-middleName" class="form-label">Middle name</label>
         <input type="text" class="form-control" id="alias-middleName" name="middleName" value="{{ alias_data.middleName }}">
       </div>
-      <div class="col-md-4">
+      <div class="col-4">
         <label for="alias-lastName" class="form-label">Last name</label>
         <input type="text" class="form-control" id="alias-lastName" name="lastName" value="{{ alias_data.lastName }}">
       </div>
-      <div class="col-md-3">
+      <div class="col-3">
         <label for="alias-owner" class="form-label">Person</label>
         <select class="form-select" id="alias-owner" name="owner" required>
           <option value="">Choose...</option>
