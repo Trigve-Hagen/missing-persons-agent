@@ -35,25 +35,24 @@ class State(Base):
   chroma_database_size = Column(Integer, default=0, comment="The size of the vector chroma database. For use in keeping track of the memory used.")
   ollama_models_size = Column(Integer, default=0, comment="The size of all the ollama models. For use in keeping track of the memory used.")
 
-class Notice(Base):
+class Task(Base):
   """
-  Notices are the same as TODOs. The model is set to build 10 suggestions
-  at a time for anything you ask of it. This table is where those ten
-  suggestions are saved.
+  Tasks are TODOs.
   """
 
-  __tablename__ = "notices"
-  __table_args__ = {"comment": "This table stores the site notices. Notices are created from the suggestions when optimizing the investigation or the code."}
+  __tablename__ = "tasks"
+  __table_args__ = {"comment": "This table stores the site tasks."}
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(NullToEmptyString, comment="The type of the notice. Allowed values are code, and investigation.")
-  title = Column(NullToEmptyString, comment="The title of the notice.")
-  description = Column(NullToEmptyString, comment="The description of the notice.")
-  ifComplete = Column("if_complete", Integer, default=0, comment="If the notice has been completed. Allowed values are 0 for no and 1 for yes.")
-  dateCreated = Column("date_created", DateTime, server_default=func.now(), comment="The date the notice was created.")
+  name = Column(NullToEmptyString, comment="The name of the task.")
+  description = Column(NullToEmptyString, comment="The description of the task.")
+  ifComplete = Column("if_complete", Integer, default=0, comment="If the task has been completed. Allowed values are 0 for no and 1 for yes.")
+  dateCreated = Column("date_created", DateTime, server_default=func.now(), comment="The date the task was created.")
+  dateCompleted = Column("date_completed", DateTime, default=None, comment="The date the task was created.")
 
-  def __init__(self, type, title, description, ifComplete):
-    self.type = type
-    self.title = title
+  def __init__(self, name, description, dateCreated, dateCompleted, ifComplete):
+    self.name = name
     self.description = description
+    self.dateCreated = dateCreated
+    self.dateCompleted = dateCompleted
     self.ifComplete = ifComplete

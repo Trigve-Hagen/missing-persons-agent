@@ -1,7 +1,7 @@
 <!-- templates/search.html -->
 {% extends 'layout.html' %}
 
-{% block title %}Inspector{% endblock %}
+{% block title %}Chat Inspector{% endblock %}
 
 {% block page_css %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
@@ -9,7 +9,7 @@
 
 {% block content %}
 
-<h1 class="mt-4 mb-4">Inspector</h1>
+<h1 class="mt-4 mb-4">Chat Inspector</h1>
 <p>Download <a href="https://ollama.com/download" target="_blank">Ollama</a>. You need the desktop application as well as the models. Go to <a href="{{ url_for('model') }}">Models</a> and create the <a href="https://ollama.com/library/phi3:mini" target="_blank">phi3:mini</a> model. Give it a name and phi3:mini as the model. It might take a minute to load. Set the state by clicking the Set State button in the list once the page refreshes. Then come back here to chat box. You can also set the model in <a href="{{ url_for('application_state') }}">Application State</a></p>
 
 {% with messages = get_flashed_messages(with_categories=true) %}

@@ -1,0 +1,49 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Edit Task{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4 mb-0">Edit Task</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-12">
+    <a href="{{ url_for('task') }}" class="btn btn-primary mb-3">back</a>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_task" method="POST" name="task" autocomplete="off">
+      <input type="hidden" class="form-control" id="task-id" name="id" value="{{ task_data.id }}" />
+      <div class="col-md-9">
+        <label for="task-name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="task-name" name="name" value="{{ task_data.name }}" required>
+      </div>
+      <div class="col-3">
+        <label for="task-date-created" class="form-label">Date Created</label>
+        <input type="date" class="form-control" id="task-date-created" name="dateCreated" value="{{ task_data.dateCreated }}" required>
+      </div>
+      <div class="col-md-9">
+        <label for="task-description" class="form-label">Description</label>
+        <textarea class="form-control" id="task-description" name="description" rows="3">{{ task_data.description }}</textarea>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -53,7 +53,7 @@ from sqlalchemy_utils import database_exists
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from database.base import Base
-from database.state import State, Notice
+from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField
 from database.person import Category, Person, Alias, Email, EmailMessage, Phone, Call, Address, File, Event, Note
@@ -153,7 +153,7 @@ def set_entity():
   field = request.form.get('field')
   value = request.form.get('value') """
 
-  flash(f"This page is not finished. It will have an agent parse the data, list suggestions of key value pairs that you can add to the sqlAlchemy database. This way you can adjust the data before saving it to the vector database. It will filter out None values, decide by the type of column if you can add it functionaly and filter out irrelevent data. I'll create a link in the Data Center page so you can look throuh the raw data.", "success")
+  flash(f"This page is not finished. It will have an agent parse the data, list suggestions of key value pairs that you can add to the sqlAlchemy database. This way you can adjust the data before saving it to the vector database. It will filter out None values, decide by the type of column if you can add it functionally and filter out irrelevent data. I'll create a link in the Data Center page so you can look throuh the raw data.", "success")
 
   flash(f"Create suggestions for Events to save.", 'info')
   flash(f"Create suggestions for Images and Documents into the database.", 'info')
@@ -414,20 +414,85 @@ def inspector():
     database=getDatabase()
   )
 
-@app.route('/notice')
-def notice():
+@app.route('/task')
+def task():
   page = request.args.get('page', 1, type=int)
   offset = (page - 1) * Selection.per_page
-  all_notices = session.query(Notice).limit(Selection.per_page).offset(offset).all()
-  total = session.query(Notice).count()
+  all_tasks = session.query(Task).limit(Selection.per_page).offset(offset).all()
+  total = session.query(Task).count()
   total_pages = (total + Selection.per_page - 1) // Selection.per_page
 
   return flask.render_template(
-    'notice.html',
-    notices=all_notices,
+    'task.html',
+    tasks=all_tasks,
+    dateCreated=datetime.now().strftime('%Y-%m-%d'),
     page=page,
     total_pages=total_pages
   )
+
+@app.route('/edit/task/<int:id>', methods=['GET', 'POST'])
+def edit_task(id):
+  # Retrieve task or return 404
+  task = session.get(Task, id)
+  if not task:
+    return redirect(url_for('task'))
+
+  if task.dateCompleted is not None:
+      formatted_date = task.dateCompleted.strftime('%Y-%m-%d')
+  else:
+      formatted_date = None
+
+  task_data = {
+    'id': task.id,
+    'name': task.name,
+    'description': task.description,
+    'dateCreated': task.dateCreated.strftime('%Y-%m-%d'),
+    'dateCompleted': formatted_date,
+  }
+
+  return flask.render_template(
+    'edit_task.html',
+    edit_id=id,
+    task_data=task_data,
+  )
+
+@app.route('/set_task', methods=['POST'])
+def set_task():
+  form_data = request.form
+
+  try:
+    task = session.execute(select(Task).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    formatted_dateCreated_date = datetime.strptime(form_data.get('dateCreated'), '%Y-%m-%d')
+    if task:
+      uporadd = "updated"
+      task.name=form_data.get('name')
+      task.description=form_data.get('description')
+      task.dateCreated=formatted_dateCreated_date
+      task.dateCompleted=None
+      task.ifComplete=0
+    else:
+      uporadd = "added"
+      task = Task(
+        name=form_data.get('name'),
+        description=form_data.get('description'),
+        dateCreated=formatted_dateCreated_date,
+        dateCompleted=None,
+        ifComplete=0
+      )
+    session.merge(task)
+    session.commit()
+
+    flash(f"Task {uporadd} successfully!", "success")
+    return redirect(url_for('task'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('task'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('task'))
 
 @app.route('/load_code', methods=['POST'])
 def run_code_questions():
@@ -444,18 +509,18 @@ def run_code_optimizer():
 
   if not getPrompt():
     flash(f"Upload a prompt and then set it in State.", "danger")
-    return redirect(url_for('notice'))
+    return redirect(url_for('task'))
 
   if not getQuestion():
     flash(f"Upload a question and then set it in State.", "danger")
-    return redirect(url_for('notice'))
+    return redirect(url_for('task'))
 
   manager = OllamaManager(session=session)
   response = manager.suggestions()
   if response:
     try:
       for item in response.suggestions:
-        new_suggestion = Notice(
+        new_suggestion = Task(
           type="CodeOptimization",
           title=item.title,
           description=item.description,
@@ -469,29 +534,29 @@ def run_code_optimizer():
   else:
     flash(f"No data defined. The database for code optimizations has not been created yet.", "info")
 
-  return redirect(url_for('notice'))
+  return redirect(url_for('task'))
 
 @app.route('/run_investigation_optimizer', methods=['POST'])
 def run_investigation_optimizer():
 
   if not os.path.exists(os.path.join(os.path.abspath("."), "database\\investigation_db")):
     flash(f"Upload data to optimize investigation.", "danger")
-    return redirect(url_for('notice'))
+    return redirect(url_for('task'))
 
   if not getPrompt():
     flash(f"Upload a prompt and then set it in State.", "danger")
-    return redirect(url_for('notice'))
+    return redirect(url_for('task'))
 
   if not getQuestion():
     flash(f"Upload a question and then set it in State.", "danger")
-    return redirect(url_for('notice'))
+    return redirect(url_for('task'))
 
   manager = OllamaManager(session=session)
   response = manager.suggestions()
   if response:
     try:
       for item in response.suggestions:
-        new_suggestion = Notice(
+        new_suggestion = Task(
           type="InvestigationOptimization",
           title=item.title,
           description=item.description,
@@ -506,29 +571,29 @@ def run_investigation_optimizer():
   else:
     flash(f"No data defined. The database for code optimizations has not been created yet.", "info")
 
-  return redirect(url_for('notice'))
+  return redirect(url_for('task'))
 
-@app.route('/set/notice/<int:id>/<int:ifComplete>', methods=['GET', 'POST'])
-def set_notice(id, ifComplete):
+@app.route('/set/complete/<int:id>/<int:ifComplete>', methods=['GET', 'POST'])
+def set_complete(id, ifComplete):
 
   try:
-    notice = session.execute(select(Notice).filter_by(id = id)).scalar_one_or_none()
-    if notice:
-      notice.ifComplete=ifComplete
-      session.merge(notice)
+    task = session.execute(select(Task).filter_by(id = id)).scalar_one_or_none()
+    if task:
+      task.ifComplete=ifComplete
+      session.merge(task)
       session.commit()
 
-    flash(f"Notice updated successfully!", "success")
-    return redirect(url_for('notice'))
+    flash(f"Task updated successfully!", "success")
+    return redirect(url_for('task'))
   except IntegrityError as e:
     session.rollback()
     error_msg = str(e.orig)
     flash(f"Database Error: {error_msg}", "danger")
-    return redirect(url_for('notice'))
+    return redirect(url_for('task'))
   except Exception as e:
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('notice'))
+    return redirect(url_for('task'))
 
 @app.route('/model')
 def model():
@@ -2022,7 +2087,7 @@ def delete_item():
   available_models = {
     'person': Person, 'alias': Alias, 'address': Address, 'email': Email,
     'phone': Phone, 'file': File, 'category': Category, 'api': Api,
-    'notice': Notice, 'event': Event, 'note': Note,
+    'task': Task, 'event': Event, 'note': Note,
     'api_field': ApiField, 'model': Model, 'model_params': ModelParams,
     'prompt': Prompt, 'question': Question
   }
@@ -2409,7 +2474,7 @@ if getattr(sys, 'frozen', False):
 if __name__ == '__main__':
   initialize_database(engine)
   Logging.setup_appdata_logging()
-  webview.create_window('Missing Persons', app, min_size=(1180, 600), resizable=True, fullscreen=False, text_select=True)
+  webview.create_window('Missing Persons', app, min_size=(1180, 650), resizable=True, fullscreen=False, text_select=True)
   webview.start(debug=True)
 
 # python -m venv .venv

@@ -22,7 +22,7 @@
           </ul>
         </div>
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle{% if request.endpoint == 'person' or request.endpoint == 'alias' or request.endpoint == 'address' or request.endpoint == 'phone' or request.endpoint == 'email' or request.endpoint == 'file' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'person' or request.endpoint == 'file' or request.endpoint == 'alias' or request.endpoint == 'address' or request.endpoint == 'phone' or request.endpoint == 'email' or request.endpoint == 'event' or request.endpoint == 'note' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Person
           </a>
           <ul class="dropdown-menu" aria-labelledby="person-dropdown">
@@ -37,19 +37,19 @@
           </ul>
         </div>
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle{% if request.endpoint == 'api' or request.endpoint == 'api_field' or request.endpoint == 'data_center' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'api' or request.endpoint == 'api_field' or request.endpoint == 'data_center' or request.endpoint == 'chunk' or request.endpoint == 'task' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Data Center
           </a>
           <ul class="dropdown-menu" aria-labelledby="person-dropdown">
             <li><a class="dropdown-item{% if request.endpoint == 'api' %} active{% endif %}" href="{{ url_for('api') }}">Api</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'api_field' %} active{% endif %}" href="{{ url_for('api_field') }}">Api Field</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'data_center' %} active{% endif %}" href="{{ url_for('data_center') }}">Data Center</a></li>
-            <li><a class="dropdown-item{% if request.endpoint == 'notice' %} active{% endif %}" href="{{ url_for('notice') }}">Notices</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'chunk' %} active{% endif %}" href="{{ url_for('chunk') }}">Chunks</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'task' %} active{% endif %}" href="{{ url_for('task') }}">Tasks</a></li>
           </ul>
         </div>
         <div class="dropdown">
-          <a class="nav-link dropdown-toggle{% if request.endpoint == 'model' or request.endpoint == 'model_params' or request.endpoint == 'prompt' or request.endpoint == 'question' or request.endpoint == 'inspector' or request.endpoint == 'notice' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle{% if request.endpoint == 'model' or request.endpoint == 'model_params' or request.endpoint == 'prompt' or request.endpoint == 'question' or request.endpoint == 'inspector' %} active{% endif %}" type="button" id="person-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
             Models
           </a>
           <ul class="dropdown-menu" aria-labelledby="person-dropdown">

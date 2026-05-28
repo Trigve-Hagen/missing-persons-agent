@@ -1,0 +1,124 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4 mb-0">Tasks</h1>
+<p><b>Investigate:</b> After you have added as much data as you can find. The Run Investigation will produce 10 suggestions.</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Complete</th>
+          <th scope="col" class="col-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks %}
+          <tr>
+            <td scope="row">{{ task.id }}</td>
+            <td scope="row">{{ task.name }}</td>
+            <td scope="row">{{ task.description }}</td>
+            <td>
+              {% if task.ifComplete == 1 %}
+                Completed
+              {% else %}
+                Incomplete
+              {% endif %}
+            </td>
+            <td>
+              <a class="btn btn-secondary w-100 text-nowrap" href="{{ url_for('edit_task', id=task.id) }}">Edit</a><br />
+              {% if task.ifComplete == 0 %}
+                <a class="btn btn-secondary w-100 text-nowrap mt-2" href="{{ url_for('set_complete', id=task.id, ifComplete=1) }}">Complete</a><br />
+              {% else %}
+                <a class="btn btn-secondary w-100 text-nowrap mt-2" href="{{ url_for('set_complete', id=task.id, ifComplete=0) }}">Incomplete</a><br />
+              {% endif %}
+              <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="task" data-bs-item-id="{{ task.id }}" data-bs-item="{{ task.name }}">Delete</a></td>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="pagination d-flex align-items-center">
+      {% if page > 1 %}
+        <a class="btn btn-secondary me-2" href="{{ url_for('task', page=page-1) }}">Previous</a>
+      {% endif %}
+
+      <p class="mb-0">Page {{ page }} of {{ total_pages }}</p>
+
+      {% if page < total_pages %}
+        <a class="btn btn-secondary ms-2" href="{{ url_for('task', page=page+1) }}">Next</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<hr>
+<h3 class="my-4">Add Task</h3>
+
+<div class="row mt-5">
+  <div class="col-12">
+    <form class="row g-4" action="/set_task" method="POST" name="task" autocomplete="off">
+      <input type="hidden" class="form-control" id="task-id" name="id" />
+      <div class="col-9">
+        <label for="task-name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="task-name" name="name" required>
+      </div>
+      <div class="col-3">
+        <label for="task-date-created" class="form-label">Date Created</label>
+        <input type="date" class="form-control" id="task-date-created" name="dateCreated" value="{{ dateCreated }}" required>
+      </div>
+      <div class="col-9">
+        <label for="task-description" class="form-label">Description</label>
+        <textarea class="form-control" id="task-description" name="description" rows="3"></textarea>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if database == 'code_optimize_db' %}
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <form class="row g-4" action="/run_code_optimizer" method="POST" name="code_optimizer" autocomplete="off">
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Run Code Analyzer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="row mt-4 mb-5">
+    <div class="col-md-12">
+      <form class="row g-4" action="/run_investigation_optimizer" method="POST" name="investigation_optimizer" autocomplete="off">
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Get 10 Suggestions</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endif %}
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}
