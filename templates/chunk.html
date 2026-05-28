@@ -33,7 +33,9 @@
           <tr>
             <td scope="row">{{ item.meta }}</td>
             <td>{{ item.text }}</td>
-            <td><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="chunk" data-bs-item-entity-id="0" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a></td>
+            <td>
+              <a class="btn btn-danger w-100 text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="chunk" data-bs-item-entity-id="0" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a>
+            </td>
           </tr>
         {% endfor %}
       </tbody>

@@ -32,7 +32,11 @@
           <tr>
               <td scope="row">{{ question.id }}</td>
               <td>{{ question.question }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_question', id=question.id) }}">Edit</a><br /><a class="btn btn-secondary mt-2" href="{{ url_for('link_set_state', type='question', id=question.id) }}">Set State</a><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="question" data-bs-item-id="{{ question.id }}" data-bs-item="{{ question.name }}">Delete</a></td>
+              <td>
+                <a class="btn btn-secondary w-100 text-nowrap" href="{{ url_for('edit_question', id=question.id) }}">Edit</a>
+                <a class="btn btn-secondary w-100 text-nowrap mt-2" href="{{ url_for('link_set_state', type='question', id=question.id) }}">Set State</a>
+                <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="question" data-bs-item-id="{{ question.id }}" data-bs-item="{{ question.name }}">Delete</a>
+              </td>
           </tr>
         {% endfor %}
       </tbody>

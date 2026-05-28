@@ -25,7 +25,7 @@
           <th scope="col">#</th>
           <th scope="col">Field</th>
           <th scope="col">Value</th>
-          <th scope="col" class="col-1">Actions</th>
+          <th scope="col" class="col-2">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -34,7 +34,10 @@
               <td scope="row">{{ api_field.id }}</td>
               <td>{{ api_field.field }}</td>
               <td>{{ api_field.value }}</td>
-              <td><a class="btn btn-secondary" href="{{ url_for('edit_api_field', id=api_field.id) }}">Edit</a><br /><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="api_field" data-bs-item-id="{{ api_field.id }}" data-bs-item="{{ api_field.field }}">Delete</a></td>
+              <td>
+                <a class="btn btn-secondary w-100 text-nowrap" href="{{ url_for('edit_api_field', id=api_field.id) }}">Edit</a>
+                <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="api_field" data-bs-item-id="{{ api_field.id }}" data-bs-item="{{ api_field.field }}">Delete</a>
+              </td>
           </tr>
         {% endfor %}
       </tbody>
