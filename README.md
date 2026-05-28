@@ -78,12 +78,11 @@ Build out the database for Person and Categories.
   - Categories - You can have different categories for people, phones, emails and addresses. Define your categories for each and they will show up in each of them when you add or edit rows.
   - Person - A person is anyone you will search for information on through the APIs(next stage). The initial category I created for person was 'Missing Person'. You can change the name of it or create others like 'Person of Interest' etc.. I would keep it in place though because it identifies the person as being missing. Every thing you save into the app is saved with a missing person as an owner. Every person besides the missing person must be owned by a missing person. Missing people will have 0 as an owner.
   - The rest are parts of a person, addresses, emails, phones and alias. They all have an owner which is a person entity.
-  - View Person - A page to view people. Going to finish the main work first.
 ![Person Page](./assets/person.png)
 
 ### Stage 2
 Build out the database and pages for consuming APIs. Users use a form to run the API to get data from whatever API they choose to use.
-- Api, ApiFields and State. I have just finished the basics and added Nancy Guthrie as an example of how to use it. There is still alot of work to do on this part of the system. Im going to move on though and complete the minimum of each Stage so I can have a fully working app before I go back and fully complete everything. This allows U.S to help if you want by taking on a section of it. Thanks.
+- Api, ApiFields and State.
   - Api - Fill in the information about the api here. Put the full url into the url field including the https:// and the url endpoint.
   - ApiFields - Fill in each field that will be used in the api call. Field is a query parameter and is used to filter results. The field is the query parameter name, value is the value that needs to be there. Everything associated with a person will eventually be an option in the value list. Right now there is only the persons name.
   - State - The appication state.
@@ -92,41 +91,21 @@ Build out the database and pages for consuming APIs. Users use a form to run the
 ### Stage 3
 Build out the vector database to save the API data for the Ollama model. Users can refine the data.
 - The vector database is Chroma.
-- The databases are in the database folder.
 - There is the SqlAchemy database for everything not vectorized.
-- chroma_db for saving vectorized data for the RAG LLM.
-- When you save data to the SqlAlchemy database, you also create a entry into the chroma vector database
-  - For text entered into the person or tables owned by person a chunk is created and saved to the vector database containing all information of that person entity, phone entity etc.. via a ValueObject class.
-  - For Documents the chunks are created and stored under the file name. Only finished pdf for the moment. Will work on more type soon.
-  - The collection name is missing_persons.
-  - You can edit and delete the chunks in the edit link of whatever entity you saved it in. Working on all this now.
+- When you save data to the SqlAlchemy database, you have to then create a entry into the chroma vector database.
+  - For Documents the chunks are created and stored under the file name. Only finished pdf for the moment.
+  - You can edit and delete the chunks in the edit link of whatever entity you saved it in.
 ![Data saves to AppData](./assets/saved_data.png)
 
-### Stage 4
-Build out training functionality for the Ollama LLM. Users can train and retrain models as they build and refine the data.
+Build out models
 - Ollama models can be downloaded on the Models page by creating an Ollama model.
 - Models can be deleted on the Resources page but be careful you are not using them somewhere else on your computer.
-When you start the application it checks for Ollama models downloaded and adds them automatically to the Models database.
-- The models are RAG LLM so they are pretrained and use the vector database as RAG Retrieval-Augmented Generation data source.
-- You will be able to choose any model you like when I'm done.
 - There is a setting for selecting the type of processor you are using in state.
 Look through the available models and choose models that are pretrained in the field you want them trained in.
 ![Resources Page](./assets/resources.png)
 
-Im using ***HuggingFaceEmbeddings sentence-transformers/all-MiniLM-L6-v2*** for the RAG LLM. Will open this up for you to choose your emmbedings. This is used to chop the text of a document into smaller chunks that are saved into the vector database. The chunks are what the LLM uses when it searches for answers. There are chunking stategies you need to learn about when using this application. I will also add the ability for you to change chunking strategies.
-
-#### Chunk Strategies:
-#### ***Resumes: Thematic & Structural Chunking***
-
-Resumes are highly structured, data-dense, and context-sparse. Standard overlapping token chunking frequently shatters meaning across boundaries.
- - Strategy: Use element-aware or section-level chunking. Instead of slicing text blindly, treat sections as indivisible units of information.
-#### ***Novels: Narrative & Semantic Chunking***
-Novels are continuous, unstructured narrative texts where meaning bleeds fluidly across paragraphs and chapters.
- - Strategy: Use Semantic Chunking or Recursive Character Splitting. You are prioritizing the flow of ideas, character development, and plot points over hard structural layouts.
-![Chunks Page](./assets/chunks.png)
-
 ### Stage 5
-Build out prompt functionality for the Ollama LLM. Users can create questions to use when prompting the LLM.
+Build out prompts and questions for LLMs.
 - Users can create prompts and questions to use when prompting the LLM on The Prompts and Questions page.
 ![Prompts Page](./assets/promts.png)
 
