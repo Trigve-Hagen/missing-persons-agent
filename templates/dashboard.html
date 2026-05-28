@@ -5,11 +5,8 @@
 
 {% block content %}
 
-<div class="row mt-5">
-  <div class="col-md-3">
-    {% include 'includes/sidebar_menu.html' %}
-  </div>
-  <div class="col-md-9">
+<div class="row mt-5 mb-5">
+  <div class="col-md-12">
     <h1 class="my-2">Dashboard</h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}

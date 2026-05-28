@@ -6,10 +6,7 @@
 {% block content %}
 
 <div class="row mt-5">
-  <div class="col-md-3">
-    {% include 'includes/sidebar_menu.html' %}
-  </div>
-  <div class="col-md-9">
+  <div class="col-md-12">
     <h1 class="my-4">Resources</h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -81,26 +78,13 @@
   </div>
 </div>
 
-<div class="row mt-5">
+<div class="row mt-5 mb-5">
   <div class="col-md-12">
     <p><b>Model Types</b> - List built from AI - Be carefull of the size. Some are really big.</p>
     <ul>
       <li>8GB VRAM (Entry Level): Use 1B to 7B parameter models</li>
       <li>12GB - 16GB VRAM (Mid-Range): Suitable for 13B-14B models</li>
       <li>24GB+ VRAM (Professional): Capable of running 30B+ models</li>
-    </ul>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    <p><b>Popular and Top Models</b> - List built from AI - To see the size click into the model.</p>
-    <ul>
-      <li><a href="https://ollama.com/library/llama3.1" target="_blank"><b>Llama 3.1</b></a>: Available in 8B, 70B, and 405B parameter sizes for general-purpose tasks.</li>
-      <li><a href="https://ollama.com/library/gemma4" target="_blank"><b>Gemma 4</b></a>: Google's latest models designed for reasoning, coding, and multimodal (vision) tasks, with versions ranging from 2B to 31B.</li>
-      <li><b>DeepSeek-R1</b>: An open reasoning model known for performance nearing advanced proprietary models.</li>
-      <li><a href="https://ollama.com/search?c=tools" target="_blank"><b>Qwen 3.5</b></a> A family of multimodal models from Alibaba, including versions for coding and chat.</li>
-      <li><b>Mistral Nemo</b>: A 12B model built in collaboration with NVIDIA, featuring a 128k context window.</li>
-      <li><a href="https://ollama.com/search?q=small" target="_blank"><b>Phi-3</b></a>: Microsoft's small, efficient language model.</li>
     </ul>
   </div>
 </div>

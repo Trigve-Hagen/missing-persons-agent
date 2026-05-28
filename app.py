@@ -148,13 +148,16 @@ def get_rows():
 @app.route('/set_entity', methods=['POST'])
 def set_entity():
   # Retrieve base identifiers & entity type from the submitted form
-  entity_type = request.form.get('entity_type')
+  """ entity_type = request.form.get('entity_type')
   entity_id = request.form.get('entity_id')
   field = request.form.get('field')
-  value = request.form.get('value')
+  value = request.form.get('value') """
 
-  flash(f"{entity_type} - {entity_id} - {field} - {value}", 'info')
-  flash(f"Will finish shortly. I was thinking to have this work on a level that you can micro manage the data. If I have an agent parse the data though it will save it to the sqlAlchemy database and you can adjust it there.. I'll leave the Data Center page so you can look throuh it and manuually copy data. I need to have an agent parse large bodies of returned data to look for Events to save. I need to have it pull Images and Documents into the database. I need to pull bodies of text into Notes.", "success")
+  flash(f"This page is not finished. It will have an agent parse the data, list suggestions of key value pairs that you can add to the sqlAlchemy database. This way you can adjust the data before saving it to the vector database. It will filter out None values, decide by the type of column if you can add it functionaly and filter out irrelevent data. I'll create a link in the Data Center page so you can look throuh the raw data.", "success")
+
+  flash(f"Create suggestions for Events to save.", 'info')
+  flash(f"Create suggestions for Images and Documents into the database.", 'info')
+  flash(f"Create suggestions for Notes into the database.", 'info')
 
   """ if not all([entity_type, entity_id, field]):
     flash('Missing required form parameters.', 'error')
@@ -399,13 +402,13 @@ def chat():
 
   return jsonify({'response': response['result']})
 
-@app.route('/chatbox')
-def chatbox():
+@app.route('/inspector')
+def inspector():
   user_input = ""
   answer = ""
 
   return flask.render_template(
-    'chatbox.html',
+    'inspector.html',
     user_input=user_input,
     answer=answer,
     database=getDatabase()
@@ -431,7 +434,7 @@ def run_code_questions():
   process_files = ProcessFiles(session=session)
   process_files.delete_code_chroma()
   process_files.process_and_save_code()
-  return redirect(url_for('chatbox'))
+  return redirect(url_for('inspector'))
 
 @app.route('/run_code_optimizer', methods=['POST'])
 def run_code_optimizer():
@@ -1853,7 +1856,11 @@ def data_center():
   api_data = request_api.get_request(api, api_params)
   api_data, ifParsed = request_api.filter_data(api_data, state)
 
-  flash(f"Will finish shortly. I was thinking to have this work on a level that you can micro manage the data. If I have an agent parse the data though it will save it to the sqlAlchemy database and you can adjust it there.. I'll leave the Data Center page so you can look throuh it and manually copy data. I need to have an agent parse large bodies of returned data to look for Events to save. I need to have it pull Images and Documents into the database. I need to pull bodies of text into Notes.", "success")
+  flash(f"This page is not finished. It will have an agent parse the data, list suggestions of key value pairs that you can add to the sqlAlchemy database. This way you can adjust the data before saving it to the vector database. It will filter out None values, decide by the type of column if you can add it functionaly and filter out irrelevant data. I'll create a link in the Data Center page so you can look throuh the raw data.", "info")
+
+  flash(f"Create suggestions for Events to save.", 'info')
+  flash(f"Create suggestions for Images and Documents into the database.", 'info')
+  flash(f"Create suggestions for Notes into the database.", 'info')
 
   return flask.render_template(
     'data_center.html',
@@ -2403,7 +2410,7 @@ if __name__ == '__main__':
   initialize_database(engine)
   Logging.setup_appdata_logging()
   webview.create_window('Missing Persons', app, min_size=(1180, 600), resizable=True, fullscreen=False, text_select=True)
-  webview.start(debug=False)
+  webview.start(debug=True)
 
 # python -m venv .venv
 # .\.venv\Scripts\Activate.ps1

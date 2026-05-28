@@ -1,0 +1,126 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Inspector{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbox.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4 mb-4">Inspector</h1>
+<p>Download <a href="https://ollama.com/download" target="_blank">Ollama</a>. You need the desktop application as well as the models. Go to <a href="{{ url_for('model') }}">Models</a> and create the <a href="https://ollama.com/library/phi3:mini" target="_blank">phi3:mini</a> model. Give it a name and phi3:mini as the model. It might take a minute to load. Set the state by clicking the Set State button in the list once the page refreshes. Then come back here to chat box. You can also set the model in <a href="{{ url_for('application_state') }}">Application State</a></p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row justify-content-center mb-5">
+  <div class="col-md-12">
+
+    <!-- Chat Wrapper Card -->
+    <div class="card chat-card shadow-sm">
+
+      <!-- Header -->
+      <div class="card-header bg-dark text-white d-flex align-items-center">
+        <div class="position-relative me-2">
+          <span class="bg-success position-absolute bottom-0 end-0 p-1 border border-white rounded-circle"></span>
+          <div class="bg-light text-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">AI</div>
+        </div>
+        <h6 class="mb-0">Inspector</h6>
+      </div>
+
+      <!-- Chat Scrollable Body -->
+      <div id="chat-content-box" class="card-body chat-body d-flex flex-column gap-3">
+
+        <!-- Incoming Message -->
+        <div class="d-flex align-items-start msg-incoming">
+          <div class="p-3 msg-bubble incoming rounded-3">
+            Hello! How can I assist you today?
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Chat Footer Input -->
+      <div class="card-footer bg-white border-top-0">
+        <form class="row g-4" id="chatbox-form" autocomplete="off">
+          <div class="input-group">
+            <textarea class="form-control border-light-subtle bg-light" id="user-input" placeholder="Type a message..." rows="1" aria-label="Message text input"></textarea>
+            <button class="btn btn-primary px-4" type="submit">Send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if database == 'code_optimize_db' %}
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <form class="row g-4" action="/load_code" method="POST" name="code_loader" autocomplete="off">
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Load Code</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endif %}
+
+ <script>
+    const chatFormElement = document.getElementById('chatbox-form');
+    const chatContentBox = document.getElementById('chat-content-box');
+
+    let userInputField = document.getElementById('user-input');
+
+    function renderChatText(sender, messageText) {
+      let classesOuter = "";
+      let classesInner = "";
+      if(sender == 'outgoing') {
+        classesOuter = "d-flex align-items-end justify-content-end msg-outgoing";
+        classesInner = "p-3 msg-bubble outgoing rounded-3 bg-primary text-white";
+      } else {
+        classesOuter = "d-flex align-items-start msg-incoming";
+        classesInner = "p-3 msg-bubble incoming rounded-3";
+      }
+
+      const messageHtml = `
+        <div class="${classesOuter}">
+          <div class="${classesInner}">
+            ${messageText}
+          </div>
+        </div>
+      `;
+
+      chatContentBox.insertAdjacentHTML("beforeend", messageHtml);
+      chatContentBox.scrollTop = chatContentBox.scrollHeight;
+    }
+
+    async function fetchBotReply(userQuestion) {
+      const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userQuestion })
+      });
+      const data = await response.json();
+      renderChatText('incoming', data.response);
+    }
+
+    chatFormElement.addEventListener("submit", (event) => {
+      event.preventDefault()
+      const userMessage = userInputField.value.trim();
+      if(!userMessage) return;
+      renderChatText('outgoing', userMessage);
+      userInputField.value = "";
+      fetchBotReply(userMessage);
+    })
+</script>
+
+{% endblock %}
