@@ -114,7 +114,7 @@ Build out prompts and questions for LLMs.
 - APIs and Rss Feeds pull data in as json in Data Center page.
 - Tasks have a name, entity, value and if completed flag.
 - Model pulls out the relevent data and adds it as tasks to be completed.
-  - Build create table statements that AI can train on so it can understand how tthe database stores data.
+  - Build create table statements that AI can train on so it can understand how the database stores data.
   - Write a function to run on install that creates the create table statements.
   - Save the create table statements as chunks in a separate Database (determinator_db) on install.
   - Adjusted the application to have 3 separate vector databases.
@@ -140,4 +140,5 @@ Build out prompts and questions for LLMs.
 
 ### Links
 
-Reading [Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-missing-people-online-7dec4cb038e5).
+[Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-missing-people-online-7dec4cb038e5).
+[Best Practices for Text-to-SQL Use Cases with LLMs](https://www.linkedin.com/pulse/best-practices-text-to-sql-use-cases-llms-dave-thibault-mr9ac/)
