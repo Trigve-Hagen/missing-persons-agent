@@ -72,57 +72,54 @@ Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
 
 ## The Build
 
-### Stage 1
-Build out the database for Person and Categories.
+### Person and Categories.
 - Eack link is a separate entity.
   - Categories - You can have different categories for people, phones, emails and addresses. Define your categories for each and they will show up in each of them when you add or edit rows.
   - Person - A person is anyone you will search for information on through the APIs(next stage). The initial category I created for person was 'Missing Person'. You can change the name of it or create others like 'Person of Interest' etc.. I would keep it in place though because it identifies the person as being missing. Every thing you save into the app is saved with a missing person as an owner. Every person besides the missing person must be owned by a missing person. Missing people will have 0 as an owner.
   - The rest are parts of a person, addresses, emails, phones and alias. They all have an owner which is a person entity.
 ![Person Page](./assets/person.png)
 
-### Stage 2
-Build out the database and pages for consuming APIs. Users use a form to run the API to get data from whatever API they choose to use.
+### Document uploads, API and RSS feeds.
 - Api, ApiFields and State.
   - Api - Fill in the information about the api here. Put the full url into the url field including the https:// and the url endpoint.
   - ApiFields - Fill in each field that will be used in the api call. Field is a query parameter and is used to filter results. The field is the query parameter name, value is the value that needs to be there. Everything associated with a person will eventually be an option in the value list. Right now there is only the persons name.
   - State - The appication state.
 ![Chat Inspector Page](./assets/inspector.png)
 
-### Stage 3
-Build out the vector database to save the API data for the Ollama model. Users can refine the data.
+### Outside installed app data storage.
+- Preserves data when updating.
 - The vector database is Chroma.
 - There is the SqlAchemy database for everything not vectorized.
-- When you save data to the SqlAlchemy database, you have to then create a entry into the chroma vector database.
+- When you save data to the SqlAlchemy database, you have to then create a entry from it into the chroma vector database.
   - For Documents the chunks are created and stored under the file name. Only finished pdf for the moment.
-  - You can edit and delete the chunks in the edit link of whatever entity you saved it in.
+  - You can delete the chunks in the edit link of whatever entity you saved it in and the chunks page. There is no editing yet. Will circle back to it soon.
 ![Data saves to AppData](./assets/saved_data.png)
 
-Build out models
+### Ollama for local and future access to Grok, OpenAi and Claude
 - Ollama models can be downloaded on the Models page by creating an Ollama model.
 - Models can be deleted on the Resources page but be careful you are not using them somewhere else on your computer.
 - There is a setting for selecting the type of processor you are using in state.
 Look through the available models and choose models that are pretrained in the field you want them trained in.
 ![Resources Page](./assets/resources.png)
 
-### Stage 5
+### Prompts and Questions
 Build out prompts and questions for LLMs.
 - Users can create prompts and questions to use when prompting the LLM on The Prompts and Questions page.
 ![Prompts Page](./assets/promts.png)
 
-### Stage 6
-Use the data gathered from the APIs to build timelines for each person.
+### Events to construct a Timeline
+- Use the data gathered from the APIs to build timelines for each person.
 
-### Stage 7
-Add images and video to the person object to use when looking though images and videos for matching.
+### Images and Videos
+- Add images and video to the person object to use when looking though images and videos for matching.
+- Build ability to train a model on video and images.
+- Build out functionality for testing and viewing data from videos and images.
 
-### Stage 8
-Build ability to train a model on video and images.
+### Linkedin / Facebook Style Messaging
+- A messaging system like Linkedins where people who are searching for someone can share notes.
 
-### Stage 8
-Build out functionality for testing and viewing data from videos and images.
-
-### Stage 9
-A messaging system like Linkedins where people who are searching for someone can share notes.
+### Central Data Store
+- A central data storage where all data on an investigation can be accessed by any one using Missing Persons.
 
 ### Links
 
