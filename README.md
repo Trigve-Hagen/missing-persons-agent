@@ -71,6 +71,7 @@ I'm not done yet but this will be the downloads page.
 Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
 
 ## The Build
+If you are good with python, clone the repo and run python app.py from the root.
 
 ### Person and Categories.
 - Eack link is a separate entity.
