@@ -103,6 +103,7 @@ Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
 - Models can be deleted on the Resources page but be careful you are not using them somewhere else on your computer.
 - There is a setting for selecting the type of processor you are using in state.
 Look through the available models and choose models that are pretrained in the field you want them trained in.
+
 ![Resources Page](./assets/resources.png)
 
 ### Prompts
