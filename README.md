@@ -102,18 +102,25 @@ Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
 Look through the available models and choose models that are pretrained in the field you want them trained in.
 ![Resources Page](./assets/resources.png)
 
-### Prompts and Questions
+### Prompts
 Build out prompts and questions for LLMs.
 - Users can create prompts and questions to use when prompting the LLM on The Prompts and Questions page.
 ![Prompts Page](./assets/promts.png)
+
+### Questions
+![Questions Page](./assets/questions.png)
 
 ### Build Tasks and Data Center
 - APIs and Rss Feeds pull data in as json in Data Center page.
 - Tasks have a name, entity, value and if completed flag.
 - Model pulls out the relevent data and adds it as tasks to be completed.
-  - Build table comments and column comments in a way that AI can understand how to make tasks.
-  - Write a function to run on install that pulls all the comments from the models.
-  - Save the comments as chunks in a separate Chroma Database on install.
+  - Build create table statements that AI can train on so it can understand how tthe database stores data.
+  - Write a function to run on install that creates the create table statements.
+  - Save the create table statements as chunks in a separate Database (determinator_db) on install.
+  - Adjusted the application to have 3 separate vector databases.
+    - determinator_db - stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
+    - investigation_db - stores data from the person, email, phone, alias, address, event and note table data for investigating.
+    - investigator_db - stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
   - Build the model to parse the json and create Tasks.
 - When you complete a task the data is added to the entity as a row.
 

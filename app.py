@@ -2487,6 +2487,10 @@ if getattr(sys, 'frozen', False):
 
 if __name__ == '__main__':
   initialize_database(engine)
+  create_statements = Resources.initialize_determinator(engine)
+  for key, value in create_statements.items():
+    print(f"Table - {key}, - Create Statement: {value}")
+
   Logging.setup_appdata_logging()
   window = webview.create_window('Missing Persons', app, min_size=(1180, 650), resizable=True, fullscreen=False, text_select=True)
   # Bind the events to the Python functions

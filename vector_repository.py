@@ -17,7 +17,9 @@ from model_utils import ModelUtils
 # Base class (Parent)
 class VectorDb:
   def __init__(self, session):
-    self.persist_directory = ModelUtils.resource_path(os.path.join("database", "investigation_db"))
+    self.investigation_db = ModelUtils.resource_path(os.path.join("database", "investigation_db"))
+    self.investigator_db = ModelUtils.resource_path(os.path.join("database", "investigator_db"))
+    self.determinator_db = ModelUtils.resource_path(os.path.join("database", "determinator_db"))
     self.collection_name = "missing_persons"
     state = session.get(State, 1)
     self.processor = state.processor
@@ -25,9 +27,16 @@ class VectorDb:
     self.chunk_overlap = state.chunk_overlap
     self.embedding_function = self.get_embeddings()
 
-  def get_vector_store(self):
+  def get_vector_store(self, type):
+    if type == 'investigation':
+      persistent_directory = self.investigation_db
+    elif type == 'investigator':
+      persistent_directory = self.investigator_db
+    else:
+      persistent_directory = self.determinator_db
+
     return Chroma(
-      persist_directory=self.persist_directory,
+      persist_directory=persistent_directory,
       collection_name=self.collection_name,
       embedding_function=self.embedding_function
     )
@@ -67,11 +76,12 @@ class VectorDb:
     return embedding_function
 
   def get_all_chroma_data(self):
-    vector_store = Chroma(
-      persist_directory=self.persist_directory,
+    """ vector_store = Chroma(
+      persist_directory=self.investigation_db,
       collection_name=self.collection_name,
       embedding_function=self.embedding_function
-    )
+    ) """
+    vector_store = self.get_vector_store('investigation')
 
     collection = vector_store._client.get_collection(name=self.collection_name)
     # Retrieve records matching both param1 AND param2
@@ -87,7 +97,7 @@ class VectorDb:
     return data, metadatas
 
   def get_chroma_data(self, type, id):
-    vector_store = self.get_vector_store()
+    vector_store = self.get_vector_store('investigation')
     try:
       collection = vector_store._client.get_collection(name=self.collection_name)
       # Retrieve records matching both param1 AND param2
@@ -116,7 +126,7 @@ class VectorDb:
       return [], []
 
   def get_vector_by_ids(self, ids):
-    vector_store = self.get_vector_store()
+    vector_store = self.get_vector_store('investigation')
     try:
       results = vector_store.get(ids=ids)
       view_data = []
@@ -137,7 +147,7 @@ class VectorDb:
       return []
 
   def update_data_by_id(self, vector_id: str, content: str, metadata: dict):
-    vector_store = self.get_vector_store()
+    vector_store = self.get_vector_store('investigation')
     try:
       collection = vector_store._collection
       collection.upsert(
@@ -154,7 +164,7 @@ class VectorDb:
       return False
 
   def delete_vector_by_id(self, ids: list[str]):
-    vector_store = self.get_vector_store()
+    vector_store = self.get_vector_store('investigation')
     try:
       vector_store.delete(ids=ids)
       flash(f"Successfully deleted IDs: {ids}", "success")
@@ -164,7 +174,7 @@ class VectorDb:
       return False
 
   def delete_file_by_source(self, source):
-    vector_store = self.get_vector_store()
+    vector_store = self.get_vector_store('investigation')
     try:
       collection = vector_store._client.get_collection(name=self.collection_name)
       collection.delete(
@@ -228,7 +238,7 @@ class VectorDb:
       embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
-      persist_directory=self.persist_directory
+      persist_directory=self.investigation_db
     )
 
 class PdfRepository(VectorDb):
@@ -272,7 +282,7 @@ class PersonRepository(VectorDb):
       embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
-      persist_directory=self.persist_directory
+      persist_directory=self.investigation_db
     )
 
     flash(f"{person_content} saved successfully!", "success")
@@ -307,7 +317,7 @@ class EventRepository(VectorDb):
       embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
-      persist_directory=self.persist_directory
+      persist_directory=self.investigation_db
     )
 
     flash(f"{event_content} saved successfully!", "success")
@@ -342,7 +352,7 @@ class NoteRepository(VectorDb):
       embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
-      persist_directory=self.persist_directory
+      persist_directory=self.investigation_db
     )
 
     flash(f"{note_content} saved successfully!", "success")
@@ -377,7 +387,7 @@ class JsonRepository(VectorDb):
       embedding=self.embedding_function,
       ids=ids,
       collection_name=self.collection_name,
-      persist_directory=self.persist_directory
+      persist_directory=self.investigation_db
     )
 
     flash(f"{note_content} saved successfully!", "success")
