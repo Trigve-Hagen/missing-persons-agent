@@ -107,6 +107,16 @@ Build out prompts and questions for LLMs.
 - Users can create prompts and questions to use when prompting the LLM on The Prompts and Questions page.
 ![Prompts Page](./assets/promts.png)
 
+### Build Tasks and Data Center
+- APIs and Rss Feeds pull data in as json in Data Center page.
+- Tasks have a name, entity, value and if completed flag.
+- Model pulls out the relevent data and adds it as tasks to be completed.
+  - Build table comments and column comments in a way that AI can understand how to make tasks.
+  - Write a function to run on install that pulls all the comments from the models.
+  - Save the comments as chunks in a separate Chroma Database on install.
+  - Build the model to parse the json and create Tasks.
+- When you complete a task the data is added to the entity as a row.
+
 ### Events to construct a Timeline
 - Use the data gathered from the APIs to build timelines for each person.
 

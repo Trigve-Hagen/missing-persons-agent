@@ -10,7 +10,7 @@ class Model(Base):
   model = Column(NullToEmptyString, comment="The model.")
   type = Column(NullToEmptyString, default="ollama", comment="The type of model. Allowed values are ollama and openai.")
 
-  def __init__(self, name, model, type, system):
+  def __init__(self, name, model, type):
     self.name = name # instance
     self.model = model # model
     self.type = type  # from

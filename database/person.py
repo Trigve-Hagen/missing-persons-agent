@@ -4,13 +4,14 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 
 class Category(Base):
-  """
-  All categories organizing emails, addresses, phones etc. Anything that needs
-  organization. You can create more.
-  """
-
   __tablename__ = "categories"
-  __table_args__ = {"comment": "This table stores the categories of Person, Email, Phone, Address and Event."}
+  __table_args__ = {
+    "comment": (
+      "PURPOSE: Lookup table providing classification labels for entities. "
+      "Used to categorize records in the 'people', 'addresses', 'phones', 'emails' "
+      "and 'events' tables to differentiate between types (e.g., 'Home' vs 'Work')."
+    )
+  }
 
   id = Column("id", Integer, primary_key=True)
   type = Column(NullToEmptyString(20), comment="The category type. Allowed values are: addressType, contactType, emailType, phoneType, eventType.")
@@ -21,14 +22,18 @@ class Category(Base):
     self.name = name
 
 class Person(Base):
-  """
-  The person class holds just the description of the person but is the
-  center point for adding all information about them into the investigation
-  vector database.
-  """
-
   __tablename__ = "people"
-  __table_args__ = {"comment": "This table stores the people. Its mainly the descriptive properties. The only none descriptive property at this time is the SSN."}
+  __table_args__ = {
+    'comment': (
+      "ENTITY: Missing Person Physical Description.\n"
+      "PURPOSE: Stores identifying physical traits (height, weight, scars, tattoos, etc.) "
+      "used to match records in a missing persons investigation.\n"
+      "RELATIONSHIPS:\n"
+      "- type: The category.\n"
+      "Allowed categories are Id: 1 Name: Missing Person and Id: 2 Name: Person of Interest. "
+      "Use this table to find descriptive matches for missing persons or persons of interest."
+    )
+  }
 
   id = Column("id", Integer, primary_key=True)
   firstName = Column("first_name", NullToEmptyString, comment="The persons first name.")
@@ -142,12 +147,15 @@ class Person(Base):
     return " ".join(chunks)
 
 class Alias(Base):
-  """
-  Aliases associated with the person.
-  """
-
   __tablename__ = "aliases"
-  __table_args__ = {"comment": "This table stores a persons aliases."}
+  __table_args__ = {
+    "comment": (
+      "ENTITY: Aliases used by the target subject in the investigation.\n"
+      "RELATIONSHIPS:\n"
+      "- owner: The target person being investigated.\n"
+      "PURPOSE: Stores aliases, nicknames, and monikers for individuals in missing persons cases."
+    )
+  }
 
   id = Column("id", Integer, primary_key=True)
   firstName = Column("first_name", NullToEmptyString, comment="The persons first name.")
@@ -166,15 +174,23 @@ class Alias(Base):
     self.owner = owner
 
 class Address(Base):
-  """
-  Addresses associated with the person.
-  """
-
   __tablename__ = "addresses"
-  __table_args__ = {"comment": "This table stores a persons addresses."}
+  __table_args__ = {
+    'comment': (
+      "ENTITY: Physical Addresses used by the target subject in the investigation.\n"
+      "CONTEXT: Missing Persons Investigation\n"
+      "DATA_SENSITIVITY: High (PII - Personally Identifiable Information)\n"
+      "RELATIONSHIPS:\n"
+      "- owner: The target person being investigated.\n"
+      "PURPOSE: Stores historical and current addresses for persons of interest in missing person investigations.\n"
+      "USAGE_NOTES: Used to map locations and timelines. Multiple records may exist for a single person. "
+      "Flag 'is_current' indicates the most recent known location."
+    )
+  }
 
   id = Column("id", Integer, primary_key=True)
   type = Column(Integer, comment="The user defined type of address. Definitions are created in Category")
+  isCurrent = Column("is_current", Integer, comment="Indicates the most recent known location")
   name = Column(NullToEmptyString, comment="The user defined name of address.")
   address1 = Column("address_1", NullToEmptyString, comment="The address.")
   address2 = Column("address_2", NullToEmptyString, comment="The apartment number associated with the address.")
@@ -196,12 +212,16 @@ class Address(Base):
     self.owner = owner
 
 class Email(Base):
-  """
-  Emails associated with the person.
-  """
-
   __tablename__ = "emails"
-  __table_args__ = {"comment": "This table stores a persons email addresses."}
+  __table_args__ = {
+    "comment": (
+      "ENTITY: Email Addresses used by the target subject in the investigation.\n"
+      "CONTEXT: Missing Persons Investigation\n"
+      "RELATIONSHIPS:\n"
+      "- owner: The target person being investigated.\n"
+      "PURPOSE: Stores communication records and email metadata linked to a person of interest."
+    )
+  }
 
   id = Column("id", Integer, primary_key=True)
   type = Column(Integer, comment="The user defined type of email. Definitions are created in Category")
@@ -215,7 +235,7 @@ class Email(Base):
 
 class EmailMessage(Base):
   __tablename__ = "email_messages"
-  __table_args__ = {"comment": "This table stores a emails sent and recieved from an email."}
+  __table_args__ = {"comment": "Stores individual email communications flagged as evidence in missing persons cases."}
 
   id = Column("id", Integer, primary_key=True)
   message = Column(Text)
@@ -228,12 +248,16 @@ class EmailMessage(Base):
     self.owner = owner
 
 class Phone(Base):
-  """
-  Phone numbers associated with the person.
-  """
-
   __tablename__ = "phones"
-  __table_args__ = {"comment": "This table stores a persons phone numbers."}
+  __table_args__ = {
+    'comment': (
+      "ENTITY: Phone numbers used by the target subject in the investigation.\n"
+      "CONTEXT: Missing Persons Investigation\n"
+      "RELATIONSHIPS:\n"
+      "- owner: The target person being investigated.\n"
+      "PURPOSE: Stores contact numbers for individuals in missing persons investigations.\n"
+    )
+  }
 
   id = Column("id", Integer, primary_key=True)
   type = Column(Integer, comment="The user defined type of phones. Definitions are created in Category")
@@ -246,16 +270,23 @@ class Phone(Base):
     self.owner = owner
 
 class Call(Base):
-  """
-  Calls made from a Phone numbers.
-  """
-
   __tablename__ = "calls"
-  __table_args__ = {"comment": "This table stores a calls and texts sent and recieved from an phone number. Files will store audio files later."}
+  __table_args__ = {
+    'comment': (
+      "ENTITY: Phone coversations of a target phone number.\n"
+      "PURPOSE: Records call and text message metadata for a specific "
+      "phone number in an active missing person investigation.\n"
+      "CONTEXT: Used to analyze communication patterns, frequency, and "
+      "timestamps of the missing individual or persons of interest.\n"
+      "RELATIONSHIPS:\n"
+      "- owner: The target phone number being investigated.\n"
+      "- file: Pdf Document (if SMS) or AUdio file (if voice call)."
+    )
+  }
 
   id = Column("id", Integer, primary_key=True)
   type = Column(NullToEmptyString(20), comment="The type of call. The allowed values are text, call.")
-  file = Column(Integer, comment="The file number if an audio file is associated with the call.")
+  file = Column(Integer, ForeignKey("file.id"), comment="The file number if a document or audio file associated with the call.")
   date = Column(DateTime, comment="The date the call was made.")
   owner = Column(Integer, ForeignKey("phones.id"), comment="The phone number the call or text was made by.")
 
