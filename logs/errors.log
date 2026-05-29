@@ -212,3 +212,78 @@ WHERE state.id = ?
 2026-05-29 16:03:13,462 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
 2026-05-29 16:03:13,473 - DEBUG - _pywebviewready event fired
 2026-05-29 16:03:13,477 - DEBUG - loaded event fired
+2026-05-29 16:21:46,944 - DEBUG - Using WinForms / Chromium
+2026-05-29 16:21:48,134 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:21:48,148 - INFO - [cached since 2.059s ago] (1,)
+2026-05-29 16:21:48,152 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:21:48,160 - INFO - [cached since 2.07s ago] (1,)
+2026-05-29 16:21:48,671 - DEBUG - before_load event fired. injecting pywebview object
+2026-05-29 16:21:48,671 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-05-29 16:21:49,016 - DEBUG - _pywebviewready event fired
+2026-05-29 16:21:49,021 - DEBUG - loaded event fired
+2026-05-29 16:22:19,064 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:22:19,064 - INFO - [cached since 32.98s ago] (1,)
+2026-05-29 16:22:19,149 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:22:19,149 - INFO - [cached since 33.06s ago] (1,)
+2026-05-29 16:22:19,295 - DEBUG - before_load event fired. injecting pywebview object
+2026-05-29 16:22:19,297 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-05-29 16:22:19,314 - DEBUG - _pywebviewready event fired
+2026-05-29 16:22:19,318 - DEBUG - loaded event fired
+2026-05-29 16:24:34,029 - INFO - SELECT questions.id AS questions_id, questions.question AS questions_question 
+FROM questions
+ LIMIT ? OFFSET ?
+2026-05-29 16:24:34,029 - INFO - [generated in 0.00032s] (10, 0)
+2026-05-29 16:24:34,029 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT questions.id AS questions_id, questions.question AS questions_question 
+FROM questions) AS anon_1
+2026-05-29 16:24:34,029 - INFO - [generated in 0.00027s] ()
+2026-05-29 16:24:34,057 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:24:34,057 - INFO - [cached since 168s ago] (1,)
+2026-05-29 16:24:34,060 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:24:34,060 - INFO - [cached since 168s ago] (1,)
+2026-05-29 16:24:34,137 - DEBUG - before_load event fired. injecting pywebview object
+2026-05-29 16:24:34,139 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-05-29 16:24:34,151 - DEBUG - _pywebviewready event fired
+2026-05-29 16:24:34,162 - DEBUG - loaded event fired
+2026-05-29 16:25:07,525 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:25:07,527 - INFO - [cached since 201.4s ago] (1,)
+2026-05-29 16:25:07,536 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:25:07,536 - INFO - [cached since 201.4s ago] (1,)
+2026-05-29 16:25:07,603 - DEBUG - before_load event fired. injecting pywebview object
+2026-05-29 16:25:07,604 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-05-29 16:25:07,621 - DEBUG - _pywebviewready event fired
+2026-05-29 16:25:07,628 - DEBUG - loaded event fired
+2026-05-29 16:25:14,528 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:25:14,528 - INFO - [cached since 208.4s ago] (1,)
+2026-05-29 16:25:41,476 - INFO - COMMIT
+2026-05-29 16:25:41,864 - INFO - BEGIN (implicit)
+2026-05-29 16:25:41,864 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:25:41,864 - INFO - [cached since 235.8s ago] (1,)
+2026-05-29 16:25:41,880 - INFO - SELECT state.id AS state_id, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-05-29 16:25:41,880 - INFO - [cached since 235.8s ago] (1,)
+2026-05-29 16:25:41,933 - DEBUG - before_load event fired. injecting pywebview object
+2026-05-29 16:25:41,934 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-05-29 16:25:41,947 - DEBUG - _pywebviewready event fired
+2026-05-29 16:25:41,951 - DEBUG - loaded event fired
