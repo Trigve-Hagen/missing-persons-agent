@@ -59,7 +59,7 @@
           <tr>
             <th scope="col">Name</th>
             <th scope="col">Size</th>
-            <th scope="col" class="col-1">Actions</th>
+            <th scope="col" class="col-2">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -67,7 +67,7 @@
             <tr>
               <td><a href="https://ollama.com/library/{{ model.model | replace("latest", "") | replace(":", "") | trim }}" target="_blank"><b>{{ model.model | replace("latest", "") | replace(":", "") | trim }}</a></td>
               <td>{{ "%.2f" | format(model.size / (1024**3)) }}GB</td>
-              <td><a class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModel" data-bs-item="{{ model.model }}">Delete</a></td>
+              <td><a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModel" data-bs-item="{{ model.model }}">Delete</a></td>
             </tr>
           {% endfor %}
         </tbody>
