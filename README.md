@@ -77,6 +77,7 @@ Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
   - Categories - You can have different categories for people, phones, emails and addresses. Define your categories for each and they will show up in each of them when you add or edit rows.
   - Person - A person is anyone you will search for information on through the APIs(next stage). The initial category I created for person was 'Missing Person'. You can change the name of it or create others like 'Person of Interest' etc.. I would keep it in place though because it identifies the person as being missing. Every thing you save into the app is saved with a missing person as an owner. Every person besides the missing person must be owned by a missing person. Missing people will have 0 as an owner.
   - The rest are parts of a person, addresses, emails, phones and alias. They all have an owner which is a person entity.
+
 ![Person Page](./assets/person.png)
 
 ### Document uploads, API and RSS feeds.
@@ -84,6 +85,7 @@ Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
   - Api - Fill in the information about the api here. Put the full url into the url field including the https:// and the url endpoint.
   - ApiFields - Fill in each field that will be used in the api call. Field is a query parameter and is used to filter results. The field is the query parameter name, value is the value that needs to be there. Everything associated with a person will eventually be an option in the value list. Right now there is only the persons name.
   - State - The appication state.
+
 ![Chat Inspector Page](./assets/inspector.png)
 
 ### Outside installed app data storage.
@@ -93,6 +95,7 @@ Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
 - When you save data to the SqlAlchemy database, you have to then create a entry from it into the chroma vector database.
   - For Documents the chunks are created and stored under the file name. Only finished pdf for the moment.
   - You can delete the chunks in the edit link of whatever entity you saved it in and the chunks page. There is no editing yet. Will circle back to it soon.
+
 ![Data saves to AppData](./assets/saved_data.png)
 
 ### Ollama for local and future access to Grok, OpenAi and Claude
@@ -105,9 +108,11 @@ Look through the available models and choose models that are pretrained in the f
 ### Prompts
 Build out prompts and questions for LLMs.
 - Users can create prompts and questions to use when prompting the LLM on The Prompts and Questions page.
+
 ![Prompts Page](./assets/promts.png)
 
 ### Questions
+
 ![Questions Page](./assets/questions.png)
 
 ### Build Tasks and Data Center
@@ -141,4 +146,5 @@ Build out prompts and questions for LLMs.
 ### Links
 
 [Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-missing-people-online-7dec4cb038e5).
+
 [Best Practices for Text-to-SQL Use Cases with LLMs](https://www.linkedin.com/pulse/best-practices-text-to-sql-use-cases-llms-dave-thibault-mr9ac/)
