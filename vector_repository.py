@@ -393,3 +393,46 @@ class JsonRepository(VectorDb):
     flash(f"{note_content} saved successfully!", "success")
     return True
 
+class Determinator(VectorDb):
+
+  def chunk_create_statements(self, createStatements):
+    vector_store = self.get_vector_store('determinator')
+    try:
+      matching_docs = vector_store.get(
+        limit=1,
+        where={"source": {"$eq": "create_statements"}}
+      )
+
+      if not matching_docs["metadatas"]:
+        ids = []
+        documents = []
+        for index, (title, sql_statement) in enumerate(createStatements.items()):
+          entity = self.machine_name(title)
+          composite_id = f"create_statements_{entity}_chunk{index}"
+          ids.append(composite_id)
+
+          doc = Document(
+              page_content=sql_statement,
+              metadata={
+                "vector_type": "create_statements",
+                "chunk_index": index,
+                "custom_id": composite_id,
+                "source": f"create_statements",
+                "entity": entity
+              }
+          )
+          documents.append(doc)
+
+        Chroma.from_documents(
+          documents=documents,
+          embedding=self.embedding_function,
+          ids=ids,
+          collection_name=self.collection_name,
+          persist_directory=self.determinator_db
+        )
+
+        flash(f"Successfully saved {len(createStatements)} statements to Chroma at '{self.determinator_db}'.", "success")
+
+    except Exception as e:
+      flash(f"Error retrieving data: {e}", "danger")
+      return []

@@ -60,7 +60,7 @@ from database.person import Category, Person, Alias, Email, EmailMessage, Phone,
 from request_api import RequestApi
 from people_utils import PeopleUtils, ValueOptions
 from resources import Resources
-from vector_repository import VectorDb, PdfRepository, PersonRepository, EventRepository, NoteRepository
+from vector_repository import VectorDb, PdfRepository, PersonRepository, EventRepository, NoteRepository, Determinator
 from process_files import ProcessFiles
 from selections import Selection
 from model_utils import ModelUtils, Logging
@@ -100,6 +100,10 @@ def add_nosniff_header_to_static(response):
 @app.route('/')
 @app.route('/index')
 def index():
+  create_statements = Resources.initialize_determinator(engine)
+  determine = Determinator(session=session)
+  determine.chunk_create_statements(createStatements=create_statements)
+
   return flask.render_template('index.html', appData=os.path.join(os.environ['LOCALAPPDATA'], "MissingPersons"))
 
 @app.route('/get_rows', methods=['GET', 'POST'])
@@ -1241,6 +1245,8 @@ def edit_address(id):
   address_data = {
     'id': address.id,
     'addressType': address.type,
+    'ifCurrent': address.ifCurrent,
+    'ifCrimeScene': address.ifCrimeScene,
     'name': address.name,
     'type': address.type,
     'address1': address.address1,
@@ -1249,6 +1255,9 @@ def edit_address(id):
     'state': address.state,
     'zip5': address.zip5,
     'zip4': address.zip4,
+    'description': address.description,
+    'dateFrom': date_from.strftime('%Y-%m-%d') if (date_from := address.dateFrom) else None,
+    'dateTo': date_to.strftime('%Y-%m-%d') if (date_to := address.dateTo) else None,
     'owner': address.owner
   }
   return flask.render_template('edit_address.html', edit_id=id, address_data=address_data, addressTypes=addressType_select, owners=owner_select)
@@ -1258,9 +1267,15 @@ def set_address():
   form_data = request.form
   try:
     address = session.execute(select(Address).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    formatted_dateFrom_date = datetime.strptime(date_from, '%Y-%m-%d') if (date_from := form_data.get('dateFrom')) else None
+    formatted_dateTo_date = datetime.strptime(date_to, '%Y-%m-%d') if (date_to := form_data.get('dateTo')) else None
+    if_current = 1 if request.form.get("if_current") else 0
+    if_crime_scene = 1 if request.form.get("if_crime_scene") else 0
     if address:
       uporadd = "updated"
       address.type=form_data.get('type')
+      address.ifCurrent=if_current
+      address.ifCrimeScene=if_crime_scene
       address.name=form_data.get('name')
       address.address1=form_data.get('address1')
       address.address2=form_data.get('address2')
@@ -1268,11 +1283,16 @@ def set_address():
       address.state=form_data.get('state')
       address.zip5=form_data.get('zip5')
       address.zip4=form_data.get('zip4')
+      address.description=form_data.get('description')
+      address.dateFrom=formatted_dateFrom_date,
+      address.dateTo=formatted_dateTo_date,
       address.owner=form_data.get('owner')
     else:
       uporadd = "added"
       address = Address(
         type=form_data.get('type'),
+        ifCurrent=if_current,
+        ifCrimeScene=if_crime_scene,
         name=form_data.get('name'),
         address1=form_data.get('address1'),
         address2=form_data.get('address2'),
@@ -1280,6 +1300,9 @@ def set_address():
         state=form_data.get('state'),
         zip5=form_data.get('zip5'),
         zip4=form_data.get('zip4'),
+        description=form_data.get('description'),
+        dateFrom=formatted_dateFrom_date,
+        dateTo=formatted_dateTo_date,
         owner=form_data.get('owner'),
       )
     session.merge(address)
@@ -2487,9 +2510,6 @@ if getattr(sys, 'frozen', False):
 
 if __name__ == '__main__':
   initialize_database(engine)
-  create_statements = Resources.initialize_determinator(engine)
-  for key, value in create_statements.items():
-    print(f"Table - {key}, - Create Statement: {value}")
 
   Logging.setup_appdata_logging()
   window = webview.create_window('Missing Persons', app, min_size=(1180, 650), resizable=True, fullscreen=False, text_select=True)

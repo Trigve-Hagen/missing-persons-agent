@@ -18,7 +18,7 @@
 {% endwith %}
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -66,10 +66,10 @@
 <h3 class="my-4">Add Address</h3>
 
 <div class="row mt-5">
-  <div class="col-md-12">
+  <div class="col-12">
     <form class="row g-4" action="/set_address" method="POST" name="address" autocomplete="off">
       <input type="hidden" class="form-control" id="address-id" name="id" />
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="address-type" class="form-label">Type</label>
         <select class="form-select" id="address-type" name="type" required>
           <option value="">Choose...</option>
@@ -78,35 +78,48 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="address-name" class="form-label">Name</label>
         <input type="text" class="form-control" id="address-name" name="name" required>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="address-address1" class="form-label">Address 1</label>
         <input type="text" class="form-control" id="address-address1" name="address1" required>
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         <label for="address-address2" class="form-label">Address 2</label>
         <input type="text" class="form-control" id="address-address2" name="address2">
       </div>
-      <div class="col-md-3">
+      <div class="col-3">
         <label for="address-city" class="form-label">City</label>
         <input type="text" class="form-control" id="address-city" name="city" required>
       </div>
-      <div class="col-md-3">
+      <div class="col-3">
         <label for="address-state" class="form-label">State</label>
         <input type="text" class="form-control" id="address-state" name="state" required>
       </div>
-      <div class="col-md-3">
+      <div class="col-3">
         <label for="address-zip5" class="form-label">Zip 5</label>
         <input type="text" class="form-control" id="address-zip5" name="zip5" required>
       </div>
-      <div class="col-md-3">
+      <div class="col-3">
         <label for="address-zip4" class="form-label">Zip 4</label>
         <input type="text" class="form-control" id="address-zip4" name="zip4">
       </div>
-      <div class="col-md-4">
+      <div class="col-6">
+        <label for="address-date-from" class="form-label">Date Moved In</label>
+        <input type="date" class="form-control" id="address-date-from" name="dateFrom">
+      </div>
+      <div class="col-6">
+        <label for="address-date-to" class="form-label">Date Moved Out</label>
+        <input type="date" class="form-control" id="address-date-to" name="dateTo">
+      </div>
+      <div class="col-12">
+        <label for="address-description" class="form-label">Description</label>
+        <textarea class="form-control" id="address-description" name="description" rows="3"></textarea>
+        <div class="form-text" id="address-description-text">Extra data related to the address in the investigation.</div>
+      </div>
+      <div class="col-8">
         <label for="address-owner" class="form-label">Person</label>
         <select class="form-select" id="address-owner" name="owner" required>
           <option value="">Choose...</option>
@@ -114,6 +127,22 @@
             <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
           {% endfor %}
         </select>
+      </div>
+      <div class="col-8">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="address-if-current" name="if_current">
+          <label class="form-check-label" for="address-if-current">
+            Is Current Address
+          </label>
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="address-if-crime-scene" name="if_crime_scene">
+          <label class="form-check-label" for="address-if-crime-scene">
+            Is Crime Scene
+          </label>
+        </div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

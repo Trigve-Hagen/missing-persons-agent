@@ -68,7 +68,20 @@
         <label for="address-zip4" class="form-label">Zip 4</label>
         <input type="text" class="form-control" id="address-zip4" name="zip4" value="{{ address_data.zip4 }}">
       </div>
-      <div class="col-4">
+      <div class="col-6">
+        <label for="address-date-from" class="form-label">Date Moved In</label>
+        <input type="date" class="form-control" id="address-date-from" name="dateFrom" value="{{ address_data.dateFrom }}">
+      </div>
+      <div class="col-6">
+        <label for="address-date-to" class="form-label">Date Moved Out</label>
+        <input type="date" class="form-control" id="address-date-to" name="dateTo" value="{{ address_data.dateTo }}">
+      </div>
+      <div class="col-12">
+        <label for="address-description" class="form-label">Description</label>
+        <textarea class="form-control" id="address-description" name="description" rows="3">{{ address_data.description }}</textarea>
+        <div class="form-text" id="address-description-text">Extra data related to the address in the investigation.</div>
+      </div>
+      <div class="col-8">
         <label for="address-owner" class="form-label">Person</label>
         <select class="form-select" id="address-owner" name="owner" required>
           <option value="">Choose...</option>
@@ -80,6 +93,22 @@
             {% endif %}
           {% endfor %}
         </select>
+      </div>
+      <div class="col-8">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="address-if-current" name="if_current" {% if address_data.ifCurrent== 1 %}checked{% endif %}>
+          <label class="form-check-label" for="address-if-current">
+            Is Current Address
+          </label>
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="address-if-crime-scene" name="if_crime_scene" {% if address_data.ifCrimeScene== 1 %}checked{% endif %}>
+          <label class="form-check-label" for="address-if-crime-scene">
+            Is Crime Scene
+          </label>
+        </div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

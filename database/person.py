@@ -175,6 +175,8 @@ class Address(Base):
 
   id = Column("id", Integer, primary_key=True)
   type = Column(Integer, comment="The user defined type of address. Definitions are created in Category")
+  ifCurrent = Column("if_current", Integer, comment="If current address.")
+  ifCrimeScene = Column("if_crime_scene", Integer, comment="If crime scene address.")
   name = Column(NullToEmptyString, comment="The user defined name of address.")
   address1 = Column("address_1", NullToEmptyString, comment="The address.")
   address2 = Column("address_2", NullToEmptyString, comment="The apartment number associated with the address.")
@@ -182,10 +184,15 @@ class Address(Base):
   state = Column(NullToEmptyString, comment="The state associated with the address.")
   zip5 = Column("zip_5", Integer, comment="The 5 digit zip code associated with the address.")
   zip4 = Column("zip_4", Integer, comment="The 4 digit zip code associated with the address.")
+  description = Column(Text, comment="The description.")
+  dateFrom = Column("date_from", DateTime, comment="The date of move in.")
+  dateTo = Column("date_to", DateTime, comment="The date of move out.")
   owner = Column(Integer, ForeignKey("people.id"), comment="The persons who uses this address.")
 
-  def __init__(self, type, name, address1, address2, city, state, zip5, zip4, owner):
+  def __init__(self, type, ifCurrent, ifCrimeScene, name, address1, address2, city, state, zip5, zip4, description, dateFrom, dateTo, owner):
     self.type = type
+    self.ifCurrent = ifCurrent
+    self.ifCrimeScene = ifCrimeScene
     self.name = name
     self.address1 = address1
     self.address2 = address2
@@ -193,6 +200,9 @@ class Address(Base):
     self.state = state
     self.zip5 = zip5
     self.zip4 = zip4
+    self.description = description
+    self.dateFrom = dateFrom
+    self.dateTo = dateTo
     self.owner = owner
 
 class Email(Base):
