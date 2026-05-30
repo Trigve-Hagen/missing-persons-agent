@@ -108,7 +108,7 @@
         <label for="state-chunk-overlap" class="form-label">Chunk Overlap</label>
         <input type="text" class="form-control" id="state-chunk-overlap" name="chunk_overlap" pattern="^\d+$" value="{{ state.chunk_overlap }}" required>
       </div>
-      <!-- <div class="col-6">
+      <div class="col-6">
         <label for="state-database" class="form-label">Database</label>
         <select class="form-select" id="state-database" name="database">
           {% if available_databases %}
@@ -117,8 +117,8 @@
             {% endfor %}
           {% endif %}
         </select>
-        <div class="form-text" id="state-question-text">This is the part of the RAG LLM that asks the question. It the query. </div>
-      </div> -->
+        <div class="form-text" id="state-question-text">There are three vector databases. investigation_db, investigator_db and determinator_db. You can switch between them here and view whats in them on the Chunks page. Switching between them will only effect what is shown on the Chunks page. If you need to reset any of them for any reason delete the folder in {{ appData }} and the application will rebuild it for you when you restart it.</div>
+      </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>
       </div>

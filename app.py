@@ -1917,6 +1917,8 @@ def chunk():
     metadatas=metadatas,
     page=page,
     total_pages=total_pages,
+    available_databases=Selection.available_databases,
+    appData=os.path.join(os.environ['LOCALAPPDATA'], "MissingPersons")
   )
 
 @app.route('/dashboard')
@@ -2330,8 +2332,22 @@ def application_state():
     apis=all_apis,
     models=all_models,
     prompts=all_prompts,
-    questions=all_questions
+    questions=all_questions,
+    appData=os.path.join(os.environ['LOCALAPPDATA'], "MissingPersons")
   )
+
+@app.route('/set_vector_db', methods=['POST'])
+def set_vector_db():
+  form_data = request.form
+  if form_data is None:
+    return redirect(url_for('chunk'))
+
+  state = session.get(State, 1)
+  if state:
+    state.database = form_data.get('database')
+    session.commit()
+
+  return redirect(url_for('chunk'))
 
 @app.route('/set_application_state', methods=['POST'])
 def set_application_state():

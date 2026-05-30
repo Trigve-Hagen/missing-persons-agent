@@ -34,7 +34,8 @@ class Selection():
 
   available_databases = {
     "investigation_db": "Investigation",
-    "code_optimize_db": "Code"
+    "investigator_db": "Investigator",
+    "determinator_db": "Determinator"
   }
 
   # GPU selections

@@ -25,12 +25,13 @@ class VectorDb:
     self.processor = state.processor
     self.chunk_size = state.chunk_size
     self.chunk_overlap = state.chunk_overlap
+    self.database = state.database
     self.embedding_function = self.get_embeddings()
 
   def get_vector_store(self, type):
-    if type == 'investigation':
+    if type == 'investigation_db':
       persistent_directory = self.investigation_db
-    elif type == 'investigator':
+    elif type == 'investigator_db':
       persistent_directory = self.investigator_db
     else:
       persistent_directory = self.determinator_db
@@ -81,7 +82,7 @@ class VectorDb:
       collection_name=self.collection_name,
       embedding_function=self.embedding_function
     ) """
-    vector_store = self.get_vector_store('investigation')
+    vector_store = self.get_vector_store(self.database)
 
     collection = vector_store._client.get_collection(name=self.collection_name)
     # Retrieve records matching both param1 AND param2
@@ -97,7 +98,7 @@ class VectorDb:
     return data, metadatas
 
   def get_chroma_data(self, type, id):
-    vector_store = self.get_vector_store('investigation')
+    vector_store = self.get_vector_store('investigation_db')
     try:
       collection = vector_store._client.get_collection(name=self.collection_name)
       # Retrieve records matching both param1 AND param2
@@ -126,7 +127,7 @@ class VectorDb:
       return [], []
 
   def get_vector_by_ids(self, ids):
-    vector_store = self.get_vector_store('investigation')
+    vector_store = self.get_vector_store('investigation_db')
     try:
       results = vector_store.get(ids=ids)
       view_data = []
@@ -147,7 +148,7 @@ class VectorDb:
       return []
 
   def update_data_by_id(self, vector_id: str, content: str, metadata: dict):
-    vector_store = self.get_vector_store('investigation')
+    vector_store = self.get_vector_store('investigation_db')
     try:
       collection = vector_store._collection
       collection.upsert(
@@ -164,7 +165,7 @@ class VectorDb:
       return False
 
   def delete_vector_by_id(self, ids: list[str]):
-    vector_store = self.get_vector_store('investigation')
+    vector_store = self.get_vector_store('investigation_db')
     try:
       vector_store.delete(ids=ids)
       flash(f"Successfully deleted IDs: {ids}", "success")
@@ -174,7 +175,7 @@ class VectorDb:
       return False
 
   def delete_file_by_source(self, source):
-    vector_store = self.get_vector_store('investigation')
+    vector_store = self.get_vector_store('investigation_db')
     try:
       collection = vector_store._client.get_collection(name=self.collection_name)
       collection.delete(

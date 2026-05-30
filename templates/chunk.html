@@ -5,8 +5,27 @@
 
 {% block content %}
 
-<h1 class="mt-4 mb-0">All Chunks</h1>
-<p class="mt-1 mb-4">All chunks saved to the database.</p>
+<div class="row mb-5">
+  <div class="col-12">
+    <h1 class="mt-4 mb-0">All Chunks</h1>
+    <p class="mt-1 mb-4">There are three vector databases. investigation_db, investigator_db and determinator_db. You can switch between them to view whats in them. Switching between them will only effect what is shown on this page. If you need to reset any of them for any reason delete the folder in {{ appData }}\databases and the application will rebuild it for you when you restart it. If you delete the {{ appData }}\databases\investigation_db folder you will have to resave all your vectors again. Deleting the vector databases does not affect the data stored in the SqlAlchemy database.</p>
+    <form action="/set_vector_db" method="POST" name="vector_db" autocomplete="off">
+      <div class="col-6">
+        <label for="state-database" class="form-label">Database</label>
+        <select class="form-select" id="state-database" name="database">
+          {% if available_databases %}
+            {% for key, value in available_databases.items() %}
+              <option value="{{ key }}" {% if key == selected_database %} selected {% endif %}>{{ value }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-6">
+        <button class="btn btn-primary mt-2 w-25" type="submit">Set</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -19,7 +38,7 @@
 {% endwith %}
 
 <div class="row mb-5">
-  <div class="col-md-12">
+  <div class="col-12">
     <table class="table table-striped">
       <thead>
         <tr>
