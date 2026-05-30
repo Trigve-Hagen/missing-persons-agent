@@ -6,7 +6,7 @@
 {% block content %}
 
 <div class="row mt-5">
-  <div class="col-md-12">
+  <div class="col-12">
     <h1 class="my-4">Resources</h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -25,12 +25,12 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-6">
         {% for key, value in resources %}
           <p class="mt-0"><b>{{ key }}</b></p>
         {% endfor %}
       </div>
-      <div class="col-md-6">
+      <div class="col-6">
         {% for key, value in resources %}
           <p class="mt-0"><i>{{ value }}</i></p>
         {% endfor %}
@@ -42,7 +42,7 @@
 <hr>
 
 <div class="row mt-4">
-  <div class="col-md-12">
+  <div class="col-12">
     <form class="row g-4" action="/set_resources" method="POST" name="resources" autocomplete="off">
       <div class="col-12">
         <button class="btn btn-primary" type="submit">Calculate Resources Used</button>
@@ -52,7 +52,7 @@
 </div>
 <div class="row">
   <h3 class="mt-5">Ollama Models Installed</h3>
-  <div class="col-md-12">
+  <div class="col-12">
     {% if models %}
       <table class="table table-striped">
         <thead>
@@ -67,7 +67,7 @@
             <tr>
               <td><a href="https://ollama.com/library/{{ model.model | replace("latest", "") | replace(":", "") | trim }}" target="_blank"><b>{{ model.model | replace("latest", "") | replace(":", "") | trim }}</a></td>
               <td>{{ "%.2f" | format(model.size / (1024**3)) }}GB</td>
-              <td><a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModel" data-bs-item="{{ model.model }}">Delete</a></td>
+              <td><a class="btn btn-danger w-100 text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#deleteModel" data-bs-item="{{ model.model }}">Delete</a></td>
             </tr>
           {% endfor %}
         </tbody>
@@ -79,7 +79,7 @@
 </div>
 
 <div class="row mt-5 mb-5">
-  <div class="col-md-12">
+  <div class="col-12">
     <p><b>Model Types</b> - List built from AI - Be carefull of the size. Some are really big.</p>
     <ul>
       <li>8GB VRAM (Entry Level): Use 1B to 7B parameter models</li>

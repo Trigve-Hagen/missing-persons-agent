@@ -61,15 +61,6 @@ Was thinking this morning about having the program continue out wards in the tre
 
 It would be a good idea I would think to add as many missing people as you can find and the immediate people groups they will have so you can look for people that are in every group. In case the person is involved in a ring of abductions where the same person is doing recruiting or abducting. Search for deleted or blocked accounts in the missing persons list of contacts or accounts that where deleted by the owners who were once friends with the missing person.
 
-### Donate
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?hosted_button_id=J8WY5PDLWGK6Y)
-
-I'm unemployed at the moment and looking for work. Help keep me going. Any support is appreciated. If you would be interested in helping or have ideas I'm open to help there also. If you are hiring I'm open to full time employment as a Full Stack Developer that can also code AI in both Python and C. Thanks.
-
-I'm not done yet but this will be the downloads page.
-Download: [Missing Persons](https://globalwebmethods.com/missing-persons)
-
 ## The Build
 If you are good with python
 - clone the repo
