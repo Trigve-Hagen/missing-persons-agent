@@ -600,6 +600,7 @@ def run_investigation_optimizer():
 
   return redirect(url_for('task'))
 
+
 @app.route('/set/complete/<int:id>/<int:ifComplete>', methods=['GET', 'POST'])
 def set_complete(id, ifComplete):
 
@@ -1928,7 +1929,7 @@ def chunk():
   offset = (page - 1) * per_page
 
   repo = ChromaDatabase(session=session)
-  data, metadatas = repo.get_all_chroma_data()
+  data, metadatas = repo.get_all_chroma_data("investigation_db")
 
   total_items = len(data)
   paginated_data = data[offset : offset + Selection.per_page]
@@ -1966,11 +1967,28 @@ def data_center():
   api_data = request_api.get_request(api, api_params)
   api_data, ifParsed = request_api.filter_data(api_data, state)
 
-  flash(f"This page is not finished. It will have an agent parse the data, list suggestions of key value pairs that you can add to the sqlAlchemy database. This way you can adjust the data before saving it to the vector database. It will filter out None values, decide by the type of column if you can add it functionaly and filter out irrelevant data. I'll create a link in the Data Center page so you can look throuh the raw data.", "info")
+  person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
 
-  flash(f"Create suggestions for Events to save.", 'info')
-  flash(f"Create suggestions for Images and Documents into the database.", 'info')
-  flash(f"Create suggestions for Notes into the database.", 'info')
+  manager = ChatManager(session=session)
+  response = manager.determine(person=person, json_payload=api_data)
+  if response:
+    try:
+
+      for item in response:
+        flash(f"Item details: {item}", 'info')
+        """ new_suggestion = Task(
+          type="CodeOptimization",
+          title=item.title,
+          description=item.description,
+          ifComplete=0,
+        )
+        session.add(new_suggestion)
+      # session.commit() """
+      # flash(f"Successfully {response}.", "success")
+    except json.JSONDecodeError:
+      flash(f"Failed to parse LLM response.", "danger")
+  else:
+    flash(f"No data defined. The database for code optimizations has not been created yet.", "info")
 
   return flask.render_template(
     'data_center.html',

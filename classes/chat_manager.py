@@ -7,7 +7,7 @@ import sys
 from flask import flash
 from sqlalchemy import select
 from database.state import State
-from database.model import Model, Prompt, Question
+from database.person import Person
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_ollama import ChatOllama
@@ -19,7 +19,7 @@ from langchain_core.output_parsers import PydanticOutputParser
 from classes.model_utils import ModelUtils
 from classes.chroma_database import ChromaDatabase
 from datetime import datetime
-from langchain_community.llms import Ollama
+# from langchain_community.llms import Ollama
 from langchain_core.output_parsers import JsonOutputParser
 
 # ---------------------------------------------------------
@@ -88,17 +88,17 @@ class ChatManager(ChromaDatabase):
     if model:
       try:
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-        if os.path.exists(self.persist_directory):
-            vectorstore = Chroma(
-                persist_directory=self.persist_directory,
-                embedding_function=embeddings,
-                collection_name=self.collection_name
+        if os.path.exists(self.investigation_db):
+            vector_store = Chroma(
+              persist_directory=self.investigation_db,
+              embedding_function=embeddings,
+              collection_name=self.collection_name
             )
         else:
-            flash(f"Chroma collection not found at {self.persist_directory}", "danger")
+            flash(f"Chroma collection not found at {self.investigation_db}", "danger")
             return False
 
-        retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
+        retriever = vector_store.as_retriever(search_kwargs={"k": 5})
         llm = ChatOllama(model=model.model, format="json", temperature=0.7)
 
         parser = PydanticOutputParser(pydantic_object=TaskList)
@@ -130,7 +130,7 @@ class ChatManager(ChromaDatabase):
       flash(f"Error fetching models: Please set a model.", "danger")
       return False
 
-  def determine(self, json_payload: str, db_schemas: str) -> ExtractionResult:
+  def determine(self, person: Person, json_payload: str) -> ExtractionResult:
     """ Takes a json response object and parses it into useable data that
     can be inserted into the sql_alchemy database. It creates Tasks that
     explains in human readable format what it is doing with the statement.
@@ -138,36 +138,78 @@ class ChatManager(ChromaDatabase):
     statement to insert the data into the database.
     """
 
-    # Assumes Ollama is running locally and you have a model like 'llama3' or 'mistral'
-    llm = Ollama(model="llama3")
+    # Get the database schema.
+    try:
+      determinator_db = ModelUtils.resource_path(os.path.join("database", "determinator_db"))
+      if os.path.exists(determinator_db):
+        results = self.get_collection("determinator_db")
+        db_schemas = "\n\n".join(results.get("documents", []))
+      else:
+        flash(f"Chroma collection not found at {determinator_db}", "danger")
+        return False
+    except Exception as e:
+        flash(f"Error getting database schema: {e}", "danger")
+        return False
 
-    system_prompt = """
-    You are an AI research agent analyzing missing person data feeds (JSON).
-    Your job is to identify relevant data, create a human-readable task for logging,
-    and formulate a safe, ready-to-execute SQL INSERT statement.
+    # Get the data already saved to make sure not to duplicate data.
+    try:
+      investigation_db = ModelUtils.resource_path(os.path.join("database", "investigation_db"))
+      if os.path.exists(determinator_db):
+        results = self.get_collection("investigation_db")
+        saved_data = "\n\n".join(results.get("documents", []))
+      else:
+        flash(f"Chroma collection not found at {investigation_db}", "danger")
+        return False
+    except Exception as e:
+        flash(f"Error getting database schema: {e}", "danger")
+        return False
 
-    You have access to the following Database context (Schema chunks):
-    {db_schemas}
+    # Get the missing person to filter out unrelated data.
+    missing_person = repr(person)
 
-    When given an input JSON, you must:
-    1. Extract data points related to the missing person.
-    2. Formulate a 'task' (name and description) to document this data.
-    3. Generate a SQL INSERT statement targeting the most appropriate table (from your schema context).
-    """
+    # Initialize the Ollama LLM (Ensure the model, like llama3, is pulled locally)
+    llm = ChatOllama(
+        model="llama3",
+        temperature=0.1
+    )
 
+    # Bind the Pydantic schema to force structured JSON output from the model
+    structured_llm = llm.with_structured_output(ExtractionResult)
+
+    # Create the prompt template with strict instructions
     prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("human", "Here are the database schema chunks to guide you:\n{db_schemas}\n\nHere is the API/RSS JSON data to process:\n{json_data}")
+        ("system", (
+            "You are an expert data engineering agent for a missing persons investigation platform.\n\n"
+            "Your job is to analyze incoming JSON data from external feeds and map it to the best available "
+            "database table based on the provided database schema context.\n\n"
+            "You must output two things inside the structured schema:\n"
+            "1. Task Tracking: A human-readable name and description for the 'tasks' table to log this action.\n"
+            "2. SQL Generation: The target table name and a fully formed, valid SQL INSERT statement "
+            "ready for execution.\n\n"
+            "CRITICAL SQL RULES:\n"
+            "- Do not include the 'owner' column or 'id' column in the INSERT statement. The backend handling script "
+            "will automatically inject the generated task foreign key ID and primary keys.\n"
+            "- Escape text quotes properly to avoid SQL syntax errors.\n"
+            "- Only map to tables explicitly mentioned or implied by the database context."
+            "- Only map data related to the missing person."
+            "- Do not map data if it is already saved to the database."
+        )),
+        ("user", (
+            "DATABASE SCHEMA CONTEXT:\n{schema_context}\n\n"
+            "INCOMING JSON DATA:\n{json_data}\n\n"
+            "MISSING PERSON:\n{missing_person}\n\n"
+            "SAVED DATA:\n{saved_data}\n\n"
+            "Analyze the data and generate the structured task and SQL insert statement."
+        ))
     ])
 
-    # Set up parser with Pydantic schema
-    parser = JsonOutputParser(pydantic_object=ExtractionResult)
+    # Combine the prompt template with the structured LLM execution chain
+    chain = prompt | structured_llm
 
-    # Format the chain
-    chain = prompt | llm | parser
-
-    # Invoke the model with inputs
-    result = chain.invoke({
-        "db_schemas": db_schemas,
-        "json_data": json_payload
+    # Run the chain
+    return chain.invoke({
+        "schema_context": db_schemas,
+        "json_data": json_payload,
+        "missing_person": missing_person,
+        "saved_data": saved_data
     })

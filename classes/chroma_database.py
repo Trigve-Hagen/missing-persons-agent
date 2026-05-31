@@ -15,6 +15,7 @@ from classes.model_utils import ModelUtils
 class ChromaDatabase:
   def __init__(self, session):
     self.investigation_db = ModelUtils.resource_path(os.path.join("database", "investigation_db"))
+    self.determinator_db = ModelUtils.resource_path(os.path.join("database", "determinator_db"))
     self.collection_name = "missing_persons"
     state = session.get(State, 1)
     self.processor = state.processor
@@ -64,18 +65,21 @@ class ChromaDatabase:
 
     return embedding_function
 
-  def get_all_chroma_data(self):
+  def get_collection(self, database):
     vector_store = Chroma(
-      persist_directory=self.persistent_directory,
+      persist_directory=ModelUtils.resource_path(os.path.join("database", database)),
       collection_name=self.collection_name,
       embedding_function=self.embedding_function
     )
 
     collection = vector_store._client.get_collection(name=self.collection_name)
     # Retrieve records matching both param1 AND param2
-    results = collection.get(
+    return collection.get(
       include=["documents", "metadatas"],
     )
+
+  def get_all_chroma_data(self, database):
+    results = self.get_collection(database)
     metadatas = results["metadatas"]
 
     data = []
