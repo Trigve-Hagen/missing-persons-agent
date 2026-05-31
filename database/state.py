@@ -56,3 +56,21 @@ class Task(Base):
     self.dateCreated = dateCreated
     self.dateCompleted = dateCompleted
     self.ifComplete = ifComplete
+
+class Statement(Base):
+  """
+  Statements are database adjustments that need to be executed when a task is completed.
+  """
+
+  __tablename__ = "statements"
+  __table_args__ = {"comment": "This table stores database statements."}
+
+  id = Column("id", Integer, primary_key=True)
+  sqlTableName = Column("sql_table_name", NullToEmptyString, comment="The name of the sql table name where the data will be inserted.")
+  sqlInsertStatement = Column("sql_insert_statement", NullToEmptyString, comment="The sql insert statement.")
+  owner = Column(Integer, ForeignKey("tasks.id"), comment="The task the statement is associated with.")
+
+  def __init__(self, sqlTableName, sqlInsertStatement, owner):
+    self.sqlTableName = sqlTableName
+    self.sqlInsertStatement = sqlInsertStatement
+    self.owner = owner

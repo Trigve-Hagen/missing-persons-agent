@@ -63,7 +63,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for model in models %}
+          {% for model in models['models'] %}
             <tr>
               <td><a href="https://ollama.com/library/{{ model.model | replace("latest", "") | replace(":", "") | trim }}" target="_blank"><b>{{ model.model | replace("latest", "") | replace(":", "") | trim }}</a></td>
               <td>{{ "%.2f" | format(model.size / (1024**3)) }}GB</td>

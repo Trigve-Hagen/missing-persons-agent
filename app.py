@@ -43,8 +43,8 @@ import math
 import time
 import json
 import ast
+import logging
 from werkzeug.utils import secure_filename
-from ollama_manager import OllamaManager
 from config import Config
 from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for, jsonify
 from sqlalchemy.exc import IntegrityError
@@ -57,13 +57,18 @@ from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField
 from database.person import Category, Person, Alias, Email, EmailMessage, Phone, Call, Address, File, Event, Note
-from request_api import RequestApi
-from people_utils import PeopleUtils, ValueOptions
-from resources import Resources
-from vector_repository import VectorDb, PdfRepository, PersonRepository, EventRepository, NoteRepository, Determinator
-from process_files import ProcessFiles
-from selections import Selection
-from model_utils import ModelUtils, Logging
+
+from classes.request_api import RequestApi
+from classes.selections import Selection
+from classes.process_files import ProcessFiles
+from classes.people_utils import PeopleUtils, ValueOptions
+from classes.resources import Resources
+from classes.logging import Logging
+from classes.model_utils import ModelUtils
+from classes.model_manager import ModelManager
+from classes.chat_manager import ChatManager
+from classes.chroma_database import ChromaDatabase
+from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, NoteRepository, Determinator
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -74,7 +79,6 @@ DATABASE = ModelUtils.resource_path(os.path.join("database", "sql_alchemy", "dat
 def resource_path(relative_path):
   """ Get absolute path to resource, works for dev and for PyInstaller """
   try:
-      # PyInstaller creates a temp folder and stores path in _MEIPASS
       base_path = sys._MEIPASS
   except Exception:
       base_path = os.path.abspath(".")
@@ -100,9 +104,14 @@ def add_nosniff_header_to_static(response):
 @app.route('/')
 @app.route('/index')
 def index():
-  create_statements = Resources.initialize_determinator(engine)
+  resource = Resources()
+  create_statements = resource.initialize_determinator(engine=engine)
+  data_entities = {}
+  for entity, value in create_statements.items():
+    if entity in Selection.data_entities:
+      data_entities[entity] = value
   determine = Determinator(session=session)
-  determine.chunk_create_statements(createStatements=create_statements)
+  determine.chunk_create_statements(createStatements=data_entities)
 
   return flask.render_template('index.html', appData=os.path.join(os.environ['LOCALAPPDATA'], "MissingPersons"))
 
@@ -353,13 +362,13 @@ def set_file():
     flash(f"No selected file", "danger")
     return redirect(url_for('file'))
 
-  pdf_repo = PdfRepository(session=session)
+  # pdf_repo = PdfRepository(session=session)
 
   # Secure and save the file to sql_alchemy
   if file and ModelUtils.allowed_file(file.filename):
     sec_filename = secure_filename(file.filename)
     filename, filename_ext = os.path.splitext(sec_filename)
-    clean_filename = pdf_repo.machine_name(filename)
+    clean_filename = ModelUtils.machine_name(name=filename)
     safe_filename = f"{clean_filename}_{time.time_ns()}{filename_ext}"
     save_path = ModelUtils.resource_path(os.path.join("uploads", "files", safe_filename))
     file.save(save_path)
@@ -395,8 +404,12 @@ def set_file():
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
   user_input = request.json.get('message')
-  manager = OllamaManager(session=session)
-  qa_chain = manager.prompt()
+
+  state = session.get(State, 1)
+  model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+
+  manager = ChatManager(session=session)
+  qa_chain = manager.inspector(model=model)
   response = dict()
   if qa_chain:
     # Run chain
@@ -519,8 +532,13 @@ def run_code_optimizer():
     flash(f"Upload a question and then set it in State.", "danger")
     return redirect(url_for('task'))
 
-  manager = OllamaManager(session=session)
-  response = manager.suggestions()
+  state = session.get(State, 1)
+  model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+  prompt = session.execute(select(Prompt).filter_by(id = state.prompt)).scalar_one_or_none()
+  question = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
+
+  manager = ChatManager(session=session)
+  response = manager.suggestions(model=model, prompt=prompt, question=question)
   if response:
     try:
       for item in response.suggestions:
@@ -555,8 +573,13 @@ def run_investigation_optimizer():
     flash(f"Upload a question and then set it in State.", "danger")
     return redirect(url_for('task'))
 
-  manager = OllamaManager(session=session)
-  response = manager.suggestions()
+  state = session.get(State, 1)
+  model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+  prompt = session.execute(select(Prompt).filter_by(id = state.prompt)).scalar_one_or_none()
+  question = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
+
+  manager = ChatManager(session=session)
+  response = manager.suggestions(model=model, prompt=prompt, question=question)
   if response:
     try:
       for item in response.suggestions:
@@ -634,7 +657,7 @@ def edit_model(id):
 def set_model():
   form_data = request.form
   ollama_model = form_data.get('model')
-  manager = OllamaManager(session=session)
+  manager = ModelManager()
   if not manager.is_model_downloaded(ollama_model):
     manager.download_model(ollama_model)
 
@@ -1904,7 +1927,7 @@ def chunk():
   per_page = request.args.get("per_page", 10, type=int)
   offset = (page - 1) * per_page
 
-  repo = VectorDb(session=session)
+  repo = ChromaDatabase(session=session)
   data, metadatas = repo.get_all_chroma_data()
 
   total_items = len(data)
@@ -1994,7 +2017,7 @@ def create_instance(id):
   model_params = session.execute(select(ModelParams).filter_by(id = id)).all()
 
   parameters = {k: v for k, v in model_params}
-  manager = OllamaManager(session=session)
+  manager = ModelManager()
   manager.create_model(model, parameters)
 
   all_models = session.query(Model).all()
@@ -2042,7 +2065,7 @@ def delete_vector_item():
   edit_path = form_data.get('edit_path')
 
   try:
-    manager = VectorDb(session=session)
+    manager = ChromaDatabase(session=session)
     manager.delete_vector_by_id(ids=[vector_id])
     flash(vector_id + " deleted successfully!", "success")
     return redirect(url_for(edit_path, id=entity_id))
@@ -2206,8 +2229,8 @@ def delete_item():
 
 @app.route('/resources')
 def resources():
-  app_resources = Resources(session=session)
-  models = app_resources.ollama_models()
+  resource = Resources()
+  models = resource.ollama_models()
 
   state = session.get(State, 1)
   resources = [
@@ -2217,17 +2240,17 @@ def resources():
     ("Ollama Models", state.ollama_models_size),
   ]
 
-  return flask.render_template('resources.html', resources=resources, models=models['models'])
+  return flask.render_template('resources.html', resources=resources, models=models)
 
 @app.route('/set_resources', methods=['POST'])
 def set_resources():
-  app_resources = Resources(session=session)
   state = session.get(State, 1)
+  resource = Resources()
   if state:
-    state.files_size = app_resources.files_size()
-    state.sql_alchemy_database_size = app_resources.sql_alchemy_database()
-    state.chroma_database_size = app_resources.chroma_database()
-    state.ollama_models_size = app_resources.ollama_models_size()
+    state.files_size = resource.files_size()
+    state.sql_alchemy_database_size = resource.sql_alchemy_database()
+    state.chroma_database_size = resource.chroma_database()
+    state.ollama_models_size = resource.ollama_models_size()
     session.commit()
 
   return redirect(url_for('resources'))
@@ -2244,7 +2267,7 @@ def delete_model():
     return redirect(url_for('resources'))
 
   try:
-    manager = OllamaManager(session=session)
+    manager = ModelManager()
     manager.remove_model(item)
     flash(item + " deleted successfully!", "success")
     return redirect(url_for('resources'))
@@ -2468,8 +2491,8 @@ def initialize_database(engine):
     session.commit()
 
   """ if session.query(Model).first() is None:
-    app_resources = Resources(session=session)
-    models = app_resources.ollama_models()
+    resource = Resources()
+    models = resource.ollama_models()
     for model in models['models']:
       m1 = Model(name=model.model, model=model.model, type="ollama", system="")
       session.add(m1)

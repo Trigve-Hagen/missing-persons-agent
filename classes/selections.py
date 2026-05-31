@@ -38,6 +38,17 @@ class Selection():
     "determinator_db": "Determinator"
   }
 
+  data_entities = [
+    'people',
+    'aliases',
+    'addresses',
+    'emails',
+    'phones',
+    'files',
+    'events',
+    'notes'
+  ]
+
   # GPU selections
   available_devices = {
     # Standard Devices

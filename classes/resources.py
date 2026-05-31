@@ -1,17 +1,13 @@
 import os
-from ollama_manager import OllamaManager
 from sqlalchemy.schema import CreateTable
 from database.base import Base
-from model_utils import ModelUtils
+from classes.model_utils import ModelUtils
+from classes.model_manager import ModelManager
 
 class Resources():
-  def __init__(self, session):
-    self.session = session
-    self.base_path = os.path.abspath(".")
-
   def get_folder_size(self, folder_path):
     total_size = 0
-    path = os.path.join(self.base_path, folder_path)
+    path = os.path.join(os.path.abspath("."), folder_path)
     for root, dirs, files in os.walk(path):
       for file in files:
         file_path = os.path.join(root, file)
@@ -21,8 +17,7 @@ class Resources():
 
   def get_file_size(self, file_path):
     total_size = 0
-    path = ModelUtils.resource_path(os.path.join(self.base_path, file_path))
-    print(path)
+    path = ModelUtils.resource_path(os.path.join(os.path.abspath("."), file_path))
     if os.path.isfile(path):
       total_size = os.path.getsize(path)
     return total_size
@@ -42,23 +37,19 @@ class Resources():
     return f"{size_in_bytes / (1024*1024):.2f} MB"
 
   def ollama_models(self):
-    manager = OllamaManager(session=self.session)
+    manager = ModelManager()
     models = manager.get_models()
     return models
 
   def ollama_models_size(self):
-    manager = OllamaManager(session=self.session)
+    manager = ModelManager()
     return f"{manager.get_ollama_storage_gb():.2f} GB"
 
-  def initialize_determinator(engine):
-    # Initialize the dictionary to store statements
+  def initialize_determinator(self, engine):
     create_statements = {}
 
-    # Iterate through all tables defined in your metadata
     for table_name, table in Base.metadata.tables.items():
-        # Compile the CreateTable construct for the specific engine/dialect
-        statement = CreateTable(table).compile(engine)
-        # Add to dictionary as {TableName: SQL_Statement}
-        create_statements[table_name] = str(statement)
+      statement = CreateTable(table).compile(engine)
+      create_statements[table_name] = str(statement)
 
     return create_statements

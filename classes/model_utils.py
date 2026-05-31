@@ -1,6 +1,7 @@
 import os
 import sys
-import logging
+import re
+import unicodedata
 from pathlib import Path
 
 class ModelUtils:
@@ -36,16 +37,15 @@ class ModelUtils:
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-class Logging():
-  def setup_appdata_logging():
-     # 3. Construct the full path to the log file
-    log_file_path = ModelUtils.resource_path(os.path.join("logs", "errors.log"))
+  def machine_name(name):
+    # 1. Convert accented characters to ASCII equivalents (e.g., 'é' -> 'e')
+    name = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode('ascii')
+    # 2. Keep only alphanumeric characters, underscores, hyphens, and dots
+    # This strips dangerous symbols like /, \, :, *, ?, ", <, >, |
+    name = re.sub(r'[^\w\s.-]', '', name).strip()
+    # 3. Replace internal spaces or multiple separators with a single underscore
+    name = re.sub(r'[-\s]+', '_', name)
+    # 4. Remove leading dots to prevent hidden files or directory traversal
+    name = name.lstrip('.')
+    return name or "default_name"
 
-    # 4. Configure the logging module
-    logging.basicConfig(
-        # Use as_posix() to prevent Windows backslash escaping errors
-        filename=log_file_path.as_posix(),
-        level=logging.ERROR,  # Capture only ERROR and CRITICAL logs
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        filemode="a"  # "a" appends to the file; "w" would overwrite it
-    )
