@@ -28,26 +28,26 @@ class Person(Base):
   """
 
   __tablename__ = "people"
-  __table_args__ = {"comment": "This table stores the people. Its mainly the descriptive properties. The only none descriptive property at this time is the SSN."}
+  __table_args__ = {"comment": "This table stores the people. Its mainly the descriptive properties. The only none descriptive property at this time is the SSN. identifiers: first_name, last_name, data_of_birth"}
 
   id = Column("id", Integer, primary_key=True)
-  firstName = Column("first_name", NullToEmptyString, comment="The persons first name.")
-  middleName = Column("middle_name", NullToEmptyString, comment="The persons middle name.")
-  lastName = Column("last_name", NullToEmptyString, comment="The persons last name.")
-  sirName = Column("sir_name", NullToEmptyString, comment="The persons sir name.")
-  suffix = Column(NullToEmptyString, comment="The persons suffix name.")
-  type = Column(Integer, ForeignKey('categories.id'), comment="The type of user. Types are defined in Category. There is an immutable Missing Person value. All other values can be added and changed by the user.")
-  height = Column(Integer, comment="The height of the person.")
-  weight = Column(Integer, comment="The weight of the person.")
-  hairColor = Column("hair_color", NullToEmptyString, comment="The hair color of the person.")
-  eyeColor = Column("eye_color", NullToEmptyString, comment="The height of the person.")
-  ssn = Column(NullToEmptyString, comment="The persons SSN. This is used here to check if someone is trying to use there credit in a nefarious way.")
-  gender = Column(NullToEmptyString, comment="The gender of the person. Allowed values are male and female.")
-  dob = Column(DateTime, comment="The date of birth of the person.")
-  ethnicity = Column(NullToEmptyString, comment="The ethnicity of the person.")
-  primaryLanguage = Column("primary_language", NullToEmptyString, comment="The primary language of the person.")
-  missing = Column(DateTime, comment="The date the missing person went missing or the date that the person of interest met the missing person.")
-  description = Column(Text, comment="A place to add more descriptive information about the person.")
+  firstName = Column("first_name", NullToEmptyString, nullable=False, comment="The persons first name.")
+  middleName = Column("middle_name", NullToEmptyString, default=None, comment="The persons middle name.")
+  lastName = Column("last_name", NullToEmptyString, nullable=False, comment="The persons last name.")
+  sirName = Column("sir_name", NullToEmptyString, default=None, comment="The persons sir name.")
+  suffix = Column(NullToEmptyString, default=None, comment="The persons suffix name.")
+  type = Column(Integer, ForeignKey('categories.id'), default=2, comment="The type of user. Types are defined in Category. There is an immutable Missing Person value. All other values can be added and changed by the user.")
+  height = Column(Integer, default=None, comment="The height of the person.")
+  weight = Column(Integer, default=None, comment="The weight of the person.")
+  hairColor = Column("hair_color", NullToEmptyString, default=None, comment="The hair color of the person.")
+  eyeColor = Column("eye_color", NullToEmptyString, default=None, comment="The height of the person.")
+  ssn = Column(NullToEmptyString, default=None, comment="The persons SSN. This is used here to check if someone is trying to use there credit in a nefarious way.")
+  gender = Column(NullToEmptyString, default=None, comment="The gender of the person. Allowed values are male and female.")
+  dob = Column("data_of_birth", DateTime, default=None, comment="The date of birth of the person.")
+  ethnicity = Column(NullToEmptyString, default=None, comment="The ethnicity of the person.")
+  primaryLanguage = Column("primary_language", NullToEmptyString, default=None, comment="The primary language of the person.")
+  missing = Column(DateTime, default=None, comment="The date the missing person went missing or the date that the person of interest met the missing person.")
+  description = Column(Text, default=None, comment="A place to add more descriptive information about the person.")
   owner = Column(Integer, default=0, comment="This will be 0 if a missing person(Level 1). If level 2 contacts then this will be the missing persons id. If level 3 then this will be the person of interests id that they knew. This can get crazy big in memory usage as you continue to level up etc..")
   # Relationships
   category = relationship(Category)
@@ -150,12 +150,12 @@ class Alias(Base):
   __table_args__ = {"comment": "This table stores a persons aliases."}
 
   id = Column("id", Integer, primary_key=True)
-  firstName = Column("first_name", NullToEmptyString, comment="The persons first name.")
-  middleName = Column("middle_name", NullToEmptyString, comment="The persons middle name.")
-  lastName = Column("last_name", NullToEmptyString, comment="The persons last name.")
-  sirName = Column("sir_name", NullToEmptyString, comment="The persons sir name.")
-  suffix = Column(NullToEmptyString, comment="The persons suffix name.")
-  owner = Column(Integer, ForeignKey("people.id"), comment="The persons who uses this alias.")
+  firstName = Column("first_name", NullToEmptyString, nullable=False, comment="The persons first name.")
+  middleName = Column("middle_name", NullToEmptyString, default=None, comment="The persons middle name.")
+  lastName = Column("last_name", NullToEmptyString, default=None, comment="The persons last name.")
+  sirName = Column("sir_name", NullToEmptyString, default=None, comment="The persons sir name.")
+  suffix = Column(NullToEmptyString, default=None, comment="The persons suffix name.")
+  owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons who uses this alias.")
 
   def __init__(self, firstName, middleName, lastName, sirName, suffix, owner):
     self.firstName = firstName
@@ -171,23 +171,23 @@ class Address(Base):
   """
 
   __tablename__ = "addresses"
-  __table_args__ = {"comment": "This table stores a persons addresses."}
+  __table_args__ = {"comment": "This table stores a persons addresses. identifiers: address_1, city, state"}
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(Integer, comment="The user defined type of address. Definitions are created in Category")
-  ifCurrent = Column("if_current", Integer, comment="If current address.")
-  ifCrimeScene = Column("if_crime_scene", Integer, comment="If crime scene address.")
-  name = Column(NullToEmptyString, comment="The user defined name of address.")
-  address1 = Column("address_1", NullToEmptyString, comment="The address.")
-  address2 = Column("address_2", NullToEmptyString, comment="The apartment number associated with the address.")
-  city = Column(NullToEmptyString, comment="The city associated with the address.")
-  state = Column(NullToEmptyString, comment="The state associated with the address.")
-  zip5 = Column("zip_5", Integer, comment="The 5 digit zip code associated with the address.")
-  zip4 = Column("zip_4", Integer, comment="The 4 digit zip code associated with the address.")
-  description = Column(Text, comment="The description.")
-  dateFrom = Column("date_from", DateTime, comment="The date of move in.")
-  dateTo = Column("date_to", DateTime, comment="The date of move out.")
-  owner = Column(Integer, ForeignKey("people.id"), comment="The persons who uses this address.")
+  type = Column(Integer, default=3, comment="The user defined type of address. Definitions are created in Category")
+  ifCurrent = Column("if_current", Integer, default=0, comment="If current address.")
+  ifCrimeScene = Column("if_crime_scene", Integer, default=0, comment="If crime scene address.")
+  name = Column(NullToEmptyString, nullable=False, comment="The user defined name of address.")
+  address1 = Column("address_1", NullToEmptyString, nullable=False, comment="The address.")
+  address2 = Column("address_2", NullToEmptyString, default=None, comment="The apartment number associated with the address.")
+  city = Column(NullToEmptyString, default=None, comment="The city associated with the address.")
+  state = Column(NullToEmptyString, default=None, comment="The state associated with the address.")
+  zip5 = Column("zip_5", Integer, default=None, comment="The 5 digit zip code associated with the address.")
+  zip4 = Column("zip_4", Integer, default=None, comment="The 4 digit zip code associated with the address.")
+  description = Column(Text, default=None, comment="The description.")
+  dateFrom = Column("date_from", DateTime, default=None, comment="The date of move in.")
+  dateTo = Column("date_to", DateTime, default=None, comment="The date of move out.")
+  owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons who uses this address.")
 
   def __init__(self, type, ifCurrent, ifCrimeScene, name, address1, address2, city, state, zip5, zip4, description, dateFrom, dateTo, owner):
     self.type = type
@@ -211,12 +211,12 @@ class Email(Base):
   """
 
   __tablename__ = "emails"
-  __table_args__ = {"comment": "This table stores a persons email addresses."}
+  __table_args__ = {"comment": "This table stores a persons email addresses. identifiers: email_address"}
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(Integer, comment="The user defined type of email. Definitions are created in Category")
-  email = Column(NullToEmptyString(255), nullable=False, comment="The persons email address.")
-  owner = Column(Integer, ForeignKey("people.id"), comment="The persons who uses this email.")
+  type = Column(Integer, default=4, comment="The user defined type of email. Definitions are created in Category")
+  email = Column("email_address", NullToEmptyString(255), nullable=False, comment="The persons email address.")
+  owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons who uses this email.")
 
   def __init__(self, type, email, owner):
     self.type = type
@@ -243,12 +243,12 @@ class Phone(Base):
   """
 
   __tablename__ = "phones"
-  __table_args__ = {"comment": "This table stores a persons phone numbers."}
+  __table_args__ = {"comment": "This table stores a persons phone numbers. identifiers: phone_number"}
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(Integer, comment="The user defined type of phones. Definitions are created in Category")
-  phone = Column(NullToEmptyString(20), nullable=False)
-  owner = Column(Integer, ForeignKey("people.id"), comment="The persons who uses this phone number.")
+  type = Column(Integer, default=5, comment="The user defined type of phones. Definitions are created in Category")
+  phone = Column("phone_number", NullToEmptyString(20), nullable=False, comment="The phone number.")
+  owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons who uses this phone number.")
 
   def __init__(self, type, phone, owner):
     self.type = type
@@ -298,18 +298,19 @@ class Event(Base):
   """
   Events related to the missing person
   that might hold weight in the investigation.
+  identifiers: name, description, date_from
   """
 
   __tablename__ = "events"
-  __table_args__ = {"comment": "This table stores events associated with persons. In the future they will be the base information for timelines."}
+  __table_args__ = {"comment": "This table stores events associated with persons. In the future they will be the base information for timelines. identifiers: name, description, date_from"}
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(Integer, comment="The user defined type of Events. Definitions are created in Category")
-  name = Column(NullToEmptyString) # name of business if work address
-  description = Column(Text, comment="The event description.")
-  dateFrom = Column("date_from", DateTime, comment="The start date of the event.")
-  dateTo = Column("date_to", DateTime, comment="The end date of the event if there is one.")
-  owner = Column(Integer, ForeignKey("people.id"), comment="The persons the event is associated with.")
+  type = Column(Integer, default=6, comment="The user defined type of Events. Definitions are created in Category")
+  name = Column(NullToEmptyString, nullable=False, comment="The name of the event.")
+  description = Column(Text, nullable=False, comment="The event description.")
+  dateFrom = Column("date_from", DateTime, nullable=False, comment="The start date of the event.")
+  dateTo = Column("date_to", DateTime, default=None, comment="The end date of the event if there is one.")
+  owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons the event is associated with.")
 
   def __init__(self, type, name, description, dateFrom, dateTo, owner):
     self.type = type

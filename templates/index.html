@@ -138,10 +138,19 @@
 <div class="row">
   <div class="col-md-12">
     <h3 class="my-2">Finish up stuff</h3>
-    <p>Last steps to Release:</p>
     <ul>
+      <li>Refactoring
+        <ul>
+          <li>Dict and Paramerter casting: Dictionary Type, Optional, etc..</li>
+          <li>Commenting classes and functons.</li>
+          <li>Controllers.</li>
+          <li>Replace slow running processes with pre-made or faster processes: Lamda functions, Form elements.</li>
+          <li>Multi Agent Management.</li>
+        </ul>
+      </li>
+      <li>The first 6 categories need to stay as is for system processes.</li>
       <li>Need to create a backup of everything uploaded and database files in AppData for new releases.</li>
-      <li>When deleting files delete the file.</li>
+      <li>When deleting files delete the file. Also check for items in vector database using it as a data source.</li>
       <li>When deleting entitys check for chunks in the vector database.</li>
       <li>Build out Word, Excel</li>
       <li>Data Center: Get a model to filter through, separate and list all the people and all the 'Attribute: Value' pairs it finds in the json from APIs and RSS Feeds that can be saved to the sqlalchemy database. Have it insert them into Task once it has found the right entity and field it can be added to. When you hit complete it saves it to the intended entity and field in the database.

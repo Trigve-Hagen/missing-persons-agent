@@ -1,12 +1,6 @@
 import os
-import re
-import platform
-import ollama
-import json
-import sys
 from flask import flash
 from sqlalchemy import select
-from database.state import State
 from database.person import Person
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -19,8 +13,7 @@ from langchain_core.output_parsers import PydanticOutputParser
 from classes.model_utils import ModelUtils
 from classes.chroma_database import ChromaDatabase
 from datetime import datetime
-# from langchain_community.llms import Ollama
-from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.tools import tool
 
 # ---------------------------------------------------------
 # 1. Pydantic Schemas for Structured LLM Output
@@ -47,6 +40,10 @@ class Statement(BaseModel):
 class ExtractionResult(BaseModel):
     task: Task
     statement: Statement
+
+# ---------------------------------------------------------
+# LLMs
+# ---------------------------------------------------------
 
 class ChatManager(ChromaDatabase):
   def inspector(self, model):
@@ -151,26 +148,13 @@ class ChatManager(ChromaDatabase):
         flash(f"Error getting database schema: {e}", "danger")
         return False
 
-    # Get the data already saved to make sure not to duplicate data.
-    try:
-      investigation_db = ModelUtils.resource_path(os.path.join("database", "investigation_db"))
-      if os.path.exists(determinator_db):
-        results = self.get_collection("investigation_db")
-        saved_data = "\n\n".join(results.get("documents", []))
-      else:
-        flash(f"Chroma collection not found at {investigation_db}", "danger")
-        return False
-    except Exception as e:
-        flash(f"Error getting database schema: {e}", "danger")
-        return False
-
     # Get the missing person to filter out unrelated data.
     missing_person = repr(person)
 
     # Initialize the Ollama LLM (Ensure the model, like llama3, is pulled locally)
     llm = ChatOllama(
-        model="llama3",
-        temperature=0.1
+      model="llama3",
+      temperature=0.1
     )
 
     # Bind the Pydantic schema to force structured JSON output from the model
@@ -178,29 +162,38 @@ class ChatManager(ChromaDatabase):
 
     # Create the prompt template with strict instructions
     prompt = ChatPromptTemplate.from_messages([
-        ("system", (
-            "You are an expert data engineering agent for a missing persons investigation platform.\n\n"
-            "Your job is to analyze incoming JSON data from external feeds and map it to the best available "
-            "database table based on the provided database schema context.\n\n"
-            "You must output two things inside the structured schema:\n"
-            "1. Task Tracking: A human-readable name and description for the 'tasks' table to log this action.\n"
-            "2. SQL Generation: The target table name and a fully formed, valid SQL INSERT statement "
-            "ready for execution.\n\n"
-            "CRITICAL SQL RULES:\n"
-            "- Do not include the 'owner' column or 'id' column in the INSERT statement. The backend handling script "
-            "will automatically inject the generated task foreign key ID and primary keys.\n"
-            "- Escape text quotes properly to avoid SQL syntax errors.\n"
-            "- Only map to tables explicitly mentioned or implied by the database context."
-            "- Only map data related to the missing person."
-            "- Do not map data if it is already saved to the database."
-        )),
-        ("user", (
-            "DATABASE SCHEMA CONTEXT:\n{schema_context}\n\n"
-            "INCOMING JSON DATA:\n{json_data}\n\n"
-            "MISSING PERSON:\n{missing_person}\n\n"
-            "SAVED DATA:\n{saved_data}\n\n"
-            "Analyze the data and generate the structured task and SQL insert statement."
-        ))
+      ("system", (
+        "You are an expert data engineering agent for a missing persons investigation platform.\n\n"
+        "Your job is to analyze incoming JSON data from external feeds and map it to the best available "
+        "database table based on the provided database schema context, avoiding duplicates.\n"
+        "The data you are looking for is:\n"
+        "- Any person who came in contact with the individual.\n"
+        "- Any email address used by the individual.\n"
+        "- Any phone number used by the individual.\n"
+        "- Any address used by the individual.\n"
+        "- Any Event that happened pertaining to the missing person or persons of interest.\n\n"
+
+        "Read the provided INCOMING_JSON_DATA and extract the identifiers described in the "
+        "table comments of the DATABASE_SCHEMA_CONTEXT:\n"
+        "Write a safe, parameterized SQL INSERT statement to add the "
+        "details to the appropriate table. Map the JSON keys to appropriate table columns.\n"
+        "You must output two things inside the structured schema:\n"
+        "1. Task Tracking: A human-readable name and description for the 'tasks' table to log this action.\n"
+        "2. SQL Generation: The target table name and a fully formed, valid SQL INSERT statement "
+        "ready for execution.\n\n"
+        "CRITICAL SQL RULES:\n"
+        "- Do not include the 'owner' column or 'id' column in the INSERT statement. The backend handling script "
+        "will automatically inject the generated task foreign key ID and primary keys.\n"
+        "- Escape text quotes properly to avoid SQL syntax errors.\n"
+        "- Only map to tables explicitly mentioned or implied by the DATABASE_SCHEMA_CONTEXT.\n"
+        "- Only map data related to the individual in this context: MISSING_PERSON."
+      )),
+      ("user", (
+        "DATABASE_SCHEMA_CONTEXT:\n{schema_context}\n\n"
+        "INCOMING_JSON_DATA:\n{json_data}\n\n"
+        "MISSING_PERSON:\n{missing_person}\n\n"
+        "Analyze the data and generate the structured task and SQL insert statement."
+      ))
     ])
 
     # Combine the prompt template with the structured LLM execution chain
@@ -208,8 +201,7 @@ class ChatManager(ChromaDatabase):
 
     # Run the chain
     return chain.invoke({
-        "schema_context": db_schemas,
-        "json_data": json_payload,
-        "missing_person": missing_person,
-        "saved_data": saved_data
+      "schema_context": db_schemas,
+      "json_data": json_payload,
+      "missing_person": missing_person
     })

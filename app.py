@@ -2446,12 +2446,12 @@ def initialize_database(engine):
     Base.metadata.create_all(bind=engine)
 
   if session.query(Category).first() is None:
-    c1 = Category("contactType", "Missing Person")
-    c2 = Category("contactType", "Person of Interest")
-    c3 = Category("addressType", "Home")
-    c4 = Category("emailType", "Personal")
-    c5 = Category("phoneType", "Home")
-    c6 = Category("eventType", "Alibi")
+    c1 = Category("contactType", "Missing Person") # 1
+    c2 = Category("contactType", "Person of Interest") # 2
+    c3 = Category("addressType", "Task Type") # 3
+    c4 = Category("emailType", "Task Type") # 4
+    c5 = Category("phoneType", "Task Type") # 5
+    c6 = Category("eventType", "Task Type") # 6
     session.add(c1)
     session.add(c2)
     session.add(c3)
