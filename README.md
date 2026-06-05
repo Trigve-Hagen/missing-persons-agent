@@ -3,7 +3,7 @@ Missing Persons is a tool to investigate missing persons. Its built in python an
 
 05/27/2026 - It needs to have a central store of all data pertaining to an investigation. A vector database where anyone using Missing Persons or other software like Missing Persons can plug into and use the data stored there in their investigation. The information should be submitted to be added in the style of git. Then merged into the main branch when validated. The nice thing about this is the data can be valid, deduplicated and always ready.
 
-AI tools like models rely heavily on your computer hardware. Im running a laptop with 1.5G of RAM and a INTEL CORE i7 CPU proccessor. When using a model that needs 16Gb of VRAM and a Nvidia GPU proccessor the response time is 20 min. Its important to use the better models though of you get garbage results.
+AI tools like models rely heavily on your computer hardware. Im running a laptop with 1.5G of RAM and a INTEL CORE i7 CPU proccessor. When using a model that needs 16Gb of VRAM and a Nvidia GPU proccessor the response time is 20 min. Its important to use the better models though or you get garbage results.
 
 If you are looking to upgrade to a new computer and you want to use missing persons I would recommend to get a computer with at least 16GB of VRAM and a Nvidia GPU proccessor. If you want ultra fast get one with 32 or 64 GB of VRAM. The GPU can range in price based upon size. That being said:
 
