@@ -4,12 +4,12 @@
 } */
 
 .log-container {
-  font-family: monospace;
   margin: 0 auto;
 }
 
 pre {
   /* background-color: #252526; */
+  font-family: monospace;
   padding: 10px;
   border-radius: 5px;
   white-space: pre-wrap;
