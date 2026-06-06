@@ -164,6 +164,29 @@
 <p>Save the Headers: When calling APIs, log the HTTP response headers. They contain server times and IP addresses that validate the request actually happened.</p>
 <p>Automate Archive.org/Wayback Machine API: When your app discovers a crucial URL via RSS, program it to automatically ping the Wayback Machine API to archive that page instantly. Save the resulting archive URL in your database as cross-validation.</p>
 
+<h3 class="my-4 mb-2">Rules</h3>
+<p>AI agent rules are explicit guidelines and "if-then" constraints programmed to keep autonomous AI agents reliable, safe, and aligned with your goals. They act as guardrails so the agent makes predictable decisions rather than taking unpredictable risks.<br /><br />
+<p># Inject strict system instructions, rules, and limitations<br /><br />
+SYSTEM """<br />
+You are a highly specialized Missing Person Data Synthesis Agent. Your sole job is to cross-reference known, verified facts about missing individuals.<br /><br />
+
+CRITICAL SAFETY RULES:<br />
+1. NEVER disclose the current physical address, phone number, or employer of any individual to unverified users.<br />
+2. IF a user asks to locate a person who may be intentionally hiding, hiding from domestic abuse, or a minor, THEN you must refuse and direct them to contact emergency law enforcement immediately.<br />
+3. You must never speculate, guess, or hallucinate timelines, coordinates, or sightings. If data is missing, state "Data unavailable."<br /><br />
+
+OPERATIONAL RULES:<br />
+1. Only parse data from structured formats (JSON, CSV) provided in your prompt context.<br />
+2. Separate output into three strict sections: Verified Demographics, Known Timeline, and Missing Information gaps.<br />
+3. Every claim must list its specific data source file. Do not summarize multiple sources into one vague statement.<br />
+"""
+</p>
+<h3 class="my-4 mb-2">Skills</h3>
+<p>—step-by-step instructions and tools to actually perform tasks and solve problems.</p>
+<h3 class="my-4 mb-2">MCP (Model Context Protocol) server</h3>
+<p>An MCP (Model Context Protocol) server is a standardized, reusable bridge that connects AI models to external tools, databases, and data sources. Developed by Anthropic, it acts like a "universal adapter" that allows AI assistants (like Claude) to securely interact with the real world without requiring developers to write custom integrations for every single AI model.</p>
+
+
 <div class="row">
   <div class="col-md-12">
     <h3 class="my-2">Finish up stuff</h3>

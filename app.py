@@ -117,6 +117,30 @@ def index():
 
   return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
 
+@app.route('/logs')
+def logs():
+  logs = []
+  LOG_FILE_PATH = ModelUtils.resource_path(os.path.join("logs", "errors.log"))
+  if os.path.exists(LOG_FILE_PATH):
+    with open(LOG_FILE_PATH, 'r') as file:
+      # Read all lines and reverse the list using slice [::-1]
+      logs = file.readlines()[::-1]
+
+  page = request.args.get("page", 1, type=int)
+  per_page = request.args.get("per_page", 30, type=int)
+  offset = (page - 1) * per_page
+
+  total_items = len(logs)
+  paginated_logs = logs[offset : offset + per_page]
+  total_pages = math.ceil(total_items / per_page)
+
+  return render_template(
+    'logs.html',
+    logs=paginated_logs,
+    page=page,
+    total_pages=total_pages,
+  )
+
 @app.route('/get_rows', methods=['GET', 'POST'])
 def get_rows():
   # Parse the JSON data sent in the POST request

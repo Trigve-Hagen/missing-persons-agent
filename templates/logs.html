@@ -1,0 +1,44 @@
+<!-- templates/index.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/logs.css') }}">
+{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="log-container">
+  <h2 class="my-4 mb-2">Latest Logs</h2>
+  <div class="log-list">
+    {% for log in logs %}
+      <pre class="log-line">{{ log.strip() }}</pre>
+    {% else %}
+      <p>No logs found or log file is empty.</p>
+    {% endfor %}
+  </div>
+  <div class="pagination d-flex align-items-center mb-5">
+    {% if page > 1 %}
+        <a class="btn btn-secondary me-2" href="{{ url_for('logs', page=page-1) }}">Previous</a>
+    {% endif %}
+
+    <p class="mb-0">Page {{ page }} of {{ total_pages }}</p>
+
+    {% if page < total_pages %}
+        <a class="btn btn-secondary ms-2" href="{{ url_for('logs', page=page+1) }}">Next</a>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

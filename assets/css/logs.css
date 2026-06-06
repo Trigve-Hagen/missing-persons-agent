@@ -1,0 +1,19 @@
+body { background-color: #1e1e1e; color: #d4d4d4; }
+.log-container { font-family: monospace; margin: 0 auto; }
+pre {
+  background-color: #252526;
+  padding: 10px;
+  border-radius: 5px;
+  white-space: pre-wrap;
+  /* Modern browsers (Chrome, Safari, Firefox, Edge) */
+  white-space: -moz-pre-wrap;
+  /* Older Mozilla browsers */
+  white-space: -pre-wrap;
+  /* Older Opera 4-6 */
+  white-space: -o-pre-wrap;
+  /* Older Opera 7 */
+  word-wrap: break-word;
+  /* Internet Explorer 5.5+ and legacy alias */
+  overflow-wrap: break-word;
+}
+.log-line { border-bottom: 1px solid #3c3c3c; padding: 5px 0; }
