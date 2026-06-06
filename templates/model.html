@@ -76,6 +76,16 @@
         <div class="form-text" id="model-model-text">This is the name of the model from <a href="https://ollama.com/library" target="_blank">Ollama</a> Example: <a href="https://ollama.com/library/phi3:mini" target="_blank">phi3:mini</a>. You would add the name of the model in this field. It this eample the name is phi3:mini. When you click save a copy of this model will be downloaded and installed onto this computer if it does not already exist. You can see the list of downloaded models on <a href="{{ url_for('resources') }}">Resources</a></div>
       </div>
       <div class="col-md-6">
+        <label for="model-num-ctx" class="form-label">Context length</label>
+        <input type="text" class="form-control" id="model-num-ctx" name="num_ctx" value="1024" required>
+        <div class="form-text" id="model-name-text">Context length is the maximum number of tokens that the model has access to in memory. Defaults to 2048.</div>
+      </div>
+      <div class="col-md-6">
+        <label for="model-temperature" class="form-label">Temperature</label>
+        <input type="text" class="form-control" id="model-temperature" name="temperature" value="0.1" required>
+        <div class="form-text" id="model-name-text">In AI and Large Language Models (LLMs), temperature is a hyperparameter that controls the randomness and creativity of the model's responses by altering how it selects the next word (or token). Low is more predictable or truthy. High if more random or less truthy. Default to 0.1</div>
+      </div>
+      <div class="col-md-6">
         <label for="model-type" class="form-label">Type</label>
         <select class="form-select" id="model-type" name="type" required>
           {% for value, label in model_types %}

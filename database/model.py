@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func, Text
+from sqlalchemy import create_engine, ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func, Text, Numeric
 from database.base import Base, NullToEmptyString # Import shared base
 
 class Model(Base):
@@ -8,12 +8,16 @@ class Model(Base):
   id = Column("id", Integer, primary_key=True)
   name = Column(NullToEmptyString, comment="The name of the model.")
   model = Column(NullToEmptyString, comment="The model.")
+  num_ctx = Column(Integer, default=2048, comment="Context length is the maximum number of tokens that the model has access to in memory.")
+  temperature = Column(Numeric(precision=2, scale=1), default=0.1, comment="Context length is the maximum number of tokens that the model has access to in memory.")
   type = Column(NullToEmptyString, default="ollama", comment="The type of model. Allowed values are ollama and openai.")
 
-  def __init__(self, name, model, type):
-    self.name = name # instance
-    self.model = model # model
-    self.type = type  # from
+  def __init__(self, name, model, num_ctx, temperature, type):
+    self.name = name
+    self.model = model
+    self.num_ctx = num_ctx
+    self.temperature = temperature
+    self.type = type
 
 class ModelParams(Base):
   __tablename__ = "model_params"

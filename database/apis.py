@@ -26,14 +26,16 @@ class ApiField(Base):
   __table_args__ = {"comment": "This table stores the api fields passed as a query string for filtering."}
 
   id = Column("id", Integer, primary_key=True)
-  field = Column(NullToEmptyString, comment="The field name in the query string.")
-  value = Column(NullToEmptyString, comment="The value in the query string.")
+  field = Column(NullToEmptyString, comment="The field name in the query string or the tag name.")
+  value = Column(NullToEmptyString, comment="The value in the query string or the classes delimited by a space.")
+  type = Column(NullToEmptyString, comment="Describes the relationship of the classes for scraping. Allowed values are parent or child.")
   description = Column(NullToEmptyString, comment="A description of the api field.")
   owner = Column(Integer, ForeignKey("api.id"))
 
-  def __init__(self, field, value, description, owner):
+  def __init__(self, field, value, type, description, owner):
     self.field = field
     self.value = value
+    self.type = type
     self.description = description
     self.owner = owner
 

@@ -135,12 +135,43 @@
 </ul>
 <p class="mb-5"><b>How to fix it:</b> If a document is too large, you can summarize it in chunks, share only the most relevant paragraphs, or use external file-reading tools if your platform supports them.</p>
 
+<h3 class="my-4 mb-2">Chat History</h3>
+
+<p>To validate Open Source Intelligence (OSINT) data for missing persons investigations, your local app must act like a digital evidence locker.</p>
+<p>Because your tool runs locally and relies on volatile web sources (RSS and APIs), the data can change or disappear quickly. Your primary goal is proving that a specific piece of information existed online at an exact moment in time.</p>
+<ol>
+  <li>Local Database Choice<br />
+    Since the app runs locally, avoid complex cloud infrastructure. Use lightweight, embedded databases that support high-speed writes and relational tracking:
+    SQLite: The best choice for local applications. It is self-contained, requires zero configuration, and operates out of a single file that can be easily hashed for integrity.
+    DuckDB: Excellent if your OSINT tools aggregate massive amounts of data from RSS feeds and require fast, analytical querying.</li>
+  <li>Evidence-Grade Database Schema<br />
+    For OSINT data to be valid for future legal or official use, your schema must track the provenance (origin) and chain of custody of the data.
+    Every time your app fetches an API response, an RSS item, or logs a user action, save it with these core fields:
+    <ul>
+      <li>source_url / api_endpoint: The exact origin of the data.</li>
+      <li>raw_payload / raw_response: The unedited, raw JSON or XML text directly from the API/RSS feed. Never just save the parsed data.</li>
+      <li>timestamp_utc: The exact system time the data was fetched.</li>
+      <li>content_hash: A SHA-256 hash generated automatically by your app from the raw_payload.previous_record_hash: The hash of the previous log entry. This chains your records together so an investigator cannot delete an entry later without breaking the chain.</li>
+    </ul>
+  </li>
+  <li>Local Verification & Tamper-Evidence<br />
+    Because the database sits on a local machine, a user could technically open a SQLite editor and alter records. To prevent this and prepare for future compliance:
+    Cryptographic Signing: Generate a local cryptographic key pair when the app is installed. Have the app sign every new database entry using the private key.
+    Automated Backups: Allow the app to automatically export encrypted, compressed snapshots of the database to an external drive or a secure cloud bucket (like AWS S3 Object Lock) that prevents deletion.</li>
+  <li>Capturing Volatile Data (OSINT Best Practices)<br />
+    Public information on the web disappears fast, especially if a subject deletes their social media or a site updates its RSS feed.</li>
+</ol>
+<p>Save the Headers: When calling APIs, log the HTTP response headers. They contain server times and IP addresses that validate the request actually happened.</p>
+<p>Automate Archive.org/Wayback Machine API: When your app discovers a crucial URL via RSS, program it to automatically ping the Wayback Machine API to archive that page instantly. Save the resulting archive URL in your database as cross-validation.</p>
+
 <div class="row">
   <div class="col-md-12">
     <h3 class="my-2">Finish up stuff</h3>
     <ul>
       <li>Refactoring
         <ul>
+          <li><a href="https://github.com/cipher387/API-s-for-OSINT" target="_blank">OSINT</a> for LLM tools.</li>
+          <li><a href="https://towardsdatascience.com" target="_blank">The Infrastructure behind making Local LLM Agents Actually Useful</a> as a template for using tools in agents to make them more productive.</li>
           <li>Dict and Paramerter casting: Dictionary Type, Optional, etc..</li>
           <li>Commenting classes and functons.</li>
           <li>Controllers.</li>

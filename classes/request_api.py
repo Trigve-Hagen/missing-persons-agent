@@ -85,6 +85,7 @@ class RequestApi:
       flash(f"The unexpected non-requests error occurred because the api needs to be set in order to make the request so it errors.", "info")
       return "Exception. Request failed. Please check that you are using correct api and field values."
     else:
+      data = []
       if api.type == 'rss':
         # Parse the content with feedparser
         data = feedparser.parse(response.content)
@@ -92,5 +93,6 @@ class RequestApi:
           flash(f"Warning: Non-well-formed feed: {data.bozo_exception}", "warning")
           # return "Warning. Non-well-formed feed. Please check that you are using correct api and field values."
 
-      flash("Success! Data retrieved.", "success")
+        flash("Success! Data retrieved.", "success")
+
       return data

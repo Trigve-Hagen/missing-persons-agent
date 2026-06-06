@@ -23,6 +23,7 @@ class ChromaDatabase:
     self.chunk_overlap = state.chunk_overlap
     self.embedding_function = self.get_embeddings()
     self.persistent_directory = ModelUtils.resource_path(os.path.join("database", state.database))
+    self.store = {}
 
   def get_vector_store(self):
     return Chroma(

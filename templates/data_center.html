@@ -25,10 +25,10 @@
       </div>
       <div class="col-md-12">
         <p class="my-0"><b>{{ api.type|upper }}</b> {{ api.name }}</p>
-        <p class="my-0"><b>Url</b>: {{ api.url }}</p>
+        <p class="my-0 mb-2"><b>Url</b>: {{ api.url }}</p>
         {% if api_params %}
           {% for api_param in api_params %}
-            <p class="mt-0"><b>{{ api_param.field }}</b>: {{ api_param.value }}</p>
+            <p class="mt-0 mb-0"><b>{{ api_param.field }}</b>: {{ api_param.value }}</p>
           {% endfor %}
         {% endif %}
       </div>

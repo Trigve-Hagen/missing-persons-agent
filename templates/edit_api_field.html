@@ -28,12 +28,28 @@
     <form class="row g-4" action="/set_api_field" method="POST" name="api" autocomplete="off">
       <input type="hidden" class="form-control" id="api-field-id" name="id" value="{{ api_field_data.id }}" />
       <div class="col-6">
-        <label for="api-field-field" class="form-label">Field</label>
-        <input type="text" class="form-control" id="api-field-field" name="name" value="{{ api_field_data.field }}" required>
+        <label for="api-field-field" class="form-label">Field / Tag</label>
+        <input type="text" class="form-control" id="api-field-field" name="field" value="{{ api_field_data.field }}" required>
       </div>
       <div class="col-6">
-        <label for="api-field-value" class="form-label">Value</label>
+        <label for="api-field-value" class="form-label">Value / Class</label>
         <input type="text" class="form-control" id="api-field-value" name="value" value="{{ api_field_data.value }}" required>
+      </div>
+      <div class="col-md-6">
+        <label for="api-type" class="form-label">Type</label>
+        <select class="form-select" id="api-type" name="type" required>
+          <option value="">Choose...</option>
+          {% if api_field_data.type == 'parent' %}
+            <option value="parent" selected>Parent</option>
+          {% else %}
+            <option value="parent">Parent</option>
+          {% endif %}
+          {% if api_field_data.type == 'child' %}
+            <option value="child" selected>Child</option>
+          {% else %}
+            <option value="child">Child</option>
+          {% endif %}
+        </select>
       </div>
       <div class="col-12">
         <label for="api-field-description" class="form-label">Description</label>

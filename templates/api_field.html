@@ -23,8 +23,8 @@
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Field</th>
-          <th scope="col">Value</th>
+          <th scope="col">Field / Tag</th>
+          <th scope="col">Value / Class</th>
           <th scope="col" class="col-2">Actions</th>
         </tr>
       </thead>
@@ -64,12 +64,20 @@
     <form class="row g-4" action="/set_api_field" method="POST" name="api_field" autocomplete="off">
       <input type="hidden" class="form-control" id="api-field-id" name="id" />
       <div class="col-md-6">
-        <label for="api-field-field" class="form-label">Field</label>
+        <label for="api-field-field" class="form-label">Field / Tag</label>
         <input type="text" class="form-control" id="api-field-field" name="field" required>
       </div>
       <div class="col-md-6">
-        <label for="api-field-value" class="form-label">Value</label>
+        <label for="api-field-value" class="form-label">Value / Class</label>
         <input type="text" class="form-control" id="api-field-value" name="value" required>
+      </div>
+      <div class="col-md-6">
+        <label for="api-type" class="form-label">Type</label>
+        <select class="form-select" id="api-type" name="type" required>
+          <option value="">Choose...</option>
+          <option value="parent">Parent</option>
+          <option value="child">Child</option>
+        </select>
       </div>
       <div class="col-md-12">
         <label for="api-field-description" class="form-label">Description</label>

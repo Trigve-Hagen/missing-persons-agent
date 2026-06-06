@@ -68,6 +68,7 @@ from classes.model_utils import ModelUtils
 from classes.model_manager import ModelManager
 from classes.chat_manager import ChatManager
 from classes.chroma_database import ChromaDatabase
+from classes.feed_generator import FeedGenerator
 from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, NoteRepository, Determinator
 
 import mimetypes
@@ -106,6 +107,7 @@ def add_nosniff_header_to_static(response):
 def index():
   resource = Resources()
   create_statements = resource.initialize_determinator(engine=engine)
+
   data_entities = {}
   for entity, value in create_statements.items():
     if entity in Selection.data_entities:
@@ -113,7 +115,7 @@ def index():
   determine = Determinator(session=session)
   determine.chunk_create_statements(createStatements=data_entities)
 
-  return flask.render_template('index.html', appData=os.path.join(os.environ['LOCALAPPDATA'], "MissingPersons"))
+  return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
 
 @app.route('/get_rows', methods=['GET', 'POST'])
 def get_rows():
@@ -404,20 +406,15 @@ def set_file():
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
   user_input = request.json.get('message')
+  session_id = request.json.get("session_id", "default_session")
 
   state = session.get(State, 1)
   model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
 
-  manager = ChatManager(session=session)
-  qa_chain = manager.inspector(model=model)
-  response = dict()
-  if qa_chain:
-    # Run chain
-    response = qa_chain.invoke({"query": user_input})
-  else:
-    response['result'] = "No Chroma Database or Model defined. To create database upload a pdf or save data from RSS or API. If you have saved data set a model in Either Aplication State or Models."
+  manager = ChatManager(session=session, model=model)
+  response = manager.chat_prompt(user_message=user_input, session_id=session_id)
 
-  return jsonify({'response': response['result']})
+  return jsonify({'response': response})
 
 @app.route('/inspector')
 def inspector():
@@ -537,7 +534,7 @@ def run_code_optimizer():
   prompt = session.execute(select(Prompt).filter_by(id = state.prompt)).scalar_one_or_none()
   question = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
 
-  manager = ChatManager(session=session)
+  manager = ChatManager(session=session, model=model)
   response = manager.suggestions(model=model, prompt=prompt, question=question)
   if response:
     try:
@@ -578,7 +575,7 @@ def run_investigation_optimizer():
   prompt = session.execute(select(Prompt).filter_by(id = state.prompt)).scalar_one_or_none()
   question = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
 
-  manager = ChatManager(session=session)
+  manager = ChatManager(session=session, model=model)
   response = manager.suggestions(model=model, prompt=prompt, question=question)
   if response:
     try:
@@ -650,6 +647,8 @@ def edit_model(id):
     'id': model.id,
     'name': model.name,
     'model': model.model,
+    'num_ctx': model.num_ctx,
+    'temperature': model.temperature,
     'type': model.type
   }
   return flask.render_template('edit_model.html', edit_id=id, model_data=model_data, model_types=Selection.model_types)
@@ -668,12 +667,16 @@ def set_model():
       uporadd = "updated"
       model.name=form_data.get('name')
       model.model=ollama_model
+      model.num_ctx=form_data.get('num_ctx')
+      model.temperature=form_data.get('temperature')
       model.type=form_data.get('type')
     else:
       uporadd = "added"
       model = Model(
         name=form_data.get('name'),
         model=ollama_model,
+        num_ctx=form_data.get('num_ctx'),
+        temperature=form_data.get('temperature'),
         type=form_data.get('type')
       )
     session.merge(model)
@@ -1793,7 +1796,8 @@ def api():
     'api.html',
     apis=all_apis,
     page=page,
-    total_pages=total_pages
+    total_pages=total_pages,
+    apiTypes=Selection.api_types
   )
 
 @app.route('/edit/api/<int:id>', methods=['GET', 'POST'])
@@ -1811,7 +1815,12 @@ def edit_api(id):
     'secret': api.secret,
     'description': api.description
   }
-  return flask.render_template('edit_api.html', edit_id=id, api_data=api_data)
+  return flask.render_template(
+    'edit_api.html',
+    edit_id=id,
+    api_data=api_data,
+    apiTypes=Selection.api_types
+  )
 
 @app.route('/set_api', methods=['POST'])
 def set_api():
@@ -1880,6 +1889,7 @@ def edit_api_field(id):
       'id': api_field.id,
       'field': api_field.field,
       'value': api_field.value,
+      'type': api_field.type,
       'description': api_field.description,
       'owner': api_field.owner
     }
@@ -1898,6 +1908,7 @@ def set_api_field():
       uporadd = "updated"
       api_field.field=form_data.get('field')
       api_field.value=form_data.get('value')
+      api_field.type=form_data.get('type')
       api_field.description=form_data.get('description')
       api_field.owner=form_data.get('owner')
     else:
@@ -1905,6 +1916,7 @@ def set_api_field():
       api_field = ApiField(
         field=form_data.get('field'),
         value=form_data.get('value'),
+        type=form_data.get('type'),
         description=form_data.get('description'),
         owner=form_data.get('owner'),
       )
@@ -1929,7 +1941,7 @@ def chunk():
   offset = (page - 1) * per_page
 
   repo = ChromaDatabase(session=session)
-  data, metadatas = repo.get_all_chroma_data("investigation_db")
+  data, metadatas = repo.get_all_chroma_data(getDatabase())
 
   total_items = len(data)
   paginated_data = data[offset : offset + Selection.per_page]
@@ -1956,39 +1968,63 @@ def data_center():
   people_utils = PeopleUtils(session=session)
   person = people_utils.get_person()
   person_name = ""
+  api_data = []
+  ifParsed = False
   if person:
     person_name = people_utils.get_person_name(person)
 
   state = session.get(State, 1)
   api = session.execute(select(Api).filter_by(id = state.api)).scalar_one_or_none()
   api_params = session.scalars(select(ApiField).filter_by(owner = api.id)).all()
+  if api.type == 'scraper':
+    feeds = FeedGenerator(session=session)
+    filename, api_data = feeds.get_posts(api, api_params)
 
-  request_api = RequestApi()
-  api_data = request_api.get_request(api, api_params)
-  api_data, ifParsed = request_api.filter_data(api_data, state)
+    flash(f"Data successfully scraped and saved to {filename}", "info")
 
-  person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
-
-  manager = ChatManager(session=session)
-  response = manager.determine(person=person, json_payload=api_data)
-  if response:
-    try:
-
-      for item in response:
-        flash(f"Item details: {item}", 'info')
-        """ new_suggestion = Task(
-          type="CodeOptimization",
-          title=item.title,
-          description=item.description,
-          ifComplete=0,
-        )
-        session.add(new_suggestion)
-      # session.commit() """
-      # flash(f"Successfully {response}.", "success")
-    except json.JSONDecodeError:
-      flash(f"Failed to parse LLM response.", "danger")
   else:
-    flash(f"No data defined. The database for code optimizations has not been created yet.", "info")
+    request_api = RequestApi()
+    api_data = request_api.get_request(api, api_params)
+    api_data, ifParsed = request_api.filter_data(api_data, state)
+
+    person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
+
+    """ model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+
+    # Start the timer
+    start_time = time.perf_counter()
+
+    manager = ChatManager(session=session, model=model)
+    response = manager.determine(person=person, model=model, json_payload=api_data)
+
+    # End the timer
+    end_time = time.perf_counter()
+    execution_time = end_time - start_time
+
+    # Split total seconds into whole minutes and remaining seconds
+    minutes, seconds = divmod(execution_time, 60)
+
+    flash(f"Execution Time: {int(minutes)} minutes {seconds:.2f} seconds", "success")
+    if response:
+      try:
+
+        for item in response:
+          flash(f"Item details: {item}", 'info')
+          new_suggestion = Task(
+            type="CodeOptimization",
+            title=item.title,
+            description=item.description,
+            ifComplete=0,
+          )
+          session.add(new_suggestion)
+        # session.commit()
+        # flash(f"Successfully {response}.", "success")
+      except json.JSONDecodeError:
+        flash(f"Failed to parse LLM response.", "danger")
+    else:
+      flash(f"No data defined. The database for code optimizations has not been created yet.", "info") """
+
+  flash("Refactoring to create a continously running agent that uses tooling. The first task would be to search for anyone who is a contact of the missing person and add them as a person of interest. Then search that name and fill in Emails, Phones, Addresses and Aliases. Once the data for one person has been saved. Check their social media and make feeds out of public information. Create events out of any activities listed there. Create a list of people who fit the in the area of the crime scene on the time of the disappearance. Search through other public record keeping systems for information that could mark them as being more apt to be involved in a crime.", "info")
 
   return flask.render_template(
     'data_center.html',
@@ -2316,7 +2352,7 @@ def getQuestion():
 def getDatabase():
   state = session.get(State, 1)
   current_value = state.database
-  default_value = "investigation"
+  default_value = "investigation_db"
   return current_value or default_value
 
 def getLoader():
@@ -2503,7 +2539,7 @@ def initialize_database(engine):
 
   if session.query(ApiField).first() is None:
     a1 = ApiField(
-      field="title", value="Nancy Guthrie", description='', owner=1
+      field="title", value="Nancy Guthrie", type='', description='', owner=1
     )
     session.add(a1)
     session.commit()

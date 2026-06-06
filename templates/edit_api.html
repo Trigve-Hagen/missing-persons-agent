@@ -34,16 +34,13 @@
       <div class="col-6">
         <label for="api-type" class="form-label">Type</label>
         <select class="form-select" id="api-type" name="type" required>
-          {% if api_data.type == 'api' %}
-            <option value="api" selected>API</option>
-          {% else %}
-            <option value="api">API</option>
-          {% endif %}
-          {% if api_data.type == 'rss' %}
-            <option value="rss" selected>RSS</option>
-          {% else %}
-            <option value="rss">RSS</option>
-          {% endif %}
+          {% for value, label in apiTypes %}
+            {% if api_data.type == value %}
+              <option value="{{ value }}" selected>{{ label }}</option>
+            {% else %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endif %}
+          {% endfor %}
         </select>
       </div>
       <div class="col-12">

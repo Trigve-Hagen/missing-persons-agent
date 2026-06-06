@@ -32,6 +32,12 @@ class Selection():
     ('korean', 'Korean'),
   ]
 
+  api_types = [
+    ('api', 'API'),
+    ('rss', 'RSS'),
+    ('scraper', 'Page Scraper'),
+  ]
+
   available_databases = {
     "investigation_db": "Investigation",
     "investigator_db": "Investigator",

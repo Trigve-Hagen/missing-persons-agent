@@ -163,7 +163,7 @@
         <label for="person-primary-language" class="form-label">Primary Language</label>
         <select class="form-select" id="person-primary-language" name="primaryLanguage" required>
           <option value="">Choose...</option>
-          {% for key, label in primary_languages %}
+          {% for value, label in primary_languages %}
             <option value="{{ value }}">{{ label }}</option>
           {% endfor %}
         </select>

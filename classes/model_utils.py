@@ -25,6 +25,10 @@ class ModelUtils:
       if not os.path.exists(uploads):
         os.makedirs(uploads, exist_ok=True)
 
+      feeds = os.path.join(base_dir, "uploads", "feeds")
+      if not os.path.exists(feeds):
+        os.makedirs(feeds, exist_ok=True)
+
       logging = os.path.join(base_dir, "logs")
       if not os.path.exists(logging):
         os.makedirs(logging, exist_ok=True)

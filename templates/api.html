@@ -71,8 +71,10 @@
       <div class="col-md-6">
         <label for="api-type" class="form-label">Type</label>
         <select class="form-select" id="api-type" name="type" required>
-          <option value="api">API</option>
-          <option value="rss">RSS</option>
+          <option value="">Choose...</option>
+          {% for value, label in apiTypes %}
+            <option value="{{ value }}">{{ label }}</option>
+          {% endfor %}
         </select>
       </div>
       <div class="col-md-12">

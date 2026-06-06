@@ -37,6 +37,16 @@
             <label for="model-model" class="form-label">Model</label>
             <input type="text" class="form-control" id="model-model" name="model" value="{{ model_data.model }}" required>
           </div>
+          <div class="col-md-6">
+            <label for="model-num-ctx" class="form-label">Context length</label>
+            <input type="text" class="form-control" id="model-num-ctx" name="num_ctx" value="{{ model_data.num_ctx }}" required>
+            <div class="form-text" id="model-name-text">Context length is the maximum number of tokens that the model has access to in memory. Defaults to 2048.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="model-temperature" class="form-label">Temperature</label>
+            <input type="text" class="form-control" id="model-temperature" name="temperature" value="{{ model_data.temperature }}" required>
+            <div class="form-text" id="model-name-text">In AI and Large Language Models (LLMs), temperature is a hyperparameter that controls the randomness and creativity of the model's responses by altering how it selects the next word (or token). Low is more predictable or truthy. High if more random or less truthy. Default to 0.1</div>
+          </div>
           <div class="col-6">
             <label for="model-type" class="form-label">Type</label>
             <select class="form-select" id="model-type" name="type" required>
