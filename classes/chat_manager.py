@@ -24,8 +24,45 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
 
+from langchain_core.callbacks import BaseCallbackHandler
+
 # ---------------------------------------------------------
-# 1. Pydantic Schemas for Structured LLM Output
+# Agent Logs
+# ---------------------------------------------------------
+
+class AgentLogHandler(BaseCallbackHandler):
+    def __init__(self, log_file="agent_trajectory.log"):
+        self.log_file = log_file
+
+    def on_llm_start(self, serialized, prompts, **kwargs):
+        """Logs when the Ollama LLM begins processing."""
+        self._write_log(f"[LLM START] Prompts: {prompts}")
+
+    def on_agent_action(self, action, **kwargs):
+        """Logs the specific tool the agent decided to call."""
+        self._write_log(f"[AGENT ACTION] Tool: {action.tool} | Input: {action.tool_input}")
+
+    def on_tool_end(self, output, **kwargs):
+        """Logs the resulting output from the tool execution."""
+        self._write_log(f"[TOOL RESULT] Output: {output}")
+
+    def on_llm_end(self, response, **kwargs):
+        """Logs the final text generation from the LLM."""
+        self._write_log(f"[LLM END] Response: {response.generations[0][0].text}")
+
+    def _write_log(self, text):
+        with open(self.log_file, "a", encoding="utf-8") as f:
+            f.write(text + "\n\n")
+
+# Attach the custom logger when invoking your agent
+# log_handler = AgentLogHandler()
+# agent_executor.invoke(
+#     {"input": "Calculate 456 * 77"},
+#     config={"callbacks": [log_handler]}
+# )
+
+# ---------------------------------------------------------
+# Pydantic Schemas for Structured LLM Output
 # ---------------------------------------------------------
 
 class TaskSuggestion(BaseModel):
@@ -148,7 +185,8 @@ class ChatManager(ChromaDatabase):
 
   def chat_prompt(self, user_message: str, session_id: str):
     """Executes the state graph loop for a unique thread session."""
-    config = {"configurable": {"thread_id": session_id}}
+    log_handler = AgentLogHandler()
+    config = {"configurable": {"thread_id": session_id}, "callbacks": [log_handler]}
 
     output = self.graph.invoke(
       {"input": user_message},
