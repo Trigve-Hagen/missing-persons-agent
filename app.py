@@ -435,10 +435,12 @@ def chat():
   state = session.get(State, 1)
   model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
 
-  manager = ChatManager(session=session, model=model)
-  response = manager.chat_prompt(user_message=user_input, session_id=session_id)
-
-  return jsonify({'response': response})
+  try:
+    manager = ChatManager(session=session, model=model)
+    response = manager.chat_prompt(user_message=user_input, session_id=session_id)
+    return jsonify({'response': response})
+  except Exception as e:
+    return jsonify({'response': "You must have a model selected in Application State and chunks saved to use the chat."})
 
 @app.route('/inspector')
 def inspector():
@@ -2415,6 +2417,12 @@ def getDisplayType():
   default_value = "json"
   return current_value or default_value
 
+def getTheme():
+  state = session.get(State, 1)
+  current_value = state.theme
+  default_value = "light"
+  return current_value or default_value
+
 @app.route('/application_state')
 def application_state():
   all_apis = session.query(Api).all()
@@ -2422,13 +2430,20 @@ def application_state():
   all_models = session.query(Model).all()
   all_prompts = session.query(Prompt).all()
   all_questions = session.query(Question).all()
+  all_themes={
+    "light": "Light",
+    "dark": "Dark"
+  }
   state = session.get(State, 1)
+
 
   return flask.render_template(
     'application_state.html',
     state=state,
     available_devices=Selection.available_devices,
     available_databases=Selection.available_databases,
+    available_collections=Selection.available_collections,
+    available_themes=all_themes,
     people=all_people,
     apis=all_apis,
     models=all_models,
@@ -2459,12 +2474,14 @@ def set_application_state():
   state = session.get(State, 1)
   if state:
     state.processor = form_data.get('processor')
+    state.theme = form_data.get('theme')
     state.person = form_data.get('person')
     state.api = form_data.get('api')
     state.model = form_data.get('model')
     state.prompt = form_data.get('prompt')
     state.question = form_data.get('question')
     state.database = form_data.get('database')
+    state.collection = form_data.get('collection')
     session.commit()
 
   return redirect(url_for('application_state'))
@@ -2494,10 +2511,12 @@ def get_state_processor():
 def inject_site_settings():
   processor = getProcessor()
   database = getDatabase()
+  theme = getTheme()
   return dict(
     state_path = request.endpoint,
     selected_processor = processor,
     selected_database = database,
+    selected_theme = theme,
   )
 
 def initialize_database(engine):

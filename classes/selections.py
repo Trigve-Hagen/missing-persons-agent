@@ -44,6 +44,10 @@ class Selection():
     "determinator_db": "Determinator"
   }
 
+  available_collections = {
+    "missing_persons": "Missing Persons"
+  }
+
   data_entities = [
     'people',
     'aliases',

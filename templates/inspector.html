@@ -28,7 +28,7 @@
           <div class="bg-light text-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">AI</div>
         </div>
         <h6 class="mb-0">Inspector</h6>
-        <span class="session-badge" id="sessionBadge">Session: Loading...</span>
+        <!-- <span class="session-badge" id="sessionBadge">Session: Loading...</span> -->
       </div>
       <div id="chat-content-box" class="card-body chat-body d-flex flex-column gap-3">
         <div class="d-flex align-items-start msg-incoming">
@@ -67,7 +67,7 @@
         localStorage.setItem('chat_session_id', 'session_' + Math.random().toString(36).substr(2, 9));
     }
     const sessionId = localStorage.getItem('chat_session_id');
-    document.getElementById('sessionBadge').innerText = `Session: ${sessionId}`;
+    // document.getElementById('sessionBadge').innerText = `Session: ${sessionId}`;
 
     const chatFormElement = document.getElementById('chatbox-form');
     const chatContentBox = document.getElementById('chat-content-box');

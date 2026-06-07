@@ -23,6 +23,16 @@
   <div class="col-12">
     <form class="row g-4" action="/set_application_state" method="POST" name="state" autocomplete="off">
       <div class="col-6">
+        <label for="state-theme" class="form-label">Theme</label>
+        <select class="form-select" id="state-theme" name="theme">
+          {% if available_themes %}
+            {% for key, value in available_themes.items() %}
+              <option value="{{ key }}" {% if key == selected_theme %} selected {% endif %}>{{ value }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-6">
         <label for="state-processor" class="form-label">Processor</label>
         <select class="form-select" id="state-processor" name="processor">
           <option value="">Choose...</option>
@@ -117,7 +127,18 @@
             {% endfor %}
           {% endif %}
         </select>
-        <div class="form-text" id="state-question-text">There are three vector databases. investigation_db, investigator_db and determinator_db. You can switch between them here and view whats in them on the Chunks page. Switching between them will only effect what is shown on the Chunks page. If you need to reset any of them for any reason delete the folder in {{ appData }} and the application will rebuild it for you when you restart it.</div>
+        <div class="form-text" id="state-question-text">There are different databases for different data types. investigation_db is for text. There will also be databases for images, audio and video in the future.</div>
+      </div>
+      <div class="col-6">
+        <label for="state-collection" class="form-label">Collection</label>
+        <select class="form-select" id="state-collection" name="collection">
+          {% if available_collections %}
+            {% for key, value in available_collections.items() %}
+              <option value="{{ key }}" {% if key == selected_collection %} selected {% endif %}>{{ value }}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+        <div class="form-text" id="state-question-text">There are different collections for different types of data. people for data about people, database for data about databases and investigation for information about how to run the investigation.</div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

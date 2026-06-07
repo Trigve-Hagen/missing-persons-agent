@@ -106,27 +106,19 @@ class ChatManager(ChromaDatabase):
     # 1. Pass the required argument up to the parent class
     super().__init__(session=session)
 
-    if model:
-      self.llm = ChatOllama(
-        model=model.model,
-        temperature=model.temperature,
-        num_ctx=model.num_ctx
-      )
+    self.llm = ChatOllama(
+      model=model.model,
+      temperature=model.temperature,
+      num_ctx=model.num_ctx
+    )
 
-      self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-      if os.path.exists(self.persistent_directory):
-        self.vector_store = Chroma(
-          persist_directory=self.persistent_directory,
-          embedding_function=self.embeddings,
-          collection_name=self.collection_name
-        )
-        self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})
-      else:
-        flash(f"Chroma collection not found at {self.persistent_directory}", "danger")
-        return False
-    else:
-      flash(f"Error fetching models: Please set a model.", "danger")
-      return False
+    self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    self.vector_store = Chroma(
+      persist_directory=self.persistent_directory,
+      embedding_function=self.embeddings,
+      collection_name=self.collection_name
+    )
+    self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})
 
     # Compile components & graph
     self._init_chains()

@@ -19,11 +19,11 @@
   {% endif %}
 {% endwith %}
 
-<div class="log-container">
-  <h2 class="my-4 mb-2">Latest Logs</h2>
-  <div class="log-list">
+<h1 class="my-4">Logs</h1>
+<div class="row mt-5">
+  <div class="col-md-12">
     {% for log in logs %}
-      <pre class="log-line">{{ log.strip() }}</pre>
+      <pre>{{ log.strip() }}</pre>
     {% else %}
       <p>No logs found or log file is empty.</p>
     {% endfor %}
@@ -40,5 +40,4 @@
     {% endif %}
   </div>
 </div>
-
 {% endblock %}

@@ -118,21 +118,25 @@ Build out prompts and questions for LLMs.
 ![Questions Page](./assets/questions.png)
 
 ### Build Tasks and Data Center
+Splitting chunks into different databases or collections in Chroma is highly beneficial when you need to improve query performance, enforce data isolation, or apply distinct metadata filters across different sets of documents.
+
 - APIs and Rss Feeds pull data in as json in Data Center page.
 - Tasks have a name, entity, value and if completed flag.
 - Model pulls out the relevent data and adds it as tasks to be completed.
   - Build create table statements that AI can train on so it can understand how the database stores data.
   - Write a function to run on install that creates the create table statements.
   - Save the create table statements as chunks in a separate Database (determine) on install.
-  - Adjusted the application to have 3 separate coolections in the database.
-    - determine - stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
-    - investigation - stores data from the person, email, phone, alias, address, event and note table data for investigating.
-    - investigator - stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
+  - Dynamically build different database systems for different investigations.
+    - Build separate databases for text, images, audio and video.
+    - In the text database have 3 separate collections.
+      - database - stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
+      - investigation - stores data from the person, email, phone, alias, address, event and note table data for investigating.
+      - investigator - stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
   - Build a model that operates continuously
-    - finding new people of interest and accessing data points for them.
-    - parsing the returned json and saving new data to the database related to the case.
-    - prompting the model for connections that could lead to finding the person.
-    - When new data is found the data is added to the entity as a [OSINT](https://github.com/cipher387/API-s-for-OSINT) row.
+  - finding new people of interest and accessing data points for them.
+  - parsing the returned json and saving new data to the database related to the case.
+  - prompting the model for connections that could lead to finding the person.
+  - When new data is found the data is added to the entity as a [OSINT](https://github.com/cipher387/API-s-for-OSINT) row.
 
 ### Add in Autosearch
 Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.
