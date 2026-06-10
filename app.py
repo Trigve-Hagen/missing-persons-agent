@@ -37,6 +37,7 @@
 import flask
 import webview
 import requests
+import psutil
 import os
 import sys
 import math
@@ -44,6 +45,7 @@ import time
 import json
 import ast
 import logging
+import subprocess
 from werkzeug.utils import secure_filename
 from config import Config
 from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for, jsonify
@@ -66,7 +68,7 @@ from classes.resources import Resources
 from classes.logging import Logging
 from classes.model_utils import ModelUtils
 from classes.model_manager import ModelManager
-from classes.chat_manager import ChatManager
+from classes.chat_manager import ChatManager, ChatTester
 from classes.chroma_database import ChromaDatabase
 from classes.feed_generator import FeedGenerator
 from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, NoteRepository, Determinator
@@ -117,6 +119,18 @@ def index():
 
   return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
 
+@app.route('/docs_data')
+def docs_data():
+  return flask.render_template('docs_data.html')
+
+@app.route('/docs_agents')
+def docs_agents():
+  return flask.render_template('docs_agents.html')
+
+@app.route('/docs_models')
+def docs_models():
+  return flask.render_template('docs_models.html')
+
 @app.route('/logs')
 def logs():
   logs = []
@@ -140,6 +154,34 @@ def logs():
     page=page,
     total_pages=total_pages,
   )
+
+@app.route('/api/memory', methods=['GET', 'POST'])
+def get_memory():
+    # Get RAM statistics (in bytes)
+    ram = psutil.virtual_memory()
+
+    # Get Hard Drive / Partition statistics for the root directory (in bytes)
+    disk = psutil.disk_usage('/')
+
+    # Convert bytes to Gigabytes for readability
+    bytes_to_gb = 1024 ** 3
+
+    data = {
+        "ram": {
+            "total": round(ram.total / bytes_to_gb, 2),
+            "available": round(ram.available / bytes_to_gb, 2),
+            "used": round(ram.used / bytes_to_gb, 2),
+            "percentage_used": ram.percent
+        },
+        "storage": {
+            "total": round(disk.total / bytes_to_gb, 2),
+            "used": round(disk.used / bytes_to_gb, 2),
+            "free": round(disk.free / bytes_to_gb, 2),
+            "percentage_used": disk.percent
+        }
+    }
+
+    return jsonify({'response': data})
 
 @app.route('/get_rows', methods=['GET', 'POST'])
 def get_rows():
@@ -669,6 +711,22 @@ def edit_model(id):
   if not model:
     return redirect(url_for('model'))
 
+  try:
+    # Run the 'ollama show' command
+    result = subprocess.run(
+        ['ollama', 'show', model.model],
+        capture_output=True,
+        text=True,
+        check=True
+    )
+    show_data = result.stdout
+  except subprocess.CalledProcessError as e:
+    show_data = None
+    flash(f"Error: {e.stderr.strip()}", "danger")
+  except Exception as e:
+    show_data = None
+    flash(f"Failed to run command: {str(e)}", "danger")
+
   model_data = {
     'id': model.id,
     'name': model.name,
@@ -677,7 +735,14 @@ def edit_model(id):
     'temperature': model.temperature,
     'type': model.type
   }
-  return flask.render_template('edit_model.html', edit_id=id, model_data=model_data, model_types=Selection.model_types)
+
+  return flask.render_template(
+    'edit_model.html',
+    edit_id=id,
+    model_data=model_data,
+    model_types=Selection.model_types,
+    show_data=show_data
+  )
 
 @app.route('/set_model', methods=['POST'])
 def set_model():
@@ -2015,13 +2080,15 @@ def data_center():
 
     person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
 
-    """ model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+    model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
 
     # Start the timer
     start_time = time.perf_counter()
 
-    manager = ChatManager(session=session, model=model)
-    response = manager.determine(person=person, model=model, json_payload=api_data)
+    manager = ChatTester()
+    response = manager.chatTime2()
+
+    flash(f"Response: {response}", "success")
 
     # End the timer
     end_time = time.perf_counter()
@@ -2031,7 +2098,7 @@ def data_center():
     minutes, seconds = divmod(execution_time, 60)
 
     flash(f"Execution Time: {int(minutes)} minutes {seconds:.2f} seconds", "success")
-    if response:
+    """ if response:
       try:
 
         for item in response:

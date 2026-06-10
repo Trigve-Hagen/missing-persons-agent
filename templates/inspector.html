@@ -61,7 +61,7 @@
   </div>
 {% endif %}
 
- <script>
+  <script>
     // Generate a unique session ID per page load or pull from localStorage
     if (!localStorage.getItem('chat_session_id')) {
         localStorage.setItem('chat_session_id', 'session_' + Math.random().toString(36).substr(2, 9));
@@ -118,6 +118,6 @@
       let adjHeight = (height - 150)
       document.documentElement.style.setProperty('--window-height', adjHeight + 'px');
     }
-</script>
+  </script>
 
 {% endblock %}

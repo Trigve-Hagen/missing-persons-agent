@@ -19,6 +19,7 @@
             <li><a class="dropdown-item{% if request.endpoint == 'application_state' %} active{% endif %}" href="{{ url_for('application_state') }}">Application State</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'resources' %} active{% endif %}" href="{{ url_for('resources') }}">Resources</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'category' %} active{% endif %}" href="{{ url_for('category') }}">Category</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'docs_models' %} active{% endif %}" href="{{ url_for('docs_models') }}">Docs</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'logs' %} active{% endif %}" href="{{ url_for('logs') }}">Logs</a></li>
           </ul>
         </div>

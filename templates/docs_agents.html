@@ -1,0 +1,102 @@
+<!-- templates/index.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Docs{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4 mb-2">Docs</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row mt-4">
+  <div class="col-12">
+    {% include 'includes/tabs_menu.html' %}
+  </div>
+  <div class="col-12">
+    <div class="row">
+      <h3 class="my-4 mb-2">Agents</h3>
+      <p><b>Quantization</b> is the process of compressing an AI model by reducing the precision of its weights (the math parameters) from high-precision floating-point numbers (like 16-bit) to lower-precision numbers (like 4-bit or 8-bit). This shrinks file sizes and lowers memory usage, making it possible to run large models on consumer hardware.</p>
+      <ul>
+        <li>The naming convention for compressed AI models (GGUF format) tells you exactly how the model was compressed. Using the example Q4_K_M:
+          <ul>
+            <li>Q (Quantization): Simply means the model has been compressed.</li>
+            <li>4 (4-bit): The model's weights are stored at an average of 4-bit precision instead of 16-bit, which reduces the file size by roughly 70%.</li>
+            <li>K (K-Quants): Refers to a highly optimized method developed by the local AI community that groups weights into blocks. Instead of treating all weights equally, it uses advanced math to keep the numbers more accurate.</li>
+            <li>M (Medium): The size/quality profile of the model. It uses a mixed-precision strategy. Less important data gets 4-bit compression, while "critical layers" (like attention mechanisms) retain 5- or 6-bit precision to preserve accuracy.</li>
+          </ul>
+        </li>
+        <li>The Quantization Trade-Off
+          <ul>
+            <li>Q2 - Q3: Extremely small, fits on edge devices, but has a major drop in reasoning accuracy.</li>
+            <li>Q4_K_M: The widely accepted "sweet spot". It balances 97-99% of unquantized output quality while fitting comfortably on standard hardware (like an 8GB GPU or a Mac).</li>
+            <li>Q5 - Q6: Retains higher accuracy for precise reasoning, logic, or coding but requires more memory and bandwidth.</li>
+            <li>Q8: Near full precision; useful if you are fine-tuning or require absolute fidelity, though it is very heavy on RAM/VRAM.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="my-4 mb-2">ollama show llama3.2</h3>
+      <ul class="mb-5">
+        <li>Model
+          <ul>
+            <li>architecture - llama</li>
+            <li>parameters - 3.2B</li>
+            <li>context length - 131072</li>
+            <li>embedding length - 3072</li>
+            <li>quantization - Q4_K_M</li>
+          </ul>
+        </li>
+        <li>Capabilities
+          <ul>
+            <li>completion</li>
+            <li>tools</li>
+          </ul>
+        </li>
+        <li>Parameters
+          <ul>
+            <li>stop - "<|start_header_id|>"</li>
+            <li>stop - "<|end_header_id|>"</li>
+            <li>stop - "<|eot_id|>"</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="my-4 mb-2">ollama show llama3-groq-tool-use</h3>
+      <ul class="mb-5">
+        <li>Model
+          <ul>
+            <li>architecture - llama</li>
+            <li>parameters - 8.0B</li>
+            <li>context length - 8192</li>
+            <li>embedding length - 4096</li>
+            <li>quantization - Q4_0</li>
+          </ul>
+        </li>
+        <li>Capabilities
+          <ul>
+            <li>completion</li>
+            <li>tools</li>
+          </ul>
+        </li>
+        <li>Parameters
+          <ul>
+            <li>stop - "<|start_header_id|>"</li>
+            <li>stop - "<|end_header_id|>"</li>
+            <li>stop - "<|eot_id|>"</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

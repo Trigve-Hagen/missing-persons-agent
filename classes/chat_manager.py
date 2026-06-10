@@ -1,4 +1,6 @@
 import os
+import json
+from ollama import chat
 from flask import flash
 from sqlalchemy import select
 from database.person import Person
@@ -9,7 +11,7 @@ from langchain_ollama import ChatOllama
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.output_parsers import PydanticOutputParser
+from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
 from langchain_classic.chains import create_history_aware_retriever
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from classes.model_utils import ModelUtils
@@ -31,28 +33,28 @@ from langchain_core.callbacks import BaseCallbackHandler
 # ---------------------------------------------------------
 
 class AgentLogHandler(BaseCallbackHandler):
-    def __init__(self, log_file="agent_trajectory.log"):
-        self.log_file = log_file
+  def __init__(self, log_file=ModelUtils.resource_path(os.path.join("logs", "errors.log"))):
+    self.log_file = log_file
 
-    def on_llm_start(self, serialized, prompts, **kwargs):
-        """Logs when the Ollama LLM begins processing."""
-        self._write_log(f"[LLM START] Prompts: {prompts}")
+  def on_llm_start(self, serialized, prompts, **kwargs):
+    """Logs when the Ollama LLM begins processing."""
+    self._write_log(f"[LLM START] Prompts: {prompts}")
 
-    def on_agent_action(self, action, **kwargs):
-        """Logs the specific tool the agent decided to call."""
-        self._write_log(f"[AGENT ACTION] Tool: {action.tool} | Input: {action.tool_input}")
+  def on_agent_action(self, action, **kwargs):
+    """Logs the specific tool the agent decided to call."""
+    self._write_log(f"[AGENT ACTION] Tool: {action.tool} | Input: {action.tool_input}")
 
-    def on_tool_end(self, output, **kwargs):
-        """Logs the resulting output from the tool execution."""
-        self._write_log(f"[TOOL RESULT] Output: {output}")
+  def on_tool_end(self, output, **kwargs):
+    """Logs the resulting output from the tool execution."""
+    self._write_log(f"[TOOL RESULT] Output: {output}")
 
-    def on_llm_end(self, response, **kwargs):
-        """Logs the final text generation from the LLM."""
-        self._write_log(f"[LLM END] Response: {response.generations[0][0].text}")
+  def on_llm_end(self, response, **kwargs):
+    """Logs the final text generation from the LLM."""
+    self._write_log(f"[LLM END] Response: {response.generations[0][0].text}")
 
-    def _write_log(self, text):
-        with open(self.log_file, "a", encoding="utf-8") as f:
-            f.write(text + "\n\n")
+  def _write_log(self, text):
+    with open(self.log_file, "a", encoding="utf-8") as f:
+      f.write(text + "\n\n")
 
 # Attach the custom logger when invoking your agent
 # log_handler = AgentLogHandler()
@@ -86,6 +88,25 @@ class Statement(BaseModel):
 class ExtractionResult(BaseModel):
     task: Task
     statement: Statement
+
+# ---------------------------------------------------------
+# LangChain tools
+# ---------------------------------------------------------
+
+@tool
+def get_current_weather(location):
+  """Get the current weather for a specific city location.
+
+  Args:
+      location: The name of the city, e.g., 'San Francisco'
+  """
+  weather_info = {
+    "location": location,
+    "temperature": "72",
+    "unit": "fahrenheit",
+    "forcast": ["sunny", "windy"],
+  }
+  return json.dumps(weather_info)
 
 # ---------------------------------------------------------
 # LLangGraph State and Workflow Nodes
@@ -307,3 +328,100 @@ class ChatManager(ChromaDatabase):
     except Exception as e:
         flash(f"Error invoking the chain: {e}", "danger")
         return False
+
+def get_temperature(city: str) -> str:
+  """Get the current temperature for a city
+
+  Args:
+    city: The name of the city
+
+  Returns:
+    The current temperature for the city
+  """
+  temperatures = {
+    "New York": "22°C",
+    "London": "15°C",
+    "Tokyo": "18°C"
+  }
+  return temperatures.get(city, "Unknown")
+
+def get_conditions(city: str) -> str:
+  """Get the current weather conditions for a city
+
+  Args:
+    city: The name of the city
+
+  Returns:
+    The current weather conditions for the city
+  """
+  conditions = {
+    "New York": "Partly cloudy",
+    "London": "Rainy",
+    "Tokyo": "Sunny"
+  }
+  return conditions.get(city, "Unknown")
+
+class ChatTester():
+
+  def get_vector_store(self):
+    return Chroma(
+      persist_directory=ModelUtils.resource_path(os.path.join("database", "investigation_db")),
+      collection_name="missing_persons",
+      embedding_function=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    )
+
+  def chatTime(self):
+    template = """Answer the question based only on the following context
+    {context}
+
+    Question: {question}
+    """
+
+    prompt = ChatPromptTemplate.from_messages([
+      ("system", "You are an expert assistant. You have access to tools. "
+               "If the user asks about the weather, you MUST use the get_current_weather tool. "
+               "Do not answer from memory."),
+      ("human", "{input}")
+    ])
+    model = ChatOllama(
+      model='llama3-groq-tool-use',
+      temperature=0,
+    )
+    model.bind_tools(tools=[get_current_weather])
+    output_parser = StrOutputParser()
+
+    chain = prompt | model
+
+    return chain.invoke({
+      "input": "what is the weather in SF?"
+    })
+
+  def chatTime2(self):
+    messages = [{'role': 'user', 'content': 'What are the current weather conditions and temperature in New York and London?'}]
+
+    try:
+      # The python client automatically parses functions as a tool schema so we can pass them directly
+      # Schemas can be passed directly in the tools list as well
+      response = chat(model='llama3-groq-tool-use', messages=messages, tools=[get_temperature, get_conditions], think=True)
+
+      # add the assistant message to the messages
+      messages.append(response.message)
+      if response.message.tool_calls:
+        # process each tool call
+        for call in response.message.tool_calls:
+          # execute the appropriate tool
+          if call.function.name == 'get_temperature':
+            result = get_temperature(**call.function.arguments)
+          elif call.function.name == 'get_conditions':
+            result = get_conditions(**call.function.arguments)
+          else:
+            result = 'Unknown tool'
+          # add the tool result to the messages
+          messages.append({'role': 'tool',  'tool_name': call.function.name, 'content': str(result)})
+
+        # generate the final response
+        return chat(model='llama3-groq-tool-use', messages=messages, tools=[get_temperature, get_conditions], think=True)
+        # print(final_response.message.content)
+    except Exception as e:
+      flash(f"Error invoking the chain: {e}", "danger")
+      return False

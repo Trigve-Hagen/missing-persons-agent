@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<h1 class="my-4">Edit Model</h1>
+<h1 class="my-4">Details for {{ model_data.model }}</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -24,6 +24,11 @@
 </div>
 
 <div class="row mt-4">
+  <div class="col-12">
+    {% if show_data %}
+      <pre>{{ show_data }}</pre>
+    {% endif %}
+  </div>
   <div class="col-12">
     <div class="row">
       <div class="col-12">

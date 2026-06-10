@@ -46,20 +46,21 @@
     </table>
     <div class="pagination d-flex align-items-center">
       {% if page > 1 %}
-          <a class="btn btn-secondary me-2" href="{{ url_for('model', page=page-1) }}">Previous</a>
+        <a class="btn btn-secondary me-2" href="{{ url_for('model', page=page-1) }}">Previous</a>
       {% endif %}
 
       <p class="mb-0">Page {{ page }} of {{ total_pages }}</p>
 
       {% if page < total_pages %}
-          <a class="btn btn-secondary ms-2" href="{{ url_for('model', page=page+1) }}">Next</a>
+        <a class="btn btn-secondary ms-2" href="{{ url_for('model', page=page+1) }}">Next</a>
       {% endif %}
     </div>
   </div>
 </div>
 
 <hr>
-<h3 class="my-4">Add Model</h3>
+<h3 class="my-4 mb-0">Add Model</h3>
+<div class="row mt-2" id="memory-data"></div>
 
 <div class="row mt-5">
   <div class="col-md-12">
@@ -99,6 +100,39 @@
     </form>
   </div>
 </div>
+
+<script>
+
+  window.addEventListener('DOMContentLoaded', () => {fetchMemory()});
+  const memoryDiv = document.getElementById('memory-data');
+
+  function renderChatText(data) {
+    const messageHtml = `
+      <div class="col-6">
+        <p><b>RAM</b><br />
+        Total: ${data.ram.total} GB<br />
+        Available: ${data.ram.available} GB<br />
+        Used: ${data.ram.used} GB<br />
+        Percentage Used: ${data.ram.percentage_used}%</p>
+      </div>
+      <div class="col-6">
+        <p><b>ROM</b><br />
+        Total: ${data.storage.total} GB<br />
+        Used: ${data.storage.used} GB<br />
+        Free: ${data.storage.free} GB<br />
+        Percentage Used: ${data.storage.percentage_used}%</p>
+      </div>
+    `;
+    memoryDiv.innerHTML = messageHtml;
+  }
+
+  async function fetchMemory() {
+    const response = await fetch('/api/memory');
+    const data = await response.json();
+    renderChatText(data.response);
+  }
+
+</script>
 
 {% include 'includes/delete_modal.html' %}
 

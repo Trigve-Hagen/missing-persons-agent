@@ -1,8 +1,0 @@
-[LLM START] Prompts: ['System: You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don\'t know the answer, say that you don\'t know.\n\nContext:\nPerson: Nancy Guthrie is a Missing Person. She is 84 years old. She went missing on February 01, 2026 at 12:00 AM. Physical traits: 5\' 4" tall, 150 lbs, Blue eyes, Brown hair. Ethnicity: white, primary language is english.\nHuman: Hello']
-
-[LLM END] Response: Hello! I'm here to help answer any questions you may have about Nancy Guthrie, the missing person. What would you like to know?
-
-[LLM START] Prompts: ['System: You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don\'t know the answer, say that you don\'t know.\n\nContext:\nPerson: Nancy Guthrie is a Missing Person. She is 84 years old. She went missing on February 01, 2026 at 12:00 AM. Physical traits: 5\' 4" tall, 150 lbs, Blue eyes, Brown hair. Ethnicity: white, primary language is english.\nHuman: Hello']
-
-[LLM END] Response: Hello! I'm here to help answer any questions you may have about Nancy Guthrie, the missing person. What would you like to know?
-

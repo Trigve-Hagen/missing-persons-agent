@@ -1,8 +1,0 @@
-<!-- templates/includes/sidebar_menu.html -->
-<nav class="nav flex-column mb-3">
-  <a class="nav-link{% if request.endpoint == 'dashboard' %} active{% endif %}" href="{{ url_for('dashboard') }}">Dashboard</a>
-  <a class="nav-link{% if request.endpoint == 'application_state' %} active{% endif %}" href="{{ url_for('application_state') }}">Application State</a>
-  <a class="nav-link{% if request.endpoint == 'resources' %} active{% endif %}" href="{{ url_for('resources') }}">Resources</a>
-  <a class="nav-link{% if request.endpoint == 'data_center' %} active{% endif %}" href="{{ url_for('data_center') }}">Data Center</a>
-  <!-- <a class="nav-link{% if request.endpoint == 'data_center' %} active{% endif %}" href="{{ url_for('data_center') }}">Data Center All</a> -->
-</nav>
