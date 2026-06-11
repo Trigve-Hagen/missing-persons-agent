@@ -23,29 +23,8 @@
   </div>
   <div class="col-12">
     <div class="row">
-      <h3 class="my-4 mb-2">Models</h3>
-      <p><b>Quantization</b> is the process of compressing an AI model by reducing the precision of its weights (the math parameters) from high-precision floating-point numbers (like 16-bit) to lower-precision numbers (like 4-bit or 8-bit). This shrinks file sizes and lowers memory usage, making it possible to run large models on consumer hardware.</p>
-      <ul>
-        <li>The naming convention for compressed AI models (GGUF format) tells you exactly how the model was compressed. Using the example Q4_K_M:
-          <ul>
-            <li>Q (Quantization): Simply means the model has been compressed.</li>
-            <li>4 (4-bit): The model's weights are stored at an average of 4-bit precision instead of 16-bit, which reduces the file size by roughly 70%.</li>
-            <li>K (K-Quants): Refers to a highly optimized method developed by the local AI community that groups weights into blocks. Instead of treating all weights equally, it uses advanced math to keep the numbers more accurate.</li>
-            <li>M (Medium): The size/quality profile of the model. It uses a mixed-precision strategy. Less important data gets 4-bit compression, while "critical layers" (like attention mechanisms) retain 5- or 6-bit precision to preserve accuracy.</li>
-          </ul>
-        </li>
-        <li>The Quantization Trade-Off
-          <ul>
-            <li>Q2 - Q3: Extremely small, fits on edge devices, but has a major drop in reasoning accuracy.</li>
-            <li>Q4_K_M: The widely accepted "sweet spot". It balances 97-99% of unquantized output quality while fitting comfortably on standard hardware (like an 8GB GPU or a Mac).</li>
-            <li>Q5 - Q6: Retains higher accuracy for precise reasoning, logic, or coding but requires more memory and bandwidth.</li>
-            <li>Q8: Near full precision; useful if you are fine-tuning or require absolute fidelity, though it is very heavy on RAM/VRAM.</li>
-          </ul>
-        </li>
-      </ul>
-
       <h3 class="my-4 mb-2">ollama show llama3.2</h3>
-      <ul class="mb-5">
+      <ul class="mb-1">
         <li>Model
           <ul>
             <li>architecture - llama</li>
@@ -70,28 +49,73 @@
         </li>
       </ul>
 
-      <h3 class="my-4 mb-2">ollama show llama3-groq-tool-use</h3>
-      <ul class="mb-5">
-        <li>Model
+      <h3 class="my-4 mb-2">Models</h3>
+      <p><b>Architecture</b> is the model family in use.</p>
+      <p><b>Parameters</b> is the model family in use.</p>
+      <p><b>Quantization</b> is the process of compressing an AI model by reducing the precision of its weights (the math parameters) from high-precision floating-point numbers (like 16-bit) to lower-precision numbers (like 4-bit or 8-bit). This shrinks file sizes and lowers memory usage, making it possible to run large models on consumer hardware.</p>
+      <ul>
+        <li>The naming convention for compressed AI models (GGUF format) tells you exactly how the model was compressed. Using the example Q4_K_M:
           <ul>
-            <li>architecture - llama</li>
-            <li>parameters - 8.0B</li>
-            <li>context length - 8192</li>
-            <li>embedding length - 4096</li>
-            <li>quantization - Q4_0</li>
+            <li><b>Q (Quantization):</b> Simply means the model has been compressed.</li>
+            <li><b>4 (4-bit):</b> The model's weights are stored at an average of 4-bit precision instead of 16-bit, which reduces the file size by roughly 70%.</li>
+            <li><b>K (K-Quants):</b> Refers to a highly optimized method developed by the local AI community that groups weights into blocks. Instead of treating all weights equally, it uses advanced math to keep the numbers more accurate.</li>
+            <li><b>M (Medium):</b> The size/quality profile of the model. It uses a mixed-precision strategy. Less important data gets 4-bit compression, while "critical layers" (like attention mechanisms) retain 5- or 6-bit precision to preserve accuracy.</li>
           </ul>
         </li>
-        <li>Capabilities
+        <li>The Quantization Trade-Off
           <ul>
-            <li>completion</li>
-            <li>tools</li>
+            <li><b>Q2 - Q3:</b> Extremely small, fits on edge devices, but has a major drop in reasoning accuracy.</li>
+            <li><b>Q4_K_M:</b> The widely accepted "sweet spot". It balances 97-99% of unquantized output quality while fitting comfortably on standard hardware (like an 8GB GPU or a Mac).</li>
+            <li><b>Q5 - Q6:</b> Retains higher accuracy for precise reasoning, logic, or coding but requires more memory and bandwidth.</li>
+            <li><b>Q8:</b> Near full precision; useful if you are fine-tuning or require absolute fidelity, though it is very heavy on RAM/VRAM.</li>
           </ul>
         </li>
-        <li>Parameters
+      </ul>
+
+      <h3 class="my-4 mb-2">Capabilities</h3>
+      <p>Ollama is a tool that allows you to run large language models locally on your own hardware. Its capabilities depend entirely on the specific model you choose to download from the Ollama Library, spanning a wide variety of open-source models.</p>
+      <ul>
+        <li>Because Ollama supports a modular ecosystem of models (like Llama, Qwen, Gemma, and DeepSeek), its capabilities can include:
           <ul>
-            <li>stop - "<|start_header_id|>"</li>
-            <li>stop - "<|end_header_id|>"</li>
-            <li>stop - "<|eot_id|>"</li>
+            <li><b>Multimodal Processing:</b> Vision models can accept both text and images to describe visual content, diagrams, or documents.</li>
+            <li><b>Agentic Capabilities & Tool Use:</b> Advanced models support function calling (triggering APIs or Python code) and structured JSON outputs.</li>
+            <li><b>Built-in Web Search:</b> Optional REST API tools allow models to access real-time internet information to reduce hallucinations.</li>
+            <li><b>Full Chain-of-Thought ("Thinking"):</b> Many of the latest reasoning models natively emit a distinct "thinking" field, allowing you to audit their logic steps or hide the reasoning trace.</li>
+            <li><b>Coding Assistance:</b> Specialized coding models offer auto-completion and real-time suggestions natively integrated with IDEs like Visual Studio Code.</li>
+            <li><b>Privacy:</b> Because everything runs on your local machine, you do not have to send sensitive data to third-party cloud servers.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 class="my-4 mb-2">Parameters</h3>
+      <p>Ollama uses specific parameters to control how models generate text, handle memory, and balance creativity. These parameters can be customized using the /set parameter command, defined in a Modelfile, or passed via the API.
+      <ul>
+        <li><b>Core Generation Parameters</b><br />
+        These parameters adjust the creativity, style, and predictability of responses:
+          <ul>
+            <li><b>temperature:</b> Controls response creativity. Lower values (e.g., 0.1) yield more precise, deterministic, and factual answers (best for coding). Higher values (e.g., 0.8 to 1.0) make the model more adventurous and creative (best for brainstorming). Default: 0.8.</li>
+            <li><b>top_k:</b> Limits the pool of potential words the model considers for the next token to the most likely N options. Default: 40.</li>
+            <li><b>top_p:</b> Works alongside top_k by considering only the smallest set of words whose cumulative probability reaches this value. Default: 0.9.</li>
+            <li><b>min_p:</b> An alternative to top_p. Sets the minimum probability for a token to be considered, relative to the most likely token. Default: 0.0.</li>
+            <li><b>repeat_penalty:</b> Determines how strongly the model is penalized for repeating the same words or phrases. A higher value (e.g., 1.5) is strict, while lower values (e.g., 0.9) are lenient. Default: 1.1.</li>
+            <li><b>repeat_last_n:</b> Controls how far back into the generation history the model looks to prevent repetition. Default: 64.</li>
+          </ul>
+        </li>
+        <li><b>Memory & Context Parameters</b><br />
+        These parameters manage the context window (memory size) and inference length:
+          <ul>
+            <li><b>num_ctx:</b> Sets the size of the context window (in tokens) the model uses for generating the next token. Default is typically 2048 or 4096, depending on your configuration.</li>
+            <li><b>num_predict:</b> The maximum number of tokens the model should generate per prompt. Default: -1 (generate until completion).</li>
+            <li><b>seed:</b> Sets the random number seed. Setting this to a specific number makes generation reproducible and guarantees the same output for the same prompt. Default: 0.
+            <li><b>stop:</b> Defines custom sequences or symbols that will force the model to stop generating text.</li>
+          </ul>
+        </li>
+        <li><b>Setting Parameters in Ollama</b><br />
+        You can adjust these settings at the CLI, via an API, or within a custom blueprint:
+          <ul>
+            <li>In an active chat session: Use the /set parameter command (e.g., /set parameter temperature 0.3).</li>
+            <li>In a Modelfile: Add lines like PARAMETER temperature 0.3 to create a reusable custom model.</li>
+            <li>Via API: Pass them in an options object in your POST request to endpoints like /api/generate</li>
           </ul>
         </li>
       </ul>

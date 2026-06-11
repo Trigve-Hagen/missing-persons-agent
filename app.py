@@ -717,8 +717,10 @@ def edit_model(id):
         ['ollama', 'show', model.model],
         capture_output=True,
         text=True,
-        check=True
+        check=True,
+        encoding='utf-8'
     )
+
     show_data = result.stdout
   except subprocess.CalledProcessError as e:
     show_data = None
@@ -2086,7 +2088,7 @@ def data_center():
     start_time = time.perf_counter()
 
     manager = ChatTester()
-    response = manager.chatTime2()
+    response = manager.chatTime2(model)
 
     flash(f"Response: {response}", "success")
 

@@ -22,6 +22,7 @@ from langchain_core.tools import tool
 # LangGraph imports
 from typing import Annotated, Sequence
 from typing_extensions import TypedDict
+from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
@@ -90,7 +91,7 @@ class ExtractionResult(BaseModel):
     statement: Statement
 
 # ---------------------------------------------------------
-# LangChain tools
+# tools
 # ---------------------------------------------------------
 
 @tool
@@ -329,38 +330,6 @@ class ChatManager(ChromaDatabase):
         flash(f"Error invoking the chain: {e}", "danger")
         return False
 
-def get_temperature(city: str) -> str:
-  """Get the current temperature for a city
-
-  Args:
-    city: The name of the city
-
-  Returns:
-    The current temperature for the city
-  """
-  temperatures = {
-    "New York": "22°C",
-    "London": "15°C",
-    "Tokyo": "18°C"
-  }
-  return temperatures.get(city, "Unknown")
-
-def get_conditions(city: str) -> str:
-  """Get the current weather conditions for a city
-
-  Args:
-    city: The name of the city
-
-  Returns:
-    The current weather conditions for the city
-  """
-  conditions = {
-    "New York": "Partly cloudy",
-    "London": "Rainy",
-    "Tokyo": "Sunny"
-  }
-  return conditions.get(city, "Unknown")
-
 class ChatTester():
 
   def get_vector_store(self):
@@ -370,7 +339,7 @@ class ChatTester():
       embedding_function=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     )
 
-  def chatTime(self):
+  def chatTime(self, model):
     template = """Answer the question based only on the following context
     {context}
 
@@ -383,45 +352,65 @@ class ChatTester():
                "Do not answer from memory."),
       ("human", "{input}")
     ])
-    model = ChatOllama(
-      model='llama3-groq-tool-use',
+    llm = ChatOllama(
+      model=model.model,
       temperature=0,
     )
-    model.bind_tools(tools=[get_current_weather])
+    llm_with_tools = llm.bind_tools(tools=[get_current_weather])
     output_parser = StrOutputParser()
 
-    chain = prompt | model
+    chain = prompt | llm_with_tools
 
     return chain.invoke({
       "input": "what is the weather in SF?"
     })
 
-  def chatTime2(self):
-    messages = [{'role': 'user', 'content': 'What are the current weather conditions and temperature in New York and London?'}]
+  def chatTime2(self, model):
+    # 1. Define the tool schema manually so DeepSeek-R1 can read it textually
+    tool_instruction = """
+    You have access to the following tool. You MUST use it to answer questions about weather:
+
+    Function: get_current_weather(location)
+    Description: Get the current weather for a specific city location.
+    Arguments:
+      - location (string): The name of the city, e.g., 'San Francisco'
+
+    If the user asks for weather, respond ONLY with a JSON block matching this format:
+    {"name": "get_current_weather", "arguments": {"location": "City Name"}}
+    """
+
+    messages = [
+        {'role': 'system', 'content': tool_instruction},
+        {'role': 'user', 'content': 'What are the current weather conditions and temperature in New York and London?'}
+    ]
 
     try:
-      # The python client automatically parses functions as a tool schema so we can pass them directly
-      # Schemas can be passed directly in the tools list as well
-      response = chat(model='llama3-groq-tool-use', messages=messages, tools=[get_temperature, get_conditions], think=True)
+        # 2. Invoke the model (Ollama deepseek-r1)
+        response = chat(model=model.model, messages=messages, think=True)
+        assistant_msg = response.message
+        messages.append(assistant_msg)
 
-      # add the assistant message to the messages
-      messages.append(response.message)
-      if response.message.tool_calls:
-        # process each tool call
-        for call in response.message.tool_calls:
-          # execute the appropriate tool
-          if call.function.name == 'get_temperature':
-            result = get_temperature(**call.function.arguments)
-          elif call.function.name == 'get_conditions':
-            result = get_conditions(**call.function.arguments)
-          else:
-            result = 'Unknown tool'
-          # add the tool result to the messages
-          messages.append({'role': 'tool',  'tool_name': call.function.name, 'content': str(result)})
+        # 3. Manually parse the JSON tool call from the model's text content
+        # (Since deepseek-r1 returns the tool call as text rather than filling response.message.tool_calls)
+        if "get_current_weather" in assistant_msg.content:
+            # Simple extraction logic (can be refined using json.loads)
+            # For multi-city queries, the model may output two blocks or you can loop through them
 
-        # generate the final response
-        return chat(model='llama3-groq-tool-use', messages=messages, tools=[get_temperature, get_conditions], think=True)
-        # print(final_response.message.content)
+            # Example execution for New York
+            result_ny = get_current_weather(location="New York")
+            messages.append({'role': 'tool', 'tool_name': 'get_current_weather', 'content': str(result_ny)})
+
+            # Example execution for London
+            result_london = get_current_weather(location="London")
+            messages.append({'role': 'tool', 'tool_name': 'get_current_weather', 'content': str(result_london)})
+
+            # 4. Final call to let the model synthesize the tool outputs
+            return chat(model=model.model, messages=messages, think=True)
+
+        return response
+
     except Exception as e:
-      flash(f"Error invoking the chain: {e}", "danger")
-      return False
+        flash(f"Error invoking the chain: {e}", "danger")
+        return False
+
+
