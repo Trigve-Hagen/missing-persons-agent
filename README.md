@@ -1,69 +1,10 @@
 # Missing Persons Agent
 Missing Persons is a tool to investigate missing persons. Its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. It uses [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
 
-05/27/2026 - It needs to have a central store of all data pertaining to an investigation. A vector database where anyone using Missing Persons or other software like Missing Persons can plug into and use the data stored there in their investigation. The information should be submitted to be added in the style of git. Then merged into the main branch when validated. The nice thing about this is the data can be valid, deduplicated and always ready.
-
-AI tools like models rely heavily on your computer hardware. Im running a laptop with 1.5G of RAM and a INTEL CORE i7 CPU proccessor. When using a model that needs 16Gb of VRAM and a Nvidia GPU proccessor the response time is 20 min. Its important to use the better models though or you get garbage results.
-
 If you are looking to upgrade to a new computer and you want to use missing persons I would recommend to get a computer with at least 16GB of VRAM and a Nvidia GPU proccessor. If you want ultra fast get one with 32 or 64 GB of VRAM. The GPU can range in price based upon size. That being said:
 
-You will need to download Ollama first. They have a great selection of models to use. The different parts of the application rely on the values you set in Application State. Fill them in before running any part of the application. CPUs can be slow. GPUs will be faster but I have not got a chance yet to test it with them.<br /><br />
-Once completed te LLM will help the user create chunks of data by parsing name, value pairs from json returned from APIs and Rss feeds. The LLM chooses what table to add them to based upon the data. You can then adjust the values if needed and store the data. There is also an agent that returns 10 suggestions and saves them.<br /><br />
-Gathered information is saved to Person, Phones, Emails, Addresses, Aliases, Events and Notes first so you can edit it. The data once cleaned up and validated needs to be then saved to the vector database for the LLM to use. There is a file entity to use to upload any Pdfs, Excels or Word docs with information on the case.
-
-By providing really precise prompts and questions you can get really detailed answers. Study prompt engineering.
-
-- Categories - Work and in testing.
-  - Categories - You can have different categories for people, phones, emails, addresses and events. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
-- Person - Work in SqlAlchemy, working on the save and update functions for Chroma Db now.
-  - Person - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Notes that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Notes and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data for and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database.<br /><br />Make sure to choose the person you want to add the data to when filling in Emails, Addresses, Aliases, Phones, Events and Note.<br /><br />
-  - Addresses - Addresses is any address used by the person. Create a Type for it in Categories first. Example Category: Home, Work, etc..
-  - Emails - Emails are any emails used by the person. Create a Type for it in Categories first. Example Category: Personal, Work, etc..
-  - Phones - Phones are any phone number used by the person. Create a Type for it in Categories first. Example Category: Cell, Work, etc..
-  - Aliases - Alias are any aliases used by the person.
-  - Events - Events are any event that happens related to the person. Create a Type for it in Categories first. Example Category: Alibi, Court Date, etc..
-  - Notes - Notes are any other data related to the person.
-
-- Files - Added as data for the LLM.
-  - Pdf - Save works but needs update.
-  - Excel - Coming soon..
-  - Csv - Coming soon..
-  - Word - Coming soon..
-  - Image - Works, will continue to test.
-  - mp3 - Audio files - Coming soon..
-  - mp4 - Movie files - Coming soon..
-
-- Data APIs - Working on the save functions now.
-  - RSS Feeds - Use RSS Feeds to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.
-  - Data APIs - Use APIs to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.
-
-- Model APIs - Only Ollama works.
-  - Ollama - This is the initial Model I used because it all runs on local and is testable without paid subscription. Can be a bit slow.. You can speed this up by selecting GPU in the form on the upper right corner.
-  - OpenAI - If you don't have GPUs then I plan to give you the ability to connect with OpenAI so you can run data on their models with their GPUs if you like.
-  - Grok - Same with Grok.
-  - Claude - Same with Claude.</li>
-
-## Description
-
-I'm creating a installable application that is a tool to investigate a persons disappearance. its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. The models its going to use are [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
-
-It will use ChromaDB for storing data for the LLM to allow you to clean the data and minimize or completely remove hallucinations. It is open-source with no usage limits on local machines.
-
-It also uses Sqlite3 both as a storage for initial search data. I am will probably also create a separate model for deciding what to choose when dealing with duplicate data.
-
-My hopes is that 1000s of people will work together using this tool to search through the tons of video footage for the missing person in the first couple days of their disappearance and find them because with everyone using it we were able to do something faster.
-
-I would love to convince the people behind the cameras to have the data saved on a servers backed up for at least a month with a front facing domain and website that can support a read only API to view the videos so this program can run images against them.
-
-Ill create a list of the Camera and Missing persons APIs that people can use here when I find them.
-
-I would think that using the RSS method described in the youtube video [Turn Facebook Pages or Groups Into RSS Feeds](https://www.youtube.com/watch?v=Nt2pc1IIESI&t=4s) and collecting as much data as you can from every social media platform you can apply this to, you could build a sort of profile for each individual in the social group of the missing individual. Then train the agent with it and have it create a probability distribution on who it thinks fits the bill.
-
-Continue to collect and agregate the data daily to look for more clues.
-
-Was thinking this morning about having the program continue out wards in the tree from ground zero and automatically as it finds new acquaintances get an RSS feed for them and pull in their data. Your computer would always be searching and indexing new people in hope of finding a connection. I could set up a parameter for levels out. Also was thinking about a fine tunner agent that gives suggestions for fine tuning the LLM and your work on finding the person using this tool. The interesting concept is an agent that improves itself.
-
-It would be a good idea I would think to add as many missing people as you can find and the immediate people groups they will have so you can look for people that are in every group. In case the person is involved in a ring of abductions where the same person is doing recruiting or abducting. Search for deleted or blocked accounts in the missing persons list of contacts or accounts that where deleted by the owners who were once friends with the missing person.
+You will need to download Ollama first. They have a great selection of models to use. The different parts of the application rely on the values you set in Application State. Fill them in before running any part of the application.<br /><br />
+Gathered information is saved to Person, Phones, Emails, Addresses, Aliases, Events and Notes first so you can edit it. The data once cleaned up and validated needs to be then saved to the vector database for the LLM to use. There is a file entity to use to upload any image, Pdfs, Excels or Word docs.
 
 ## The Build
 If you are good with python
@@ -159,6 +100,63 @@ Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Au
 
 ### Central Data Store
 - A central data storage where all data on an investigation can be accessed by any one using Missing Persons.
+
+## Section Details
+
+- Categories - Work and in testing.
+  - Categories - You can have different categories for people, phones, emails, addresses and events. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
+- Person - Work in SqlAlchemy, working on the save and update functions for Chroma Db now.
+  - Person - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Notes that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Notes and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data for and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database.<br /><br />Make sure to choose the person you want to add the data to when filling in Emails, Addresses, Aliases, Phones, Events and Note.<br /><br />
+  - Addresses - Addresses is any address used by the person. Create a Type for it in Categories first. Example Category: Home, Work, etc..
+  - Emails - Emails are any emails used by the person. Create a Type for it in Categories first. Example Category: Personal, Work, etc..
+  - Phones - Phones are any phone number used by the person. Create a Type for it in Categories first. Example Category: Cell, Work, etc..
+  - Aliases - Alias are any aliases used by the person.
+  - Events - Events are any event that happens related to the person. Create a Type for it in Categories first. Example Category: Alibi, Court Date, etc..
+  - Notes - Notes are any other data related to the person.
+
+- Files - Added as data for the LLM.
+  - Pdf - Save works but needs update.
+  - Excel - Coming soon..
+  - Csv - Coming soon..
+  - Word - Coming soon..
+  - Image - Works, will continue to test.
+  - mp3 - Audio files - Coming soon..
+  - mp4 - Movie files - Coming soon..
+
+- Data APIs - Working on the save functions now.
+  - RSS Feeds - Use RSS Feeds to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.
+  - Data APIs - Use APIs to gather data. You can select data by json nodes. Then turn the results into chunks by clicking the save button provided on each row. This will open a Modal that allows you to save the value of that node to any field you want in the SqlAlchemy database. From there you will need to save the edited version in edit person.
+
+- Model APIs - Only Ollama works.
+  - Ollama - This is the initial Model I used because it all runs on local and is testable without paid subscription. Can be a bit slow.. You can speed this up by selecting GPU in the form on the upper right corner.
+  - OpenAI - If you don't have GPUs then I plan to give you the ability to connect with OpenAI so you can run data on their models with their GPUs if you like.
+  - Grok - Same with Grok.
+  - Claude - Same with Claude.</li>
+
+## ideas
+
+05/27/2026 - It needs to have a central store of all data pertaining to an investigation. A vector database where anyone using Missing Persons or other software like Missing Persons can plug into and use the data stored there in their investigation. The information should be submitted to be added in the style of git. Then merged into the main branch when validated. The nice thing about this is the data can be valid, deduplicated and always ready.
+
+06/14/2026 -  Had new idea to build a Nodes table so a user can define a list of tasks for the model to work on.
+
+It uses Langchain Chroma for storing data for the LLM. It is open-source with no usage limits on local machines.
+
+It also uses sqlite with Sql Alchemy ORM for storing data so you can adjust the data before saving it to the vector database. I am will probably also create a sub model for deciding what to choose when dealing with duplicate data.
+
+My hopes is that 1000s of people will work together using this tool to search through the tons of video footage for the missing person in the first couple days of their disappearance and find them because with everyone using it we were able to do something faster.
+
+I would love to convince the people behind the cameras to have the data saved on a servers backed up for at least a month with a front facing domain and website that can support a read only API to view the videos so this program can run images against them.
+
+Ill create a list of the Camera and Missing persons APIs that people can use here when I find them.
+
+I would think that using the RSS method described in the youtube video [Turn Facebook Pages or Groups Into RSS Feeds](https://www.youtube.com/watch?v=Nt2pc1IIESI&t=4s) and collecting as much data as you can from every social media platform you can apply this to, you could build a sort of profile for each individual in the social group of the missing individual. Then train the agent with it and have it create a probability distribution on who it thinks fits the bill.
+
+Continue to collect and agregate the data daily to look for more clues.
+
+Was thinking this morning about having the program continue out wards in the tree from ground zero and automatically as it finds new acquaintances get an RSS feed for them and pull in their data. Your computer would always be searching and indexing new people in hope of finding a connection. I could set up a parameter for levels out. Also was thinking about a fine tunner agent that gives suggestions for fine tuning the LLM and your work on finding the person using this tool. The interesting concept is an agent that improves itself.
+
+It would be a good idea I would think to add as many missing people as you can find and the immediate people groups they will have so you can look for people that are in every group. In case the person is involved in a ring of abductions where the same person is doing recruiting or abducting. Search for deleted or blocked accounts in the missing persons list of contacts or accounts that where deleted by the owners who were once friends with the missing person.
+
 
 ### Links
 
