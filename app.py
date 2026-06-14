@@ -2078,19 +2078,20 @@ def data_center():
   else:
     request_api = RequestApi()
     api_data = request_api.get_request(api, api_params)
+
+    # flash(f"API Data: {api_data}", "info")
     api_data, ifParsed = request_api.filter_data(api_data, state)
 
     person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
-
     model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
 
     # Start the timer
     start_time = time.perf_counter()
 
-    manager = ChatTester()
-    response = manager.chatTime2(model)
+    # manager = ChatTester()
+    # response = manager.chatTime2(model)
 
-    flash(f"Response: {response}", "success")
+    # flash(f"Response: {response}", "success")
 
     # End the timer
     end_time = time.perf_counter()
@@ -2589,7 +2590,6 @@ def inject_site_settings():
   )
 
 def initialize_database(engine):
-  print(engine.url)
   if not database_exists(engine.url):
     Base.metadata.create_all(bind=engine)
 

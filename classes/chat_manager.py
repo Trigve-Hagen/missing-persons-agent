@@ -210,6 +210,7 @@ class ChatManager(ChromaDatabase):
     return output["answer"]
 
   def suggestions(self, model: Model, prompt: Prompt, question: Question):
+    """ Not sure if this will ever be used. """
     if model:
       try:
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -256,6 +257,7 @@ class ChatManager(ChromaDatabase):
       return False
 
   def determine(self, person: Person, model: Model, json_payload: str) -> ExtractionResult:
+    """ Have a default prompt and question it false back on. """
     """ Takes a json response object and parses it into useable data that
     can be inserted into the sql_alchemy database. It creates Tasks that
     explains in human readable format what it is doing with the statement.

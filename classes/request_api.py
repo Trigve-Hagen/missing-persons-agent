@@ -67,6 +67,7 @@ class RequestApi:
       if api.type == 'api':
         # 3. Process the response if no exception was raised
         data = response.json()
+        return data
 
     except HTTPError as http_err:
       flash(f"HTTP error occurred: {http_err}", "danger")
