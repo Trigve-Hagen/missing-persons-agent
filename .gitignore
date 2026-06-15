@@ -9,6 +9,9 @@ venv/
 env/
 .venv/
 
+# Experimental
+classes/extras/
+
 # Environment Variables
 .env
 

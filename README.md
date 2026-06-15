@@ -59,29 +59,44 @@ Build out prompts and questions for LLMs.
 ![Questions Page](./assets/questions.png)
 
 ### Build Tasks and Data Center
-Splitting chunks into different databases or collections in Chroma is highly beneficial when you need to improve query performance, enforce data isolation, or apply distinct metadata filters across different sets of documents.
+[Gen AI Agent Resource](https://github.com/NirDiamant/GenAI_Agents)
+At the moment I'm trying to learn all the tools I can use when building LLMs so please bear with me. Im only focusing on Ollama, Langchain and langGraph.
+
+- Saving static data from pdfs or relational databases in chunks to vector database so it can be used by a RAG LLM.
+- MCP servers
+  - The LLM (The Brain): It evaluates when it needs external help or data. It does not need to be hard-coded with tool APIs.
+  - The MCP Host/Client (The Broker): This is the application you are running (e.g., Cursor, Claude Desktop, or an agent framework like LangChain). It brokers the connection between the LLM and the external world.
+  - The MCP Servers (The Hands): These are distinct, external services (e.g., GitHub, Google Drive, Postgres, Slack, or local file systems). You plug these servers into your MCP Host so your LLM can interact with them.
+    - Resources like files.
+    - Tools @mcp.tool()
+    - Prompts - In the Model Context Protocol (MCP), servers act as pre-defined prompt templates that expose reusable workflows and instructions to your AI client. Instead of forcing users to repeatedly type complex instructions, the MCP server packages these guidelines into ready-to-use menu options, often appearing in your AI interface as slash commands or clickable UI templates.
+    - [MCP Registry](https://github.com/mcp)
 
 [Thinking in LangGraph](https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph)
 
 When you build an agent with LangGraph, you will first break it apart into discrete steps called nodes. Then, you will describe the different decisions and transitions from each of your nodes. Finally, you connect nodes together through a shared state that each node can read from and write to.
 
-- Build an agent that operates continuously with stop options
-- Create a nodes table that the user can define the nodes.
+Build an agent that operates continuously with stop options
+- Possibly create a nodes table that the user can define the nodes. This might be too much. Still tying to create the perfect idea.
   - Create tools that can be used by the agent.
-  - List MCP servers that the agent can connect to.
+  - Create an MCP server that the agent can use. MCP servers standardalize connecting to external data.
+    - Resources, Tools and prompts
+    - Elicit - allows the tool to pause for user input
   - Load the Chroma database with person, emails, phones, addresses and aliases.
   - Load the Chroma database with Events and notes.
-  - Load the Chroma database with Documents including txt files pdfs excel and word docs.
+  - Load the Chroma database with Documents including documents, images, audio and videos.
   - Connect to APIs and Rss Feeds to pull data in as json.
+
+With the idea of
   - Find new people of interest and accessing data points for them.
   - Parse the returned json and save new data to the database related to the case.
   - Prompting the model for connections that could lead to finding the person.
   - When new data is found the data is added to the entity as a [OSINT](https://github.com/cipher387/API-s-for-OSINT) row.
 
-  - The database have 3 separate collections.
-    - database - stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
-    - investigation - stores data from the person, email, phone, alias, address, event and note table data for investigating.
-    - investigator - stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
+The database have 3 separate collections.
+  - database - stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
+  - investigation - stores data from the person, email, phone, alias, address, event and note table data for investigating.
+  - investigator - stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
 
 ### Add in Autosearch
 Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.
@@ -156,7 +171,6 @@ Continue to collect and agregate the data daily to look for more clues.
 Was thinking this morning about having the program continue out wards in the tree from ground zero and automatically as it finds new acquaintances get an RSS feed for them and pull in their data. Your computer would always be searching and indexing new people in hope of finding a connection. I could set up a parameter for levels out. Also was thinking about a fine tunner agent that gives suggestions for fine tuning the LLM and your work on finding the person using this tool. The interesting concept is an agent that improves itself.
 
 It would be a good idea I would think to add as many missing people as you can find and the immediate people groups they will have so you can look for people that are in every group. In case the person is involved in a ring of abductions where the same person is doing recruiting or abducting. Search for deleted or blocked accounts in the missing persons list of contacts or accounts that where deleted by the owners who were once friends with the missing person.
-
 
 ### Links
 

@@ -69,6 +69,7 @@ from classes.logging import Logging
 from classes.model_utils import ModelUtils
 from classes.model_manager import ModelManager
 from classes.chat_manager import ChatManager, ChatTester
+# from classes.extras.email_manager import EmailManager
 from classes.chroma_database import ChromaDatabase
 from classes.feed_generator import FeedGenerator
 from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, NoteRepository, Determinator
@@ -2088,8 +2089,15 @@ def data_center():
     # Start the timer
     start_time = time.perf_counter()
 
-    # manager = ChatTester()
-    # response = manager.chatTime2(model)
+    """ manager = EmailManager(session=session, model=model)
+    query = "My internet connection keeps dropping. Can you help?"
+    result = manager.run_customer_support(query)
+    print(f"Query: {query}")
+    print(f"Category: {result['category']}")
+    print(f"Sentiment: {result['sentiment']}")
+    print(f"Response: {result['response']}")
+    print("\n")
+    # Execution Time: 7 minutes 38.77 seconds """
 
     # flash(f"Response: {response}", "success")
 

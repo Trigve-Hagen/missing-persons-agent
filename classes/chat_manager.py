@@ -16,6 +16,7 @@ from langchain_classic.chains import create_history_aware_retriever
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from classes.model_utils import ModelUtils
 from classes.chroma_database import ChromaDatabase
+from classes.tools import get_current_weather
 from datetime import datetime
 from langchain_core.tools import tool
 
@@ -91,26 +92,7 @@ class ExtractionResult(BaseModel):
     statement: Statement
 
 # ---------------------------------------------------------
-# tools
-# ---------------------------------------------------------
-
-@tool
-def get_current_weather(location):
-  """Get the current weather for a specific city location.
-
-  Args:
-      location: The name of the city, e.g., 'San Francisco'
-  """
-  weather_info = {
-    "location": location,
-    "temperature": "72",
-    "unit": "fahrenheit",
-    "forcast": ["sunny", "windy"],
-  }
-  return json.dumps(weather_info)
-
-# ---------------------------------------------------------
-# LLangGraph State and Workflow Nodes
+# State
 # ---------------------------------------------------------
 
 class ChatState(TypedDict):
