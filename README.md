@@ -77,7 +77,7 @@ At the moment I'm trying to learn all the tools I can use when building LLMs so 
 When you build an agent with LangGraph, you will first break it apart into discrete steps called nodes. Then, you will describe the different decisions and transitions from each of your nodes. Finally, you connect nodes together through a shared state that each node can read from and write to.
 
 Build an agent that operates continuously with stop options
-- Possibly create a nodes table that the user can define the nodes. This might be too much. Still tying to create the perfect idea.
+- Possibly create a nodes table that the user can define the nodes. This might be too much. Still trying to create the perfect idea.
   - Create tools that can be used by the agent.
   - Create an MCP server that the agent can use. MCP servers standardalize connecting to external data.
     - Resources, Tools and prompts
