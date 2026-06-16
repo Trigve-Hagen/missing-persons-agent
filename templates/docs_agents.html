@@ -24,77 +24,66 @@
   <div class="col-12">
     <div class="row">
       <h3 class="my-4 mb-2">Agents</h3>
-      <p><b>Quantization</b> is the process of compressing an AI model by reducing the precision of its weights (the math parameters) from high-precision floating-point numbers (like 16-bit) to lower-precision numbers (like 4-bit or 8-bit). This shrinks file sizes and lowers memory usage, making it possible to run large models on consumer hardware.</p>
-      <ul>
-        <li>The naming convention for compressed AI models (GGUF format) tells you exactly how the model was compressed. Using the example Q4_K_M:
-          <ul>
-            <li>Q (Quantization): Simply means the model has been compressed.</li>
-            <li>4 (4-bit): The model's weights are stored at an average of 4-bit precision instead of 16-bit, which reduces the file size by roughly 70%.</li>
-            <li>K (K-Quants): Refers to a highly optimized method developed by the local AI community that groups weights into blocks. Instead of treating all weights equally, it uses advanced math to keep the numbers more accurate.</li>
-            <li>M (Medium): The size/quality profile of the model. It uses a mixed-precision strategy. Less important data gets 4-bit compression, while "critical layers" (like attention mechanisms) retain 5- or 6-bit precision to preserve accuracy.</li>
-          </ul>
-        </li>
-        <li>The Quantization Trade-Off
-          <ul>
-            <li>Q2 - Q3: Extremely small, fits on edge devices, but has a major drop in reasoning accuracy.</li>
-            <li>Q4_K_M: The widely accepted "sweet spot". It balances 97-99% of unquantized output quality while fitting comfortably on standard hardware (like an 8GB GPU or a Mac).</li>
-            <li>Q5 - Q6: Retains higher accuracy for precise reasoning, logic, or coding but requires more memory and bandwidth.</li>
-            <li>Q8: Near full precision; useful if you are fine-tuning or require absolute fidelity, though it is very heavy on RAM/VRAM.</li>
-          </ul>
-        </li>
-      </ul>
+      <p>Building a versatile agent for investigating missing person cases requires a strict balance between OSINT (Open-Source Intelligence) tools, local data processing, and structured logical reasoning. Because this involves highly sensitive information, running your foundational models locally via Ollama ensures absolute data privacy.</p>
+      <p>Here are the best tools, divided by category, to integrate into your LangChain agent architecture for this specific use case:</p>
 
-      <h3 class="my-4 mb-2">ollama show llama3.2</h3>
-      <ul class="mb-5">
-        <li>Model
+      <ol>
+        <li>OSINT & Web Intelligence Tools<br />
+          Investigating missing persons requires scanning public records, social media, and news reports.
           <ul>
-            <li>architecture - llama</li>
-            <li>parameters - 3.2B</li>
-            <li>context length - 131072</li>
-            <li>embedding length - 3072</li>
-            <li>quantization - Q4_K_M</li>
+            <li>Tavily / Perplexity API: Best for deep, structured web searches. Use it to scan local news reports, community forums, or press releases regarding the disappearance.</li>
+            <li>Spider / Firecrawl: Excellent tools for scraping specific public directories, missing person databases, or local police bulletin boards into clean markdown for your agent to analyze.</li>
+            <li>Social Media Scrapers: Custom Python tools using libraries like ntscraper (for Twitter/X archive searches) to track down recent mentions, hashtags, or digital footprints without needing complex API access.</li>
           </ul>
         </li>
-        <li>Capabilities
-          <ul>
-            <li>completion</li>
-            <li>tools</li>
-          </ul>
-        </li>
-        <li>Parameters
-          <ul>
-            <li>stop - "<|start_header_id|>"</li>
-            <li>stop - "<|end_header_id|>"</li>
-            <li>stop - "<|eot_id|>"</li>
-          </ul>
-        </li>
-      </ul>
 
-      <h3 class="my-4 mb-2">ollama show llama3-groq-tool-use</h3>
-      <ul class="mb-5">
-        <li>Model
+        <li>Location & Mapping Tools (GIS)<br />
+          Tracking timelines and physical locations is critical for mapping out where a person was last seen.
           <ul>
-            <li>architecture - llama</li>
-            <li>parameters - 8.0B</li>
-            <li>context length - 8192</li>
-            <li>embedding length - 4096</li>
-            <li>quantization - Q4_0</li>
+            <li>OpenStreetMap / Nominatim API: Wrap this in a LangChain @tool to look up coordinates, cross-reference intersections, and analyze nearby landmarks or terrain features.</li>
+            <li>Google Maps Platform: If you use API keys, you can leverage it to calculate travel times between a subject's last known locations or find public establishments (like gas stations or convenience stores) that might have security footage.</li>
           </ul>
         </li>
-        <li>Capabilities
+
+        <li>Data & Document Management Tools<br />
+          Case files often involve messy PDFs, images of flyers, phone logs, and financial spreadsheets.
           <ul>
-            <li>completion</li>
-            <li>tools</li>
+            <li>LangChain FileManagementToolkit: Allows the agent to read and write to a local "Case File" directory to update logs, timelines, and suspect/witness lists.</li>
+            <li>Structured Local Database (SQLDatabaseToolkit): Use SQLite locally to store structured information like cell tower pings, timestamps, witness statements, and vehicle descriptions, allowing the agent to run complex SQL queries to find patterns.</li>
+            <li>Unstructured / PyMuPDF: Essential for parsing text out of police report copies, volunteer search sign-up sheets, or text message exports.</li>
           </ul>
         </li>
-        <li>Parameters
+
+        <li>Advanced MCP Servers for Reasoning
           <ul>
-            <li>stop - "<|start_header_id|>"</li>
-            <li>stop - "<|end_header_id|>"</li>
-            <li>stop - "<|eot_id|>"</li>
+            <li>Sequential Thinking MCP: Highly recommended for this use case. It forces the local Ollama model to break down complex, multi-step investigative logic (e.g., "If they left at 3 PM and the phone died at 3:15 PM, what is the maximum radius they could travel?") rather than rushing to a conclusion.</li>
+            <li>Memory / Knowledge Graph MCP: Allows the agent to build a persistent network of relationships between people, locations, vehicles, and timelines, preventing the agent from "forgetting" crucial clues across long chat sessions.</li>
           </ul>
         </li>
-      </ul>
+
+        <li>Local Python Subprocesses (Image/Data Parsing)
+          <ul>
+            <li>OCR (Tesseract / EasyOCR): Turn this into a custom tool so the agent can read text out of scanned images, receipts, or photos of handwritten notes.</li>
+            <li>EXIF Data Extractor: A simple Python script wrapped as a tool to extract metadata (GPS coordinates, timestamps) from photos uploaded to the case file.</li>
+          </ul>
+        </li>
+      </ol>
+
+      <hr />
+
+      <h3 class="my-4 mb-2">Suggested Architectural Framework</h3>
+      <p>For an investigative agent, a basic linear chain will fail because investigations are non-linear. You should use LangGraph to build a Plan-and-Execute or Supervisor architecture:</p>
+
+      <p class="mb-5" style="text-align: center;">[User Input] ➔ [Supervisor Agent]<br />
+      │<br />
+            ┌────────┼────────┐<br />
+            ▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▼<br />
+      [OSINT Agent]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[GIS Agent]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Data Analyst]<br />
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br />
+            └────────┼────────┘<br />
+                     ▼<br />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Sequential Thinking Node] ➔ [Final Case Report]</p>
+
     </div>
   </div>
 </div>

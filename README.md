@@ -60,9 +60,20 @@ Build out prompts and questions for LLMs.
 
 ### Build Tasks and Data Center
 [Gen AI Agent Resource](https://github.com/NirDiamant/GenAI_Agents)
+
+[IBMTechnology](https://www.youtube.com/@IBMTechnology/playlists)
+
+[CLI vrs MCP Servers](https://www.youtube.com/watch?v=g9JIUM0MHgQ)
+
+[The Best LOCAL Agentic Coding Workflow](https://www.youtube.com/watch?v=hfba9dAT6xE)
+
 At the moment I'm trying to learn all the tools I can use when building LLMs so please bear with me. Im only focusing on Ollama, Langchain and langGraph.
 
 - Saving static data from pdfs or relational databases in chunks to vector database so it can be used by a RAG LLM.
+- CLI Commands
+  - Cli commands are built into its training data.
+  - Good when commands map directly to jobs.
+  - Can be chained together on one line.
 - MCP servers
   - The LLM (The Brain): It evaluates when it needs external help or data. It does not need to be hard-coded with tool APIs.
   - The MCP Host/Client (The Broker): This is the application you are running (e.g., Cursor, Claude Desktop, or an agent framework like LangChain). It brokers the connection between the LLM and the external world.
@@ -71,6 +82,11 @@ At the moment I'm trying to learn all the tools I can use when building LLMs so 
     - Tools @mcp.tool()
     - Prompts - In the Model Context Protocol (MCP), servers act as pre-defined prompt templates that expose reusable workflows and instructions to your AI client. Instead of forcing users to repeatedly type complex instructions, the MCP server packages these guidelines into ready-to-use menu options, often appearing in your AI interface as slash commands or clickable UI templates.
     - [MCP Registry](https://github.com/mcp)
+- Skills
+  - [Agent Skills](https://agentskills.io/home)
+- Agent2Agent Protocol
+  - [a2a-protocol](https://a2a-protocol.org/latest/)
+  - [Agent2Agent](https://github.com/a2aproject/a2a-samples)
 
 [Thinking in LangGraph](https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph)
 
@@ -94,9 +110,9 @@ With the idea of
   - When new data is found the data is added to the entity as a [OSINT](https://github.com/cipher387/API-s-for-OSINT) row.
 
 The database have 3 separate collections.
-  - database - stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
-  - investigation - stores data from the person, email, phone, alias, address, event and note table data for investigating.
-  - investigator - stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
+  - database - Stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
+  - investigation - Stores data from the person, email, phone, alias, address, event and note table data for investigating.
+  - investigator - SStores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
 
 ### Add in Autosearch
 Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.
