@@ -2305,6 +2305,9 @@ def delete_item():
   cat_file_count = session.query(File).filter_by(type=id).count()
   cat_event_count = session.query(Event).filter_by(type=id).count()
   if table_type == 'category':
+    if int(id) <= 6:
+      flash(f"You cannot delete initial categories. You can only update the name.", "danger")
+      return redirect(url_for('category'))
     if cat_person_count > 0:
       flash(f"Cannot delete: {table_type} has {cat_person_count} associated people. Delete them first.", "danger")
       return redirect(url_for('category'))
@@ -2514,7 +2517,6 @@ def application_state():
   }
   state = session.get(State, 1)
 
-
   return flask.render_template(
     'application_state.html',
     state=state,
@@ -2631,14 +2633,6 @@ def initialize_database(engine):
       primaryLanguage="english"
     )
     session.add(p1)
-    """ p2 = Person(
-      type=1, sirName="", firstName="Trigve", middleName="", lastName="Hagen",
-      suffix="", height="67", weight="190", hairColor="Brown", eyeColor="Blue", ssn="",
-      description="", gender="male", dob=datetime(1972, 10, 2),
-      missing=datetime(2026, 10, 2), owner=0, ethnicity="white",
-      primaryLanguage="english"
-    )
-    session.add(p2) """
 
     state = session.get(State, 1)
     state.person = 1
@@ -2677,10 +2671,6 @@ def initialize_database(engine):
       prompt="You are an expert criminal investigator, forensic analyst, and search-and-rescue strategist. Your objective is to help me optimize my approach to an active missing person case. Analyze the scenario detailed in the question below and provide 10 highly actionable, evidence-based suggestions that prioritize investigative efficiency and subject safety."
     )
     session.add(p1)
-    """ p2 = Prompt(
-      prompt="Act as an expert software optimizer. The code in the following context is a flask application that uses data from form uploads and external sources combined with AI to aid in the search for missing persons."
-    )
-    session.add(p2) """
     state = session.get(State, 1)
     state.prompt = 1
     session.commit()
@@ -2690,10 +2680,6 @@ def initialize_database(engine):
       question="I am investigating the disappearance of Nancy Guthrie. What are 10 specific investigative steps, technological strategies, or procedural optimizations I can use to maximize our chances of locating her safely?"
     )
     session.add(q1)
-    """ q2 = Question(
-      question="I am looking to build documentation. Create html page describing the usage of the tables and columns of the defined models based upon the comments."
-    )
-    session.add(q2) """
     state = session.get(State, 1)
     state.question = 1
     session.commit()

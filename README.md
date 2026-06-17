@@ -69,6 +69,10 @@ Build out prompts and questions for LLMs.
 
 At the moment I'm trying to learn all the tools I can use when building LLMs so please bear with me. Im only focusing on Ollama, Langchain and langGraph.
 
+- System Prompt
+- AGENT.md
+  - It is loaded into the conversation history very frequently (often at the start of every session or turn). This could be using alot of tokens.
+  - Keep it short (ideally under 200 lines). The immutable rules of the agent.
 - Saving static data from pdfs or relational databases in chunks to vector database so it can be used by a RAG LLM.
 - CLI Commands
   - Cli commands are built into its training data.
@@ -82,13 +86,23 @@ At the moment I'm trying to learn all the tools I can use when building LLMs so 
     - Tools @mcp.tool()
     - Prompts - In the Model Context Protocol (MCP), servers act as pre-defined prompt templates that expose reusable workflows and instructions to your AI client. Instead of forcing users to repeatedly type complex instructions, the MCP server packages these guidelines into ready-to-use menu options, often appearing in your AI interface as slash commands or clickable UI templates.
     - [MCP Registry](https://github.com/mcp)
-- Skills
+- LSP
+- Skill.md
+  - Skills use Progressive Disclosure to save tokens.
+  - Metadata & Discovery (~100 tokens): The agent only reads the summary (name, description, and triggers) from the skill's frontmatter at the start.
+  - Activation (<5,000 tokens): Only when the agent decides it needs that specific skill does it load the full instruction body
   - [Agent Skills](https://agentskills.io/home)
+  - [Azure Skills](https://github.com/microsoft/azure-skills)
+  - [DotNet Skills](https://github.com/dotnet/skills)
+- Tools
+  - @tool
 - Agent2Agent Protocol
   - [a2a-protocol](https://a2a-protocol.org/latest/)
   - [Agent2Agent](https://github.com/a2aproject/a2a-samples)
 
 [Thinking in LangGraph](https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph)
+
+I decided on building tools and skills that use MCP when possible to get lists of articles and posts from social media to construct timelines, people who have had contact with the missing person to construct persons of interest and accessing public databases for any other information that could be helpful in the investigation. This seems to be the most robust and scalable way to move forward.
 
 When you build an agent with LangGraph, you will first break it apart into discrete steps called nodes. Then, you will describe the different decisions and transitions from each of your nodes. Finally, you connect nodes together through a shared state that each node can read from and write to.
 

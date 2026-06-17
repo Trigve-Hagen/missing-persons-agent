@@ -1,11 +1,11 @@
 <!-- templates/index.html -->
 {% extends 'layout.html' %}
 
-{% block title %}Docs{% endblock %}
+{% block title %}Data{% endblock %}
 
 {% block content %}
 
-<h1 class="my-4 mb-2">Docs</h1>
+<h1 class="my-4 mb-2">Data</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -23,78 +23,50 @@
   </div>
   <div class="col-12">
     <div class="row">
-      <h3 class="my-4 mb-2">Data</h3>
-      <p><b>Quantization</b> is the process of compressing an AI model by reducing the precision of its weights (the math parameters) from high-precision floating-point numbers (like 16-bit) to lower-precision numbers (like 4-bit or 8-bit). This shrinks file sizes and lowers memory usage, making it possible to run large models on consumer hardware.</p>
-      <ul>
-        <li>The naming convention for compressed AI models (GGUF format) tells you exactly how the model was compressed. Using the example Q4_K_M:
+      <h3 class="my-4 mb-2">Codebase Knowledge</h3>
+      <p>For the first release I only want to save data to the databases related to the missing person and persons of interest to have the agent search for clues based upon that data only.</p>
+      <p>You said: What would I need to create so the model understands everything the codebase can do to make suggestions on how to optimize or adjust it to help find missing people?</p>
+      <p>To make an AI model fully understand your codebase's capabilities and logic for this critical mission, you need to build a Comprehensive Context Layer. AI models lack the "spatial awareness" of a developer, so you must explicitly feed them the high-level architecture alongside the code. Here is exactly what you need to create and organize:</p>
+      <ol>
+        <li>The Global Architecture Map (README.md or ARCHITECTURE.md)<br />
+          Create a single markdown file that acts as the "brain" or entry point for the AI. It must outline:
           <ul>
-            <li>Q (Quantization): Simply means the model has been compressed.</li>
-            <li>4 (4-bit): The model's weights are stored at an average of 4-bit precision instead of 16-bit, which reduces the file size by roughly 70%.</li>
-            <li>K (K-Quants): Refers to a highly optimized method developed by the local AI community that groups weights into blocks. Instead of treating all weights equally, it uses advanced math to keep the numbers more accurate.</li>
-            <li>M (Medium): The size/quality profile of the model. It uses a mixed-precision strategy. Less important data gets 4-bit compression, while "critical layers" (like attention mechanisms) retain 5- or 6-bit precision to preserve accuracy.</li>
+            <li>The Core Flow: How data enters the system (e.g., public tips, police feeds, scraping) and how it outputs (e.g., SMS alerts, map pins).</li>
+            <li>Page/Module Index: A literal directory listing what every single page, dashboard, or endpoint does.</li>
+            <li>Tech Stack & Integrations: List all third-party APIs used (e.g., Twilio for SMS, Google Maps API, facial recognition services).</li>
           </ul>
         </li>
-        <li>The Quantization Trade-Off
+        <li>Data Schema & Relationships (SCHEMA.md)<br />
+          Optimizing search and matching requires the AI to know exactly how data is structured. Provide:
           <ul>
-            <li>Q2 - Q3: Extremely small, fits on edge devices, but has a major drop in reasoning accuracy.</li>
-            <li>Q4_K_M: The widely accepted "sweet spot". It balances 97-99% of unquantized output quality while fitting comfortably on standard hardware (like an 8GB GPU or a Mac).</li>
-            <li>Q5 - Q6: Retains higher accuracy for precise reasoning, logic, or coding but requires more memory and bandwidth.</li>
-            <li>Q8: Near full precision; useful if you are fine-tuning or require absolute fidelity, though it is very heavy on RAM/VRAM.</li>
+            <li>Database Models: Text representations of your database tables (e.g., Person, Sighting, User_Report, Location_History).</li>
+            <li>Field Definitions: Explain critical fields, especially formats for timestamps, geolocation coordinates, and status flags (e.g., Status: Active, Resolved).</li>
           </ul>
         </li>
-      </ul>
+        <li>The Routing & API Manifest<br />
+          AI models struggle to guess how pages connect. Give it a map of your traffic:
+          <ul>
+            <li>Frontend Routes: A file showing your URL paths mapped to components (e.g., /search -> SearchPanel.tsx).</li>
+            <li>Backend Endpoints: A list of API routes (e.g., POST /api/v1/sightings) with expected payloads and responses.</li>
+          </ul>
+        </li>
+        <li>Automated Context Bundling (The AI Tooling)<br />
+          Do not copy and paste code manually. Use tools to package your codebase into a format AI models love:
+          <ul>
+            <li>Repository Packers: Use open-source tools like repomix or code2prompt. These tools compress your entire codebase, folder structure, and markdown files into a single, highly structured text file.</li>
+            <li>Vector Embeddings (For Massive Codebases): If your codebase is too large for an AI's memory window, use a tool like Greptile or Sweep to index your codebase so the AI can search for relevant code snippets on demand.</li>
+          </ul>
+        </li>
+        <li>Optimization & Search Prompt Template<br />
+          Once the structure is ready, you must guide the AI's focus toward the specific goal of finding missing people. Use this prompt template to get recommendations:
+          "You are an expert software architect and search-algorithm engineer. Review this codebase context. Our goal is to maximize the speed, accuracy, and reach of our missing persons platform. Analyze our code and suggest optimizations for:<br />
+          Data Latency: How can we ingest and display sighting reports faster?<br />
+          Search Relevance: Are our database queries or search algorithms missing partial matches (e.g., misspelled names, close geographic proximity)?<br />
+          Reliability: Where are the single points of failure in our notification or ingestion pipelines?"</li>
+      </ol>
+      <h3 class="my-4 mb-2">People Data</h3>
 
-      <h3 class="my-4 mb-2">ollama show llama3.2</h3>
-      <ul class="mb-5">
-        <li>Model
-          <ul>
-            <li>architecture - llama</li>
-            <li>parameters - 3.2B</li>
-            <li>context length - 131072</li>
-            <li>embedding length - 3072</li>
-            <li>quantization - Q4_K_M</li>
-          </ul>
-        </li>
-        <li>Capabilities
-          <ul>
-            <li>completion</li>
-            <li>tools</li>
-          </ul>
-        </li>
-        <li>Parameters
-          <ul>
-            <li>stop - "<|start_header_id|>"</li>
-            <li>stop - "<|end_header_id|>"</li>
-            <li>stop - "<|eot_id|>"</li>
-          </ul>
-        </li>
-      </ul>
-
-      <h3 class="my-4 mb-2">ollama show llama3-groq-tool-use</h3>
-      <ul class="mb-5">
-        <li>Model
-          <ul>
-            <li>architecture - llama</li>
-            <li>parameters - 8.0B</li>
-            <li>context length - 8192</li>
-            <li>embedding length - 4096</li>
-            <li>quantization - Q4_0</li>
-          </ul>
-        </li>
-        <li>Capabilities
-          <ul>
-            <li>completion</li>
-            <li>tools</li>
-          </ul>
-        </li>
-        <li>Parameters
-          <ul>
-            <li>stop - "<|start_header_id|>"</li>
-            <li>stop - "<|end_header_id|>"</li>
-            <li>stop - "<|eot_id|>"</li>
-          </ul>
-        </li>
-      </ul>
+      <h3 class="my-4 mb-2">Inspector Abilities</h3>
     </div>
   </div>
 </div>

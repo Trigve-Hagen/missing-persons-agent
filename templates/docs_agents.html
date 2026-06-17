@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<h1 class="my-4 mb-2">Docs</h1>
+<h1 class="my-4 mb-2">Agents</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -23,7 +23,30 @@
   </div>
   <div class="col-12">
     <div class="row">
-      <h3 class="my-4 mb-2">Agents</h3>
+      <h3 class="my-4 mb-2">The Chat/Interface Agent</h3>
+        <p>Inspector page is completed. It pulls data saved to the Chroma vector database that is made from the data saved in the Sql Alchemy relational database and allows the user to ask it questions about the saved data.</p>
+      <h3 class="my-4 mb-2">The Data/MCP Agent</h3>
+      <p>Pulls data from APIs, RSS Feeds and Web Scrapes usng MCP if possible and inserts data relavent to the investigation into the database.</p>
+      <ul>
+        <li>Creates a list of persons of interest to be inserted into the database and add each one as individual tasks.
+          <ul>
+            <li>Anyone how has a connection with the missing person.</li>
+          </ul>
+        </li>
+        <li>When the Ifcompleted is selected:
+          <ul>
+            <li>Create a list of events pulled from social media feeds and adds them as tasks.</li>
+            <li>Look for news related to the individual and adds them as tasks.</li>
+            <li>Look up public records on the individual and adds them as tasks.</li>
+            <li>Looks for documents on the individual and adds them as tasks.</li>
+          </ul>
+        </li>
+      </ul>
+      <h3 class="my-4 mb-2">The Analytics/Reporting Agent</h3>
+
+      <hr>
+
+      <h3 class="my-4 mb-2 mt-3">Agents</h3>
       <p>Building a versatile agent for investigating missing person cases requires a strict balance between OSINT (Open-Source Intelligence) tools, local data processing, and structured logical reasoning. Because this involves highly sensitive information, running your foundational models locally via Ollama ensures absolute data privacy.</p>
       <p>Here are the best tools, divided by category, to integrate into your LangChain agent architecture for this specific use case:</p>
 
