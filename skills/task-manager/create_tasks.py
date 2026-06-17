@@ -19,23 +19,18 @@ class ExtractionResult(BaseModel):
     task: Task
     statement: Statement
 
-# Factory function to create the right task
-def create_task(task_data: Union[EmailTask, DatabaseTask]):
-    # Logic to insert into your task table goes here
+# Create pdf task
+def create_pdf_task(path: str):
     pass
 
-class DocumentTask():
-  def __init__(self, path):
-    self.path = path
-
-  def pdf_task():
+# Create person task
+def create_person_task(data: List):
     pass
 
-  def person_task():
+# Create event task
+def create_event_task(data: List):
     pass
 
-  def event_task():
-    pass
-
-  def note_task():
+# Create note task
+def create_note_task(data: List):
     pass
