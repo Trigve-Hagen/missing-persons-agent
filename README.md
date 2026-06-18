@@ -91,7 +91,8 @@ At the moment I'm trying to learn all the tools I can use when building LLMs so 
   - Skills use Progressive Disclosure to save tokens.
   - Metadata & Discovery (~100 tokens): The agent only reads the summary (name, description, and triggers) from the skill's frontmatter at the start.
   - Activation (<5,000 tokens): Only when the agent decides it needs that specific skill does it load the full instruction body
-  - [Agent Skills](https://agentskills.io/home)
+  - [Agent Skills IO](https://agentskills.io/home)
+  - [Anthropics Skills](https://github.com/anthropics/skills)
   - [Azure Skills](https://github.com/microsoft/azure-skills)
   - [DotNet Skills](https://github.com/dotnet/skills)
 - Tools
