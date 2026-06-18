@@ -1,11 +1,11 @@
 <!-- templates/search.html -->
 {% extends 'layout.html' %}
 
-{% block title %}Notes{% endblock %}
+{% block title %}Edit Incident Report{% endblock %}
 
 {% block content %}
 
-<h1 class="my-4">Notes</h1>
+<h1 class="my-4">Edit Incident Report</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
@@ -19,33 +19,33 @@
 
 <div class="row">
   <div class="col-12">
-    <a href="{{ url_for('note') }}" class="btn btn-primary mb-3">back</a>
+    <a href="{{ url_for('report') }}" class="btn btn-primary mb-3">back</a>
   </div>
 </div>
 
 {% if not data %}
-  <form class="row" action="/save_to_vector_note" method="post" autocomplete="off">
-    <input type="hidden" class="form-control" name="id" value="{{ note_data.id }}" />
+  <form class="row" action="/save_to_vector_report" method="post" autocomplete="off">
+    <input type="hidden" class="form-control" name="id" value="{{ report_data.id }}" />
     <div class="col-12 mb-2">
-      <button class="btn btn-success" type="submit">Add notes to vector database.</button>
+      <button class="btn btn-success" type="submit">Add reports to vector database.</button>
     </div>
   </form>
 {% endif %}
 
 <div class="row mt-4">
   <div class="col-12">
-    <form class="row g-4" action="/set_note" method="POST" name="note" autocomplete="off">
-      <input type="hidden" class="form-control" id="note-id" name="id" value="{{ note_data.id }}" />
+    <form class="row g-4" action="/set_report" method="POST" name="report" autocomplete="off">
+      <input type="hidden" class="form-control" id="report-id" name="id" value="{{ report_data.id }}" />
       <div class="col-8">
-        <label for="note-name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="note-name" name="name" value="{{ note_data.name }}" required>
+        <label for="report-name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="report-name" name="name" value="{{ report_data.name }}" required>
       </div>
       <div class="col-4">
-        <label for="note-owner" class="form-label">Person</label>
-        <select class="form-select" id="note-owner" name="owner">
+        <label for="report-owner" class="form-label">Person</label>
+        <select class="form-select" id="report-owner" name="owner">
           <option value="0">Choose...</option>
           {% for person in owners %}
-            {% if note_data.owner == person.id %}
+            {% if report_data.owner == person.id %}
               <option value="{{ person.id }}" selected>{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
             {% else %}
               <option value="{{ person.id }}">{{ person.sirName }} {{ person.firstName }} {{ person.middleName }} {{ person.lastName }} {{ person.suffix }}</option>
@@ -54,9 +54,9 @@
         </select>
       </div>
       <div class="col-9">
-        <label for="note-note" class="form-label">Note</label>
-        <textarea class="form-control" id="note-note" name="note" rows="3">{{ note_data.note }}</textarea>
-        <div class="form-text" id="note-note-text">Notes related to the missing person that might hold weight in the investigation.</div>
+        <label for="report-report" class="form-label">Report</label>
+        <textarea class="form-control" id="report-report" name="report" rows="3">{{ report_data.report }}</textarea>
+        <div class="form-text" id="report-report-text">Reports related to the missing person that might hold weight in the investigation.</div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>
@@ -85,7 +85,7 @@
               <td scope="row">{{ item.id }}</td>
               <td>{{ item.text }}</td>
               <td>
-                <a class="btn btn-danger w-100 text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_note" data-bs-item-entity-id="{{ note_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a>
+                <a class="btn btn-danger w-100 text-nowrap" type="button" data-bs-toggle="modal" data-bs-target="#deleteVectorModal" data-bs-edit-path="edit_report" data-bs-item-entity-id="{{ report_data.id }}" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.text }}">Delete</a>
               </td>
           </tr>
         {% endfor %}

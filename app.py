@@ -58,7 +58,7 @@ from database.base import Base
 from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField
-from database.person import Category, Person, Alias, Email, EmailMessage, Phone, Call, Address, File, Event, Note
+from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Report
 
 from classes.request_api import RequestApi
 from classes.selections import Selection
@@ -72,7 +72,7 @@ from classes.chat_manager import ChatManager, ChatTester
 # from classes.extras.email_manager import EmailManager
 from classes.chroma_database import ChromaDatabase
 from classes.feed_generator import FeedGenerator
-from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, NoteRepository, Determinator
+from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, ReportRepository
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -108,7 +108,7 @@ def add_nosniff_header_to_static(response):
 @app.route('/')
 @app.route('/index')
 def index():
-  resource = Resources()
+  """ resource = Resources()
   create_statements = resource.initialize_determinator(engine=engine)
 
   data_entities = {}
@@ -116,7 +116,7 @@ def index():
     if entity in Selection.data_entities:
       data_entities[entity] = value
   determine = Determinator(session=session)
-  determine.chunk_create_statements(createStatements=data_entities)
+  determine.chunk_create_statements(createStatements=data_entities) """
 
   return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
 
@@ -216,10 +216,10 @@ def get_rows():
       entities = session.query(Event).all()
       entity_data = [{"id": n.id, "label": n.name} for n in entities]
       fields = [c.name for c in Event.__table__.columns if c.name != 'id']
-    case "note":
-      entities = session.query(Note).all()
+    case "report":
+      entities = session.query(Report).all()
       entity_data = [{"id": n.id, "label": n.name} for n in entities]
-      fields = [c.name for c in Note.__table__.columns if c.name != 'id']
+      fields = [c.name for c in Report.__table__.columns if c.name != 'id']
 
   # jsonify converts the list into a valid JSON response
   return jsonify({
@@ -239,7 +239,7 @@ def set_entity():
 
   flash(f"Create suggestions for Events to save.", 'info')
   flash(f"Create suggestions for Images and Documents into the database.", 'info')
-  flash(f"Create suggestions for Notes into the database.", 'info')
+  flash(f"Create suggestions for Reports into the database.", 'info')
 
   """ if not all([entity_type, entity_id, field]):
     flash('Missing required form parameters.', 'error')
@@ -253,7 +253,7 @@ def set_entity():
     'Email': Email,
     'Alias': Alias,
     'event': Event,
-    'Note': Note
+    'Report': Report
   }
 
   model_class = models.get(entity_type)
@@ -1183,29 +1183,6 @@ def set_person():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('person'))
 
-@app.route('/edit/person/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
-def edit_person_vectors(id, file_id, vector_id):
-  try:
-    repo = PersonRepository(session=session)
-    data = repo.get_vector_by_ids([vector_id])
-  except Exception as e:
-    flash(f"Error connecting to database: {e}", "danger")
-    return redirect(url_for('file'))
-
-  vector_data = {
-    'id': id,
-    'file_id': file_id,
-    'vector_id': vector_id,
-    'text': data[0]['text'],
-    'meta': data[0]['meta'],
-    'source': data[0]['source'],
-  }
-
-  metadata_dict = data[0]['meta']
-  metadata_tuples = list(metadata_dict.items())
-
-  return flask.render_template('edit_person_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
-
 @app.route('/save_to_vector_person', methods=['POST'])
 def save_to_vector_person():
   form_data = request.form
@@ -1215,38 +1192,6 @@ def save_to_vector_person():
   repo.save_person(person)
 
   return redirect(url_for('edit_person', id=form_data.get('id')))
-
-@app.route('/set_person_metadata', methods=['POST'])
-def set_person_metadata():
-  # 1. Grab single IDs
-  id = request.form.get('id')
-  file_id = request.form.get('file_id')
-  vector_id = request.form.get('vector_id')
-  content = request.form.get('content')
-
-  # 2. Grab dynamic lists
-  keys = request.form.getlist('name[]')
-  values = request.form.getlist('value[]')
-
-  # 3. Zip them into a dictionary for easy processing
-  metadata = dict(zip(keys, values))
-  flash(f"Vector Id: {vector_id}", "info")
-  flash(f"Metadata: {metadata}", "info")
-  flash(f"Content: {content}", "info")
-
-  try:
-    repo = PersonRepository(session=session)
-    repo.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
-    return redirect(url_for('edit_person_vectors', id=id, file_id=file_id, vector_id=vector_id))
-  except IntegrityError as e:
-    session.rollback()
-    error_msg = str(e.orig)
-    flash(f"Database Error: {error_msg}", "danger")
-    return redirect(url_for('edit_person_vectors', id=id, file_id=file_id, vector_id=vector_id))
-  except Exception as e:
-    session.rollback()
-    flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('edit_person_vectors', id=id, file_id=file_id, vector_id=vector_id))
 
 @app.route('/alias')
 def alias():
@@ -1670,29 +1615,6 @@ def set_event():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('event'))
 
-@app.route('/edit/event/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
-def edit_event_vectors(id, file_id, vector_id):
-  try:
-    repo = EventRepository(session=session)
-    data = repo.get_vector_by_ids([vector_id])
-  except Exception as e:
-    flash(f"Error connecting to database: {e}", "danger")
-    return redirect(url_for('event'))
-
-  vector_data = {
-    'id': id,
-    'file_id': file_id,
-    'vector_id': vector_id,
-    'text': data[0]['text'],
-    'meta': data[0]['meta'],
-    'source': data[0]['source'],
-  }
-
-  metadata_dict = data[0]['meta']
-  metadata_tuples = list(metadata_dict.items())
-
-  return flask.render_template('edit_event_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
-
 @app.route('/save_to_vector_event', methods=['POST'])
 def save_to_vector_event():
   form_data = request.form
@@ -1703,180 +1625,93 @@ def save_to_vector_event():
 
   return redirect(url_for('edit_event', id=form_data.get('id')))
 
-@app.route('/set_event_metadata', methods=['POST'])
-def set_event_metadata():
-  # 1. Grab single IDs
-  id = request.form.get('id')
-  file_id = request.form.get('file_id')
-  vector_id = request.form.get('vector_id')
-  content = request.form.get('content')
-
-  # 2. Grab dynamic lists
-  keys = request.form.getlist('name[]')
-  values = request.form.getlist('value[]')
-
-  # 3. Zip them into a dictionary for easy processing
-  metadata = dict(zip(keys, values))
-  flash(f"Vector Id: {vector_id}", "info")
-  flash(f"Metadata: {metadata}", "info")
-  flash(f"Content: {content}", "info")
-
-  try:
-    repo = PersonRepository(session=session)
-    repo.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
-    return redirect(url_for('edit_event_vectors', id=id, file_id=file_id, vector_id=vector_id))
-  except IntegrityError as e:
-    session.rollback()
-    error_msg = str(e.orig)
-    flash(f"Database Error: {error_msg}", "danger")
-    return redirect(url_for('edit_event_vectors', id=id, file_id=file_id, vector_id=vector_id))
-  except Exception as e:
-    session.rollback()
-    flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('edit_event_vectors', id=id, file_id=file_id, vector_id=vector_id))
-
-@app.route('/note')
-def note():
+@app.route('/report')
+def report():
   page = request.args.get('page', 1, type=int)
   offset = (page - 1) * Selection.per_page
-  all_notes = session.query(Note).limit(Selection.per_page).offset(offset).all()
-  total = session.query(Note).count()
+  all_reports = session.query(Report).limit(Selection.per_page).offset(offset).all()
+  total = session.query(Report).count()
   total_pages = (total + Selection.per_page - 1) // Selection.per_page
 
   owner_select = session.query(Person).all()
 
   return flask.render_template(
-    'note.html',
-    notes=all_notes,
+    'report.html',
+    reports=all_reports,
     page=page,
     total_pages=total_pages,
     owners=owner_select
   )
 
-@app.route('/edit/note/<int:id>', methods=['GET', 'POST'])
-def edit_note(id):
-  # Retrieve note or return 404
-  note = session.get(Note, id)
-  if not note:
-    return redirect(url_for('note'))
+@app.route('/edit/report/<int:id>', methods=['GET', 'POST'])
+def edit_report(id):
+  # Retrieve report or return 404
+  report = session.get(Report, id)
+  if not report:
+    return redirect(url_for('report'))
 
-  note_data = {
-    'id': note.id,
-    'name': note.name,
-    'note': note.note,
-    'owner': note.owner,
+  report_data = {
+    'id': report.id,
+    'name': report.name,
+    'report': report.report,
+    'owner': report.owner,
   }
 
-  repo = NoteRepository(session=session)
-  data, metadatas = repo.get_chroma_data('note', id)
+  repo = ReportRepository(session=session)
+  data, metadatas = repo.get_chroma_data('report', id)
 
   owner_select = session.query(Person).all()
   return flask.render_template(
-    'edit_note.html',
+    'edit_report.html',
     edit_id=id,
-    note_data=note_data,
+    report_data=report_data,
     owners=owner_select,
     data=data,
     metadatas=metadatas,
   )
 
-@app.route('/set_note', methods=['POST'])
-def set_note():
+@app.route('/set_report', methods=['POST'])
+def set_report():
   form_data = request.form
 
   try:
-    note = session.execute(select(Note).filter_by(id = form_data.get('id'))).scalar_one_or_none()
-    if note:
+    report = session.execute(select(Report).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if report:
       uporadd = "updated"
-      note.name=form_data.get('name')
-      note.note=form_data.get('note')
-      note.owner=form_data.get('owner')
+      report.name=form_data.get('name')
+      report.report=form_data.get('report')
+      report.owner=form_data.get('owner')
     else:
       uporadd = "added"
-      note = Note(
+      report = Report(
         name=form_data.get('name'),
-        note=form_data.get('note'),
+        report=form_data.get('report'),
         owner=form_data.get('owner'),
       )
-    session.merge(note)
+    session.merge(report)
     session.commit()
 
-    flash(f"Note {uporadd} successfully!", "success")
-    return redirect(url_for('note'))
+    flash(f"Report {uporadd} successfully!", "success")
+    return redirect(url_for('report'))
   except IntegrityError as e:
     session.rollback()
     error_msg = str(e.orig)
     flash(f"Database Error: {error_msg}", "danger")
-    return redirect(url_for('note'))
+    return redirect(url_for('report'))
   except Exception as e:
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('note'))
+    return redirect(url_for('report'))
 
-@app.route('/edit/note/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
-def edit_note_vectors(id, file_id, vector_id):
-  try:
-    repo = NoteRepository(session=session)
-    data = repo.get_vector_by_ids([vector_id])
-  except Exception as e:
-    flash(f"Error connecting to database: {e}", "danger")
-    return redirect(url_for('note'))
-
-  vector_data = {
-    'id': id,
-    'file_id': file_id,
-    'vector_id': vector_id,
-    'text': data[0]['text'],
-    'meta': data[0]['meta'],
-    'source': data[0]['source'],
-  }
-
-  metadata_dict = data[0]['meta']
-  metadata_tuples = list(metadata_dict.items())
-
-  return flask.render_template('edit_note_vector.html', edit_id=id, vector_data=vector_data, meta=metadata_tuples)
-
-@app.route('/save_to_vector_note', methods=['POST'])
-def save_to_vector_note():
+@app.route('/save_to_vector_report', methods=['POST'])
+def save_to_vector_report():
   form_data = request.form
 
-  note = session.execute(select(Note).filter_by(id = form_data.get('id'))).scalar_one_or_none()
-  repo = NoteRepository(session=session)
-  repo.save_note(note)
+  report = session.execute(select(Report).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+  repo = ReportRepository(session=session)
+  repo.save_report(report)
 
-  return redirect(url_for('edit_note', id=form_data.get('id')))
-
-@app.route('/set_note_metadata', methods=['POST'])
-def set_note_metadata():
-  # 1. Grab single IDs
-  id = request.form.get('id')
-  file_id = request.form.get('file_id')
-  vector_id = request.form.get('vector_id')
-  content = request.form.get('content')
-
-  # 2. Grab dynamic lists
-  keys = request.form.getlist('name[]')
-  values = request.form.getlist('value[]')
-
-  # 3. Zip them into a dictionary for easy processing
-  metadata = dict(zip(keys, values))
-  flash(f"Vector Id: {vector_id}", "info")
-  flash(f"Metadata: {metadata}", "info")
-  flash(f"Content: {content}", "info")
-
-  try:
-    repo = PersonRepository(session=session)
-    repo.update_data_by_id(vector_id=vector_id, content=content, metadata=metadata)
-    return redirect(url_for('edit_note_vectors', id=id, file_id=file_id, vector_id=vector_id))
-  except IntegrityError as e:
-    session.rollback()
-    error_msg = str(e.orig)
-    flash(f"Database Error: {error_msg}", "danger")
-    return redirect(url_for('edit_note_vectors', id=id, file_id=file_id, vector_id=vector_id))
-  except Exception as e:
-    session.rollback()
-    flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('edit_note_vectors', id=id, file_id=file_id, vector_id=vector_id))
+  return redirect(url_for('edit_report', id=form_data.get('id')))
 
 @app.route('/api')
 def api():
@@ -2290,7 +2125,7 @@ def delete_item():
   available_models = {
     'person': Person, 'alias': Alias, 'address': Address, 'email': Email,
     'phone': Phone, 'file': File, 'category': Category, 'api': Api,
-    'task': Task, 'event': Event, 'note': Note,
+    'task': Task, 'event': Event, 'report': Report,
     'api_field': ApiField, 'model': Model, 'model_params': ModelParams,
     'prompt': Prompt, 'question': Question
   }
@@ -2334,7 +2169,7 @@ def delete_item():
   phone_count = session.query(Phone).filter_by(owner=id).count()
   file_count = session.query(File).filter_by(owner=id).count()
   event_count = session.query(Event).filter_by(owner=id).count()
-  note_count = session.query(Note).filter_by(owner=id).count()
+  report_count = session.query(Report).filter_by(owner=id).count()
   if table_type == 'person':
     if alias_count > 0:
       flash(f"Cannot delete: {table_type} has {alias_count} associated aliases. Delete them first.", "danger")
@@ -2354,8 +2189,8 @@ def delete_item():
     if event_count > 0:
       flash(f"Cannot delete: {table_type} has {event_count} associated events. Delete them first.", "danger")
       return redirect(url_for('person'))
-    if note_count > 0:
-      flash(f"Cannot delete: {table_type} has {note_count} associated notes. Delete them first.", "danger")
+    if report_count > 0:
+      flash(f"Cannot delete: {table_type} has {report_count} associated reports. Delete them first.", "danger")
       return redirect(url_for('person'))
 
   # Specific check for Api child records
@@ -2604,18 +2439,24 @@ def initialize_database(engine):
     Base.metadata.create_all(bind=engine)
 
   if session.query(Category).first() is None:
-    c1 = Category("contactType", "Missing Person") # 1
-    c2 = Category("contactType", "Person of Interest") # 2
-    c3 = Category("addressType", "Task Type") # 3
-    c4 = Category("emailType", "Task Type") # 4
-    c5 = Category("phoneType", "Task Type") # 5
-    c6 = Category("eventType", "Task Type") # 6
+    c1 = Category("contactType", "Missing Person")
+    c2 = Category("contactType", "Witness")
+    c3 = Category("contactType", "Associate")
+    c4 = Category("contactType", "Person of Interest")
+    c5 = Category("contactType", "Suspect")
+    c6 = Category("addressType", "Address Type")
+    c7 = Category("emailType", "Email Type")
+    c8 = Category("phoneType", "Phone Type")
+    c9 = Category("eventType", "Event Type")
     session.add(c1)
     session.add(c2)
     session.add(c3)
     session.add(c4)
     session.add(c5)
     session.add(c6)
+    session.add(c7)
+    session.add(c8)
+    session.add(c9)
     session.commit()
 
   settings = session.get(State, 1)

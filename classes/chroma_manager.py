@@ -88,25 +88,25 @@ class EventRepository(ChromaDatabase):
     flash(f"{event_content} saved successfully!", "success")
     return True
 
-class NoteRepository(ChromaDatabase):
+class ReportRepository(ChromaDatabase):
 
-  def save_note(self, note):
-    note_content = repr(note)
+  def save_report(self, report):
+    report_content = repr(report)
 
     ids = []
 
     # Create composite ID
-    composite_id = f"{ModelUtils.machine_name(name=note.name)}_{time.time_ns()}_chunk1"
+    composite_id = f"{ModelUtils.machine_name(name=report.name)}_{time.time_ns()}_chunk1"
     ids.append(composite_id)
 
     document = Document(
-      page_content=note_content,
+      page_content=report_content,
       metadata={
-        "vector_type": "note",
+        "vector_type": "report",
         "chunk_index": 1,
         "custom_id": composite_id,
-        "source": f"{ModelUtils.machine_name(name=note.name)}_{time.time_ns()}",
-        "entity_id": note.id
+        "source": f"{ModelUtils.machine_name(name=report.name)}_{time.time_ns()}",
+        "entity_id": report.id
       }
     )
 
@@ -120,28 +120,28 @@ class NoteRepository(ChromaDatabase):
       persist_directory=self.investigation_db
     )
 
-    flash(f"{note_content} saved successfully!", "success")
+    flash(f"{report_content} saved successfully!", "success")
     return True
 
 class JsonRepository(ChromaDatabase):
 
-  def save_json(self, note):
-    note_content = repr(note)
+  def save_json(self, report):
+    report_content = repr(report)
 
     ids = []
 
     # Create composite ID
-    composite_id = f"{ModelUtils.machine_name(name=note.name)}_{time.time_ns()}_chunk1"
+    composite_id = f"{ModelUtils.machine_name(name=report.name)}_{time.time_ns()}_chunk1"
     ids.append(composite_id)
 
     document = Document(
-      page_content=note_content,
+      page_content=report_content,
       metadata={
         "vector_type": "json",
         "chunk_index": 1,
         "custom_id": composite_id,
-        "source": f"{ModelUtils.machine_name(name=note.name)}_{time.time_ns()}",
-        "entity_id": note.id
+        "source": f"{ModelUtils.machine_name(name=report.name)}_{time.time_ns()}",
+        "entity_id": report.id
       }
     )
 
@@ -155,11 +155,11 @@ class JsonRepository(ChromaDatabase):
       persist_directory=self.investigation_db
     )
 
-    flash(f"{note_content} saved successfully!", "success")
+    flash(f"{report_content} saved successfully!", "success")
     return True
 
-class Determinator(ChromaDatabase):
-  """ Takes a list of sql create statements and saves them as vectors. """
+""" class Determinator(ChromaDatabase):
+  Takes a list of sql create statements and saves them as vectors.
 
   def chunk_create_statements(self, createStatements):
     vector_store = Chroma(
@@ -205,4 +205,4 @@ class Determinator(ChromaDatabase):
 
     except Exception as e:
       flash(f"Error retrieving data: {e}", "danger")
-      return []
+      return [] """

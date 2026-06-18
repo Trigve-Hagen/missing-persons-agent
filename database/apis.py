@@ -39,3 +39,23 @@ class ApiField(Base):
     self.description = description
     self.owner = owner
 
+class ExternalFeedLogs(Base):
+  """
+  Captures metadata from ingested external feeds, public API webhooks, or scrapers.
+  """
+
+  __tablename__ = "external_feed_logs"
+  __table_args__ = {"comment": "This table captures metadata from ingested external feeds, public API webhooks, or scrapers."}
+
+  id = Column("id", Integer, primary_key=True)
+  sourcePlatform = Column("source_platform", NullToEmptyString, comment="Origin name of the automated feed (e.g., 'Amityville-PD-RSS', 'Amber-Alert-API').")
+  rawPayload = Column("raw_payload", NullToEmptyString, comment="Raw json payload returned from the api request.")
+  rawPayloadHash = Column("raw_payload_hash", NullToEmptyString, comment="Unique MD5/SHA256 string used to prevent duplicate system entry.")
+  owner = Column(Integer, ForeignKey("api.id"))
+
+  def __init__(self, sourcePlatform, rawPayload, rawPayloadHash, owner):
+    self.sourcePlatform = sourcePlatform
+    self.rawPayload = rawPayload
+    self.rawPayloadHash = rawPayloadHash
+    self.owner = owner
+

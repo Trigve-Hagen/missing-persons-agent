@@ -39,19 +39,19 @@
   <li><b>Resources</b> - The total memory the applications using. It takes a minute to load. A list of downloaded Ollama models and the ability to delete them. Be carefull deleting the here if you are using them somewhere else .</li>
   <li><b>Categories</b>
     <ul>
-      <li><b>Categories</b> - You can have different categories for people, phones, emails, addresses, Events and Notes. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
+      <li><b>Categories</b> - You can have different categories for people, phones, emails, addresses, Events and Reports. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
       </li>
     </ul>
   </li>
   <li><b>Person</b>
     <ul>
-      <li><b>Person</b> - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Notes that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Notes and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data to and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database. Once you have created a Person fill in Emails, Phones, Addresses, Aliases, Events, and Notes and edit the Person again and save it so all the data will be edited into the chunk.<br /><br />Make sure to choose the person you want to add the data to.</li>
+      <li><b>Person</b> - A person is the Missing Person or anyone that came in contact with them; Person of Interest. Each Person will either be at the top of a Tree type of structure;  think department where the boss is at the top, departments under the Boss and workers under a department. The 'Missing Person' is the Boss the rest of their contacts will have a parent child relationship with another Person in the Tree.<br /><br />The Person only describes the individual. If you have more data than form elements use the description field.<br /><br />All Persons have one or more Emails, Addresses, Aliases, Phones, Events and Reports that you can create for them. First create a person. Then go to and add Emails, Addresses, Aliases, Phones, Events and Reports and fill in the data you have on the person. Once your done adding data go back to the edit page of the person you added the data to and save the person again. The data will be consolidated into a single chunk of text and saved in the Chroma vector database. Once you have created a Person fill in Emails, Phones, Addresses, Aliases, Events, and Reports and edit the Person again and save it so all the data will be edited into the chunk.<br /><br />Make sure to choose the person you want to add the data to.</li>
       <li><b>Addresses</b> - Addresses is any address used by the person. Create a Type for it in Categories first. Example Category: Home, Work, etc..</li>
       <li><b>Emails</b> - Emails are any emails used by the person. Create a Type for it in Categories first. Example Category: Personal, Work, etc..</li>
       <li><b>Phones</b> - Phones are any phone number used by the person. Create a Type for it in Categories first. Example Category: Cell, Work, etc..</li>
       <li><b>Aliases</b> - Alias are any aliases used by the person.</li>
       <li><b>Events</b> - Events are any event that happens related to the person. Create a Type for it in Categories first. Example Category: Alibi, Court Date, etc..</li>
-      <li><b>Notes</b> - Notes are any other data related to the person.</li>
+      <li><b>Reports</b> - Reports are any other data related to the person.</li>
     </ul>
   </li>
   <li><b>Files</b> - You can upload any of these files. They will be added as data for the LLM.
@@ -221,7 +221,7 @@ OPERATIONAL RULES:<br />
           <li>Get a model to look for and list Aliases that can be added into Alias from the json.</li>
           <li>Get a model to look for and list Events from the json, and documents to build the timeline.</li>
           <li>Get a model to look for and list Images and Documents that can be added into Files from the json.</li>
-          <li>Get a model to look for and list bodies of important text that can be added into Note from the json.</li>
+          <li>Get a model to look for and list bodies of important text that can be added into Report from the json.</li>
         </ul>
       </li>
       <li>Only pull data from the Missing Person and their People of Interest instead of the whole database when using the model.</li>

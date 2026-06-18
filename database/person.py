@@ -223,20 +223,6 @@ class Email(Base):
     self.email = email
     self.owner = owner
 
-class EmailMessage(Base):
-  __tablename__ = "email_messages"
-  __table_args__ = {"comment": "This table stores a emails sent and recieved from an email."}
-
-  id = Column("id", Integer, primary_key=True)
-  message = Column(Text)
-  date = Column(DateTime)
-  owner = Column(Integer, ForeignKey("emails.id"), comment="The email this email was made by.")
-
-  def __init__(self, message, date, owner):
-    self.message = message
-    self.date = date
-    self.owner = owner
-
 class Phone(Base):
   """
   Phone numbers associated with the person.
@@ -253,25 +239,6 @@ class Phone(Base):
   def __init__(self, type, phone, owner):
     self.type = type
     self.phone = phone
-    self.owner = owner
-
-class Call(Base):
-  """
-  Calls made from a Phone numbers.
-  """
-
-  __tablename__ = "calls"
-  __table_args__ = {"comment": "This table stores a calls and texts sent and recieved from an phone number. Files will store audio files later."}
-
-  id = Column("id", Integer, primary_key=True)
-  type = Column(NullToEmptyString(20), comment="The type of call. The allowed values are text, call.")
-  file = Column(Integer, comment="The file number if an audio file is associated with the call.")
-  date = Column(DateTime, comment="The date the call was made.")
-  owner = Column(Integer, ForeignKey("phones.id"), comment="The phone number the call or text was made by.")
-
-  def __init__(self, file, date, owner):
-    self.file = file
-    self.date = date
     self.owner = owner
 
 class File(Base):
@@ -329,24 +296,24 @@ class Event(Base):
 
     return f"Event: {self.name} Event Details: {self.description} {dates}"
 
-class Note(Base):
+class Report(Base):
   """
-  Notes related to the missing person
-  that might hold weight in the investigation.
+  Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.
+  @TODO Add a reporter and figure out how to add agencies in the person object for exact refrencing.
   """
 
-  __tablename__ = "notes"
-  __table_args__ = {"comment": "This table stores notes associated with persons."}
+  __tablename__ = "reports"
+  __table_args__ = {"comment": "This table tracks specific citizen sightings, tips, or law enforcement emergency dispatches."}
 
   id = Column("id", Integer, primary_key=True)
   name = Column(NullToEmptyString, comment="The name of the note.")
-  note = Column(Text, comment="The note.")
+  report = Column(Text, comment="Stores the raw narrative, GPS location if provided, reference to agency who repoted it.")
   owner = Column(Integer, ForeignKey("people.id"), comment="The persons the note is associated with.")
 
-  def __init__(self, name, note, owner):
+  def __init__(self, name, report, owner):
     self.name = name
-    self.note = note
+    self.report = report
     self.owner = owner
 
   def __repr__(self):
-    return f"Note: {self.name} Note Details: {self.note} "
+    return f"Report: {self.name} Report Details: {self.report} "

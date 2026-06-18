@@ -35,7 +35,7 @@
             <li><a class="dropdown-item{% if request.endpoint == 'phone' %} active{% endif %}" href="{{ url_for('phone') }}">Phones</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'email' %} active{% endif %}" href="{{ url_for('email') }}">Emails</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'event' %} active{% endif %}" href="{{ url_for('event') }}">Events</a></li>
-            <li><a class="dropdown-item{% if request.endpoint == 'note' %} active{% endif %}" href="{{ url_for('note') }}">Notes</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'report' %} active{% endif %}" href="{{ url_for('report') }}">Incident Reports</a></li>
           </ul>
         </div>
         <div class="dropdown">
@@ -59,7 +59,7 @@
             <!-- <li><a class="dropdown-item{% if request.endpoint == 'model_params' %} active{% endif %}" href="{{ url_for('model_params') }}">Model Parameters</a></li> -->
             <li><a class="dropdown-item{% if request.endpoint == 'prompt' %} active{% endif %}" href="{{ url_for('prompt') }}">Prompts</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'question' %} active{% endif %}" href="{{ url_for('question') }}">Questions</a></li>
-            <li><a class="dropdown-item{% if request.endpoint == 'inspector' %} active{% endif %}" href="{{ url_for('inspector') }}">Inspector</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'inspector' %} active{% endif %}" href="{{ url_for('inspector') }}">Chat</a></li>
           </ul>
         </div>
       </ul>

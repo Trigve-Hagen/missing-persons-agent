@@ -45,11 +45,11 @@ class Resources():
     manager = ModelManager()
     return f"{manager.get_ollama_storage_gb():.2f} GB"
 
-  def initialize_determinator(self, engine):
+  """ def initialize_determinator(self, engine):
     create_statements = {}
 
     for table_name, table in Base.metadata.tables.items():
       statement = CreateTable(table).compile(engine)
       create_statements[table_name] = str(statement)
 
-    return create_statements
+    return create_statements """
