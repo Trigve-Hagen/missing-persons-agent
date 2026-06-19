@@ -45,7 +45,9 @@ class Selection():
   }
 
   available_collections = {
-    "missing_persons": "Missing Persons"
+    "missing_persons": "Missing Persons",
+    "database_statements": "Database Statements",
+    "investigation_instructions": "Investigation Instructions"
   }
 
   data_entities = [
@@ -56,7 +58,7 @@ class Selection():
     'phones',
     'files',
     'events',
-    'notes'
+    'leads'
   ]
 
   # GPU selections

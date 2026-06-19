@@ -58,7 +58,7 @@ from database.base import Base
 from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField
-from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Report
+from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Lead
 
 from classes.request_api import RequestApi
 from classes.selections import Selection
@@ -72,7 +72,7 @@ from classes.chat_manager import ChatManager, ChatTester
 # from classes.extras.email_manager import EmailManager
 from classes.chroma_database import ChromaDatabase
 from classes.feed_generator import FeedGenerator
-from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, ReportRepository
+from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, LeadRepository, Determinator
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -108,7 +108,7 @@ def add_nosniff_header_to_static(response):
 @app.route('/')
 @app.route('/index')
 def index():
-  """ resource = Resources()
+  resource = Resources()
   create_statements = resource.initialize_determinator(engine=engine)
 
   data_entities = {}
@@ -116,7 +116,7 @@ def index():
     if entity in Selection.data_entities:
       data_entities[entity] = value
   determine = Determinator(session=session)
-  determine.chunk_create_statements(createStatements=data_entities) """
+  determine.chunk_create_statements(createStatements=data_entities)
 
   return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
 
@@ -216,10 +216,10 @@ def get_rows():
       entities = session.query(Event).all()
       entity_data = [{"id": n.id, "label": n.name} for n in entities]
       fields = [c.name for c in Event.__table__.columns if c.name != 'id']
-    case "report":
-      entities = session.query(Report).all()
+    case "lead":
+      entities = session.query(Lead).all()
       entity_data = [{"id": n.id, "label": n.name} for n in entities]
-      fields = [c.name for c in Report.__table__.columns if c.name != 'id']
+      fields = [c.name for c in Lead.__table__.columns if c.name != 'id']
 
   # jsonify converts the list into a valid JSON response
   return jsonify({
@@ -239,7 +239,7 @@ def set_entity():
 
   flash(f"Create suggestions for Events to save.", 'info')
   flash(f"Create suggestions for Images and Documents into the database.", 'info')
-  flash(f"Create suggestions for Reports into the database.", 'info')
+  flash(f"Create suggestions for Leads into the database.", 'info')
 
   """ if not all([entity_type, entity_id, field]):
     flash('Missing required form parameters.', 'error')
@@ -253,7 +253,7 @@ def set_entity():
     'Email': Email,
     'Alias': Alias,
     'event': Event,
-    'Report': Report
+    'Lead': Lead
   }
 
   model_class = models.get(entity_type)
@@ -1625,93 +1625,93 @@ def save_to_vector_event():
 
   return redirect(url_for('edit_event', id=form_data.get('id')))
 
-@app.route('/report')
-def report():
+@app.route('/lead')
+def lead():
   page = request.args.get('page', 1, type=int)
   offset = (page - 1) * Selection.per_page
-  all_reports = session.query(Report).limit(Selection.per_page).offset(offset).all()
-  total = session.query(Report).count()
+  all_leads = session.query(Lead).limit(Selection.per_page).offset(offset).all()
+  total = session.query(Lead).count()
   total_pages = (total + Selection.per_page - 1) // Selection.per_page
 
   owner_select = session.query(Person).all()
 
   return flask.render_template(
-    'report.html',
-    reports=all_reports,
+    'lead.html',
+    leads=all_leads,
     page=page,
     total_pages=total_pages,
     owners=owner_select
   )
 
-@app.route('/edit/report/<int:id>', methods=['GET', 'POST'])
-def edit_report(id):
-  # Retrieve report or return 404
-  report = session.get(Report, id)
-  if not report:
-    return redirect(url_for('report'))
+@app.route('/edit/lead/<int:id>', methods=['GET', 'POST'])
+def edit_lead(id):
+  # Retrieve lead or return 404
+  lead = session.get(Lead, id)
+  if not lead:
+    return redirect(url_for('lead'))
 
-  report_data = {
-    'id': report.id,
-    'name': report.name,
-    'report': report.report,
-    'owner': report.owner,
+  lead_data = {
+    'id': lead.id,
+    'name': lead.name,
+    'lead': lead.lead,
+    'owner': lead.owner,
   }
 
-  repo = ReportRepository(session=session)
-  data, metadatas = repo.get_chroma_data('report', id)
+  repo = LeadRepository(session=session)
+  data, metadatas = repo.get_chroma_data('lead', id)
 
   owner_select = session.query(Person).all()
   return flask.render_template(
-    'edit_report.html',
+    'edit_lead.html',
     edit_id=id,
-    report_data=report_data,
+    lead_data=lead_data,
     owners=owner_select,
     data=data,
     metadatas=metadatas,
   )
 
-@app.route('/set_report', methods=['POST'])
-def set_report():
+@app.route('/set_lead', methods=['POST'])
+def set_lead():
   form_data = request.form
 
   try:
-    report = session.execute(select(Report).filter_by(id = form_data.get('id'))).scalar_one_or_none()
-    if report:
+    lead = session.execute(select(Lead).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if lead:
       uporadd = "updated"
-      report.name=form_data.get('name')
-      report.report=form_data.get('report')
-      report.owner=form_data.get('owner')
+      lead.name=form_data.get('name')
+      lead.lead=form_data.get('lead')
+      lead.owner=form_data.get('owner')
     else:
       uporadd = "added"
-      report = Report(
+      lead = Lead(
         name=form_data.get('name'),
-        report=form_data.get('report'),
+        lead=form_data.get('lead'),
         owner=form_data.get('owner'),
       )
-    session.merge(report)
+    session.merge(lead)
     session.commit()
 
-    flash(f"Report {uporadd} successfully!", "success")
-    return redirect(url_for('report'))
+    flash(f"Lead {uporadd} successfully!", "success")
+    return redirect(url_for('lead'))
   except IntegrityError as e:
     session.rollback()
     error_msg = str(e.orig)
     flash(f"Database Error: {error_msg}", "danger")
-    return redirect(url_for('report'))
+    return redirect(url_for('lead'))
   except Exception as e:
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
-    return redirect(url_for('report'))
+    return redirect(url_for('lead'))
 
-@app.route('/save_to_vector_report', methods=['POST'])
-def save_to_vector_report():
+@app.route('/save_to_vector_lead', methods=['POST'])
+def save_to_vector_lead():
   form_data = request.form
 
-  report = session.execute(select(Report).filter_by(id = form_data.get('id'))).scalar_one_or_none()
-  repo = ReportRepository(session=session)
-  repo.save_report(report)
+  lead = session.execute(select(Lead).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+  repo = LeadRepository(session=session)
+  repo.save_lead(lead)
 
-  return redirect(url_for('edit_report', id=form_data.get('id')))
+  return redirect(url_for('edit_lead', id=form_data.get('id')))
 
 @app.route('/api')
 def api():
@@ -1870,7 +1870,7 @@ def chunk():
   offset = (page - 1) * per_page
 
   repo = ChromaDatabase(session=session)
-  data, metadatas = repo.get_all_chroma_data(getDatabase())
+  data, metadatas = repo.get_all_chroma_data()
 
   total_items = len(data)
   paginated_data = data[offset : offset + Selection.per_page]
@@ -1882,7 +1882,7 @@ def chunk():
     metadatas=metadatas,
     page=page,
     total_pages=total_pages,
-    available_databases=Selection.available_databases,
+    available_collections=Selection.available_collections,
     appData=os.path.join(os.environ['LOCALAPPDATA'], "MissingPersons")
   )
 
@@ -2125,7 +2125,7 @@ def delete_item():
   available_models = {
     'person': Person, 'alias': Alias, 'address': Address, 'email': Email,
     'phone': Phone, 'file': File, 'category': Category, 'api': Api,
-    'task': Task, 'event': Event, 'report': Report,
+    'task': Task, 'event': Event, 'lead': Lead,
     'api_field': ApiField, 'model': Model, 'model_params': ModelParams,
     'prompt': Prompt, 'question': Question
   }
@@ -2169,7 +2169,7 @@ def delete_item():
   phone_count = session.query(Phone).filter_by(owner=id).count()
   file_count = session.query(File).filter_by(owner=id).count()
   event_count = session.query(Event).filter_by(owner=id).count()
-  report_count = session.query(Report).filter_by(owner=id).count()
+  lead_count = session.query(Lead).filter_by(owner=id).count()
   if table_type == 'person':
     if alias_count > 0:
       flash(f"Cannot delete: {table_type} has {alias_count} associated aliases. Delete them first.", "danger")
@@ -2189,8 +2189,8 @@ def delete_item():
     if event_count > 0:
       flash(f"Cannot delete: {table_type} has {event_count} associated events. Delete them first.", "danger")
       return redirect(url_for('person'))
-    if report_count > 0:
-      flash(f"Cannot delete: {table_type} has {report_count} associated reports. Delete them first.", "danger")
+    if lead_count > 0:
+      flash(f"Cannot delete: {table_type} has {lead_count} associated leads. Delete them first.", "danger")
       return redirect(url_for('person'))
 
   # Specific check for Api child records
@@ -2291,6 +2291,12 @@ def getQuestion():
   prompt = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
   return prompt
 
+def getCollection():
+  state = session.get(State, 1)
+  current_value = state.collection
+  default_value = "missing_persons"
+  return current_value or default_value
+
 def getDatabase():
   state = session.get(State, 1)
   current_value = state.database
@@ -2367,15 +2373,15 @@ def application_state():
     appData=os.path.join(os.environ['LOCALAPPDATA'], "MissingPersons")
   )
 
-@app.route('/set_vector_db', methods=['POST'])
-def set_vector_db():
+@app.route('/set_collection', methods=['POST'])
+def set_collection():
   form_data = request.form
   if form_data is None:
     return redirect(url_for('chunk'))
 
   state = session.get(State, 1)
   if state:
-    state.database = form_data.get('database')
+    state.collection = form_data.get('collection')
     session.commit()
 
   return redirect(url_for('chunk'))
@@ -2426,11 +2432,13 @@ def get_state_processor():
 def inject_site_settings():
   processor = getProcessor()
   database = getDatabase()
+  collection = getCollection()
   theme = getTheme()
   return dict(
     state_path = request.endpoint,
     selected_processor = processor,
     selected_database = database,
+    selected_collection = collection,
     selected_theme = theme,
   )
 

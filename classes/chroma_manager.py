@@ -46,7 +46,7 @@ class PersonRepository(ChromaDatabase):
       documents=chunks,
       embedding=self.embedding_function,
       ids=ids,
-      collection_name=self.collection_name,
+      collection_name="missing_persons",
       persist_directory=self.investigation_db
     )
 
@@ -81,32 +81,32 @@ class EventRepository(ChromaDatabase):
       documents=chunks,
       embedding=self.embedding_function,
       ids=ids,
-      collection_name=self.collection_name,
+      collection_name="missing_persons",
       persist_directory=self.investigation_db
     )
 
     flash(f"{event_content} saved successfully!", "success")
     return True
 
-class ReportRepository(ChromaDatabase):
+class LeadRepository(ChromaDatabase):
 
-  def save_report(self, report):
-    report_content = repr(report)
+  def save_lead(self, lead):
+    lead_content = repr(lead)
 
     ids = []
 
     # Create composite ID
-    composite_id = f"{ModelUtils.machine_name(name=report.name)}_{time.time_ns()}_chunk1"
+    composite_id = f"{ModelUtils.machine_name(name=lead.name)}_{time.time_ns()}_chunk1"
     ids.append(composite_id)
 
     document = Document(
-      page_content=report_content,
+      page_content=lead_content,
       metadata={
-        "vector_type": "report",
+        "vector_type": "lead",
         "chunk_index": 1,
         "custom_id": composite_id,
-        "source": f"{ModelUtils.machine_name(name=report.name)}_{time.time_ns()}",
-        "entity_id": report.id
+        "source": f"{ModelUtils.machine_name(name=lead.name)}_{time.time_ns()}",
+        "entity_id": lead.id
       }
     )
 
@@ -116,32 +116,32 @@ class ReportRepository(ChromaDatabase):
       documents=chunks,
       embedding=self.embedding_function,
       ids=ids,
-      collection_name=self.collection_name,
+      collection_name="missing_persons",
       persist_directory=self.investigation_db
     )
 
-    flash(f"{report_content} saved successfully!", "success")
+    flash(f"{lead_content} saved successfully!", "success")
     return True
 
 class JsonRepository(ChromaDatabase):
 
-  def save_json(self, report):
-    report_content = repr(report)
+  def save_json(self, lead):
+    lead_content = repr(lead)
 
     ids = []
 
     # Create composite ID
-    composite_id = f"{ModelUtils.machine_name(name=report.name)}_{time.time_ns()}_chunk1"
+    composite_id = f"{ModelUtils.machine_name(name=lead.name)}_{time.time_ns()}_chunk1"
     ids.append(composite_id)
 
     document = Document(
-      page_content=report_content,
+      page_content=lead_content,
       metadata={
         "vector_type": "json",
         "chunk_index": 1,
         "custom_id": composite_id,
-        "source": f"{ModelUtils.machine_name(name=report.name)}_{time.time_ns()}",
-        "entity_id": report.id
+        "source": f"{ModelUtils.machine_name(name=lead.name)}_{time.time_ns()}",
+        "entity_id": lead.id
       }
     )
 
@@ -151,26 +151,26 @@ class JsonRepository(ChromaDatabase):
       documents=chunks,
       embedding=self.embedding_function,
       ids=ids,
-      collection_name=self.collection_name,
+      collection_name="missing_persons",
       persist_directory=self.investigation_db
     )
 
-    flash(f"{report_content} saved successfully!", "success")
+    flash(f"{lead_content} saved successfully!", "success")
     return True
 
-""" class Determinator(ChromaDatabase):
-  Takes a list of sql create statements and saves them as vectors.
+class Determinator(ChromaDatabase):
+  """ Takes a list of sql create statements and saves them as vectors. """
 
   def chunk_create_statements(self, createStatements):
     vector_store = Chroma(
-      persist_directory=ModelUtils.resource_path(os.path.join("database", "determinator_db")),
-      collection_name=self.collection_name,
+      persist_directory=self.investigation_db,
+      collection_name="database_statements",
       embedding_function=self.embedding_function
     )
     try:
       matching_docs = vector_store.get(
         limit=1,
-        where={"source": {"$eq": "create_statements"}}
+        where={"source": {"$eq": "database_statements"}}
       )
 
       if not matching_docs["metadatas"]:
@@ -178,16 +178,16 @@ class JsonRepository(ChromaDatabase):
         documents = []
         for index, (title, sql_statement) in enumerate(createStatements.items()):
           entity = ModelUtils.machine_name(name=title)
-          composite_id = f"create_statements_{entity}_chunk{index}"
+          composite_id = f"database_statements_{entity}_chunk{index}"
           ids.append(composite_id)
 
           doc = Document(
               page_content=sql_statement,
               metadata={
-                "vector_type": "create_statements",
+                "vector_type": "database_statements",
                 "chunk_index": index,
                 "custom_id": composite_id,
-                "source": f"create_statements",
+                "source": f"database_statements",
                 "entity": entity
               }
           )
@@ -197,12 +197,12 @@ class JsonRepository(ChromaDatabase):
           documents=documents,
           embedding=self.embedding_function,
           ids=ids,
-          collection_name=self.collection_name,
-          persist_directory=self.determinator_db
+          collection_name="database_statements",
+          persist_directory=self.investigation_db
         )
 
-        flash(f"Successfully saved {len(createStatements)} statements to Chroma at '{self.determinator_db}'.", "success")
+        flash(f"Successfully saved {len(createStatements)} statements to Chroma at '{self.investigation_db}'.", "success")
 
     except Exception as e:
       flash(f"Error retrieving data: {e}", "danger")
-      return [] """
+      return []

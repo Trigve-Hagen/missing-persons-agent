@@ -8,14 +8,14 @@
 <div class="row mb-5">
   <div class="col-12">
     <h1 class="mt-4 mb-0">All Chunks</h1>
-    <p class="mt-1 mb-4">There are three vector databases. investigation_db, investigator_db and determinator_db. You can switch between them to view whats in them. Switching between them will only effect what is shown on this page. If you need to reset any of them for any reason delete the folder in {{ appData }}\databases and the application will rebuild it for you when you restart it. If you delete the {{ appData }}\databases\investigation_db folder you will have to resave all your vectors again. Deleting the vector databases does not affect the data stored in the SqlAlchemy database.</p>
-    <form action="/set_vector_db" method="POST" name="vector_db" autocomplete="off">
+    <p class="mt-1 mb-4">There is one database investigation_db store in {{ appData }}\databases. There are three collections. Missing Persons holds all the investigation data. Database Statements holds create statements to give the model the information it needs to know to create insert statements for parsed json data that will to be turned into investigation data. Investigation Instructions are instructions you save to train the model on how you want it to run the investigation. The idea is that someone who has experience investigating missing persons might have techneques they regularly use and want the model to use. You can switch between the collections to view whats in them.</p>
+    <form action="/set_collection" method="POST" name="collection" autocomplete="off">
       <div class="col-6">
-        <label for="state-database" class="form-label">Database</label>
-        <select class="form-select" id="state-database" name="database">
-          {% if available_databases %}
-            {% for key, value in available_databases.items() %}
-              <option value="{{ key }}" {% if key == selected_database %} selected {% endif %}>{{ value }}</option>
+        <label for="state-collection" class="form-label">Collection</label>
+        <select class="form-select" id="state-collection" name="collection">
+          {% if available_collections %}
+            {% for key, value in available_collections.items() %}
+              <option value="{{ key }}" {% if key == selected_collection %} selected {% endif %}>{{ value }}</option>
             {% endfor %}
           {% endif %}
         </select>

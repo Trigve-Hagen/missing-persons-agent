@@ -15,20 +15,18 @@ from classes.model_utils import ModelUtils
 class ChromaDatabase:
   def __init__(self, session):
     self.investigation_db = ModelUtils.resource_path(os.path.join("database", "investigation_db"))
-    self.determinator_db = ModelUtils.resource_path(os.path.join("database", "determinator_db"))
-    self.collection_name = "missing_persons"
     state = session.get(State, 1)
     self.processor = state.processor
     self.chunk_size = state.chunk_size
     self.chunk_overlap = state.chunk_overlap
     self.embedding_function = self.get_embeddings()
-    self.persistent_directory = ModelUtils.resource_path(os.path.join("database", state.database))
+    self.collection_name = state.collection
     self.store = {}
 
   def get_vector_store(self):
     return Chroma(
       persist_directory=self.investigation_db,
-      collection_name=self.collection_name,
+      collection_name="missing_persons",
       embedding_function=self.embedding_function
     )
 
@@ -66,9 +64,10 @@ class ChromaDatabase:
 
     return embedding_function
 
-  def get_collection(self, database):
+  def get_collection(self):
+    flash(f"Collection: {self.collection_name}", "info")
     vector_store = Chroma(
-      persist_directory=ModelUtils.resource_path(os.path.join("database", database)),
+      persist_directory=self.investigation_db,
       collection_name=self.collection_name,
       embedding_function=self.embedding_function
     )
@@ -79,8 +78,8 @@ class ChromaDatabase:
       include=["documents", "metadatas"],
     )
 
-  def get_all_chroma_data(self, database):
-    results = self.get_collection(database)
+  def get_all_chroma_data(self):
+    results = self.get_collection()
     metadatas = results["metadatas"]
 
     data = []
@@ -92,7 +91,7 @@ class ChromaDatabase:
   def get_chroma_data(self, type, id):
     vector_store = self.get_vector_store()
     try:
-      collection = vector_store._client.get_collection(name=self.collection_name)
+      collection = vector_store._client.get_collection(name="missing_persons")
       # Retrieve records matching both param1 AND param2
       where = {}
       if type != "" and type != 'None':
@@ -169,7 +168,7 @@ class ChromaDatabase:
   def delete_file_by_source(self, source):
     vector_store = self.get_vector_store()
     try:
-      collection = vector_store._client.get_collection(name=self.collection_name)
+      collection = vector_store._client.get_collection(name="missing_persons")
       collection.delete(
           where={"source": source}
       )
@@ -217,6 +216,6 @@ class ChromaDatabase:
       documents=chunks,
       embedding=self.embedding_function,
       ids=ids,
-      collection_name=self.collection_name,
+      collection_name="missing_persons",
       persist_directory=self.investigation_db
     )

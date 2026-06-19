@@ -1,87 +1,200 @@
 import os
 import re
 import yaml
-from typing import TypedDict, Annotated
+from typing import TypedDict, Dict, Any, List, Optional
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, END
 
-# Define Agent State
-class AgentState(TypedDict):
-    incoming_feed: str
-    db_context: str
-    skill_activated: bool
-    final_output: str
+""" Why the load_agent_skill function? If the skills are in the .agents folder
+won't they be found anyways?
 
-# 1. Parse the standard SKILL.md file
-def load_agent_skill(skill_path="missing-persons-extractor/SKILL.md"):
-    with open(skill_path, "r") as f:
-        content = f.read()
+You are completely correct about how platform-native tools work, but there is a
+major catch when you are building a custom runtime from scratch with Ollama and
+LangGraph! Platforms like Claude Code, Cursor, or VS Code Copilot have a built-in
+"skill host" that constantly monitors folders like .agents/ or .github/skills/.
+However, when you write your own pure Python backend using LangGraph, there is
+no magic background engine scanning your hard drive unless you explicitly
+code it. """
 
-    # Extract YAML frontmatter
-    match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
-    if match:
-        frontmatter = yaml.safe_load(match.group(1))
-        instructions = match.group(2)
-        return frontmatter, instructions
-    return {}, content
+# 1. Define the Global Agent State
+class SkillAgentState(TypedDict):
+    user_prompt: str             # The raw incoming message/feed
+    db_context: str              # Attached reference information
+    discovered_skills: Dict[str, Dict[str, Any]] # Inventory of system skills
+    selected_skill: Optional[str] # The skill chosen by the router
+    final_output: str            # The structured payload response
 
-# 2. Node: Discovery Phase (Checks if skill should run)
-def discovery_router(state: AgentState):
-    frontmatter, _ = load_agent_skill()
-    description = frontmatter.get("description", "")
+class DynamicSkillOrchestrator:
+    def __init__(self, skills_dir: str = ".agents", routing_model: str = "llama3.1", execution_model: str = "llama3.1"):
+        self.skills_dir = skills_dir
 
-    # Basic keyword match router simulating Progressive Disclosure discovery
-    if "missing persons" in state["incoming_feed"].lower() or "incident" in state["incoming_feed"].lower():
-        return "activate_skill"
-    return "skip"
+        # We use a low temperature for predictable routing and JSON output
+        self.router_llm = ChatOllama(model=routing_model, temperature=0.0, format="json")
+        self.executor_llm = ChatOllama(model=execution_model, temperature=0.1, format="json")
 
-# 3. Node: Activation & Execution Phase
-def execute_skill_node(state: AgentState):
-    frontmatter, instructions = load_agent_skill()
+        # Load the skill inventory into memory on initialization
+        self.skills_inventory = self._discover_all_available_skills()
+        self.workflow = self._build_graph()
 
-    # Read supporting material from references folder if needed
-    with open("missing-persons-extractor/references/database_context.txt", "r") as ref:
-        db_context = ref.read()
+    def _discover_all_available_skills(self) -> Dict[str, Dict[str, Any]]:
+        """Scans the .agents/ folder for any valid SKILL.md specs."""
+        catalog = {}
+        if not os.path.exists(self.skills_dir):
+            return catalog
 
-    # Bind Ollama with JSON structured output formatting
-    # Recommended models: llama3.1, qwen2.5, or mistral
-    llm = ChatOllama(model="llama3.1", temperature=0.1, format="json")
+        for item in os.listdir(self.skills_dir):
+            folder_path = os.path.join(self.skills_dir, item)
+            skill_path = os.path.join(folder_path, "SKILL.md")
 
-    system_prompt = f"{instructions}\n\nDATABASE SCHEMA CONTEXT:\n{db_context}"
-    user_prompt = f"Analyze this incoming feed and generate the output:\n{state['incoming_feed']}"
+            if os.path.isdir(folder_path) and os.path.exists(skill_path):
+                with open(skill_path, "r", encoding="utf-8") as f:
+                    content = f.read()
 
-    messages = [
-        ("system", system_prompt),
-        ("user", user_prompt)
-    ]
+                # Parse frontmatter and body instructions
+                match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
+                if match:
+                    try:
+                        frontmatter = yaml.safe_load(match.group(1))
+                        name = frontmatter.get("name")
+                        if name:
+                            catalog[name] = {
+                                "description": frontmatter.get("description", ""),
+                                "full_instructions": match.group(2).strip(),
+                                "folder_path": folder_path
+                            }
+                    except yaml.YAMLError:
+                        continue
+        return catalog
 
-    response = llm.invoke(messages)
-    return {"final_output": response.content, "skill_activated": True}
+    def _discovery_router_node(self, state: SkillAgentState) -> Dict[str, Any]:
+        """AI-powered Discovery Phase: Inspects frontmatters to decide which skill fits."""
+        skills = state["discovered_skills"]
 
-# 4. Compile the LangGraph
-workflow = StateGraph(AgentState)
+        if not skills:
+            return {"selected_skill": "none"}
 
-workflow.add_node("execute_skill", execute_skill_node)
+        # Build a low-token summary of your capabilities for the LLM to inspect
+        skills_summary = ""
+        for name, meta in skills.items():
+            skills_summary += f"- SKILL_NAME: {name}\n  DESCRIPTION: {meta['description']}\n\n"
 
-# Constructing conditional routing based on discovery
-workflow.set_conditional_entry_point(
-    discovery_router,
-    {
-        "activate_skill": "execute_skill",
-        "skip": END
-    }
-)
-workflow.add_edge("execute_skill", END)
-app = workflow.compile()
+        router_prompt = f"""
+        You are a routing agent. Your job is to select the single best SKILL_NAME to handle the user request.
+        If no skills match perfectly, return "none".
 
-# Sample mock execution
-test_feed = '{"incident": "Missing teenager last seen at park", "name": "Jane Doe", "age": 16}'
+        AVAILABLE SKILLS:
+        {skills_summary}
 
-result = app.invoke({
-    "incoming_feed": test_feed,
-    "db_context": "Table: missing_persons_reports (fields: full_name, age, last_seen_location)",
-    "skill_activated": False,
-    "final_output": ""
-})
+        USER REQUEST:
+        {state['user_prompt']}
 
-print(result["final_output"])
+        Respond ONLY with this JSON structure:
+        {{ "selected_skill": "SKILL_NAME_HERE" }}
+        """
+
+        response = self.router_llm.invoke([("system", "You are an accurate router."), ("user", router_prompt)])
+
+        try:
+            # Safely extract selection from structural JSON output
+            import json
+            data = json.loads(response.content)
+            return {"selected_skill": data.get("selected_skill", "none")}
+        except Exception:
+            return {"selected_skill": "none"}
+
+    def _execute_skill_node(self, state: SkillAgentState) -> Dict[str, Any]:
+        """Execution Phase: Loads full instructions and supplementary reference documents."""
+        skill_name = state["selected_skill"]
+        skill_data = state["discovered_skills"][skill_name]
+
+        instructions = skill_data["full_instructions"]
+        folder_path = skill_data["folder_path"]
+
+        # Automatically look for supplementary local references if they exist
+        ref_context = ""
+        references_dir = os.path.join(folder_path, "references")
+        if os.path.exists(references_dir):
+            for file in os.listdir(references_dir):
+                with open(os.path.join(references_dir, file), "r", encoding="utf-8") as f:
+                    ref_context += f"\n--- Reference File: {file} ---\n{f.read()}\n"
+
+        system_prompt = f"{instructions}\n\n{ref_context}\n\nGLOBAL APP DATABASE CONTEXT:\n{state['db_context']}"
+
+        response = self.executor_llm.invoke([
+            ("system", system_prompt),
+            ("user", state["user_prompt"])
+        ])
+
+        return {"final_output": response.content}
+
+    def _fallback_node(self, state: SkillAgentState) -> Dict[str, Any]:
+        """Runs if no custom skills match the request."""
+        return {"final_output": "I am sorry, but I do not currently have a specialized skill loaded to process that specific request."}
+
+    def _build_graph(self):
+        """Compiles the dynamic routing graph."""
+        builder = StateGraph(SkillAgentState)
+
+        # Add processing nodes
+        builder.add_node("discover_and_route", self._discovery_router_node)
+        builder.add_node("execute_skill", self._execute_skill_node)
+        builder.add_node("fallback", self._fallback_node)
+
+        # Entrypoint always runs discovery first
+        builder.set_entry_point("discover_and_route")
+
+        # Route depending on the string value inside state["selected_skill"]
+        def conditional_routing_logic(state: SkillAgentState):
+            selection = state["selected_skill"]
+            if selection and selection in state["discovered_skills"]:
+                return "execute"
+            return "fallback"
+
+        builder.add_conditional_edges(
+            "discover_and_route",
+            conditional_routing_logic,
+            {
+                "execute": "execute_skill",
+                "fallback": "fallback"
+            }
+        )
+
+        builder.add_edge("execute_skill", END)
+        builder.add_edge("fallback", END)
+
+        return builder.compile()
+
+    def run_chat(self, user_prompt: str, db_context: str = "") -> str:
+        """Helper to invoke the pipeline state wrapper."""
+        initial_state = {
+            "user_prompt": user_prompt,
+            "db_context": db_context,
+            "discovered_skills": self.skills_inventory,
+            "selected_skill": None,
+            "final_output": ""
+        }
+        result = self.workflow.invoke(initial_state)
+        return result["final_output"]
+
+if __name__ == "__main__":
+    # 1. Initialize orchestrator (will scan your local folder automatically)
+    orchestrator = DynamicSkillOrchestrator(skills_dir=".agents")
+
+    """ # 2. Mock incoming context database payload
+    mock_schema = "Table: missing_persons_profiles (fields: full_name, age, last_seen_location)"
+
+    # --- TEST 1: Triggering the Missing Persons Extractor Skill ---
+    feed_data = '{"incident": "Missing teenager last seen near main street", "name": "Alex Smith", "age": 15}'
+
+    print("--- Running Test 1 (Should trigger missing_persons_data_extractor) ---")
+    response_1 = orchestrator.run_chat(user_prompt=feed_data, db_context=mock_schema)
+    print(response_1)
+
+    # --- TEST 2: Testing an unrelated prompt (Should hit fallback gracefully) ---
+    unrelated_prompt = "Can you write a poem about code refactoring?"
+
+    print("\n--- Running Test 2 (Should trigger Fallback) ---")
+    response_2 = orchestrator.run_chat(user_prompt=unrelated_prompt)
+    print(response_2) """
+
+

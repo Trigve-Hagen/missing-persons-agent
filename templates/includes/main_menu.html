@@ -35,7 +35,7 @@
             <li><a class="dropdown-item{% if request.endpoint == 'phone' %} active{% endif %}" href="{{ url_for('phone') }}">Phones</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'email' %} active{% endif %}" href="{{ url_for('email') }}">Emails</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'event' %} active{% endif %}" href="{{ url_for('event') }}">Events</a></li>
-            <li><a class="dropdown-item{% if request.endpoint == 'report' %} active{% endif %}" href="{{ url_for('report') }}">Incident Reports</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'lead' %} active{% endif %}" href="{{ url_for('lead') }}">Leads</a></li>
           </ul>
         </div>
         <div class="dropdown">

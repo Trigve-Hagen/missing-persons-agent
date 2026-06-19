@@ -89,6 +89,14 @@ Columns:
     email = Column("email_address", NullToEmptyString(255), nullable=False, comment="The persons email address.")
     owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons who uses this email.")
 
+  Table: files
+  Description: This table stores files like images, documents and later audio and videos associated with a person.
+  Columns:
+    id = Column(Integer, primary_key=True)
+    type = Column(NullToEmptyString, comment="The type of file. The allowed values are image, pdf for now.")
+    filename = Column(NullToEmptyString, unique=True, nullable=False, comment="The file name.")
+    owner = Column(Integer, ForeignKey("people.id"), comment="The persons file is associated with.")
+
   Table: phones
   Description: Stores phone numbers associated with the person.
   Columns:
@@ -108,13 +116,13 @@ Columns:
     dateTo = Column("date_to", DateTime, default=None, comment="The end date of the event if there is one.")
     owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons the event is associated with.")
 
-  Table: reports
+  Table: leads
   Description: Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.
   Columns:
     id = Column("id", Integer, primary_key=True)
-    name = Column(NullToEmptyString, comment="The name of the note.")
-    report = Column(Text, comment="Stores the raw narrative, GPS location if provided, reference to agency who repoted it.")
-    owner = Column(Integer, ForeignKey("people.id"), comment="The persons the note is associated with.")
+    name = Column(NullToEmptyString, comment="The name of the lead.")
+    lead = Column(Text, comment="Stores the raw narrative, GPS location if provided, reference to agency who repoted it.")
+    owner = Column(Integer, ForeignKey("people.id"), comment="The persons the lead is associated with.")
 
 -----------------------------------------
 3. INTEGRATION FEED AUDITS

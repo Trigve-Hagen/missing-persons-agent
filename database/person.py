@@ -296,24 +296,25 @@ class Event(Base):
 
     return f"Event: {self.name} Event Details: {self.description} {dates}"
 
-class Report(Base):
+class Lead(Base):
   """
   Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.
-  @TODO Add a reporter and figure out how to add agencies in the person object for exact refrencing.
+  @TODO Add a field named reporter that stores the id of the person or agency.
+  @TODO Adjust person table to be able to add agencies as well as peeople.
   """
 
-  __tablename__ = "reports"
+  __tablename__ = "leads"
   __table_args__ = {"comment": "This table tracks specific citizen sightings, tips, or law enforcement emergency dispatches."}
 
   id = Column("id", Integer, primary_key=True)
   name = Column(NullToEmptyString, comment="The name of the note.")
-  report = Column(Text, comment="Stores the raw narrative, GPS location if provided, reference to agency who repoted it.")
+  lead = Column(Text, comment="Stores the raw narrative, GPS location if provided, reference to agency who repoted it.")
   owner = Column(Integer, ForeignKey("people.id"), comment="The persons the note is associated with.")
 
-  def __init__(self, name, report, owner):
+  def __init__(self, name, lead, owner):
     self.name = name
-    self.report = report
+    self.lead = lead
     self.owner = owner
 
   def __repr__(self):
-    return f"Report: {self.name} Report Details: {self.report} "
+    return f"Lead: {self.name} Lead Details: {self.lead} "
