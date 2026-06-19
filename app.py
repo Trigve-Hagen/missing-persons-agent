@@ -59,7 +59,7 @@ from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField
 from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Lead
-
+from classes.data_extractor import DynamicSkillOrchestrator
 from classes.request_api import RequestApi
 from classes.selections import Selection
 from classes.process_files import ProcessFiles
@@ -1933,6 +1933,30 @@ def data_center():
     print(f"Response: {result['response']}")
     print("\n")
     # Execution Time: 7 minutes 38.77 seconds """
+
+    try:
+      # 1. Initialize orchestrator (will scan your local folder automatically)
+      orchestrator = DynamicSkillOrchestrator(session=session, model=model)
+
+      # 2. Mock incoming context database payload
+      mock_schema = "Table: missing_persons_profiles (fields: full_name, age, last_seen_location)"
+
+      # --- TEST 1: Triggering the Missing Persons Extractor Skill ---
+      feed_data = '{"incident": "Missing teenager last seen near main street", "name": "Alex Smith", "age": 15}'
+
+      """ print("--- Running Test 1 (Should trigger missing_persons_data_extractor) ---")
+      response_1 = orchestrator.run_chat(user_prompt=feed_data, db_context=mock_schema)
+      print(response_1) """
+
+      # --- TEST 2: Testing an unrelated prompt (Should hit fallback gracefully) ---
+      # unrelated_prompt = "Can you write a poem about code refactoring?"
+      unrelated_prompt = "Roll a d20"
+      print("\n--- Running Test 2 (Should trigger Fallback) ---")
+      response_2 = orchestrator.run_chat(user_prompt=unrelated_prompt)
+      flash(f"Response: {response_2}", "info")
+
+    except Exception as e:
+        flash(f"Error: {e}", "danger")
 
     # flash(f"Response: {response}", "success")
 

@@ -1,15 +1,23 @@
 ---
-name: extract-email-addresses
-description: Analyzes incoming JSON data feeds from external sources and map peoples email addresses to the emails database table by generating valid SQL INSERT statements. Use when processing incoming data feeds.
+name: data-extractor
+description: Use this skill when you need to analyze incoming JSON data feeds from external sources and map data to the appropriate database table by generating valid SQL INSERT statements.
 license: MIT
 metadata:
   author: GlobalWebMethods
   version: "1.0"
 ---
 
-# Extract Email Address Data Workflow
+# Data Extractor
 
-You are an expert data engineering agent for a missing persons investigation platform. Your goal is to map contacts that know or have met the missing person to the people database table, avoiding duplicates.
+## Overview
+
+You are an expert data engineering agent for a missing persons investigation platform. Your goal is to map data to the appropriate database table, avoiding duplicates.
+
+## Instructions
+
+1.  **Locate the Table Documentation**: Check the `references/schema.md` directory for table-specific instructions.
+2. **Review the Blueprint**: Read the specific `.md` file for the table before generating any SQL queries.
+3. **Draft the Query**: Write the `INSERT` statement following the exact schema and business logic defined in the table's reference files.
 
 ## JSON Input Constraints & Schema
 You must evaluate the input and format your final output strictly as a JSON object matching this schema:
@@ -48,4 +56,3 @@ You must evaluate the input and format your final output strictly as a JSON obje
 - Only map to tables explicitly mentioned or implied by the database context in the `references/` directory.
 - Only map data related to the missing person.
 - Do not map data if it is already saved to the database.
-
