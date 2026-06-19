@@ -1,0 +1,14 @@
+{
+  "events": {
+    "description": "Events related to the missing person\n  that might hold weight in the investigation.\n  identifiers: name, description, date_from",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of Events. Definitions are created in Category)",
+      "name": "STRING (The name of the event.)",
+      "description": "TEXT (The event description.)",
+      "date_from": "DATETIME (The start date of the event.)",
+      "date_to": "DATETIME (The end date of the event if there is one.)",
+      "owner": "INTEGER (The persons the event is associated with.)"
+    }
+  }
+}

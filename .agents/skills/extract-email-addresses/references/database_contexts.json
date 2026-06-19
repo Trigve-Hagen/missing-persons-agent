@@ -1,0 +1,11 @@
+{
+  "email_addresses": {
+    "description": "Emails associated with the person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of email. Definitions are created in Category)",
+      "email_address": "STRING (The persons email address.)",
+      "owner": "INTEGER (The persons who uses this email.)"
+    }
+  }
+}

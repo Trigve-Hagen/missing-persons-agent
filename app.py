@@ -109,14 +109,14 @@ def add_nosniff_header_to_static(response):
 @app.route('/index')
 def index():
   resource = Resources()
-  create_statements = resource.initialize_determinator(engine=engine)
+  resource.generate_agent_schema()
 
-  data_entities = {}
+  """ data_entities = {}
   for entity, value in create_statements.items():
     if entity in Selection.data_entities:
       data_entities[entity] = value
   determine = Determinator(session=session)
-  determine.chunk_create_statements(createStatements=data_entities)
+  determine.chunk_create_statements(createStatements=data_entities) """
 
   return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
 
@@ -2123,8 +2123,8 @@ def delete_item():
   table_type = form_data.get('type')
 
   available_models = {
-    'person': Person, 'alias': Alias, 'address': Address, 'email': Email,
-    'phone': Phone, 'file': File, 'category': Category, 'api': Api,
+    'person': Person, 'alias': Alias, 'address': Address, 'email_addresses': Email,
+    'phone_numbers': Phone, 'file': File, 'category': Category, 'api': Api,
     'task': Task, 'event': Event, 'lead': Lead,
     'api_field': ApiField, 'model': Model, 'model_params': ModelParams,
     'prompt': Prompt, 'question': Question

@@ -210,7 +210,7 @@ class Email(Base):
   Emails associated with the person.
   """
 
-  __tablename__ = "emails"
+  __tablename__ = "email_addresses"
   __table_args__ = {"comment": "This table stores a persons email addresses. identifiers: email_address"}
 
   id = Column("id", Integer, primary_key=True)
@@ -228,7 +228,7 @@ class Phone(Base):
   Phone numbers associated with the person.
   """
 
-  __tablename__ = "phones"
+  __tablename__ = "phone_numbers"
   __table_args__ = {"comment": "This table stores a persons phone numbers. identifiers: phone_number"}
 
   id = Column("id", Integer, primary_key=True)

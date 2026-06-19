@@ -1,0 +1,11 @@
+{
+  "files": {
+    "description": "Images, Documents, Audios(future) and Videos(future)\n  all get added to the investigation vector database to be\n  used in the investigation.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
+      "filename": "STRING (The file name.)",
+      "owner": "INTEGER (The persons file is associated with.)"
+    }
+  }
+}

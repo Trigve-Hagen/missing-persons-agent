@@ -1,0 +1,14 @@
+{
+  "aliases": {
+    "description": "Aliases associated with the person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "first_name": "STRING (The persons first name.)",
+      "middle_name": "STRING (The persons middle name.)",
+      "last_name": "STRING (The persons last name.)",
+      "sir_name": "STRING (The persons sir name.)",
+      "suffix": "STRING (The persons suffix name.)",
+      "owner": "INTEGER (The persons who uses this alias.)"
+    }
+  }
+}

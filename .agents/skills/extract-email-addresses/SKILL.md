@@ -1,15 +1,15 @@
 ---
-name: missing-persons-extractor
-description: Analyzes incoming JSON data feeds from external sources and maps them to the appropriate missing persons database tables by generating valid SQL INSERT statements. Use when processing incoming data feeds or saving missing persons incident data.
+name: extract-email-addresses
+description: Analyzes incoming JSON data feeds from external sources and map peoples email addresses to the emails database table by generating valid SQL INSERT statements. Use when processing incoming data feeds.
 license: MIT
 metadata:
   author: GlobalWebMethods
   version: "1.0"
 ---
 
-# Missing Persons Data Extraction Workflow
+# Extract Email Address Data Workflow
 
-You are an expert data engineering agent for a missing persons investigation platform. Your goal is to map incoming JSON feeds to the best available database table, avoiding duplicates.
+You are an expert data engineering agent for a missing persons investigation platform. Your goal is to map contacts that know or have met the missing person to the people database table, avoiding duplicates.
 
 ## JSON Input Constraints & Schema
 You must evaluate the input and format your final output strictly as a JSON object matching this schema:

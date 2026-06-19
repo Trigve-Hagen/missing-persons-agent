@@ -54,8 +54,8 @@ class Selection():
     'people',
     'aliases',
     'addresses',
-    'emails',
-    'phones',
+    'email_addresses',
+    'phone_numbers',
     'files',
     'events',
     'leads'
