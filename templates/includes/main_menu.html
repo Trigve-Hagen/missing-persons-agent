@@ -32,8 +32,8 @@
             <li><a class="dropdown-item{% if request.endpoint == 'file' %} active{% endif %}" href="{{ url_for('file') }}">Files</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'alias' %} active{% endif %}" href="{{ url_for('alias') }}">Alias</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'address' %} active{% endif %}" href="{{ url_for('address') }}">Addresses</a></li>
-            <li><a class="dropdown-item{% if request.endpoint == 'phone' %} active{% endif %}" href="{{ url_for('phone') }}">Phones</a></li>
-            <li><a class="dropdown-item{% if request.endpoint == 'email' %} active{% endif %}" href="{{ url_for('email') }}">Emails</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'phone' %} active{% endif %}" href="{{ url_for('phone') }}">Phone Numbers</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'email' %} active{% endif %}" href="{{ url_for('email') }}">Email Addresses</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'event' %} active{% endif %}" href="{{ url_for('event') }}">Events</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'lead' %} active{% endif %}" href="{{ url_for('lead') }}">Leads</a></li>
           </ul>

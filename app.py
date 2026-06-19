@@ -2123,8 +2123,8 @@ def delete_item():
   table_type = form_data.get('type')
 
   available_models = {
-    'person': Person, 'alias': Alias, 'address': Address, 'email_addresses': Email,
-    'phone_numbers': Phone, 'file': File, 'category': Category, 'api': Api,
+    'person': Person, 'alias': Alias, 'address': Address, 'email': Email,
+    'phone': Phone, 'file': File, 'category': Category, 'api': Api,
     'task': Task, 'event': Event, 'lead': Lead,
     'api_field': ApiField, 'model': Model, 'model_params': ModelParams,
     'prompt': Prompt, 'question': Question
