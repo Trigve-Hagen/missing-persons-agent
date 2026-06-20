@@ -58,7 +58,8 @@ class Selection():
     'phone_numbers',
     'files',
     'events',
-    'leads'
+    'leads',
+    'tasks'
   ]
 
   # GPU selections

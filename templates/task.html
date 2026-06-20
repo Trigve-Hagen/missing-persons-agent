@@ -25,7 +25,6 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Name</th>
-          <th scope="col">Description</th>
           <th scope="col">Complete</th>
           <th scope="col" class="col-2">Actions</th>
         </tr>
@@ -35,7 +34,6 @@
           <tr>
             <td scope="row">{{ task.id }}</td>
             <td scope="row">{{ task.name }}</td>
-            <td scope="row">{{ task.description }}</td>
             <td>
               {% if task.ifComplete == 1 %}
                 Completed
@@ -77,17 +75,21 @@
   <div class="col-12">
     <form class="row g-4" action="/set_task" method="POST" name="task" autocomplete="off">
       <input type="hidden" class="form-control" id="task-id" name="id" />
-      <div class="col-9">
+      <div class="col-8">
         <label for="task-name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="task-name" name="name" required>
+        <textarea class="form-control" id="task-name" name="name" rows="3" required></textarea>
       </div>
-      <div class="col-3">
+      <div class="col-4">
+        <label for="task-name" class="form-label">Table Name</label>
+        <input type="text" class="form-control" id="task-table-name" name="sqlTableName">
+      </div>
+      <div class="col-4">
         <label for="task-date-created" class="form-label">Date Created</label>
         <input type="date" class="form-control" id="task-date-created" name="dateCreated" value="{{ dateCreated }}" required>
       </div>
-      <div class="col-9">
-        <label for="task-description" class="form-label">Description</label>
-        <textarea class="form-control" id="task-description" name="description" rows="3"></textarea>
+      <div class="col-8">
+        <label for="task-description" class="form-label">Insert Statement</label>
+        <textarea class="form-control" id="task-insert-statement" name="sqlInsertStatement" rows="3"></textarea>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

@@ -1150,3 +1150,953 @@ WHERE state.id = ?
 2026-06-19 16:42:31,891 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
 2026-06-19 16:42:31,906 - DEBUG - _pywebviewready event fired
 2026-06-19 16:42:31,929 - DEBUG - loaded event fired
+2026-06-20 01:36:35,630 - DEBUG - Using WinForms / Chromium
+2026-06-20 01:36:37,117 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 01:36:37,146 - INFO - [cached since 2.37s ago] (1,)
+2026-06-20 01:36:37,187 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 01:36:37,212 - INFO - [cached since 2.436s ago] (1,)
+2026-06-20 01:36:37,234 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 01:36:37,236 - INFO - [cached since 2.459s ago] (1,)
+2026-06-20 01:36:37,238 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 01:36:37,238 - INFO - [cached since 2.462s ago] (1,)
+2026-06-20 01:36:37,595 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 01:36:37,596 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 01:36:37,636 - DEBUG - _pywebviewready event fired
+2026-06-20 01:36:37,642 - DEBUG - loaded event fired
+2026-06-20 01:36:57,187 - INFO - SELECT state.id, state.theme, state.person, state.model, state.api, state.prompt, state.question, state."database", state.collection, state.processor, state.loader, state.chunk_size, state.chunk_overlap, state.root_node, state.display_type, state.files_size, state.sql_alchemy_database_size, state.chroma_database_size, state.ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 01:36:57,187 - INFO - [generated in 0.00037s] (1,)
+2026-06-20 01:36:57,187 - INFO - SELECT people.id, people.first_name, people.middle_name, people.last_name, people.sir_name, people.suffix, people.type, people.height, people.weight, people.hair_color, people.eye_color, people.ssn, people.gender, people.data_of_birth, people.ethnicity, people.primary_language, people.missing, people.description, people.owner 
+FROM people 
+WHERE people.id = ?
+2026-06-20 01:36:57,187 - INFO - [generated in 0.00026s] (1,)
+2026-06-20 01:36:57,187 - INFO - SELECT api.id, api.name, api.type, api.url, api."key", api.secret, api.description 
+FROM api 
+WHERE api.id = ?
+2026-06-20 01:36:57,187 - INFO - [generated in 0.00023s] (1,)
+2026-06-20 01:36:57,187 - INFO - SELECT api_fields.id, api_fields.field, api_fields.value, api_fields.type, api_fields.description, api_fields.owner 
+FROM api_fields 
+WHERE api_fields.owner = ?
+2026-06-20 01:36:57,187 - INFO - [generated in 0.00022s] (1,)
+2026-06-20 01:36:57,869 - INFO - SELECT people.id, people.first_name, people.middle_name, people.last_name, people.sir_name, people.suffix, people.type, people.height, people.weight, people.hair_color, people.eye_color, people.ssn, people.gender, people.data_of_birth, people.ethnicity, people.primary_language, people.missing, people.description, people.owner 
+FROM people 
+WHERE people.id = ?
+2026-06-20 01:36:57,869 - INFO - [cached since 0.6851s ago] (1,)
+2026-06-20 01:36:57,869 - INFO - SELECT models.id, models.name, models.model, models.num_ctx, models.temperature, models.type 
+FROM models 
+WHERE models.id = ?
+2026-06-20 01:36:57,869 - INFO - [generated in 0.00020s] (2,)
+[LLM START] Prompts: ['System: You are an accurate router.\nHuman: \n    You are a routing agent. Your job is to select the single best SKILL_NAME to handle the user request.\n    If no skills match perfectly, return "none".\n\n    AVAILABLE SKILLS:\n    - SKILL_NAME: data-extractor\n  DESCRIPTION: Use this skill when you need to analyze incoming JSON data feeds from external sources and map data to the appropriate database table by generating valid SQL INSERT statements.\n\n- SKILL_NAME: identify-and-classify\n  DESCRIPTION: Identifies a person as being a contact of the missing person and classifies them as a Witness, Associate, Person of Interest or Suspect.\n\n- SKILL_NAME: roll-dice\n  DESCRIPTION: Roll dice using a random number generator. Use when asked to roll a die (d6, d20, etc.), roll dice, or generate a random dice roll.\n\n\n\n    USER REQUEST:\n    {"incident": "Missing teenager last seen near main street", "name": "Alex Smith", "age": 15}\n\n    Respond ONLY with this JSON structure:\n    { "selected_skill": "SKILL_NAME_HERE" }\n    ']
+
+[LLM END] Response: 
+```json
+{
+  "selected_skill": "identify-and-classify"
+}
+```
+
+2026-06-20 01:38:24,266 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 01:38:24,270 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 01:38:24,286 - DEBUG - _pywebviewready event fired
+2026-06-20 01:38:24,292 - DEBUG - loaded event fired
+2026-06-20 02:20:12,906 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 02:20:12,906 - INFO - [cached since 2618s ago] (1,)
+2026-06-20 02:20:12,908 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 02:20:12,908 - INFO - [cached since 2618s ago] (1,)
+2026-06-20 02:20:12,910 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 02:20:12,911 - INFO - [cached since 2618s ago] (1,)
+2026-06-20 02:20:12,912 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 02:20:12,912 - INFO - [cached since 2618s ago] (1,)
+2026-06-20 02:20:12,997 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 02:20:12,998 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 02:20:13,022 - DEBUG - _pywebviewready event fired
+2026-06-20 02:20:13,031 - DEBUG - loaded event fired
+2026-06-20 02:20:29,244 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 02:20:29,244 - INFO - [cached since 2634s ago] (1,)
+2026-06-20 02:20:29,245 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 02:20:29,245 - INFO - [cached since 2634s ago] (1,)
+2026-06-20 02:20:29,245 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 02:20:29,245 - INFO - [cached since 2634s ago] (1,)
+2026-06-20 02:20:29,247 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 02:20:29,247 - INFO - [cached since 2634s ago] (1,)
+2026-06-20 02:20:29,313 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 02:20:29,314 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 02:20:29,325 - DEBUG - _pywebviewready event fired
+2026-06-20 02:20:29,331 - DEBUG - loaded event fired
+2026-06-20 04:36:25,298 - DEBUG - Using WinForms / Chromium
+2026-06-20 04:36:26,586 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:36:26,644 - INFO - [cached since 2.315s ago] (1,)
+2026-06-20 04:36:26,750 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:36:26,767 - INFO - [cached since 2.439s ago] (1,)
+2026-06-20 04:36:26,772 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:36:26,782 - INFO - [cached since 2.453s ago] (1,)
+2026-06-20 04:36:26,786 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:36:26,789 - INFO - [cached since 2.46s ago] (1,)
+2026-06-20 04:36:27,272 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 04:36:27,273 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 04:36:27,616 - DEBUG - _pywebviewready event fired
+2026-06-20 04:36:27,623 - DEBUG - loaded event fired
+2026-06-20 04:57:24,682 - DEBUG - Using WinForms / Chromium
+2026-06-20 04:57:26,174 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:26,175 - INFO - [cached since 2.292s ago] (1,)
+2026-06-20 04:57:30,507 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:30,507 - INFO - [cached since 6.625s ago] (1,)
+2026-06-20 04:57:30,510 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:30,510 - INFO - [cached since 6.628s ago] (1,)
+2026-06-20 04:57:30,512 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:30,512 - INFO - [cached since 6.63s ago] (1,)
+2026-06-20 04:57:30,514 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:30,514 - INFO - [cached since 6.632s ago] (1,)
+2026-06-20 04:57:30,880 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 04:57:30,881 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 04:57:30,930 - DEBUG - _pywebviewready event fired
+2026-06-20 04:57:30,934 - DEBUG - loaded event fired
+2026-06-20 04:57:42,415 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:42,415 - INFO - [cached since 18.53s ago] (1,)
+2026-06-20 04:57:42,513 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 04:57:42,521 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 04:57:42,538 - DEBUG - _pywebviewready event fired
+2026-06-20 04:57:42,542 - DEBUG - loaded event fired
+2026-06-20 04:57:53,398 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:53,398 - INFO - [cached since 29.52s ago] (1,)
+2026-06-20 04:57:54,561 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:54,561 - INFO - [cached since 30.68s ago] (1,)
+2026-06-20 04:57:54,561 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:54,561 - INFO - [cached since 30.68s ago] (1,)
+2026-06-20 04:57:54,561 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:54,561 - INFO - [cached since 30.68s ago] (1,)
+2026-06-20 04:57:54,561 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:57:54,561 - INFO - [cached since 30.68s ago] (1,)
+2026-06-20 04:57:54,648 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 04:57:54,650 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 04:57:54,664 - DEBUG - _pywebviewready event fired
+2026-06-20 04:57:54,669 - DEBUG - loaded event fired
+2026-06-20 04:58:00,751 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:58:00,751 - INFO - [cached since 36.87s ago] (1,)
+2026-06-20 04:58:00,754 - INFO - UPDATE state SET collection=? WHERE state.id = ?
+2026-06-20 04:58:00,754 - INFO - [generated in 0.00032s] ('database_statements', 1)
+2026-06-20 04:58:00,756 - INFO - COMMIT
+2026-06-20 04:58:00,774 - INFO - BEGIN (implicit)
+2026-06-20 04:58:00,775 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:58:00,776 - INFO - [cached since 36.89s ago] (1,)
+2026-06-20 04:58:01,874 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:58:01,874 - INFO - [cached since 38s ago] (1,)
+2026-06-20 04:58:01,881 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:58:01,881 - INFO - [cached since 38s ago] (1,)
+2026-06-20 04:58:01,881 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:58:01,881 - INFO - [cached since 38s ago] (1,)
+2026-06-20 04:58:01,881 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 04:58:01,881 - INFO - [cached since 38s ago] (1,)
+2026-06-20 04:58:01,940 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 04:58:01,941 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 04:58:01,954 - DEBUG - _pywebviewready event fired
+2026-06-20 04:58:01,959 - DEBUG - loaded event fired
+2026-06-20 05:06:25,570 - DEBUG - Using WinForms / Chromium
+2026-06-20 05:06:26,675 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:06:26,706 - INFO - [cached since 1.82s ago] (1,)
+2026-06-20 05:06:26,710 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:06:26,774 - INFO - [cached since 1.887s ago] (1,)
+2026-06-20 05:06:26,797 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:06:26,799 - INFO - [cached since 1.912s ago] (1,)
+2026-06-20 05:06:26,810 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:06:26,846 - INFO - [cached since 1.96s ago] (1,)
+2026-06-20 05:06:27,324 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 05:06:27,326 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 05:06:27,377 - DEBUG - _pywebviewready event fired
+2026-06-20 05:06:27,383 - DEBUG - loaded event fired
+2026-06-20 05:10:19,013 - DEBUG - Using WinForms / Chromium
+2026-06-20 05:10:19,993 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:10:19,996 - INFO - [cached since 1.616s ago] (1,)
+2026-06-20 05:10:19,999 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:10:20,001 - INFO - [cached since 1.62s ago] (1,)
+2026-06-20 05:10:20,017 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:10:20,065 - INFO - [cached since 1.685s ago] (1,)
+2026-06-20 05:10:20,126 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:10:20,132 - INFO - [cached since 1.752s ago] (1,)
+2026-06-20 05:10:20,515 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 05:10:20,516 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 05:10:20,561 - DEBUG - _pywebviewready event fired
+2026-06-20 05:10:20,566 - DEBUG - loaded event fired
+2026-06-20 05:11:43,682 - DEBUG - Using WinForms / Chromium
+2026-06-20 05:11:44,664 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:11:44,692 - INFO - [cached since 1.632s ago] (1,)
+2026-06-20 05:11:44,735 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:11:44,796 - INFO - [cached since 1.735s ago] (1,)
+2026-06-20 05:11:44,846 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:11:44,901 - INFO - [cached since 1.841s ago] (1,)
+2026-06-20 05:11:44,910 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:11:44,938 - INFO - [cached since 1.877s ago] (1,)
+2026-06-20 05:11:45,347 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 05:11:45,349 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 05:11:45,396 - DEBUG - _pywebviewready event fired
+2026-06-20 05:11:45,400 - DEBUG - loaded event fired
+2026-06-20 05:57:51,025 - DEBUG - Using WinForms / Chromium
+2026-06-20 05:57:52,182 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:57:52,185 - INFO - [cached since 1.739s ago] (1,)
+2026-06-20 05:57:52,220 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:57:52,238 - INFO - [cached since 1.792s ago] (1,)
+2026-06-20 05:57:52,239 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:57:52,249 - INFO - [cached since 1.804s ago] (1,)
+2026-06-20 05:57:52,251 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 05:57:52,252 - INFO - [cached since 1.807s ago] (1,)
+2026-06-20 05:57:52,569 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 05:57:52,575 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 05:57:52,618 - DEBUG - _pywebviewready event fired
+2026-06-20 05:57:52,632 - DEBUG - loaded event fired
+2026-06-20 06:05:00,402 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.description AS tasks_description, tasks.if_complete AS tasks_if_complete, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 06:05:00,402 - INFO - [generated in 0.00040s] (10, 0)
+2026-06-20 06:05:00,402 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.description AS tasks_description, tasks.if_complete AS tasks_if_complete, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed 
+FROM tasks) AS anon_1
+2026-06-20 06:05:00,402 - INFO - [generated in 0.00021s] ()
+2026-06-20 06:05:00,425 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:05:00,425 - INFO - [cached since 430s ago] (1,)
+2026-06-20 06:05:00,425 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:05:00,425 - INFO - [cached since 430s ago] (1,)
+2026-06-20 06:05:00,425 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:05:00,425 - INFO - [cached since 430s ago] (1,)
+2026-06-20 06:05:00,425 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:05:00,425 - INFO - [cached since 430s ago] (1,)
+2026-06-20 06:05:00,515 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:05:00,517 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:05:00,530 - DEBUG - _pywebviewready event fired
+2026-06-20 06:05:00,536 - DEBUG - loaded event fired
+2026-06-20 06:05:22,885 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:05:22,885 - INFO - [cached since 452.4s ago] (1,)
+2026-06-20 06:05:22,885 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:05:22,885 - INFO - [cached since 452.4s ago] (1,)
+2026-06-20 06:05:22,885 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:05:22,885 - INFO - [cached since 452.4s ago] (1,)
+2026-06-20 06:05:22,885 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:05:22,895 - INFO - [cached since 452.4s ago] (1,)
+2026-06-20 06:05:22,937 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:05:22,938 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:05:22,966 - DEBUG - _pywebviewready event fired
+2026-06-20 06:05:22,968 - DEBUG - loaded event fired
+2026-06-20 06:07:12,251 - DEBUG - Using WinForms / Chromium
+2026-06-20 06:07:13,129 - INFO - BEGIN (implicit)
+2026-06-20 06:07:13,174 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:07:13,209 - INFO - [cached since 1.596s ago] (1,)
+2026-06-20 06:07:13,219 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:07:13,221 - INFO - [cached since 1.607s ago] (1,)
+2026-06-20 06:07:13,222 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:07:13,222 - INFO - [cached since 1.609s ago] (1,)
+2026-06-20 06:07:13,225 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:07:13,226 - INFO - [cached since 1.612s ago] (1,)
+2026-06-20 06:07:13,567 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:07:13,568 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:07:13,607 - DEBUG - _pywebviewready event fired
+2026-06-20 06:07:13,613 - DEBUG - loaded event fired
+2026-06-20 06:13:14,614 - DEBUG - Using WinForms / Chromium
+2026-06-20 06:13:15,459 - INFO - BEGIN (implicit)
+2026-06-20 06:13:15,477 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:13:15,490 - INFO - [cached since 1.545s ago] (1,)
+2026-06-20 06:13:15,494 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:13:15,502 - INFO - [cached since 1.557s ago] (1,)
+2026-06-20 06:13:15,509 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:13:15,518 - INFO - [cached since 1.574s ago] (1,)
+2026-06-20 06:13:15,523 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:13:15,524 - INFO - [cached since 1.58s ago] (1,)
+2026-06-20 06:13:15,882 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:13:15,883 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:13:15,917 - DEBUG - _pywebviewready event fired
+2026-06-20 06:13:15,921 - DEBUG - loaded event fired
+2026-06-20 06:43:55,849 - DEBUG - Using WinForms / Chromium
+2026-06-20 06:43:55,907 - WARNING - Port 49729 is in use
+2026-06-20 06:43:56,903 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:43:56,917 - INFO - [cached since 1.755s ago] (1,)
+2026-06-20 06:43:56,941 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:43:56,963 - INFO - [cached since 1.801s ago] (1,)
+2026-06-20 06:43:57,024 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:43:57,056 - INFO - [cached since 1.894s ago] (1,)
+2026-06-20 06:43:57,072 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:43:57,088 - INFO - [cached since 1.927s ago] (1,)
+2026-06-20 06:43:57,476 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:43:57,477 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:43:57,525 - DEBUG - _pywebviewready event fired
+2026-06-20 06:43:57,531 - DEBUG - loaded event fired
+2026-06-20 06:44:05,716 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 06:44:05,716 - INFO - [generated in 0.00030s] (10, 0)
+2026-06-20 06:44:05,721 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 06:44:05,721 - INFO - [generated in 0.00073s] ()
+2026-06-20 06:44:05,744 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:44:05,744 - INFO - [cached since 10.58s ago] (1,)
+2026-06-20 06:44:05,745 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:44:05,745 - INFO - [cached since 10.58s ago] (1,)
+2026-06-20 06:44:05,746 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:44:05,746 - INFO - [cached since 10.58s ago] (1,)
+2026-06-20 06:44:05,746 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:44:05,747 - INFO - [cached since 10.59s ago] (1,)
+2026-06-20 06:44:05,812 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:44:05,814 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:44:05,827 - DEBUG - _pywebviewready event fired
+2026-06-20 06:44:05,832 - DEBUG - loaded event fired
+2026-06-20 06:44:11,363 - INFO - SELECT tasks.id, tasks.name, tasks.sql_table_name, tasks.sql_insert_statement, tasks.date_created, tasks.date_completed, tasks.if_complete 
+FROM tasks 
+WHERE tasks.id = ?
+2026-06-20 06:44:11,363 - INFO - [generated in 0.00032s] ('',)
+2026-06-20 06:44:11,363 - INFO - ROLLBACK
+2026-06-20 06:44:11,374 - INFO - BEGIN (implicit)
+2026-06-20 06:44:11,375 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 06:44:11,376 - INFO - [cached since 5.659s ago] (10, 0)
+2026-06-20 06:44:11,378 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 06:44:11,378 - INFO - [cached since 5.657s ago] ()
+2026-06-20 06:44:11,379 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:44:11,380 - INFO - [cached since 16.22s ago] (1,)
+2026-06-20 06:44:11,381 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:44:11,382 - INFO - [cached since 16.22s ago] (1,)
+2026-06-20 06:44:11,383 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:44:11,383 - INFO - [cached since 16.22s ago] (1,)
+2026-06-20 06:44:11,383 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:44:11,384 - INFO - [cached since 16.22s ago] (1,)
+2026-06-20 06:44:11,434 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:44:11,435 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:44:11,450 - DEBUG - _pywebviewready event fired
+2026-06-20 06:44:11,455 - DEBUG - loaded event fired
+2026-06-20 06:46:06,985 - DEBUG - Using WinForms / Chromium
+2026-06-20 06:46:08,069 - INFO - BEGIN (implicit)
+2026-06-20 06:46:08,069 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:46:08,070 - INFO - [cached since 1.913s ago] (1,)
+2026-06-20 06:46:08,072 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:46:08,096 - INFO - [cached since 1.939s ago] (1,)
+2026-06-20 06:46:08,145 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:46:08,175 - INFO - [cached since 2.018s ago] (1,)
+2026-06-20 06:46:08,196 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:46:08,234 - INFO - [cached since 2.078s ago] (1,)
+2026-06-20 06:46:08,706 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:46:08,707 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:46:08,757 - DEBUG - _pywebviewready event fired
+2026-06-20 06:46:08,761 - DEBUG - loaded event fired
+2026-06-20 06:57:12,339 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 06:57:12,339 - INFO - [generated in 0.00050s] (10, 0)
+2026-06-20 06:57:12,344 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 06:57:12,344 - INFO - [generated in 0.00024s] ()
+2026-06-20 06:57:12,354 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:57:12,355 - INFO - [cached since 666.2s ago] (1,)
+2026-06-20 06:57:12,358 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:57:12,358 - INFO - [cached since 666.2s ago] (1,)
+2026-06-20 06:57:12,360 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:57:12,360 - INFO - [cached since 666.2s ago] (1,)
+2026-06-20 06:57:12,363 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:57:12,363 - INFO - [cached since 666.2s ago] (1,)
+2026-06-20 06:57:12,463 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:57:12,464 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:57:12,480 - DEBUG - _pywebviewready event fired
+2026-06-20 06:57:12,484 - DEBUG - loaded event fired
+2026-06-20 06:57:17,655 - INFO - SELECT tasks.id, tasks.name, tasks.sql_table_name, tasks.sql_insert_statement, tasks.date_created, tasks.date_completed, tasks.if_complete 
+FROM tasks 
+WHERE tasks.id = ?
+2026-06-20 06:57:17,655 - INFO - [generated in 0.00035s] ('',)
+2026-06-20 06:57:17,655 - INFO - ROLLBACK
+2026-06-20 06:57:17,664 - INFO - BEGIN (implicit)
+2026-06-20 06:57:17,664 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 06:57:17,664 - INFO - [cached since 5.324s ago] (10, 0)
+2026-06-20 06:57:17,665 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 06:57:17,666 - INFO - [cached since 5.322s ago] ()
+2026-06-20 06:57:17,668 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:57:17,669 - INFO - [cached since 671.5s ago] (1,)
+2026-06-20 06:57:17,670 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:57:17,670 - INFO - [cached since 671.5s ago] (1,)
+2026-06-20 06:57:17,671 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:57:17,672 - INFO - [cached since 671.5s ago] (1,)
+2026-06-20 06:57:17,674 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 06:57:17,674 - INFO - [cached since 671.5s ago] (1,)
+2026-06-20 06:57:17,736 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 06:57:17,737 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 06:57:17,754 - DEBUG - _pywebviewready event fired
+2026-06-20 06:57:17,759 - DEBUG - loaded event fired
+2026-06-20 07:11:09,886 - DEBUG - Using WinForms / Chromium
+2026-06-20 07:11:10,837 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:10,884 - INFO - [cached since 1.59s ago] (1,)
+2026-06-20 07:11:10,914 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:10,948 - INFO - [cached since 1.654s ago] (1,)
+2026-06-20 07:11:10,973 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:10,982 - INFO - [cached since 1.688s ago] (1,)
+2026-06-20 07:11:10,995 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:11,017 - INFO - [cached since 1.722s ago] (1,)
+2026-06-20 07:11:11,344 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:11:11,345 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:11:11,378 - DEBUG - _pywebviewready event fired
+2026-06-20 07:11:11,382 - DEBUG - loaded event fired
+2026-06-20 07:11:25,800 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 07:11:25,800 - INFO - [generated in 0.00039s] (10, 0)
+2026-06-20 07:11:25,800 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 07:11:25,800 - INFO - [generated in 0.00025s] ()
+2026-06-20 07:11:25,826 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:25,827 - INFO - [cached since 16.53s ago] (1,)
+2026-06-20 07:11:25,827 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:25,827 - INFO - [cached since 16.53s ago] (1,)
+2026-06-20 07:11:25,828 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:25,828 - INFO - [cached since 16.53s ago] (1,)
+2026-06-20 07:11:25,829 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:25,829 - INFO - [cached since 16.54s ago] (1,)
+2026-06-20 07:11:25,907 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:11:25,909 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:11:25,921 - DEBUG - _pywebviewready event fired
+2026-06-20 07:11:25,927 - DEBUG - loaded event fired
+2026-06-20 07:11:42,392 - INFO - SELECT tasks.id, tasks.name, tasks.sql_table_name, tasks.sql_insert_statement, tasks.date_created, tasks.date_completed, tasks.if_complete 
+FROM tasks 
+WHERE tasks.id = ?
+2026-06-20 07:11:42,392 - INFO - [generated in 0.00035s] ('',)
+2026-06-20 07:11:42,394 - INFO - INSERT INTO tasks (name, sql_table_name, sql_insert_statement, date_created, date_completed, if_complete) VALUES (?, ?, ?, ?, ?, ?)
+2026-06-20 07:11:42,394 - INFO - [generated in 0.00038s] ('Task', '', '', '2026-06-20 00:00:00.000000', None, 0)
+2026-06-20 07:11:42,397 - INFO - COMMIT
+2026-06-20 07:11:42,409 - INFO - BEGIN (implicit)
+2026-06-20 07:11:42,409 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 07:11:42,409 - INFO - [cached since 16.61s ago] (10, 0)
+2026-06-20 07:11:42,411 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 07:11:42,411 - INFO - [cached since 16.61s ago] ()
+2026-06-20 07:11:42,412 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:42,412 - INFO - [cached since 33.12s ago] (1,)
+2026-06-20 07:11:42,413 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:42,413 - INFO - [cached since 33.12s ago] (1,)
+2026-06-20 07:11:42,414 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:42,415 - INFO - [cached since 33.12s ago] (1,)
+2026-06-20 07:11:42,417 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:11:42,418 - INFO - [cached since 33.12s ago] (1,)
+2026-06-20 07:11:42,468 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:11:42,469 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:11:42,487 - DEBUG - _pywebviewready event fired
+2026-06-20 07:11:42,494 - DEBUG - loaded event fired
+2026-06-20 07:13:19,701 - DEBUG - Using WinForms / Chromium
+2026-06-20 07:13:20,712 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:20,715 - INFO - [cached since 1.645s ago] (1,)
+2026-06-20 07:13:20,717 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:20,717 - INFO - [cached since 1.648s ago] (1,)
+2026-06-20 07:13:20,721 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:20,724 - INFO - [cached since 1.654s ago] (1,)
+2026-06-20 07:13:20,727 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:20,728 - INFO - [cached since 1.658s ago] (1,)
+2026-06-20 07:13:21,178 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:13:21,179 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:13:21,234 - DEBUG - _pywebviewready event fired
+2026-06-20 07:13:21,239 - DEBUG - loaded event fired
+2026-06-20 07:13:27,910 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 07:13:27,910 - INFO - [generated in 0.00037s] (10, 0)
+2026-06-20 07:13:27,916 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 07:13:27,917 - INFO - [generated in 0.00092s] ()
+2026-06-20 07:13:27,938 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:27,938 - INFO - [cached since 8.87s ago] (1,)
+2026-06-20 07:13:27,938 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:27,938 - INFO - [cached since 8.871s ago] (1,)
+2026-06-20 07:13:27,938 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:27,938 - INFO - [cached since 8.872s ago] (1,)
+2026-06-20 07:13:27,938 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:27,938 - INFO - [cached since 8.873s ago] (1,)
+2026-06-20 07:13:28,011 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:13:28,014 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:13:28,025 - DEBUG - _pywebviewready event fired
+2026-06-20 07:13:28,030 - DEBUG - loaded event fired
+2026-06-20 07:13:31,643 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks 
+WHERE tasks.id = ?
+2026-06-20 07:13:31,643 - INFO - [generated in 0.00042s] (1,)
+2026-06-20 07:13:31,657 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:31,657 - INFO - [cached since 12.59s ago] (1,)
+2026-06-20 07:13:31,658 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:31,658 - INFO - [cached since 12.59s ago] (1,)
+2026-06-20 07:13:31,658 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:31,659 - INFO - [cached since 12.59s ago] (1,)
+2026-06-20 07:13:31,659 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:31,660 - INFO - [cached since 12.59s ago] (1,)
+2026-06-20 07:13:31,722 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:13:31,722 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:13:31,735 - DEBUG - _pywebviewready event fired
+2026-06-20 07:13:31,739 - DEBUG - loaded event fired
+2026-06-20 07:13:35,833 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 07:13:35,833 - INFO - [cached since 7.924s ago] (10, 0)
+2026-06-20 07:13:35,833 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 07:13:35,833 - INFO - [cached since 7.92s ago] ()
+2026-06-20 07:13:35,833 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:35,833 - INFO - [cached since 16.77s ago] (1,)
+2026-06-20 07:13:35,833 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:35,833 - INFO - [cached since 16.77s ago] (1,)
+2026-06-20 07:13:35,833 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:35,833 - INFO - [cached since 16.77s ago] (1,)
+2026-06-20 07:13:35,833 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:13:35,833 - INFO - [cached since 16.77s ago] (1,)
+2026-06-20 07:13:35,907 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:13:35,908 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:13:35,921 - DEBUG - _pywebviewready event fired
+2026-06-20 07:13:35,927 - DEBUG - loaded event fired
+2026-06-20 07:15:54,143 - DEBUG - Using WinForms / Chromium
+2026-06-20 07:15:55,241 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:15:55,298 - INFO - [cached since 1.824s ago] (1,)
+2026-06-20 07:15:55,337 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:15:55,351 - INFO - [cached since 1.876s ago] (1,)
+2026-06-20 07:15:55,397 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:15:55,411 - INFO - [cached since 1.937s ago] (1,)
+2026-06-20 07:15:55,419 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:15:55,419 - INFO - [cached since 1.944s ago] (1,)
+2026-06-20 07:15:55,787 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:15:55,789 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:15:55,832 - DEBUG - _pywebviewready event fired
+2026-06-20 07:15:55,836 - DEBUG - loaded event fired
+2026-06-20 07:16:01,462 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 07:16:01,462 - INFO - [generated in 0.00048s] (10, 0)
+2026-06-20 07:16:01,462 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 07:16:01,462 - INFO - [generated in 0.00030s] ()
+2026-06-20 07:16:01,486 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:01,486 - INFO - [cached since 8.011s ago] (1,)
+2026-06-20 07:16:01,487 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:01,487 - INFO - [cached since 8.012s ago] (1,)
+2026-06-20 07:16:01,488 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:01,488 - INFO - [cached since 8.013s ago] (1,)
+2026-06-20 07:16:01,489 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:01,489 - INFO - [cached since 8.014s ago] (1,)
+2026-06-20 07:16:01,579 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:16:01,583 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:16:01,597 - DEBUG - _pywebviewready event fired
+2026-06-20 07:16:01,615 - DEBUG - loaded event fired
+2026-06-20 07:16:37,621 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks 
+WHERE tasks.id = ?
+2026-06-20 07:16:37,622 - INFO - [generated in 0.00043s] (1,)
+2026-06-20 07:16:37,637 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:37,638 - INFO - [cached since 44.16s ago] (1,)
+2026-06-20 07:16:37,638 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:37,639 - INFO - [cached since 44.16s ago] (1,)
+2026-06-20 07:16:37,640 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:37,640 - INFO - [cached since 44.17s ago] (1,)
+2026-06-20 07:16:37,641 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:37,641 - INFO - [cached since 44.17s ago] (1,)
+2026-06-20 07:16:37,701 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:16:37,702 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:16:37,715 - DEBUG - _pywebviewready event fired
+2026-06-20 07:16:37,721 - DEBUG - loaded event fired
+2026-06-20 07:16:41,600 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 07:16:41,601 - INFO - [cached since 40.14s ago] (10, 0)
+2026-06-20 07:16:41,603 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 07:16:41,603 - INFO - [cached since 40.14s ago] ()
+2026-06-20 07:16:41,605 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:41,606 - INFO - [cached since 48.13s ago] (1,)
+2026-06-20 07:16:41,607 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:41,608 - INFO - [cached since 48.13s ago] (1,)
+2026-06-20 07:16:41,609 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:41,609 - INFO - [cached since 48.13s ago] (1,)
+2026-06-20 07:16:41,610 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:41,611 - INFO - [cached since 48.14s ago] (1,)
+2026-06-20 07:16:41,693 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:16:41,694 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:16:41,716 - DEBUG - _pywebviewready event fired
+2026-06-20 07:16:41,722 - DEBUG - loaded event fired
+2026-06-20 07:16:43,779 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT people.id AS people_id, people.first_name AS people_first_name, people.middle_name AS people_middle_name, people.last_name AS people_last_name, people.sir_name AS people_sir_name, people.suffix AS people_suffix, people.type AS people_type, people.height AS people_height, people.weight AS people_weight, people.hair_color AS people_hair_color, people.eye_color AS people_eye_color, people.ssn AS people_ssn, people.gender AS people_gender, people.data_of_birth AS people_data_of_birth, people.ethnicity AS people_ethnicity, people.primary_language AS people_primary_language, people.missing AS people_missing, people.description AS people_description, people.owner AS people_owner 
+FROM people 
+WHERE people.type = ?) AS anon_1
+2026-06-20 07:16:43,779 - INFO - [generated in 0.00045s] ('1',)
+2026-06-20 07:16:43,787 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT addresses.id AS addresses_id, addresses.type AS addresses_type, addresses.if_current AS addresses_if_current, addresses.if_crime_scene AS addresses_if_crime_scene, addresses.name AS addresses_name, addresses.address_1 AS addresses_address_1, addresses.address_2 AS addresses_address_2, addresses.city AS addresses_city, addresses.state AS addresses_state, addresses.zip_5 AS addresses_zip_5, addresses.zip_4 AS addresses_zip_4, addresses.description AS addresses_description, addresses.date_from AS addresses_date_from, addresses.date_to AS addresses_date_to, addresses.owner AS addresses_owner 
+FROM addresses 
+WHERE addresses.type = ?) AS anon_1
+2026-06-20 07:16:43,789 - INFO - [generated in 0.00044s] ('1',)
+2026-06-20 07:16:43,794 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT email_addresses.id AS email_addresses_id, email_addresses.type AS email_addresses_type, email_addresses.email_address AS email_addresses_email_address, email_addresses.owner AS email_addresses_owner 
+FROM email_addresses 
+WHERE email_addresses.type = ?) AS anon_1
+2026-06-20 07:16:43,794 - INFO - [generated in 0.00043s] ('1',)
+2026-06-20 07:16:43,797 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT phone_numbers.id AS phone_numbers_id, phone_numbers.type AS phone_numbers_type, phone_numbers.phone_number AS phone_numbers_phone_number, phone_numbers.owner AS phone_numbers_owner 
+FROM phone_numbers 
+WHERE phone_numbers.type = ?) AS anon_1
+2026-06-20 07:16:43,798 - INFO - [generated in 0.00040s] ('1',)
+2026-06-20 07:16:43,802 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT files.id AS files_id, files.type AS files_type, files.filename AS files_filename, files.owner AS files_owner 
+FROM files 
+WHERE files.type = ?) AS anon_1
+2026-06-20 07:16:43,802 - INFO - [no key 0.00036s] ('1',)
+2026-06-20 07:16:43,806 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT events.id AS events_id, events.type AS events_type, events.name AS events_name, events.description AS events_description, events.date_from AS events_date_from, events.date_to AS events_date_to, events.owner AS events_owner 
+FROM events 
+WHERE events.type = ?) AS anon_1
+2026-06-20 07:16:43,806 - INFO - [generated in 0.00040s] ('1',)
+2026-06-20 07:16:43,811 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT aliases.id AS aliases_id, aliases.first_name AS aliases_first_name, aliases.middle_name AS aliases_middle_name, aliases.last_name AS aliases_last_name, aliases.sir_name AS aliases_sir_name, aliases.suffix AS aliases_suffix, aliases.owner AS aliases_owner 
+FROM aliases 
+WHERE aliases.owner = ?) AS anon_1
+2026-06-20 07:16:43,812 - INFO - [generated in 0.00061s] ('1',)
+2026-06-20 07:16:43,812 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT addresses.id AS addresses_id, addresses.type AS addresses_type, addresses.if_current AS addresses_if_current, addresses.if_crime_scene AS addresses_if_crime_scene, addresses.name AS addresses_name, addresses.address_1 AS addresses_address_1, addresses.address_2 AS addresses_address_2, addresses.city AS addresses_city, addresses.state AS addresses_state, addresses.zip_5 AS addresses_zip_5, addresses.zip_4 AS addresses_zip_4, addresses.description AS addresses_description, addresses.date_from AS addresses_date_from, addresses.date_to AS addresses_date_to, addresses.owner AS addresses_owner 
+FROM addresses 
+WHERE addresses.owner = ?) AS anon_1
+2026-06-20 07:16:43,812 - INFO - [generated in 0.00041s] ('1',)
+2026-06-20 07:16:43,812 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT email_addresses.id AS email_addresses_id, email_addresses.type AS email_addresses_type, email_addresses.email_address AS email_addresses_email_address, email_addresses.owner AS email_addresses_owner 
+FROM email_addresses 
+WHERE email_addresses.owner = ?) AS anon_1
+2026-06-20 07:16:43,812 - INFO - [generated in 0.00040s] ('1',)
+2026-06-20 07:16:43,823 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT phone_numbers.id AS phone_numbers_id, phone_numbers.type AS phone_numbers_type, phone_numbers.phone_number AS phone_numbers_phone_number, phone_numbers.owner AS phone_numbers_owner 
+FROM phone_numbers 
+WHERE phone_numbers.owner = ?) AS anon_1
+2026-06-20 07:16:43,823 - INFO - [generated in 0.00049s] ('1',)
+2026-06-20 07:16:43,826 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT files.id AS files_id, files.type AS files_type, files.filename AS files_filename, files.owner AS files_owner 
+FROM files 
+WHERE files.owner = ?) AS anon_1
+2026-06-20 07:16:43,828 - INFO - [generated in 0.00043s] ('1',)
+2026-06-20 07:16:43,832 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT events.id AS events_id, events.type AS events_type, events.name AS events_name, events.description AS events_description, events.date_from AS events_date_from, events.date_to AS events_date_to, events.owner AS events_owner 
+FROM events 
+WHERE events.owner = ?) AS anon_1
+2026-06-20 07:16:43,832 - INFO - [generated in 0.00062s] ('1',)
+2026-06-20 07:16:43,834 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT leads.id AS leads_id, leads.name AS leads_name, leads.lead AS leads_lead, leads.owner AS leads_owner 
+FROM leads 
+WHERE leads.owner = ?) AS anon_1
+2026-06-20 07:16:43,834 - INFO - [generated in 0.00040s] ('1',)
+2026-06-20 07:16:43,840 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT api_fields.id AS api_fields_id, api_fields.field AS api_fields_field, api_fields.value AS api_fields_value, api_fields.type AS api_fields_type, api_fields.description AS api_fields_description, api_fields.owner AS api_fields_owner 
+FROM api_fields 
+WHERE api_fields.owner = ?) AS anon_1
+2026-06-20 07:16:43,840 - INFO - [generated in 0.00048s] ('1',)
+2026-06-20 07:16:43,843 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT model_params.id AS model_params_id, model_params.name AS model_params_name, model_params.value AS model_params_value, model_params.owner AS model_params_owner 
+FROM model_params 
+WHERE model_params.owner = ?) AS anon_1
+2026-06-20 07:16:43,843 - INFO - [generated in 0.00039s] ('1',)
+2026-06-20 07:16:43,843 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks 
+WHERE tasks.id = ?
+2026-06-20 07:16:43,845 - INFO - [cached since 6.224s ago] ('1',)
+2026-06-20 07:16:43,847 - INFO - DELETE FROM tasks WHERE tasks.id = ?
+2026-06-20 07:16:43,847 - INFO - [generated in 0.00033s] (1,)
+2026-06-20 07:16:43,848 - INFO - COMMIT
+2026-06-20 07:16:43,867 - INFO - BEGIN (implicit)
+2026-06-20 07:16:43,867 - INFO - SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks
+ LIMIT ? OFFSET ?
+2026-06-20 07:16:43,868 - INFO - [cached since 42.41s ago] (10, 0)
+2026-06-20 07:16:43,870 - INFO - SELECT count(*) AS count_1 
+FROM (SELECT tasks.id AS tasks_id, tasks.name AS tasks_name, tasks.sql_table_name AS tasks_sql_table_name, tasks.sql_insert_statement AS tasks_sql_insert_statement, tasks.date_created AS tasks_date_created, tasks.date_completed AS tasks_date_completed, tasks.if_complete AS tasks_if_complete 
+FROM tasks) AS anon_1
+2026-06-20 07:16:43,870 - INFO - [cached since 42.4s ago] ()
+2026-06-20 07:16:43,871 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:43,873 - INFO - [cached since 50.4s ago] (1,)
+2026-06-20 07:16:43,875 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:43,877 - INFO - [cached since 50.4s ago] (1,)
+2026-06-20 07:16:43,878 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:43,879 - INFO - [cached since 50.4s ago] (1,)
+2026-06-20 07:16:43,879 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-06-20 07:16:43,881 - INFO - [cached since 50.41s ago] (1,)
+2026-06-20 07:16:43,955 - DEBUG - before_load event fired. injecting pywebview object
+2026-06-20 07:16:43,961 - DEBUG - Loading JS files from C:\Users\trigv\missing-persons-agent\.venv\Lib\site-packages\webview\js
+2026-06-20 07:16:43,976 - DEBUG - _pywebviewready event fired
+2026-06-20 07:16:43,983 - DEBUG - loaded event fired

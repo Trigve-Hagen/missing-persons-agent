@@ -27,17 +27,22 @@
   <div class="col-12">
     <form class="row g-4" action="/set_task" method="POST" name="task" autocomplete="off">
       <input type="hidden" class="form-control" id="task-id" name="id" value="{{ task_data.id }}" />
-      <div class="col-9">
+      <div class="col-8">
         <label for="task-name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="task-name" name="name" value="{{ task_data.name }}" required>
+        <textarea class="form-control" id="task-name" name="name" rows="3" required>{{ task_data.name }}</textarea>
       </div>
-      <div class="col-3">
+
+      <div class="col-4">
+        <label for="task-name" class="form-label">Table Name</label>
+        <input type="text" class="form-control" id="task-table-name" name="sqlTableName" value="{{ task_data.sqlTableName }}">
+      </div>
+      <div class="col-4">
         <label for="task-date-created" class="form-label">Date Created</label>
-        <input type="date" class="form-control" id="task-date-created" name="dateCreated" value="{{ task_data.dateCreated }}" required>
+        <input type="date" class="form-control" id="task-date-created" name="dateCreated" value="{{ task_data.dateCreated }}">
       </div>
-      <div class="col-9">
-        <label for="task-description" class="form-label">Description</label>
-        <textarea class="form-control" id="task-description" name="description" rows="3">{{ task_data.description }}</textarea>
+      <div class="col-8">
+        <label for="task-description" class="form-label">Insert Statement</label>
+        <textarea class="form-control" id="task-insert-statement" name="sqlInsertStatement" rows="3">{{ task_data.sqlInsertStatement }}</textarea>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

@@ -47,32 +47,16 @@ class Task(Base):
 
   id = Column("id", Integer, primary_key=True)
   name = Column(NullToEmptyString, comment="The name of the task.")
-  description = Column(NullToEmptyString, comment="The description of the task.")
-  ifComplete = Column("if_complete", Integer, default=0, comment="If the task has been completed. Allowed values are 0 for no and 1 for yes.")
+  sqlTableName = Column("sql_table_name", NullToEmptyString, default="", comment="The name of the sql table name where the data will be inserted.")
+  sqlInsertStatement = Column("sql_insert_statement", NullToEmptyString, default="", comment="The sql insert statement.")
   dateCreated = Column("date_created", DateTime, server_default=func.now(), comment="The date the task was created.")
   dateCompleted = Column("date_completed", DateTime, default=None, comment="The date the task was created.")
+  ifComplete = Column("if_complete", Integer, default=0, comment="If the task has been completed. Allowed values are 0 for no and 1 for yes.")
 
-  def __init__(self, name, description, dateCreated, dateCompleted, ifComplete):
+  def __init__(self, name, sqlTableName, sqlInsertStatement, dateCreated, dateCompleted, ifComplete):
     self.name = name
-    self.description = description
+    self.sqlTableName = sqlTableName
+    self.sqlInsertStatement = sqlInsertStatement
     self.dateCreated = dateCreated
     self.dateCompleted = dateCompleted
     self.ifComplete = ifComplete
-
-class Statement(Base):
-  """
-  Statements are database adjustments that need to be executed when a task is completed.
-  """
-
-  __tablename__ = "statements"
-  __table_args__ = {"comment": "This table stores database statements."}
-
-  id = Column("id", Integer, primary_key=True)
-  sqlTableName = Column("sql_table_name", NullToEmptyString, comment="The name of the sql table name where the data will be inserted.")
-  sqlInsertStatement = Column("sql_insert_statement", NullToEmptyString, comment="The sql insert statement.")
-  owner = Column(Integer, ForeignKey("tasks.id"), comment="The task the statement is associated with.")
-
-  def __init__(self, sqlTableName, sqlInsertStatement, owner):
-    self.sqlTableName = sqlTableName
-    self.sqlInsertStatement = sqlInsertStatement
-    self.owner = owner

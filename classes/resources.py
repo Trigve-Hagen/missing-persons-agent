@@ -56,13 +56,13 @@ class Resources():
 
     return create_statements
 
-  def save_schema_to_file(self, json_data_str: str, table: str) -> None:
+  def save_schema_to_file(self, json_data_str: str, filename: str) -> None:
     """
     Saves a raw JSON string to a validated absolute system file path.
     Creates missing parent directories automatically if they don't exist.
     """
 
-    absolute_path = ModelUtils.resource_path(os.path.join(os.path.abspath("."), ".agents", "skills", "data-extractor", "references", "database_contexts.json"))
+    absolute_path = ModelUtils.resource_path(os.path.join(os.path.abspath("."), "database", filename))
     # 1. Normalize path strings to handle backslashes and forward slashes safely
     normalized_path = os.path.abspath(absolute_path)
 
@@ -115,4 +115,4 @@ class Resources():
       }
 
     json_data_str = json.dumps(schema_map, indent=2)
-    self.save_schema_to_file(json_data_str, table.name)
+    self.save_schema_to_file(json_data_str, "database_contexts.json")

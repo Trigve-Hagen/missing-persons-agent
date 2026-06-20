@@ -1,0 +1,11 @@
+{
+  "tasks": "CREATE TABLE tasks (id INTEGER NOT NULL, name VARCHAR, sql_table_name VARCHAR, sql_insert_statement VARCHAR, date_created DATETIME DEFAULT CURRENT_TIMESTAMP, date_completed DATETIME, if_complete INTEGER, PRIMARY KEY (id))",
+  "people": "CREATE TABLE people (id INTEGER NOT NULL, first_name VARCHAR NOT NULL, middle_name VARCHAR, last_name VARCHAR NOT NULL, sir_name VARCHAR, suffix VARCHAR, type INTEGER, height INTEGER, weight INTEGER, hair_color VARCHAR, eye_color VARCHAR, ssn VARCHAR, gender VARCHAR, data_of_birth DATETIME, ethnicity VARCHAR, primary_language VARCHAR, missing DATETIME, description TEXT, owner INTEGER, PRIMARY KEY (id), FOREIGN KEY(type) REFERENCES categories (id))",
+  "aliases": "CREATE TABLE aliases (id INTEGER NOT NULL, first_name VARCHAR NOT NULL, middle_name VARCHAR, last_name VARCHAR, sir_name VARCHAR, suffix VARCHAR, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))",
+  "addresses": "CREATE TABLE addresses (id INTEGER NOT NULL, type INTEGER, if_current INTEGER, if_crime_scene INTEGER, name VARCHAR NOT NULL, address_1 VARCHAR NOT NULL, address_2 VARCHAR, city VARCHAR, state VARCHAR, zip_5 INTEGER, zip_4 INTEGER, description TEXT, date_from DATETIME, date_to DATETIME, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))",
+  "email_addresses": "CREATE TABLE email_addresses (id INTEGER NOT NULL, type INTEGER, email_address VARCHAR(255) NOT NULL, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))",
+  "phone_numbers": "CREATE TABLE phone_numbers (id INTEGER NOT NULL, type INTEGER, phone_number VARCHAR(20) NOT NULL, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))",
+  "files": "CREATE TABLE files (id INTEGER NOT NULL, type VARCHAR, filename VARCHAR NOT NULL, owner INTEGER, PRIMARY KEY (id), UNIQUE (filename), FOREIGN KEY(owner) REFERENCES people (id))",
+  "events": "CREATE TABLE events (id INTEGER NOT NULL, type INTEGER, name VARCHAR NOT NULL, description TEXT NOT NULL, date_from DATETIME NOT NULL, date_to DATETIME, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))",
+  "leads": "CREATE TABLE leads (id INTEGER NOT NULL, name VARCHAR, lead TEXT, owner INTEGER, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))"
+}

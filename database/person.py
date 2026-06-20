@@ -5,8 +5,7 @@ from datetime import datetime
 
 class Category(Base):
   """
-  All categories organizing emails, addresses, phones etc. Anything that needs
-  organization. You can create more.
+  Organizes people, emails, addresses, phones etc.
   """
 
   __tablename__ = "categories"
@@ -22,13 +21,11 @@ class Category(Base):
 
 class Person(Base):
   """
-  The person class holds just the description of the person but is the
-  center point for adding all information about them into the investigation
-  vector database.
+  Stores people related to the missing persons investigation.
   """
 
   __tablename__ = "people"
-  __table_args__ = {"comment": "This table stores the people. Its mainly the descriptive properties. The only none descriptive property at this time is the SSN. identifiers: first_name, last_name, data_of_birth"}
+  __table_args__ = {"comment": "This table stores all people related to the missing persons investigation"}
 
   id = Column("id", Integer, primary_key=True)
   firstName = Column("first_name", NullToEmptyString, nullable=False, comment="The persons first name.")
@@ -36,19 +33,19 @@ class Person(Base):
   lastName = Column("last_name", NullToEmptyString, nullable=False, comment="The persons last name.")
   sirName = Column("sir_name", NullToEmptyString, default=None, comment="The persons sir name.")
   suffix = Column(NullToEmptyString, default=None, comment="The persons suffix name.")
-  type = Column(Integer, ForeignKey('categories.id'), default=2, comment="The type of user. Types are defined in Category. There is an immutable Missing Person value. All other values can be added and changed by the user.")
+  type = Column(Integer, ForeignKey('categories.id'), default=3, comment="The type of user. 1 = Missing Person, 2 = Witness, 3 = Associate, 4 = Person of Interest, 5 = Suspect")
   height = Column(Integer, default=None, comment="The height of the person.")
   weight = Column(Integer, default=None, comment="The weight of the person.")
   hairColor = Column("hair_color", NullToEmptyString, default=None, comment="The hair color of the person.")
   eyeColor = Column("eye_color", NullToEmptyString, default=None, comment="The height of the person.")
-  ssn = Column(NullToEmptyString, default=None, comment="The persons SSN. This is used here to check if someone is trying to use there credit in a nefarious way.")
+  ssn = Column(NullToEmptyString, default=None, comment="The persons social security number.")
   gender = Column(NullToEmptyString, default=None, comment="The gender of the person. Allowed values are male and female.")
   dob = Column("data_of_birth", DateTime, default=None, comment="The date of birth of the person.")
   ethnicity = Column(NullToEmptyString, default=None, comment="The ethnicity of the person.")
   primaryLanguage = Column("primary_language", NullToEmptyString, default=None, comment="The primary language of the person.")
   missing = Column(DateTime, default=None, comment="The date the missing person went missing or the date that the person of interest met the missing person.")
   description = Column(Text, default=None, comment="A place to add more descriptive information about the person.")
-  owner = Column(Integer, default=0, comment="This will be 0 if a missing person(Level 1). If level 2 contacts then this will be the missing persons id. If level 3 then this will be the person of interests id that they knew. This can get crazy big in memory usage as you continue to level up etc..")
+  owner = Column(Integer, default=0, comment="This will be 0 if a missing person or the id of the missing person.")
   # Relationships
   category = relationship(Category)
   emails = relationship("Email", backref="person")
@@ -143,7 +140,7 @@ class Person(Base):
 
 class Alias(Base):
   """
-  Aliases associated with the person.
+  Aliases associated with a person.
   """
 
   __tablename__ = "aliases"
@@ -167,11 +164,11 @@ class Alias(Base):
 
 class Address(Base):
   """
-  Addresses associated with the person.
+  Addresses associated with a person.
   """
 
   __tablename__ = "addresses"
-  __table_args__ = {"comment": "This table stores a persons addresses. identifiers: address_1, city, state"}
+  __table_args__ = {"comment": "This table stores a persons addresses."}
 
   id = Column("id", Integer, primary_key=True)
   type = Column(Integer, default=3, comment="The user defined type of address. Definitions are created in Category")
@@ -207,7 +204,7 @@ class Address(Base):
 
 class Email(Base):
   """
-  Emails associated with the person.
+  Emails associated with a person.
   """
 
   __tablename__ = "email_addresses"
@@ -225,7 +222,7 @@ class Email(Base):
 
 class Phone(Base):
   """
-  Phone numbers associated with the person.
+  Phone numbers associated with a person.
   """
 
   __tablename__ = "phone_numbers"
@@ -243,9 +240,7 @@ class Phone(Base):
 
 class File(Base):
   """
-  Images, Documents, Audios(future) and Videos(future)
-  all get added to the investigation vector database to be
-  used in the investigation.
+  Documents with information related to the investigation.
   """
 
   __tablename__ = 'files'
@@ -263,13 +258,11 @@ class File(Base):
 
 class Event(Base):
   """
-  Events related to the missing person
-  that might hold weight in the investigation.
-  identifiers: name, description, date_from
+  Events related to the investigation that can build a timeline.
   """
 
   __tablename__ = "events"
-  __table_args__ = {"comment": "This table stores events associated with persons. In the future they will be the base information for timelines. identifiers: name, description, date_from"}
+  __table_args__ = {"comment": "This table stores events associated with persons. In the future they will be the base information for timelines."}
 
   id = Column("id", Integer, primary_key=True)
   type = Column(Integer, default=6, comment="The user defined type of Events. Definitions are created in Category")

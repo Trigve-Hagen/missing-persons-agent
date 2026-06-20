@@ -111,11 +111,18 @@ def index():
   resource = Resources()
   resource.generate_agent_schema()
 
-  """ data_entities = {}
+  create_statements = resource.initialize_determinator(engine)
+
+  data_entities = {}
   for entity, value in create_statements.items():
     if entity in Selection.data_entities:
       data_entities[entity] = value
-  determine = Determinator(session=session)
+
+  json_data_str = json.dumps(data_entities, indent=2)
+  cleaned_string = json_data_str.replace('\\n', '').replace('\\t', '')
+  resource.save_schema_to_file(cleaned_string, "db_contexts.json")
+
+  """  determine = Determinator(session=session)
   determine.chunk_create_statements(createStatements=data_entities) """
 
   return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
@@ -528,7 +535,8 @@ def edit_task(id):
   task_data = {
     'id': task.id,
     'name': task.name,
-    'description': task.description,
+    'sqlTableName': task.sqlTableName,
+    'sqlInsertStatement': task.sqlInsertStatement,
     'dateCreated': task.dateCreated.strftime('%Y-%m-%d'),
     'dateCompleted': formatted_date,
   }
@@ -549,16 +557,18 @@ def set_task():
     if task:
       uporadd = "updated"
       task.name=form_data.get('name')
-      task.description=form_data.get('description')
       task.dateCreated=formatted_dateCreated_date
+      task.sqlTableName=form_data.get('sqlTableName')
+      task.sqlInsertStatement=form_data.get('sqlInsertStatement')
       task.dateCompleted=None
       task.ifComplete=0
     else:
       uporadd = "added"
       task = Task(
         name=form_data.get('name'),
-        description=form_data.get('description'),
         dateCreated=formatted_dateCreated_date,
+        sqlTableName=form_data.get('sqlTableName'),
+        sqlInsertStatement=form_data.get('sqlInsertStatement'),
         dateCompleted=None,
         ifComplete=0
       )
@@ -1939,21 +1949,20 @@ def data_center():
       orchestrator = DynamicSkillOrchestrator(session=session, model=model)
 
       # 2. Mock incoming context database payload
-      mock_schema = "Table: missing_persons_profiles (fields: full_name, age, last_seen_location)"
+      # mock_schema = "Table: people (fields: full_name, age, last_seen_location)"
 
       # --- TEST 1: Triggering the Missing Persons Extractor Skill ---
       feed_data = '{"incident": "Missing teenager last seen near main street", "name": "Alex Smith", "age": 15}'
-
-      """ print("--- Running Test 1 (Should trigger missing_persons_data_extractor) ---")
-      response_1 = orchestrator.run_chat(user_prompt=feed_data, db_context=mock_schema)
-      print(response_1) """
+      print("--- Running Test 1 (Should trigger data_extractor and create a task for lead) ---")
+      response_1 = orchestrator.run_chat(user_prompt=feed_data) # , db_context=mock_schema
+      flash(f"Response: {response_1}", "info")
 
       # --- TEST 2: Testing an unrelated prompt (Should hit fallback gracefully) ---
       # unrelated_prompt = "Can you write a poem about code refactoring?"
-      unrelated_prompt = "Roll a d20"
+      """ unrelated_prompt = "Roll a d20"
       print("\n--- Running Test 2 (Should trigger Fallback) ---")
       response_2 = orchestrator.run_chat(user_prompt=unrelated_prompt)
-      flash(f"Response: {response_2}", "info")
+      flash(f"Response: {response_2}", "info") """
 
     except Exception as e:
         flash(f"Error: {e}", "danger")
