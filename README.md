@@ -7,7 +7,7 @@ The top navigation apps offer distinct advantages depending on your needs:
 - Waze: Highly regarded for commuting, it uses crowdsourced data to alert you of accidents, road hazards, and police activity.
 - Specialty Apps: For off-the-grid trips without a data connection, offline apps like HERE WeGo work well. If you ride a bike frequently, specialized apps like Komoot are great for mapping trail
 
--Missing Persons is a tool to investigate missing persons. Its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. It uses [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
+Missing Persons is a tool to investigate missing persons. Its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. It uses [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
 
 If you are looking to upgrade to a new computer and you want to use missing persons I would recommend to get a computer with at least 16GB of VRAM and a Nvidia GPU proccessor. If you want ultra fast get one with 32 or 64 GB of VRAM. The GPU can range in price based upon size. That being said:
 
