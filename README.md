@@ -1,4 +1,6 @@
 # Missing Persons Agent
+On Off the cuff they talked about the suspect being someone who is doing ederly abuse or scamming the elderly. There are reports on the news about elderly people being coerced into moving their money from there accounts and loosing large amounts of money. You might want to investigate those to see if they might be connected. Also check if there is money being pulled from Nancy's accounts.
+
 Has anyone checked if there was a google maps request on the days before the Guthrie disappearance going to the Guthrie house? Everyone uses google maps for directions. Get a list of the people who went to her house if that's possible. Can phone or onstar systems be tracked in an area? Possible i-watch. Can you get a warrent for Apple and Google and other cell phone providers to possibly GPS track anyone in that area at the time of the doorbell camera? Other types of apps that could be used for directions besides google like hunting apps?
 
 The top navigation apps offer distinct advantages depending on your needs:
