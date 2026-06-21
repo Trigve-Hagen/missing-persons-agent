@@ -59,6 +59,7 @@ from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField
 from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Lead
+from classes.practice_llms import PracticeLlms
 from classes.data_extractor import DynamicSkillOrchestrator
 from classes.request_api import RequestApi
 from classes.selections import Selection
@@ -1945,29 +1946,38 @@ def data_center():
     # Execution Time: 7 minutes 38.77 seconds """
 
     try:
-      # 1. Initialize orchestrator (will scan your local folder automatically)
+      test_input = {
+          "user_input": "An anonymous tipster claims they saw a person matching the flyer's description getting into a rusted blue sedan outside the 7-Eleven on 5th Street on Tuesday night."
+      }
+      praticeLlms = PracticeLlms(session=session, model=model)
+      response = praticeLlms.invoke(user_input=test_input)
+
+      """ # 1. Initialize orchestrator (will scan your local folder automatically)
       orchestrator = DynamicSkillOrchestrator(session=session, model=model)
 
       # 2. Mock incoming context database payload
       # mock_schema = "Table: people (fields: full_name, age, last_seen_location)"
 
       # --- TEST 1: Triggering the Missing Persons Extractor Skill ---
-      feed_data = '{"incident": "Missing teenager last seen near main street", "name": "Alex Smith", "age": 15}'
+      # Test with heavy punctuation and apostrophes
+      test_input = {
+          "user_input": "An anonymous tipster claims they saw a person matching the flyer's description getting into a rusted blue sedan outside the 7-Eleven on 5th Street on Tuesday night."
+      }
+      # safe_input = json.dumps(feed_data)
+      # feed_data = '{"incident": "Missing teenager last seen near main street", "name": "Alex Smith", "age": 15}'
       print("--- Running Test 1 (Should trigger data_extractor and create a task for lead) ---")
-      response_1 = orchestrator.run_chat(user_prompt=feed_data) # , db_context=mock_schema
+      response_1 = orchestrator.run_chat(user_prompt=test_input) # , db_context=mock_schema
       flash(f"Response: {response_1}", "info")
 
       # --- TEST 2: Testing an unrelated prompt (Should hit fallback gracefully) ---
       # unrelated_prompt = "Can you write a poem about code refactoring?"
-      """ unrelated_prompt = "Roll a d20"
+      unrelated_prompt = "Roll a d20"
       print("\n--- Running Test 2 (Should trigger Fallback) ---")
       response_2 = orchestrator.run_chat(user_prompt=unrelated_prompt)
       flash(f"Response: {response_2}", "info") """
 
     except Exception as e:
         flash(f"Error: {e}", "danger")
-
-    # flash(f"Response: {response}", "success")
 
     # End the timer
     end_time = time.perf_counter()

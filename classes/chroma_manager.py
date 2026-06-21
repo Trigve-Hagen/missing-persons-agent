@@ -5,6 +5,7 @@ from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from classes.chroma_database import ChromaDatabase
 from classes.model_utils import ModelUtils
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 
 class PdfRepository(ChromaDatabase):
 
@@ -206,3 +207,44 @@ class Determinator(ChromaDatabase):
     except Exception as e:
       flash(f"Error retrieving data: {e}", "danger")
       return []
+
+class ChatLogRepository(ChromaDatabase):
+
+  def save_chat_messages(self, conversation_history):
+    messages_name = "chat_messages"
+
+    messages_content = ""
+    for message in conversation_history:
+      if isinstance(message, HumanMessage):
+        messages_content = f"You: {message.content}"
+      elif isinstance(message, AIMessage):
+        messages_content = f"AI: {message.content}"
+
+      ids = []
+
+      # Create composite ID
+      composite_id = f"{ModelUtils.machine_name(name=messages_name)}_{time.time_ns()}_chunk1"
+      ids.append(composite_id)
+
+      document = Document(
+        page_content=messages_content,
+        metadata={
+          "vector_type": messages_name,
+          "chunk_index": 1,
+          "custom_id": composite_id,
+          "source": f"{ModelUtils.machine_name(name=messages_name)}_{time.time_ns()}"
+        }
+      )
+
+      chunks = self.get_text_splitter([document])
+
+      Chroma.from_documents(
+        documents=chunks,
+        embedding=self.embedding_function,
+        ids=ids,
+        collection_name=messages_name,
+        persist_directory=self.investigation_db
+      )
+
+      flash(f"Chat messages saved successfully!", "success")
+      return True

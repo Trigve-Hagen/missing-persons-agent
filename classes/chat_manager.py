@@ -78,18 +78,14 @@ class TaskList(BaseModel):
 
 class Task(BaseModel):
     name: str = Field(..., description="The name of the task.")
-    description: str = Field(..., description="A human-readable description of the data and action needed.")
+    sql_table_name: str = Field(..., description="The name of the SQL table where the data fits best.")
+    sql_insert_statement: str = Field(..., description="The exact raw SQL INSERT statement to execute.")
     if_complete: int = Field(default=0, description="Default to 0.")
     dateCreated: datetime = Field(default_factory=datetime.now)
     dateCompleted: Optional[datetime] = Field(default=None)
 
-class Statement(BaseModel):
-    sql_table_name: str = Field(..., description="The name of the SQL table where the data fits best.")
-    sql_insert_statement: str = Field(..., description="The exact raw SQL INSERT statement to execute.")
-
 class ExtractionResult(BaseModel):
     task: Task
-    statement: Statement
 
 # ---------------------------------------------------------
 # State

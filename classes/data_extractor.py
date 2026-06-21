@@ -2,12 +2,14 @@ import os
 import re
 import yaml
 import logging
+import json
 from classes.chroma_database import ChromaDatabase
 from classes.chat_manager import AgentLogHandler
 from classes.model_utils import ModelUtils
 from typing import TypedDict, Dict, Any, List, Optional
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, END
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 
 """ Why the load_agent_skill function? If the skills are in the .agents folder
 won't they be found anyways?
@@ -101,7 +103,7 @@ class DynamicSkillOrchestrator(ChromaDatabase):
     {skills_summary}
 
     USER REQUEST:
-    {state['user_prompt']}
+    {state["user_prompt"]}
 
     Respond ONLY with this JSON structure:
     {{ "selected_skill": "SKILL_NAME_HERE" }}
@@ -109,12 +111,11 @@ class DynamicSkillOrchestrator(ChromaDatabase):
 
     log_handler = AgentLogHandler()
     config = {"callbacks": [log_handler]}
-    response = self.router_llm.invoke([("system", "You are an accurate router."), ("user", router_prompt)], config=config)
+    response = self.router_llm.invoke([("system", "You are an accurate router."), HumanMessage(content=router_prompt)], config=config)
     logging.info(f"Router response: {str(response)}", exc_info=True)
 
     try:
         # Safely extract selection from structural JSON output
-        import json
         data = json.loads(response.content)
         return {"selected_skill": data.get("selected_skill", "none")}
     except Exception:
