@@ -1,7 +1,13 @@
 # Missing Persons Agent
-Has anyone checked if there was a google maps request on the days before the Guthrie disappearance going to the Guthrie house? Everyone uses google maps for directions. Get a list of the people who went to her house if that's possible. Can phone or onstar systems be tracked in an area? Possible i-watch. Can you get a warrent for Apple and Google and other cell phone providers to possibly GPS track anyone in that area at the time of the doorbell camera?
+Has anyone checked if there was a google maps request on the days before the Guthrie disappearance going to the Guthrie house? Everyone uses google maps for directions. Get a list of the people who went to her house if that's possible. Can phone or onstar systems be tracked in an area? Possible i-watch. Can you get a warrent for Apple and Google and other cell phone providers to possibly GPS track anyone in that area at the time of the doorbell camera? Other types of apps that could be used for directions bsides google like hunting apps?
 
-Missing Persons is a tool to investigate missing persons. Its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. It uses [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
+The top navigation apps offer distinct advantages depending on your needs:
+- Google Maps: The most comprehensive app with the best global coverage. It supports driving, cycling, walking, and public transit (like Metro and buses in the DC area), and offers great details on local businesses.
+- Apple Maps: Built-in for all iOS devices, it features a clean interface, 3D city views, and helpful cycling details like steep hills.
+- Waze: Highly regarded for commuting, it uses crowdsourced data to alert you of accidents, road hazards, and police activity.
+- Specialty Apps: For off-the-grid trips without a data connection, offline apps like HERE WeGo work well. If you ride a bike frequently, specialized apps like Komoot are great for mapping trail
+
+-Missing Persons is a tool to investigate missing persons. Its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. It uses [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
 
 If you are looking to upgrade to a new computer and you want to use missing persons I would recommend to get a computer with at least 16GB of VRAM and a Nvidia GPU proccessor. If you want ultra fast get one with 32 or 64 GB of VRAM. The GPU can range in price based upon size. That being said:
 
