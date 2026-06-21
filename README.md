@@ -117,6 +117,25 @@ What would work wonderfully is a server with pedabytes of storage. A person rese
 
 When you build an agent with LangGraph, you will first break it apart into discrete steps called nodes. Then, you will describe the different decisions and transitions from each of your nodes. Finally, you connect nodes together through a shared state that each node can read from and write to.
 
+### Agent UI
+A list of Tasks.
+Ability to switch between saved API, RSS Feeds and Scrapes.
+Buttons to set the Agent working.
+List of logs to watch while the agent work.
+
+Keep the APIs separate so other people can continue to work on it.
+Offer the ability to save the raw responses to a database table.
+
+On the first set of passes it looks for leads and adds them as tasks.
+On the second set of passes it looks for information on events.
+On the third set of passes it looks for contact information.
+
+you pass it an API, RSS Feed or a scrape and it processes the whole unit.
+It recursively checks each task against the data stored in Chroma, if its not redundant creates a task to insert it.
+Have the agent always log where its pulling the data from.
+
+### Agent
+
 Build an agent that operates continuously with stop options
 - Possibly create a nodes table that the user can define the nodes. This might be too much. Still trying to create the perfect idea.
   - Create tools that can be used by the agent.
@@ -138,6 +157,9 @@ The database have 3 separate collections.
   - database - Stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
   - investigation - Stores data from the person, email, phone, alias, address, event and note table data for investigating.
   - investigator - SStores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
+
+### edge cases -
+someone has the same set of clothing as an unidentified man/women at the crime scene. How would the agent connect the two?
 
 ### Add in Autosearch
 Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.
