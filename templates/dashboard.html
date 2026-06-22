@@ -5,20 +5,130 @@
 
 {% block content %}
 
-<div class="row mt-5 mb-5">
-  <div class="col-md-12">
+<h1 class="my-4 mb-2">Dashboard</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row g-3">
+  <!-- Raw JSON Panel -->
+  <div class="col-lg-6">
+    <div class="card bg-dark text-white border-0 shadow-sm h-100">
+      <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+        <span class="fw-bold font-monospace text-uppercase small">Raw API Payload</span>
+        <button class="btn btn-sm btn-outline-secondary">Copy</button>
+      </div>
+      <div class="card-body overflow-auto" style="max-height: 400px;">
+        <pre class="text-success m-0"><code>{
+  "status": "success",
+  "data": {
+    "agent_id": "agent_8472",
+    "tasks_completed": 12,
+    "confidence_score": 0.98
+  }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parsed Output Panel -->
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-bold text-uppercase small text-muted">Parsed Output</span>
+        <span class="badge bg-success">Success</span>
+      </div>
+      <div class="card-body overflow-auto" style="max-height: 400px;">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between bg-transparent px-0">
+            <span class="text-muted">Agent ID</span>
+            <span class="fw-bold font-monospace">agent_8472</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between bg-transparent px-0">
+            <span class="text-muted">Tasks Completed</span>
+            <span class="fw-bold font-monospace">12</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between bg-transparent px-0">
+            <span class="text-muted">Confidence</span>
+            <span class="fw-bold font-monospace text-success">98%</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card bg-dark text-light border-0 shadow-sm">
+      <!-- Logs Control Header -->
+      <div class="card-header bg-dark border-secondary d-flex flex-wrap align-items-center justify-content-between gap-2 py-2">
+        <div class="d-flex align-items-center gap-2">
+          <span class="fw-bold font-monospace text-uppercase small text-secondary">Agent System Logs</span>
+          <span class="spinner-grow spinner-grow-sm text-success" role="status" aria-hidden="true"></span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <input type="text" class="form-control form-control-sm bg-secondary text-white border-0" placeholder="Filter logs..." style="max-width: 180px;">
+          <select class="form-select form-select-sm bg-secondary text-white border-0" style="width: auto;">
+            <option value="all">All Levels</option>
+            <option value="info">Info</option>
+            <option value="warn">Warnings</option>
+            <option value="error">Errors</option>
+          </select>
+          <button class="btn btn-sm btn-outline-danger">Clear</button>
+        </div>
+      </div>
+
+      <!-- Logs Stream Panel -->
+      <div class="card-body bg-black p-3 font-monospace small overflow-y-scroll" style="height: 250px; font-size: 0.85rem; line-height: 1.5;">
+        <div class="d-flex gap-2 mb-1">
+          <span class="text-muted">05:43:10</span>
+          <span class="text-info fw-bold">[INFO]</span>
+          <span class="text-light-50">Initializing JSON Parser Agent v2.4.1...</span>
+        </div>
+        <div class="d-flex gap-2 mb-1">
+          <span class="text-muted">05:43:11</span>
+          <span class="text-info fw-bold">[INFO]</span>
+          <span class="text-light-50">Sending GET request to https://endpoint.internal</span>
+        </div>
+        <div class="d-flex gap-2 mb-1">
+          <span class="text-muted">05:43:12</span>
+          <span class="text-success fw-bold">[INFO]</span>
+          <span class="text-light-50">HTTP 200 OK received. payload_size=1.2KB</span>
+        </div>
+        <div class="d-flex gap-2 mb-1">
+          <span class="text-muted">05:43:12</span>
+          <span class="text-warning fw-bold">[WARN]</span>
+          <span class="text-warning">Optional field 'deprecated_tag' found but skipped by path mapper.</span>
+        </div>
+        <div class="d-flex gap-2 mb-1">
+          <span class="text-muted">05:43:12</span>
+          <span class="text-info fw-bold">[INFO]</span>
+          <span class="text-light-50">Successfully mapped 3 target attributes into output state.</span>
+        </div>
+      </div>
+
+      <!-- Logs Footer Status -->
+      <div class="card-footer bg-dark border-0 py-1 d-flex justify-content-end">
+        <div class="form-check form-switch m-0 small">
+          <input class="form-check-input bg-success border-0" type="checkbox" id="autoScrollCheck" checked>
+          <label class="form-check-label text-muted" style="font-size: 0.75rem;" for="autoScrollCheck">Auto-scroll stream</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-12">
     <h3 class="my-4">Probabilities</h3>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
     <p>Calculate the probability of each person being involved. Softmax takes all people and gives them a rating from 0.0 to 1.0 where all people added together equals 1.0. So if there where two people listed then you would get two values both equaling 1.0. [0.5, 0.5], [0.75, 0.25], etc..</p>
     <h3 class="my-4">Tasks</h3>
     <p>Tasks on the Task page are TODOs. The Optimize Investigation, when given a prompt and a question, gives suggestions on how to move forward if you find yourself stuck. List tasks here that are incomplete. The better you make the prompt and the question the better the suggestions.</p>

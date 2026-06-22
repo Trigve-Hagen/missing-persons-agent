@@ -11,6 +11,9 @@ The top navigation apps offer distinct advantages depending on your needs:
 - Waze: Highly regarded for commuting, it uses crowdsourced data to alert you of accidents, road hazards, and police activity.
 - Specialty Apps: For off-the-grid trips without a data connection, offline apps like HERE WeGo work well. If you ride a bike frequently, specialized apps like Komoot are great for mapping trail
 
+## qwen3.5:latest
+This is the best model I found to use for my laptop that has 8 + 16 GB RAM, 1 Terabyte of ROM and running on a CPU.
+
 Missing Persons is a tool to investigate missing persons. Its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. It uses [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
 
 If you are looking to upgrade to a new computer and you want to use missing persons I would recommend to get a computer with at least 16GB of VRAM and a Nvidia GPU proccessor. If you want ultra fast get one with 32 or 64 GB of VRAM. The GPU can range in price based upon size. That being said:
@@ -117,14 +120,19 @@ At the moment I'm trying to learn all the tools I can use when building LLMs so 
 
 I decided on building tools and skills that use MCP when possible to get lists of articles and posts from social media to construct timelines, people who have had contact with the missing person to construct persons of interest and accessing public databases for any other information that could be helpful in the investigation. This seems to be the most robust and scalable way to move forward.
 
+I'm also only going to focus on text, capturing audio as text and running the agents to search for clues and connections for now because it seems that images and videos in the scope of gas station cameras will not be so accessible.
+
 What would work wonderfully is a server with pedabytes of storage. A person researching and finding/building API endpoints, RSS Feeds, and scraping web pages. A person working tasks and adding the data found by: The main computer that doing the constant searching by APIs, Rss Feeds and saved data that constantly runs and creates new tasks, the LLM agents. Another person is tweaking and prompting another set of LLMS that are searching the data for clues, leads and connections. Each one of the team is hooked into the server which is the storage unit for all the collected data. Each one of the team has a computer that halls a** with at least a Terabyte of storge and 64 to 132 GB of RAM. The Computer running the Agents needs to have VRAM ad Nvidia GPUs the bigger the better. You can add more people too to have it go faster.
 
 When you build an agent with LangGraph, you will first break it apart into discrete steps called nodes. Then, you will describe the different decisions and transitions from each of your nodes. Finally, you connect nodes together through a shared state that each node can read from and write to.
 
 ### Agent UI
-A list of Tasks.
-Ability to switch between saved API, RSS Feeds and Scrapes.
-Buttons to set the Agent working.
+A list of Tasks created.
+
+Form to set the Agent working.
+- list saved api content  - select content to process
+- Process Content button
+
 List of logs to watch while the agent work.
 
 Keep the APIs separate so other people can continue to work on it.
@@ -134,12 +142,11 @@ On the first set of passes it looks for leads and adds them as tasks.
 On the second set of passes it looks for information on events.
 On the third set of passes it looks for contact information.
 
-you pass it an API, RSS Feed or a scrape and it processes the whole unit.
-It recursively checks each task against the data stored in Chroma, if its not redundant creates a task to insert it.
+You pass it an API, RSS Feed or a scraped content and it processes the whole unit.
+It recursively checks each task against the data stored in SqlAlchemy database and the task list, if its not present creates a task to insert it.
 Have the agent always log where its pulling the data from.
 
 ### Agent
-
 Build an agent that operates continuously with stop options
 - Possibly create a nodes table that the user can define the nodes. This might be too much. Still trying to create the perfect idea.
   - Create tools that can be used by the agent.
@@ -168,6 +175,9 @@ someone has the same set of clothing as an unidentified man/women at the crime s
 ### Add in Autosearch
 Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.
 - Add auto search to the agent to aid in optimizing prompts if possible.
+
+### Add in Audio to text
+Use a package that can listen to audio and video and convert the talking to text to be searched for clues, leads and connections.
 
 ### Events to construct a Timeline
 - Use the data gathered from the APIs to build timelines for each person.

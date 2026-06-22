@@ -77,9 +77,6 @@ class Task(BaseModel):
     dateCreated: datetime = Field(default_factory=datetime.now)
     dateCompleted: Optional[datetime] = Field(default=None)
 
-class ExtractionResult(BaseModel):
-    task: Task
-
 # ---------------------------------------------------------
 # State
 # ---------------------------------------------------------
@@ -88,26 +85,22 @@ class AgentState(TypedDict):
   messages: Annotated[Sequence[BaseMessage], add_messages]
 
 # ---------------------------------------------------------
-# Tool
-# ---------------------------------------------------------
-
-
-
-# ---------------------------------------------------------
 # LLMs
 # ---------------------------------------------------------
 
-class PracticeLlms:
+class DocumentLlm:
   def __init__(self):
-    self.tools = [self.add]
+    self.tools = self.get_tools()
 
     self.llm = ChatOllama(
-      model="deepseek-r1",
+      model="qwen3.5:latest",
       temperature=0.1,
       num_ctx=2048
     ).bind_tools(tools=self.tools)
 
     self.conversation_history = []
+
+    self.document_content = ""
 
     self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     self.vector_store = Chroma(
@@ -119,79 +112,123 @@ class PracticeLlms:
 
     self.agent = self.build_graph()
 
-  @tool
-  def add(a: int, b: int):
-    """ Adds two numbers. """
-    return a + b
+  # ---------------------------------------------------------
+  # Tools
+  # ---------------------------------------------------------
 
-  def model_call(self, state: AgentState) -> AgentState:
-    system_prompt = SystemMessage(content="You are my AI assistant, please answer my query to the best of your ability.")
-    response = self.llm.invoke([system_prompt] + state['messages'])
-    return {"messages": [response]}
+  def get_tools(self):
+
+    @tool
+    def update(content: str) -> str:
+      """ Updates the document with the provided content. """
+      self.document_content = content
+      return f"Ducument has been updated. The current content is {self.document_content}"
+
+    @tool
+    def save(filename: str) -> str:
+      """ Save the current document to a text file and finish the process.
+
+      Args:
+        filename: Name for the text file.
+      """
+      if not filename.endswith(".txt"):
+        filename = f"{filename}.txt"
+
+      try:
+        with open(filename, 'w') as file:
+          file.write(self.document_content)
+        print(f"Document has beed saved to {filename}")
+        return f"Document has beed saved to '{filename}'."
+      except Exception as e:
+        return f"Error saving document {str(e)}."
+
+    return [update, save]
+
+  def our_agent(self, state: AgentState) -> AgentState:
+    system_prompt = SystemMessage(content=f"""
+    You are Drafter, a helpful writing assistant. You are going to help the user update and modify documents.
+
+    - If the user wants to update or modify content, use the 'update' tool with the complete updated content.
+    - If the user wants to save and finish, you need to use the 'save' tool.
+    - Make sure to always show the current document state after modifications.
+
+    The current document content is: {self.document_content}
+    """)
+
+    if not state["messages"]:
+      user_input = "I'm ready to help you update a document. What would you like to create?"
+      user_message = HumanMessage(content=user_input)
+    else:
+      user_input = "\nWhat would you like to do with the document?"
+      print(f"USER: {user_input}")
+      user_message = HumanMessage(content=user_input)
+
+    all_messages = [system_prompt] + list(state["messages"]) + [user_message]
+
+    response = self.llm.invoke(all_messages)
+
+    print(f"\nAI: {response.content}")
+    if hasattr(response, "tool_calls") and response.tool_calls:
+      print(f"USING TOOLS: {[tc['name'] for tc in response.tool_calls]}")
+
+    return {"messages": list(state["messages"]) + [user_message, response]}
 
   def should_continue(self, state: AgentState):
-    messages = state['messages']
-    last_message = messages[-1]
-    if not last_message.tool_calls:
-      return "end"
-    else:
+    """ Determine if we should continue or end the conversation. """
+    messages = state["messages"]
+
+    if not messages:
       return "continue"
 
-  def process(self, state: AgentState) -> AgentState:
-    response = self.llm.invoke(state['messages'])
-    state['messages'].append(AIMessage(content=response.content))
-    print(f"\nAI: {response.content}")
-    print("CURRENT STATE: ", state['messages'])
-    return state
+    for message in reversed(messages):
+      if (isinstance(message, ToolMessage) and
+          "saved" in message.content.lower() and
+          "document" in message.content.lower()):
+        return "end"
+    return "continue"
 
-  def do_build_graph(self):
-    graph = StateGraph(AgentState)
-    graph.add_node("process", self.process)
-    graph.add_edge(START, "process")
-    graph.add_edge("process", END)
+  def print_messages(self, messages):
+    """ Print messages. """
+    if not messages:
+      return
 
-    return graph.compile()
+    for message in messages[-3:]:
+      if isinstance(message, ToolMessage):
+        print(f"TOOL RESULT: {message.content}")
 
   def build_graph(self):
     graph = StateGraph(AgentState)
-    graph.add_node("our_agent", self.model_call)
+    graph.add_node("agent", self.our_agent)
 
     tool_node = ToolNode(tools=self.tools)
     graph.add_node("tools", tool_node)
 
-    graph.set_entry_point("our_agent")
+    graph.set_entry_point("agent")
+
+    graph.add_edge("agent", "tools")
 
     graph.add_conditional_edges(
-      "our_agent",
+      "tools",
       self.should_continue,
       {
-        "continue": "tools",
+        "continue": "agent",
         "end": END
       },
     )
 
-    graph.add_edge("tools", "our_agent")
-
     return graph.compile()
 
-  def invoke(self):
-    user_input = input("Enter: ")
-    while user_input != "exit":
-      self.conversation_history.append(HumanMessage(content=user_input))
-      result = self.agent.invoke({"messages": self.conversation_history})
-      print(result["messages"])
-      self.conversation_history = result["messages"]
-      user_input = input("Enter: ")
+  def run_document_agent(self):
+    print("\n ===== DRAFTER =====")
 
-  def print_stream(self, stream):
-    for s in stream:
-      message = s["messages"][-1]
-      if isinstance(message, tuple):
-        print(message)
-      else:
-        message.pretty_print()
+    state = {"messages": []}
+
+    for step in self.agent.stream(state, stream_mode="values"):
+      if "messages" in step:
+        self.print_messages(step["messages"])
+
+    print("\n ===== DRAFTER FINISHED =====")
 
 if __name__ == "__main__":
-  manager = PracticeLlms()
-  inputs = {"messages": [("user", "Add 40 + 12")]}
-  manager.print_stream(manager.agent.stream(inputs, stream_mode="values") )
+  manager = DocumentLlm()
+  manager.run_document_agent()

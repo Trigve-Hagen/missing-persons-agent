@@ -1901,7 +1901,69 @@ def chunk():
 def dashboard():
   people_utils = PeopleUtils(session=session)
   person, aliases, addresses, emails, phones = people_utils.get_all_person()
+
+  state = session.get(State, 1)
+  person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
+  model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+
+  # Start the timer
+  start_time = time.perf_counter()
+
+  """ manager = EmailManager(session=session, model=model)
+  query = "My internet connection keeps dropping. Can you help?"
+  result = manager.run_customer_support(query)
+  print(f"Query: {query}")
+  print(f"Category: {result['category']}")
+  print(f"Sentiment: {result['sentiment']}")
+  print(f"Response: {result['response']}")
+  print("\n")
+  # Execution Time: 7 minutes 38.77 seconds """
+
+  try:
+    """ test_input = {
+        "user_input": "An anonymous tipster claims they saw a person matching the flyer's description getting into a rusted blue sedan outside the 7-Eleven on 5th Street on Tuesday night."
+    }
+    praticeLlms = PracticeLlms(session=session, model=model)
+    response = praticeLlms.invoke(user_input=test_input) """
+
+    """ # 1. Initialize orchestrator (will scan your local folder automatically)
+    orchestrator = DynamicSkillOrchestrator(session=session, model=model)
+
+    # 2. Mock incoming context database payload
+    # mock_schema = "Table: people (fields: full_name, age, last_seen_location)"
+
+    # --- TEST 1: Triggering the Missing Persons Extractor Skill ---
+    # Test with heavy punctuation and apostrophes
+    test_input = {
+        "user_input": "An anonymous tipster claims they saw a person matching the flyer's description getting into a rusted blue sedan outside the 7-Eleven on 5th Street on Tuesday night."
+    }
+    # safe_input = json.dumps(feed_data)
+    # feed_data = '{"incident": "Missing teenager last seen near main street", "name": "Alex Smith", "age": 15}'
+    print("--- Running Test 1 (Should trigger data_extractor and create a task for lead) ---")
+    response_1 = orchestrator.run_chat(user_prompt=test_input) # , db_context=mock_schema
+    flash(f"Response: {response_1}", "info")
+
+    # --- TEST 2: Testing an unrelated prompt (Should hit fallback gracefully) ---
+    # unrelated_prompt = "Can you write a poem about code refactoring?"
+    unrelated_prompt = "Roll a d20"
+    print("\n--- Running Test 2 (Should trigger Fallback) ---")
+    response_2 = orchestrator.run_chat(user_prompt=unrelated_prompt)
+    flash(f"Response: {response_2}", "info") """
+
+  except Exception as e:
+      flash(f"Error: {e}", "danger")
+
+  # End the timer
+  end_time = time.perf_counter()
+  execution_time = end_time - start_time
+
+  # Split total seconds into whole minutes and remaining seconds
+  minutes, seconds = divmod(execution_time, 60)
+
+  flash(f"Execution Time: {int(minutes)} minutes {seconds:.2f} seconds", "success")
+
   return flask.render_template('dashboard.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
+
 
 @app.route('/data_center')
 def data_center():
@@ -1920,6 +1982,10 @@ def data_center():
     feeds = FeedGenerator(session=session)
     filename, api_data = feeds.get_posts(api, api_params)
 
+    # Parse into a Python object, then re-encode with formatting
+    # parsed_json = json.loads(api_data)
+    formatted_json = json.dumps(api_data, indent=2)
+
     flash(f"Data successfully scraped and saved to {filename}", "info")
 
   else:
@@ -1929,91 +1995,16 @@ def data_center():
     # flash(f"API Data: {api_data}", "info")
     api_data, ifParsed = request_api.filter_data(api_data, state)
 
-    person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
-    model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
-
-    # Start the timer
-    start_time = time.perf_counter()
-
-    """ manager = EmailManager(session=session, model=model)
-    query = "My internet connection keeps dropping. Can you help?"
-    result = manager.run_customer_support(query)
-    print(f"Query: {query}")
-    print(f"Category: {result['category']}")
-    print(f"Sentiment: {result['sentiment']}")
-    print(f"Response: {result['response']}")
-    print("\n")
-    # Execution Time: 7 minutes 38.77 seconds """
-
-    try:
-      test_input = {
-          "user_input": "An anonymous tipster claims they saw a person matching the flyer's description getting into a rusted blue sedan outside the 7-Eleven on 5th Street on Tuesday night."
-      }
-      praticeLlms = PracticeLlms(session=session, model=model)
-      response = praticeLlms.invoke(user_input=test_input)
-
-      """ # 1. Initialize orchestrator (will scan your local folder automatically)
-      orchestrator = DynamicSkillOrchestrator(session=session, model=model)
-
-      # 2. Mock incoming context database payload
-      # mock_schema = "Table: people (fields: full_name, age, last_seen_location)"
-
-      # --- TEST 1: Triggering the Missing Persons Extractor Skill ---
-      # Test with heavy punctuation and apostrophes
-      test_input = {
-          "user_input": "An anonymous tipster claims they saw a person matching the flyer's description getting into a rusted blue sedan outside the 7-Eleven on 5th Street on Tuesday night."
-      }
-      # safe_input = json.dumps(feed_data)
-      # feed_data = '{"incident": "Missing teenager last seen near main street", "name": "Alex Smith", "age": 15}'
-      print("--- Running Test 1 (Should trigger data_extractor and create a task for lead) ---")
-      response_1 = orchestrator.run_chat(user_prompt=test_input) # , db_context=mock_schema
-      flash(f"Response: {response_1}", "info")
-
-      # --- TEST 2: Testing an unrelated prompt (Should hit fallback gracefully) ---
-      # unrelated_prompt = "Can you write a poem about code refactoring?"
-      unrelated_prompt = "Roll a d20"
-      print("\n--- Running Test 2 (Should trigger Fallback) ---")
-      response_2 = orchestrator.run_chat(user_prompt=unrelated_prompt)
-      flash(f"Response: {response_2}", "info") """
-
-    except Exception as e:
-        flash(f"Error: {e}", "danger")
-
-    # End the timer
-    end_time = time.perf_counter()
-    execution_time = end_time - start_time
-
-    # Split total seconds into whole minutes and remaining seconds
-    minutes, seconds = divmod(execution_time, 60)
-
-    flash(f"Execution Time: {int(minutes)} minutes {seconds:.2f} seconds", "success")
-    """ if response:
-      try:
-
-        for item in response:
-          flash(f"Item details: {item}", 'info')
-          new_suggestion = Task(
-            type="CodeOptimization",
-            title=item.title,
-            description=item.description,
-            ifComplete=0,
-          )
-          session.add(new_suggestion)
-        # session.commit()
-        # flash(f"Successfully {response}.", "success")
-      except json.JSONDecodeError:
-        flash(f"Failed to parse LLM response.", "danger")
-    else:
-      flash(f"No data defined. The database for code optimizations has not been created yet.", "info") """
-
-  flash("Refactoring to create a continously running agent that uses tooling. The first task would be to search for anyone who is a contact of the missing person and add them as a person of interest. Then search that name and fill in Emails, Phones, Addresses and Aliases. Once the data for one person has been saved. Check their social media and make feeds out of public information. Create events out of any activities listed there. Create a list of people who fit the in the area of the crime scene on the time of the disappearance. Search through other public record keeping systems for information that could mark them as being more apt to be involved in a crime.", "info")
+    # Parse into a Python object, then re-encode with formatting
+    # parsed_json = json.loads(api_data)
+    formatted_json = json.dumps(api_data, indent=2)
 
   return flask.render_template(
     'data_center.html',
     api=api,
     person_name=person_name,
     api_params=api_params,
-    api_data=api_data,
+    api_data=formatted_json,
     root_node=getRootNode(),
     display_type=getDisplayType(),
     if_parsed=ifParsed
