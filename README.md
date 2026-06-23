@@ -74,16 +74,16 @@ Build out prompts and questions for LLMs.
 ![Questions Page](./assets/questions.png)
 
 ### Build Tasks and Data Center
-Each API brings with it a new needs to deal with.
-The official FBI Wanted API that does not provide a dedicated exact match parameter for keyword queries.
+Each API is unique in ways.
+The official FBI Wanted API does not provide a dedicated exact match parameter for keyword queries. It relies on loose keyword matching. If you search for 'John Smith', it will return all references to John and Smith and not the exact match of 'John Smith'.
 
 I asked AI: If I have an API like the official FBI Wanted API that does not provide a dedicated exact match parameter for keyword queries. I need data that I can pass to a agent for processing about an investigation. Should I clean the data before passing it to the agent or have the agent pick relevant data from the respose?
 
-It answered: You should clean and filter the data before passing it to the AI agent rather than relying on the agent to pick relevant data from a raw API response.Because the FBI Wanted API relies on loose keyword matching, a query for a specific name can return a massive JSON payload filled with unrelated fugitives, partial matches, or long-closed cases. Passing this raw noise directly to an agent introduces major operational risks and inefficiencies.
+It answered: You should clean and filter the data before passing it to the AI agent rather than relying on the agent to pick relevant data from a raw API response. Because the FBI Wanted API relies on loose keyword matching, a query for a specific name can return a massive JSON payload filled with unrelated fugitives, partial matches, or long-closed cases. Passing this raw noise directly to an agent introduces major operational risks and inefficiencies.
 
-In the new age of agents APIs will need to offer exact data options to aid in AI development. It would be awesome if all APIs could offer a parameter that sets all matching to perfect match. exact_match=True
+In the new age of agents APIs will need to offer exact data options to aid in AI development. It would be awesome if all APIs could offer a parameter that sets all matching to exact match. exact_match=True
 
-I will need to list API and possible parameters and build a chunk of code to handle the different possibilities for each one.
+I will need to list all API and Feeds with possible parameters and build a FilterResponses Class to handle the different filtering needs for each one.
 
 [Gen AI Agent Resource](https://github.com/NirDiamant/GenAI_Agents)
 
