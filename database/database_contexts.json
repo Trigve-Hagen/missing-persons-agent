@@ -1,29 +1,35 @@
 {
-  "phone_numbers": {
-    "description": "Phone numbers associated with a person.",
+  "tasks": {
+    "description": "Tasks are TODOs.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of phones. Definitions are created in Category)",
-      "phone_number": "STRING (The phone number.)",
-      "owner": "INTEGER (The persons who uses this phone number.)"
+      "name": "STRING (The name of the task.)",
+      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
+      "sql_insert_statement": "STRING (The sql insert statement.)",
+      "date_created": "DATETIME (The date the task was created.)",
+      "date_completed": "DATETIME (The date the task was created.)",
+      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
     }
   },
-  "email_addresses": {
-    "description": "Emails associated with a person.",
+  "leads": {
+    "description": "Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.\n  @TODO Add a field named reporter that stores the id of the person or agency.\n  @TODO Adjust person table to be able to add agencies as well as peeople.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of email. Definitions are created in Category)",
-      "email_address": "STRING (The persons email address.)",
-      "owner": "INTEGER (The persons who uses this email.)"
+      "name": "STRING (The name of the note.)",
+      "lead": "TEXT (Stores the raw narrative, GPS location if provided, reference to agency who repoted it.)",
+      "owner": "INTEGER (The persons the note is associated with.)"
     }
   },
-  "files": {
-    "description": "Documents with information related to the investigation.",
+  "aliases": {
+    "description": "Aliases associated with a person.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
-      "filename": "STRING (The file name.)",
-      "owner": "INTEGER (The persons file is associated with.)"
+      "first_name": "STRING (The persons first name.)",
+      "middle_name": "STRING (The persons middle name.)",
+      "last_name": "STRING (The persons last name.)",
+      "sir_name": "STRING (The persons sir name.)",
+      "suffix": "STRING (The persons suffix name.)",
+      "owner": "INTEGER (The persons who uses this alias.)"
     }
   },
   "addresses": {
@@ -44,51 +50,6 @@
       "date_from": "DATETIME (The date of move in.)",
       "date_to": "DATETIME (The date of move out.)",
       "owner": "INTEGER (The persons who uses this address.)"
-    }
-  },
-  "aliases": {
-    "description": "Aliases associated with a person.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "first_name": "STRING (The persons first name.)",
-      "middle_name": "STRING (The persons middle name.)",
-      "last_name": "STRING (The persons last name.)",
-      "sir_name": "STRING (The persons sir name.)",
-      "suffix": "STRING (The persons suffix name.)",
-      "owner": "INTEGER (The persons who uses this alias.)"
-    }
-  },
-  "leads": {
-    "description": "Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.\n  @TODO Add a field named reporter that stores the id of the person or agency.\n  @TODO Adjust person table to be able to add agencies as well as peeople.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "name": "STRING (The name of the note.)",
-      "lead": "TEXT (Stores the raw narrative, GPS location if provided, reference to agency who repoted it.)",
-      "owner": "INTEGER (The persons the note is associated with.)"
-    }
-  },
-  "events": {
-    "description": "Events related to the investigation that can build a timeline.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of Events. Definitions are created in Category)",
-      "name": "STRING (The name of the event.)",
-      "description": "TEXT (The event description.)",
-      "date_from": "DATETIME (The start date of the event.)",
-      "date_to": "DATETIME (The end date of the event if there is one.)",
-      "owner": "INTEGER (The persons the event is associated with.)"
-    }
-  },
-  "tasks": {
-    "description": "Tasks are TODOs.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "name": "STRING (The name of the task.)",
-      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
-      "sql_insert_statement": "STRING (The sql insert statement.)",
-      "date_created": "DATETIME (The date the task was created.)",
-      "date_completed": "DATETIME (The date the task was created.)",
-      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
     }
   },
   "people": {
@@ -113,6 +74,45 @@
       "missing": "DATETIME (The date the missing person went missing or the date that the person of interest met the missing person.)",
       "description": "TEXT (A place to add more descriptive information about the person.)",
       "owner": "INTEGER (This will be 0 if a missing person or the id of the missing person.)"
+    }
+  },
+  "events": {
+    "description": "Events related to the investigation that can build a timeline.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of Events. Definitions are created in Category)",
+      "name": "STRING (The name of the event.)",
+      "description": "TEXT (The event description.)",
+      "date_from": "DATETIME (The start date of the event.)",
+      "date_to": "DATETIME (The end date of the event if there is one.)",
+      "owner": "INTEGER (The persons the event is associated with.)"
+    }
+  },
+  "files": {
+    "description": "Documents with information related to the investigation.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
+      "filename": "STRING (The file name.)",
+      "owner": "INTEGER (The persons file is associated with.)"
+    }
+  },
+  "phone_numbers": {
+    "description": "Phone numbers associated with a person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of phones. Definitions are created in Category)",
+      "phone_number": "STRING (The phone number.)",
+      "owner": "INTEGER (The persons who uses this phone number.)"
+    }
+  },
+  "email_addresses": {
+    "description": "Emails associated with a person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of email. Definitions are created in Category)",
+      "email_address": "STRING (The persons email address.)",
+      "owner": "INTEGER (The persons who uses this email.)"
     }
   }
 }

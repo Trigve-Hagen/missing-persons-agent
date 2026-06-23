@@ -46,6 +46,7 @@
             <li><a class="dropdown-item{% if request.endpoint == 'api' %} active{% endif %}" href="{{ url_for('api') }}">Api</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'api_field' %} active{% endif %}" href="{{ url_for('api_field') }}">Api Field</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'data_center' %} active{% endif %}" href="{{ url_for('data_center') }}">Data Center</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'feed_log' %} active{% endif %}" href="{{ url_for('feed_log') }}">Feed Logs</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'chunk' %} active{% endif %}" href="{{ url_for('chunk') }}">Chunks</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'task' %} active{% endif %}" href="{{ url_for('task') }}">Tasks</a></li>
           </ul>

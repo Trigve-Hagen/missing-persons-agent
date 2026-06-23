@@ -18,9 +18,9 @@
 {% endwith %}
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-6">
     <div class="row mb-3">
-      <div class="col-md-12">
+      <div class="col-12">
         <p class="my-0"><b>{{ api.type|upper }}</b> {{ api.name }}</p>
         <p class="my-0 mb-2"><b>Url</b>: {{ api.url }}</p>
         {% if api_params %}
@@ -31,9 +31,9 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-6">
     <form class="row g-4" action="/set_data_center_state" method="POST" name="data_center_state" autocomplete="off">
-      <div class="col-md-4">
+      <div class="col-4">
         <label for="data-center-api" class="form-label">Api</label>
         <select class="form-select" id="data-center-api" name="api" required>
           <option value="">Choose...</option>
@@ -46,7 +46,7 @@
           {% endfor %}
         </select>
       </div>
-      <div class="col-12 mb-5">
+      <div class="col-12 mb-3">
         <button class="btn btn-primary" type="submit">Set State</button>
       </div>
     </form>
@@ -55,10 +55,10 @@
 
 <hr>
 
-<div class="row mt-3">
-  <div class="col-md-12">
+<div class="row mt-4">
+  <div class="col-12">
     <form class="row g-4" action="/filter_data" method="POST" name="filter_data" autocomplete="off">
-      <div class="col-md-12">
+      <div class="col-12">
         <label for="call-api-root" class="form-label">Root Node</label>
         <input type="text" class="form-control" id="call-api-root" name="root_node" value="{{ root_node }}">
         <div class="form-text" id="call-api-root-text">Find the node you want to extract data from. Save that nodes name and you will be redirected to a page with a table of the items listed in that node. The node will have the structure 'node[{}, {}]'. In this case you would save the word 'node'. This page uses the parsing library jsonpath_ng. To search nested nodes concat with a dot and add [*] to the end of the node. Example: items[*].images</div>
@@ -71,22 +71,20 @@
 </div>
 
 <div class="row mb-5">
-  <div class="col-md-12">
-    <div class="col-lg-12">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-header border-secondary d-flex justify-content-between align-items-center">
-          <span class="fw-bold font-monospace text-uppercase small">Raw API Payload</span>
-          <form action="/save_response_data" method="POST" name="save_data">
-            <input type="hidden" name="root_node" value="{{ root_node }}">
-            <div class="col-12">
-              <button class="btn btn-primary" type="submit">Save</button>
-            </div>
-          </form>
-        </div>
-        <div class="card-body overflow-y-auto" style="max-height: 600px;">
-          <!-- Added text-wrap and kept code tag flush to prevent huge indentation spaces -->
-          <pre class="text-success text-break break-word w-100 m-0 p-1" style="white-space: pre-wrap; word-break: break-word;"><code>{{ api_data }}</code></pre>
-        </div>
+  <div class="col-12">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+        <span class="fw-bold font-monospace text-uppercase small">Raw API Payload</span>
+        <form action="/save_response_data" method="POST" name="save_data">
+          <input type="hidden" name="root_node" value="{{ root_node }}">
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Save</button>
+          </div>
+        </form>
+      </div>
+      <div class="card-body overflow-y-auto" style="max-height: 600px;">
+        <!-- Added text-wrap and kept code tag flush to prevent huge indentation spaces -->
+        <pre class="text-success text-break break-word w-100 m-0 p-1" style="white-space: pre-wrap; word-break: break-word;"><code>{{ api_data }}</code></pre>
       </div>
     </div>
   </div>

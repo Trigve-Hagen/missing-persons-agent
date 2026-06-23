@@ -1,0 +1,59 @@
+<!-- templates/index.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Feed Logs{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Feed Logs</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row mt-2">
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col" class="col-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for feed_log in all_feed_logs %}
+          <tr>
+            <td scope="row">{{ feed_log.id }}</td>
+            <td>{{ feed_log.source }}</td>
+            <td>
+              <a class="btn btn-primary w-100 text-nowrap mt-2" href="{{ url_for('feed_log_view', id=feed_log.id) }}">View</a>
+              <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="feed_log" data-bs-item-id="{{ feed_log.id }}" data-bs-item="{{ feed_log.source }}">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination d-flex align-items-center mb-5">
+    {% if page > 1 %}
+        <a class="btn btn-secondary me-2" href="{{ url_for('feed_log', page=page-1) }}">Previous</a>
+    {% endif %}
+
+    <p class="mb-0">Page {{ page }} of {{ total_pages }}</p>
+
+    {% if page < total_pages %}
+        <a class="btn btn-secondary ms-2" href="{{ url_for('feed_log', page=page+1) }}">Next</a>
+    {% endif %}
+  </div>
+</div>
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}

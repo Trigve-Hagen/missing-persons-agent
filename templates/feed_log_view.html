@@ -1,0 +1,39 @@
+<!-- templates/index.html -->
+{% extends 'layout.html' %}
+
+{% block title %}View Feed Log{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<h1 class="my-4">View Feed Log</h1>
+
+<div class="row">
+  <div class="col-md-12">
+    <a href="{{ url_for('feed_log') }}" class="btn btn-primary mb-3">back</a>
+  </div>
+</div>
+
+<div class="row mt-2 mb-5">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+        <span class="fw-bold font-monospace text-uppercase small">Raw API Payload</span>
+      </div>
+      <div class="card-body overflow-y-auto" style="max-height: 600px;">
+        <pre class="text-success text-break break-word w-100 m-0 p-1" style="white-space: pre-wrap; word-break: break-word;"><code>{{ formatted_json }}</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

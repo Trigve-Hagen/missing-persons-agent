@@ -58,7 +58,7 @@ from datetime import datetime
 from database.base import Base
 from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
-from database.apis import Api, ApiField, ExternalFeedLogs
+from database.apis import Api, ApiField, FeedLog
 from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Lead
 from classes.practice_llms import PracticeLlms
 from classes.data_extractor import DynamicSkillOrchestrator
@@ -2030,28 +2030,30 @@ def save_response_data():
   md5_hash = hashlib.md5(json_string).hexdigest()
 
   try:
-    external_feed_log = session.execute(select(ExternalFeedLogs).filter_by(owner = state.api)).scalar_one_or_none()
-    if external_feed_log:
-      if external_feed_log.rawPayloadHash != md5_hash:
-        external_feed = ExternalFeedLogs(
-          version=external_feed_log.version + 1,
+    feed_log = session.execute(select(FeedLog).filter_by(owner = state.api)).scalar_one_or_none()
+    if feed_log:
+      if feed_log.rawPayloadHash != md5_hash:
+        feed_log = FeedLog(
+          version=feed_log.version + 1,
+          source=api.name,
           rawPayload=api_data,
           rawPayloadHash=md5_hash,
           owner=state.api,
         )
-        session.merge(external_feed)
+        session.merge(feed_log)
         session.commit()
-        flash("External Feed Logs added successfully!", "success")
+        flash("Feed Log added successfully!", "success")
     else:
-      external_feed = ExternalFeedLogs(
+      feed_log = FeedLog(
         version=1,
+        source=api.name,
         rawPayload=api_data,
         rawPayloadHash=md5_hash,
         owner=state.api,
       )
-      session.merge(external_feed)
+      session.merge(feed_log)
       session.commit()
-      flash("External Feed Logs added successfully!", "success")
+      flash("Feed Log added successfully!", "success")
     return redirect(url_for('data_center'))
   except IntegrityError as e:
     session.rollback()
@@ -2062,6 +2064,27 @@ def save_response_data():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('data_center'))
+
+@app.route('/feed_log')
+def feed_log():
+  page = request.args.get('page', 1, type=int)
+  offset = (page - 1) * Selection.per_page
+  all_feed_logs = session.query(FeedLog).limit(Selection.per_page).offset(offset).all()
+  total = session.query(FeedLog).count()
+  total_pages = (total + Selection.per_page - 1) // Selection.per_page
+
+  return flask.render_template(
+    'feed_log.html',
+    all_feed_logs=all_feed_logs,
+    page=page,
+    total_pages=total_pages,
+  )
+
+@app.route('/feed_log_view/<int:id>', methods=['GET', 'POST'])
+def feed_log_view(id):
+  feed_log = session.get(FeedLog, id)
+  formatted_json = json.dumps(feed_log.rawPayload, indent=2)
+  return flask.render_template('feed_log_view.html', formatted_json=formatted_json)
 
 @app.route('/filter_data', methods=['POST'])
 def filter_data():
@@ -2212,7 +2235,7 @@ def delete_item():
     'phone': Phone, 'file': File, 'category': Category, 'api': Api,
     'task': Task, 'event': Event, 'lead': Lead,
     'api_field': ApiField, 'model': Model, 'model_params': ModelParams,
-    'prompt': Prompt, 'question': Question
+    'prompt': Prompt, 'question': Question, 'feed_log': FeedLog
   }
 
   model = available_models.get(table_type)

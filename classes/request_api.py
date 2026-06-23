@@ -4,6 +4,7 @@ import requests
 import feedparser
 from jsonpath_ng import parse
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
+from classes.filter_response import FilterResponse
 from flask import flash
 
 class RequestApi:
