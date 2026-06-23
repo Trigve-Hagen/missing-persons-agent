@@ -74,6 +74,15 @@ Build out prompts and questions for LLMs.
 ![Questions Page](./assets/questions.png)
 
 ### Build Tasks and Data Center
+Each API brings with it a new set of problem to deal with.
+The official FBI Wanted API that does not provide a dedicated exact match parameter for keyword queries.
+
+I asked AI: If I have an API like the official FBI Wanted API that does not provide a dedicated exact match parameter for keyword queries. I need data that I can pass to a agent for prcessing about an investigation. Should I clean the data before passing it to the agent or have the agent pick relevant data from the respose?
+
+It answered: You should clean and filter the data before passing it to the AI agent rather than relying on the agent to pick relevant data from a raw API response.Because the FBI Wanted API relies on loose keyword matching, a query for a specific name can return a massive JSON payload filled with unrelated fugitives, partial matches, or long-closed cases. Passing this raw noise directly to an agent introduces major operational risks and inefficiencies.
+
+I will need to list API and possible parameters and build a chunk of code to handle different possibilities.
+
 [Gen AI Agent Resource](https://github.com/NirDiamant/GenAI_Agents)
 
 [IBMTechnology](https://www.youtube.com/@IBMTechnology/playlists)

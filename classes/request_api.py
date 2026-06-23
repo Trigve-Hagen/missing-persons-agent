@@ -47,10 +47,10 @@ class RequestApi:
       filter = '$.'+state.root_node
       try:
         if parse(filter).find(data):
-          return parse(filter).find(data)[0].value, True
+          return parse(filter).find(data)[0].value
       except Exception as e:
         flash(f"An unexpected error occurred: {e}", "danger")
-    return data, False
+    return data
 
   def get_request(self, api, apiFields):
     params = {}
@@ -67,6 +67,31 @@ class RequestApi:
       if api.type == 'api':
         # 3. Process the response if no exception was raised
         data = response.json()
+
+        """ # --- NEW DYNAMIC FILTERING LOGIC ---
+        if 'items' in data and isinstance(data['items'], list):
+          filtered_items = []
+
+          for item in data['items']:
+            # Assume the item is a match until proven otherwise
+            is_match = True
+
+            for key, value in params.items():
+              # Only filter keys that actually exist in the API item dictionary
+              if key in item:
+                # Exact string or type match check
+                if item[key].lower() != value.lower():
+                  flash(f"one: {item[key].lower()} - two: {value.lower()}", "info")
+                  is_match = False
+                  break  # Stop checking this item, it's a mismatch
+
+            if is_match:
+              filtered_items.append(item)
+
+          # Overwrite the items in the response data with the filtered list
+          data['items'] = filtered_items
+        # ------------------------------------ """
+
         return data
 
     except HTTPError as http_err:

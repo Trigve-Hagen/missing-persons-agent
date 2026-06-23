@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func
+from sqlalchemy import create_engine, ForeignKey, Column, JSON, String, Integer, CHAR, DateTime, Boolean, func
 from database.base import Base, NullToEmptyString # Import shared base
 
 class Api(Base):
@@ -48,8 +48,9 @@ class ExternalFeedLogs(Base):
   __table_args__ = {"comment": "This table captures metadata from ingested external feeds, public API webhooks, or scrapers."}
 
   id = Column("id", Integer, primary_key=True)
+  version = Column(Integer, comment="The version of the API or Feed payload.")
   sourcePlatform = Column("source_platform", NullToEmptyString, comment="Origin name of the automated feed (e.g., 'Amityville-PD-RSS', 'Amber-Alert-API').")
-  rawPayload = Column("raw_payload", NullToEmptyString, comment="Raw json payload returned from the api request.")
+  rawPayload = Column("raw_payload", JSON, nullable=False, comment="Raw json payload returned from the api request.")
   rawPayloadHash = Column("raw_payload_hash", NullToEmptyString, comment="Unique MD5/SHA256 string used to prevent duplicate system entry.")
   owner = Column(Integer, ForeignKey("api.id"))
 

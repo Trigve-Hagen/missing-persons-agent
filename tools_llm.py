@@ -1,3 +1,4 @@
+# https://www.youtube.com/watch?v=jGg_1h0qzaM&t=2006s
 import os
 import json
 from ollama import chat

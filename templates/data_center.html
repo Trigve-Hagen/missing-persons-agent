@@ -17,7 +17,7 @@
   {% endif %}
 {% endwith %}
 
-<div class="row mt-5">
+<div class="row">
   <div class="col-md-12">
     <div class="row mb-3">
       <div class="col-md-12">
@@ -67,22 +67,21 @@
       </form>
     </div>
   </div>
-  <div class="row">
+  <div class="row mb-5">
     <div class="col-md-12">
-      {% if display_type == 'json' or not if_parsed %}
-      <div class="col-lg-12">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header border-secondary d-flex justify-content-between align-items-center">
-            <span class="fw-bold font-monospace text-uppercase small">Raw API Payload</span>
-            <button class="btn btn-sm btn-outline-secondary">Copy</button>
-          </div>
-          <div class="card-body overflow-auto" style="max-height: 600px;">
-            <pre class="text-success m-0 p-1"><code>
-              {{ api_data }}
-            </code></pre>
+      {% if display_type == 'json' %}
+        <div class="col-lg-12">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+              <span class="fw-bold font-monospace text-uppercase small">Raw API Payload</span>
+              <button class="btn btn-sm btn-outline-secondary">Copy</button>
+            </div>
+            <div class="card-body overflow-y-auto" style="max-height: 600px;">
+              <!-- Added text-wrap and kept code tag flush to prevent huge indentation spaces -->
+              <pre class="text-success text-break break-word w-100 m-0 p-1" style="white-space: pre-wrap; word-break: break-word;"><code>{{ api_data }}</code></pre>
+            </div>
           </div>
         </div>
-      </div>
       {% else %}
         {% for item in api_data %}
           <table class="table table-striped w-100">

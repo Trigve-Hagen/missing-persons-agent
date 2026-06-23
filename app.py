@@ -1971,7 +1971,6 @@ def data_center():
   person = people_utils.get_person()
   person_name = ""
   api_data = []
-  ifParsed = False
   if person:
     person_name = people_utils.get_person_name(person)
 
@@ -1993,11 +1992,19 @@ def data_center():
     api_data = request_api.get_request(api, api_params)
 
     # flash(f"API Data: {api_data}", "info")
-    api_data, ifParsed = request_api.filter_data(api_data, state)
+    api_data = request_api.filter_data(api_data, state)
 
     # Parse into a Python object, then re-encode with formatting
     # parsed_json = json.loads(api_data)
-    formatted_json = json.dumps(api_data, indent=2)
+  if state.display_type == 'json':
+    formatted_json = json.dumps(api_data, indent=4)
+  else:
+    formatted_json = api_data
+
+    # flash(f"Not Scraper", "info")
+
+  # flash(f"ifParsed: {ifParsed}", "info")
+  # flash(f"formatted_json: {formatted_json}", "info")
 
   return flask.render_template(
     'data_center.html',
@@ -2006,8 +2013,7 @@ def data_center():
     api_params=api_params,
     api_data=formatted_json,
     root_node=getRootNode(),
-    display_type=getDisplayType(),
-    if_parsed=ifParsed
+    display_type=getDisplayType()
   )
 
 @app.route('/filter_data', methods=['POST'])
@@ -2032,11 +2038,16 @@ def filter_data():
 
   request_api = RequestApi()
   api_data = request_api.get_request(api, api_params)
-  api_data, ifParsed = request_api.filter_data(api_data, state)
+  api_data = request_api.filter_data(api_data, state)
+
+  if form_data.get('display_type') == 'json':
+    formatted_json = json.dumps(api_data, indent=4)
+  else:
+    formatted_json = api_data
 
   # flash(f"Variables: {api_data} and {ifParsed}", "danger")
 
-  return flask.render_template('data_center.html', api=api, person_name=person_name, api_params=api_params, api_data=api_data, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'), if_parsed=ifParsed)
+  return flask.render_template('data_center.html', api=api, person_name=person_name, api_params=api_params, api_data=formatted_json, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'))
 
 @app.route('/create/instance/<int:id>', methods=['GET', 'POST'])
 def create_instance(id):
