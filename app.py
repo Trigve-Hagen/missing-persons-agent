@@ -45,6 +45,7 @@ import time
 import json
 import ast
 import logging
+import hashlib
 import subprocess
 from werkzeug.utils import secure_filename
 from config import Config
@@ -57,7 +58,7 @@ from datetime import datetime
 from database.base import Base
 from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
-from database.apis import Api, ApiField
+from database.apis import Api, ApiField, ExternalFeedLogs
 from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Lead
 from classes.practice_llms import PracticeLlms
 from classes.data_extractor import DynamicSkillOrchestrator
@@ -1964,19 +1965,25 @@ def dashboard():
 
   return flask.render_template('dashboard.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
 
-
 @app.route('/data_center')
 def data_center():
   people_utils = PeopleUtils(session=session)
   person = people_utils.get_person()
   person_name = ""
   api_data = []
+
   if person:
     person_name = people_utils.get_person_name(person)
 
   state = session.get(State, 1)
   api = session.execute(select(Api).filter_by(id = state.api)).scalar_one_or_none()
   api_params = session.scalars(select(ApiField).filter_by(owner = api.id)).all()
+
+  state_data = {
+    'api': state.api,
+  }
+  api_select = session.query(Api).all()
+
   if api.type == 'scraper':
     feeds = FeedGenerator(session=session)
     filename, api_data = feeds.get_posts(api, api_params)
@@ -1996,12 +2003,65 @@ def data_center():
   return flask.render_template(
     'data_center.html',
     api=api,
+    apis=api_select,
     person_name=person_name,
     api_params=api_params,
     api_data=formatted_json,
     root_node=getRootNode(),
-    display_type=getDisplayType()
+    display_type=getDisplayType(),
+    data_center_state_data=state_data
   )
+
+@app.route('/save_response_data', methods=['POST'])
+def save_response_data():
+  form_data = request.form
+  if form_data is None:
+    return redirect(url_for('data_center'))
+
+  state = session.get(State, 1)
+  api = session.execute(select(Api).filter_by(id = state.api)).scalar_one_or_none()
+  api_params = session.scalars(select(ApiField).filter_by(owner = api.id)).all()
+
+  request_api = RequestApi()
+  api_data = request_api.get_request(api, api_params)
+  api_data = request_api.filter_data(api_data, state)
+
+  json_string = json.dumps(api_data, sort_keys=True).encode('utf-8')
+  md5_hash = hashlib.md5(json_string).hexdigest()
+
+  try:
+    external_feed_log = session.execute(select(ExternalFeedLogs).filter_by(owner = state.api)).scalar_one_or_none()
+    if external_feed_log:
+      if external_feed_log.rawPayloadHash != md5_hash:
+        external_feed = ExternalFeedLogs(
+          version=external_feed_log.version + 1,
+          rawPayload=api_data,
+          rawPayloadHash=md5_hash,
+          owner=state.api,
+        )
+        session.merge(external_feed)
+        session.commit()
+        flash("External Feed Logs added successfully!", "success")
+    else:
+      external_feed = ExternalFeedLogs(
+        version=1,
+        rawPayload=api_data,
+        rawPayloadHash=md5_hash,
+        owner=state.api,
+      )
+      session.merge(external_feed)
+      session.commit()
+      flash("External Feed Logs added successfully!", "success")
+    return redirect(url_for('data_center'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('data_center'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('data_center'))
 
 @app.route('/filter_data', methods=['POST'])
 def filter_data():
@@ -2012,7 +2072,6 @@ def filter_data():
   state = session.get(State, 1)
   api = session.execute(select(Api).filter_by(id = state.api)).scalar_one_or_none()
   api_params = session.scalars(select(ApiField).filter_by(owner = api.id)).all()
-  state.display_type = form_data.get('display_type')
   state.root_node = form_data.get('root_node')
   session.commit()
 
@@ -2028,7 +2087,7 @@ def filter_data():
   api_data = request_api.filter_data(api_data, state)
   formatted_json = json.dumps(api_data, indent=4)
 
-  return flask.render_template('data_center.html', api=api, person_name=person_name, api_params=api_params, api_data=formatted_json, root_node=form_data.get('root_node'), display_type=form_data.get('display_type'))
+  return flask.render_template('data_center.html', api=api, person_name=person_name, api_params=api_params, api_data=formatted_json, root_node=form_data.get('root_node'))
 
 @app.route('/create/instance/<int:id>', methods=['GET', 'POST'])
 def create_instance(id):
@@ -2449,6 +2508,19 @@ def set_state():
     return redirect(url_for(path, id=form_data.get('edit_id')))
   else:
     return redirect(url_for(path))
+
+@app.route('/set_data_center_state', methods=['POST'])
+def set_data_center_state():
+  form_data = request.form
+  if form_data is None:
+    return redirect(url_for('data_center'))
+
+  state = session.get(State, 1)
+  if state:
+    state.api = form_data.get('api')
+    session.commit()
+
+  return redirect(url_for('data_center'))
 
 @app.context_processor
 def get_state_processor():

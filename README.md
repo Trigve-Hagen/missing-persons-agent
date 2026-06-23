@@ -83,7 +83,7 @@ It answered: You should clean and filter the data before passing it to the AI ag
 
 In the new age of agents APIs will need to offer exact data options to aid in AI development. It would be awesome if all APIs could offer a parameter that sets all matching to exact match. exact_match=True
 
-I will need to list all API and Feeds with possible parameters and build a FilterResponses Class to handle the different filtering needs for each one.
+I will need to list all API and Feeds with possible parameters and build a FilterResponse class to handle the different filtering needs for each one.
 
 [Gen AI Agent Resource](https://github.com/NirDiamant/GenAI_Agents)
 

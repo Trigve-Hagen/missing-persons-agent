@@ -49,13 +49,12 @@ class ExternalFeedLogs(Base):
 
   id = Column("id", Integer, primary_key=True)
   version = Column(Integer, comment="The version of the API or Feed payload.")
-  sourcePlatform = Column("source_platform", NullToEmptyString, comment="Origin name of the automated feed (e.g., 'Amityville-PD-RSS', 'Amber-Alert-API').")
   rawPayload = Column("raw_payload", JSON, nullable=False, comment="Raw json payload returned from the api request.")
   rawPayloadHash = Column("raw_payload_hash", NullToEmptyString, comment="Unique MD5/SHA256 string used to prevent duplicate system entry.")
   owner = Column(Integer, ForeignKey("api.id"))
 
-  def __init__(self, sourcePlatform, rawPayload, rawPayloadHash, owner):
-    self.sourcePlatform = sourcePlatform
+  def __init__(self, version, rawPayload, rawPayloadHash, owner):
+    self.version = version
     self.rawPayload = rawPayload
     self.rawPayloadHash = rawPayloadHash
     self.owner = owner
