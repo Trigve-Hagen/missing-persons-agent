@@ -74,6 +74,9 @@ Build out prompts and questions for LLMs.
 ![Questions Page](./assets/questions.png)
 
 ### Build Tasks and Data Center
+
+![Data Center Page](./assets/data_center.png)
+
 Each API is unique in ways.
 The official FBI Wanted API does not provide a dedicated exact match parameter for keyword queries. It relies on loose keyword matching. If you search for 'John Smith', it will return all references to John and Smith and not the exact match of 'John Smith'.
 
