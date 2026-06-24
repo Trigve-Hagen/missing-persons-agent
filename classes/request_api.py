@@ -42,7 +42,32 @@ class RequestApi:
     # Fallback for other types
     return str(node)
 
-  def filter_data(self, data, state):
+  def filter_loose_keyword(self, api_data, api_params):
+    try:
+      transformed_list = [
+        {param.field: param.value}
+        for param in api_params
+      ]
+
+      data = json.loads(json.dumps(api_data))
+      json_data = [
+        item for item in data
+        if isinstance(item, dict) and any(
+          all(
+            k in item and isinstance(item[k], str) and item[k].lower() == str(v).lower()
+            for k, v in f.items()
+          ) for f in transformed_list
+        )
+      ]
+      if json_data:
+        return json_data
+      else:
+        return api_data
+    except Exception as e:
+      flash(f"An unexpected error occurred: {e}", "danger")
+      return []
+
+  def filter_nodes(self, data, state):
     if state.root_node:
       filter = '$.'+state.root_node
       try:
