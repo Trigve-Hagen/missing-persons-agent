@@ -81,6 +81,10 @@ Build out a page
 
 ![Data Center Page](./assets/data_center.png)
 
+![Feed Logs Page](./assets/feed_logs.png)
+
+![View Feed Logs Page](./assets/view_feed_log.png)
+
 ### Agent UI
 A list of Tasks created.
 
