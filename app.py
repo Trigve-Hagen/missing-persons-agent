@@ -71,7 +71,6 @@ from classes.logging import Logging
 from classes.model_utils import ModelUtils
 from classes.model_manager import ModelManager
 from classes.chat_manager import ChatManager, ChatTester
-# from classes.extras.email_manager import EmailManager
 from classes.chroma_database import ChromaDatabase
 from classes.feed_generator import FeedGenerator
 from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, LeadRepository, Determinator
@@ -1978,6 +1977,7 @@ def data_center():
   state = session.get(State, 1)
   api = session.execute(select(Api).filter_by(id = state.api)).scalar_one_or_none()
   api_params = session.scalars(select(ApiField).filter_by(owner = api.id)).all()
+  model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
 
   state_data = {
     'api': state.api,
@@ -1987,10 +1987,7 @@ def data_center():
   if api.type == 'scraper':
     feeds = FeedGenerator(session=session)
     filename, api_data = feeds.get_posts(api, api_params)
-
-    # Parse into a Python object, then re-encode with formatting
-    # parsed_json = json.loads(api_data)
-    formatted_json = json.dumps(api_data, indent=2)
+    # formatted_json = json.dumps(api_data, indent=2)
 
     flash(f"Data successfully scraped and saved to {filename}", "info")
 
@@ -1998,7 +1995,20 @@ def data_center():
     request_api = RequestApi()
     api_data = request_api.get_request(api, api_params)
     api_data = request_api.filter_data(api_data, state)
-    formatted_json = json.dumps(api_data, indent=4)
+    # formatted_json = json.dumps(api_data, indent=4)
+
+  transformed_list = [
+      {param.field: param.value}
+      for param in api_params
+  ]
+
+  data = json.loads(json.dumps(api_data))
+  json_data = [
+      item for item in data
+      if any(all(item.get(k).lower() == v.lower() for k, v in f.items()) for f in transformed_list)
+  ]
+
+  formatted_json = json.dumps(json_data, indent=2)
 
   return flask.render_template(
     'data_center.html',

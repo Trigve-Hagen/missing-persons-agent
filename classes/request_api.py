@@ -4,7 +4,6 @@ import requests
 import feedparser
 from jsonpath_ng import parse
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
-from classes.filter_response import FilterResponse
 from flask import flash
 
 class RequestApi:
@@ -68,30 +67,6 @@ class RequestApi:
       if api.type == 'api':
         # 3. Process the response if no exception was raised
         data = response.json()
-
-        """ # --- NEW DYNAMIC FILTERING LOGIC ---
-        if 'items' in data and isinstance(data['items'], list):
-          filtered_items = []
-
-          for item in data['items']:
-            # Assume the item is a match until proven otherwise
-            is_match = True
-
-            for key, value in params.items():
-              # Only filter keys that actually exist in the API item dictionary
-              if key in item:
-                # Exact string or type match check
-                if item[key].lower() != value.lower():
-                  flash(f"one: {item[key].lower()} - two: {value.lower()}", "info")
-                  is_match = False
-                  break  # Stop checking this item, it's a mismatch
-
-            if is_match:
-              filtered_items.append(item)
-
-          # Overwrite the items in the response data with the filtered list
-          data['items'] = filtered_items
-        # ------------------------------------ """
 
         return data
 

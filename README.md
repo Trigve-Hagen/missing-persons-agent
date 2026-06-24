@@ -73,72 +73,13 @@ Build out prompts and questions for LLMs.
 
 ![Questions Page](./assets/questions.png)
 
-### Build Tasks and Data Center
+### Data Center
+Build out a page
+- Run Apis, RSS Feeds or Page Scrapes
+- Filter the data if the feed relies on loose keyword matching.
+- When the user is happy they can save the JSON data to the Feed Logs database.
 
 ![Data Center Page](./assets/data_center.png)
-
-Each API is unique in ways.
-The official FBI Wanted API does not provide a dedicated exact match parameter for keyword queries. It relies on loose keyword matching. If you search for 'John Smith', it will return all references to John and Smith and not the exact match of 'John Smith'.
-
-I asked AI: If I have an API like the official FBI Wanted API that does not provide a dedicated exact match parameter for keyword queries. I need data that I can pass to a agent for processing about an investigation. Should I clean the data before passing it to the agent or have the agent pick relevant data from the respose?
-
-It answered: You should clean and filter the data before passing it to the AI agent rather than relying on the agent to pick relevant data from a raw API response. Because the FBI Wanted API relies on loose keyword matching, a query for a specific name can return a massive JSON payload filled with unrelated fugitives, partial matches, or long-closed cases. Passing this raw noise directly to an agent introduces major operational risks and inefficiencies.
-
-In the new age of agents APIs will need to offer exact data options to aid in AI development. It would be awesome if all APIs could offer a parameter that sets all matching to exact match. exact_match=True
-
-I will need to list all API and Feeds with possible parameters and build a FilterResponse class to handle the different filtering needs for each one.
-
-[Gen AI Agent Resource](https://github.com/NirDiamant/GenAI_Agents)
-
-[IBMTechnology](https://www.youtube.com/@IBMTechnology/playlists)
-
-[CLI vrs MCP Servers](https://www.youtube.com/watch?v=g9JIUM0MHgQ)
-
-[The Best LOCAL Agentic Coding Workflow](https://www.youtube.com/watch?v=hfba9dAT6xE)
-
-At the moment I'm trying to learn all the tools I can use when building LLMs so please bear with me. Im only focusing on Ollama, Langchain and langGraph.
-
-- System Prompt
-- AGENT.md
-  - It is loaded into the conversation history very frequently (often at the start of every session or turn). This could be using alot of tokens.
-  - Keep it short (ideally under 200 lines). The immutable rules of the agent.
-- Saving static data from pdfs or relational databases in chunks to vector database so it can be used by a RAG LLM.
-- CLI Commands
-  - Cli commands are built into its training data.
-  - Good when commands map directly to jobs.
-  - Can be chained together on one line.
-- MCP servers
-  - The LLM (The Brain): It evaluates when it needs external help or data. It does not need to be hard-coded with tool APIs.
-  - The MCP Host/Client (The Broker): This is the application you are running (e.g., Cursor, Claude Desktop, or an agent framework like LangChain). It brokers the connection between the LLM and the external world.
-  - The MCP Servers (The Hands): These are distinct, external services (e.g., GitHub, Google Drive, Postgres, Slack, or local file systems). You plug these servers into your MCP Host so your LLM can interact with them.
-    - Resources like files.
-    - Tools @mcp.tool()
-    - Prompts - In the Model Context Protocol (MCP), servers act as pre-defined prompt templates that expose reusable workflows and instructions to your AI client. Instead of forcing users to repeatedly type complex instructions, the MCP server packages these guidelines into ready-to-use menu options, often appearing in your AI interface as slash commands or clickable UI templates.
-    - [MCP Registry](https://github.com/mcp)
-- LSP
-- Skill.md
-  - Skills use Progressive Disclosure to save tokens.
-  - Metadata & Discovery (~100 tokens): The agent only reads the summary (name, description, and triggers) from the skill's frontmatter at the start.
-  - Activation (<5,000 tokens): Only when the agent decides it needs that specific skill does it load the full instruction body
-  - [Agent Skills IO](https://agentskills.io/home)
-  - [Anthropics Skills](https://github.com/anthropics/skills)
-  - [Azure Skills](https://github.com/microsoft/azure-skills)
-  - [DotNet Skills](https://github.com/dotnet/skills)
-- Tools
-  - @tool
-- Agent2Agent Protocol
-  - [a2a-protocol](https://a2a-protocol.org/latest/)
-  - [Agent2Agent](https://github.com/a2aproject/a2a-samples)
-
-[Thinking in LangGraph](https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph)
-
-I decided on building tools and skills that use MCP when possible to get lists of articles and posts from social media to construct timelines, people who have had contact with the missing person to construct persons of interest and accessing public databases for any other information that could be helpful in the investigation. This seems to be the most robust and scalable way to move forward.
-
-I'm also only going to focus on text, capturing audio as text and running the agents to search for clues and connections for now because it seems that images and videos in the scope of gas station cameras will not be so accessible.
-
-What would work wonderfully is a server with pedabytes of storage. A person researching and finding/building API endpoints, RSS Feeds, and scraping web pages. A person working tasks and adding the data found by: The main computer that doing the constant searching by APIs, Rss Feeds and saved data that constantly runs and creates new tasks, the LLM agents. Another person is tweaking and prompting another set of LLMS that are searching the data for clues, leads and connections. Each one of the team is hooked into the server which is the storage unit for all the collected data. Each one of the team has a computer that halls a** with at least a Terabyte of storge and 64 to 132 GB of RAM. The Computer running the Agents needs to have VRAM ad Nvidia GPUs the bigger the better. You can add more people too to have it go faster.
-
-When you build an agent with LangGraph, you will first break it apart into discrete steps called nodes. Then, you will describe the different decisions and transitions from each of your nodes. Finally, you connect nodes together through a shared state that each node can read from and write to.
 
 ### Agent UI
 A list of Tasks created.
@@ -263,8 +204,65 @@ Was thinking this morning about having the program continue out wards in the tre
 
 It would be a good idea I would think to add as many missing people as you can find and the immediate people groups they will have so you can look for people that are in every group. In case the person is involved in a ring of abductions where the same person is doing recruiting or abducting. Search for deleted or blocked accounts in the missing persons list of contacts or accounts that where deleted by the owners who were once friends with the missing person.
 
+I decided on building tools and skills that use MCP when possible to get lists of articles and posts from social media to construct timelines, people who have had contact with the missing person to construct persons of interest and accessing public databases for any other information that could be helpful in the investigation. This seems to be the most robust and scalable way to move forward.
+
+I'm also only going to focus on text, capturing audio as text and running the agents to search for clues and connections for now because it seems that images and videos in the scope of gas station cameras will not be so accessible.
+
+What would work wonderfully is a server with pedabytes of storage. A person researching and finding/building API endpoints, RSS Feeds, and scraping web pages. A person working tasks and adding the data found by: The main computer that doing the constant searching by APIs, Rss Feeds and saved data that constantly runs and creates new tasks, the LLM agents. Another person is tweaking and prompting another set of LLMS that are searching the data for clues, leads and connections. Each one of the team is hooked into the server which is the storage unit for all the collected data. Each one of the team has a computer that halls a** with at least a Terabyte of storge and 64 to 132 GB of RAM. The Computer running the Agents needs to have VRAM ad Nvidia GPUs the bigger the better. You can add more people too to have it go faster.
+
+Each API is unique in ways.
+The official FBI Wanted API does not provide a dedicated exact match parameter for keyword queries. It relies on loose keyword matching. If you search for 'John Smith', it will return all references to John and Smith and not the exact match of 'John Smith'.
+
+I asked AI: If I have an API like the official FBI Wanted API that does not provide a dedicated exact match parameter for keyword queries. I need data that I can pass to a agent for processing about an investigation. Should I clean the data before passing it to the agent or have the agent pick relevant data from the respose?
+
+It answered: You should clean and filter the data before passing it to the AI agent rather than relying on the agent to pick relevant data from a raw API response. Because the FBI Wanted API relies on loose keyword matching, a query for a specific name can return a massive JSON payload filled with unrelated fugitives, partial matches, or long-closed cases. Passing this raw noise directly to an agent introduces major operational risks and inefficiencies.
+
+In the new age of agents APIs will need to offer exact data options to aid in AI development. It would be awesome if all APIs could offer a parameter that sets all matching to exact match. exact_match=True
+
 ### Links
 
 [Invisible Threads](https://blog.ry4n.org/invisible-threads-finding-missing-people-online-7dec4cb038e5).
 
 [Best Practices for Text-to-SQL Use Cases with LLMs](https://www.linkedin.com/pulse/best-practices-text-to-sql-use-cases-llms-dave-thibault-mr9ac/)
+
+[Gen AI Agent Resource](https://github.com/NirDiamant/GenAI_Agents)
+
+[IBMTechnology](https://www.youtube.com/@IBMTechnology/playlists)
+
+[CLI vrs MCP Servers](https://www.youtube.com/watch?v=g9JIUM0MHgQ)
+
+[The Best LOCAL Agentic Coding Workflow](https://www.youtube.com/watch?v=hfba9dAT6xE)
+
+- System Prompt
+- AGENT.md
+  - It is loaded into the conversation history very frequently (often at the start of every session or turn). This could be using alot of tokens.
+  - Keep it short (ideally under 200 lines). The immutable rules of the agent.
+- Saving static data from pdfs or relational databases in chunks to vector database so it can be used by a RAG LLM.
+- CLI Commands
+  - Cli commands are built into its training data.
+  - Good when commands map directly to jobs.
+  - Can be chained together on one line.
+- MCP servers
+  - The LLM (The Brain): It evaluates when it needs external help or data. It does not need to be hard-coded with tool APIs.
+  - The MCP Host/Client (The Broker): This is the application you are running (e.g., Cursor, Claude Desktop, or an agent framework like LangChain). It brokers the connection between the LLM and the external world.
+  - The MCP Servers (The Hands): These are distinct, external services (e.g., GitHub, Google Drive, Postgres, Slack, or local file systems). You plug these servers into your MCP Host so your LLM can interact with them.
+    - Resources like files.
+    - Tools @mcp.tool()
+    - Prompts - In the Model Context Protocol (MCP), servers act as pre-defined prompt templates that expose reusable workflows and instructions to your AI client. Instead of forcing users to repeatedly type complex instructions, the MCP server packages these guidelines into ready-to-use menu options, often appearing in your AI interface as slash commands or clickable UI templates.
+    - [MCP Registry](https://github.com/mcp)
+- LSP
+- Skill.md
+  - Skills use Progressive Disclosure to save tokens.
+  - Metadata & Discovery (~100 tokens): The agent only reads the summary (name, description, and triggers) from the skill's frontmatter at the start.
+  - Activation (<5,000 tokens): Only when the agent decides it needs that specific skill does it load the full instruction body
+  - [Agent Skills IO](https://agentskills.io/home)
+  - [Anthropics Skills](https://github.com/anthropics/skills)
+  - [Azure Skills](https://github.com/microsoft/azure-skills)
+  - [DotNet Skills](https://github.com/dotnet/skills)
+- Tools
+  - @tool
+- Agent2Agent Protocol
+  - [a2a-protocol](https://a2a-protocol.org/latest/)
+  - [Agent2Agent](https://github.com/a2aproject/a2a-samples)
+
+[Thinking in LangGraph](https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph)
