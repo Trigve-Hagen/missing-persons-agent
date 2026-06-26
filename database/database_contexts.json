@@ -1,14 +1,11 @@
 {
-  "tasks": {
-    "description": "Tasks are TODOs.",
+  "phone_numbers": {
+    "description": "Phone numbers associated with a person.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "name": "STRING (The name of the task.)",
-      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
-      "sql_insert_statement": "STRING (The sql insert statement.)",
-      "date_created": "DATETIME (The date the task was created.)",
-      "date_completed": "DATETIME (The date the task was created.)",
-      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
+      "type": "INTEGER (The user defined type of phones. Definitions are created in Category)",
+      "phone_number": "STRING (The phone number.)",
+      "owner": "INTEGER (The persons who uses this phone number.)"
     }
   },
   "events": {
@@ -79,6 +76,15 @@
       "owner": "INTEGER (This will be 0 if a missing person or the id of the missing person.)"
     }
   },
+  "email_addresses": {
+    "description": "Emails associated with a person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of email. Definitions are created in Category)",
+      "email_address": "STRING (The persons email address.)",
+      "owner": "INTEGER (The persons who uses this email.)"
+    }
+  },
   "leads": {
     "description": "Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.",
     "fields": {
@@ -91,13 +97,16 @@
       "owner": "INTEGER (The persons the note is associated with.)"
     }
   },
-  "phone_numbers": {
-    "description": "Phone numbers associated with a person.",
+  "tasks": {
+    "description": "Tasks are TODOs.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of phones. Definitions are created in Category)",
-      "phone_number": "STRING (The phone number.)",
-      "owner": "INTEGER (The persons who uses this phone number.)"
+      "name": "STRING (The name of the task.)",
+      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
+      "sql_insert_statement": "STRING (The sql insert statement.)",
+      "date_created": "DATETIME (The date the task was created.)",
+      "date_completed": "DATETIME (The date the task was created.)",
+      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
     }
   },
   "files": {
@@ -107,15 +116,6 @@
       "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
       "filename": "STRING (The file name.)",
       "owner": "INTEGER (The persons file is associated with.)"
-    }
-  },
-  "email_addresses": {
-    "description": "Emails associated with a person.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of email. Definitions are created in Category)",
-      "email_address": "STRING (The persons email address.)",
-      "owner": "INTEGER (The persons who uses this email.)"
     }
   }
 }

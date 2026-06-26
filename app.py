@@ -61,7 +61,6 @@ from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField, FeedLog
 from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Lead
-from classes.practice_llms import PracticeLlms
 from classes.data_extractor import DynamicSkillOrchestrator
 from classes.request_api import RequestApi
 from classes.selections import Selection
@@ -71,8 +70,7 @@ from classes.resources import Resources
 from classes.logging import Logging
 from classes.model_utils import ModelUtils
 from classes.model_manager import ModelManager
-from classes.extract_leads import ExtractLeads
-from classes.chat_manager import ChatManager, ChatTester
+from classes.chat_manager import ChatManager
 from classes.chroma_database import ChromaDatabase
 from classes.feed_generator import FeedGenerator
 from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, LeadRepository, Determinator
@@ -1983,11 +1981,6 @@ def extract_leads():
 
   feed_log = session.get(FeedLog, form_data.get('id'))
   data = feed_log.rawPayload
-  data[0]['witness_statements'] = (
-    "Witness statement from 06/24/2026. Security footage shows Jane Doe leaving the transit center "
-    "at 11:45 PM heading north toward Elm Street. Her cell phone pinged a tower near the reservoir "
-    "at 12:15 AM before going dark. Family noted she emptied her savings account two days prior."
-  )
 
   # Start the timer
   start_time = time.perf_counter()
@@ -2021,9 +2014,6 @@ def extract_leads():
       flash(f"Failed to parse LLM response.", "danger")
   else:
     flash(f"No data defined.", "info")
-
-  """ extractLeads = ExtractLeads(session=session, model=model)
-  leads = extractLeads.extract_leeds(name, raw_data) """
 
   # End the timer
   end_time = time.perf_counter()
