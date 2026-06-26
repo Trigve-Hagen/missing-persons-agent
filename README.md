@@ -100,6 +100,8 @@ Build out Data Center
 
 ![Extract Links](./assets/extract_and_save_links.png)
 
+![Leads Page](./assets/leads.png)
+
 ### Agent UI
 A list of Tasks created.
 
