@@ -202,7 +202,7 @@ class ChatManager(ChromaDatabase):
 
     return output["answer"]
 
-  def extract_leads(self, model: Model, prompt: Prompt, question: Question, json_response: List[dict]):
+  def extract_leads(self, model: Model, prompt: str, question: str, json_response: List[dict]):
     """Extracts missing person leads using clean key-value serialization and structural Ollama parsing."""
     if not model:
         flash("Error fetching models: Please set a model.", "danger")
@@ -256,9 +256,9 @@ class ChatManager(ChromaDatabase):
             # Step D: Run the streamlined Chain
             chain = chat_prompt_template | structured_llm
             response = chain.invoke({
-                "prompt": prompt.prompt,
+                "prompt": prompt,
                 "context": context_text,
-                "query": question.question
+                "query": question
             })
 
             # 'response' is natively delivered as a validated LeadList Pydantic Object!

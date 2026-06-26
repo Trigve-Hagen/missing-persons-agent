@@ -36,9 +36,13 @@
   <div class="col-12">
     <form class="row g-4" action="/set_lead" method="POST" name="lead" autocomplete="off">
       <input type="hidden" class="form-control" id="lead-id" name="id" value="{{ lead_data.id }}" />
-      <div class="col-8">
+      <div class="col-4">
         <label for="lead-name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="lead-name" name="name" value="{{ lead_data.name }}" required>
+        <input type="text" class="form-control" id="lead-name" name="name" value="{{ lead_data.name }}">
+      </div>
+      <div class="col-md-4">
+        <label for="lead-type" class="form-label">Relationship</label>
+        <input type="text" class="form-control" id="lead-type" name="type" value="{{ lead_data.type }}">
       </div>
       <div class="col-4">
         <label for="lead-owner" class="form-label">Person</label>
@@ -53,10 +57,35 @@
           {% endfor %}
         </select>
       </div>
+      <div class="col-md-6">
+        <label for="lead-email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="lead-email" name="email" value="{{ lead_data.email }}">
+      </div>
+      <div class="col-md-6">
+        <label for="lead-phone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="lead-phone" name="phone" value="{{ lead_data.phone }}">
+      </div>
+      <div class="col-md-6">
+        <label for="lead-dob" class="form-label">DOB</label>
+        <input type="date" class="form-control" id="lead-dob" name="dob" value="{{ lead_data.dob }}">
+      </div>
+      <div class="col-md-6">
+        <label for="lead-reporter" class="form-label">Reporter</label>
+        <select class="form-select" id="lead-reporter" name="reporter">
+          <option value="0">Choose...</option>
+          {% for reporter in reporters %}
+            {% if lead_data.reporter == reporter.id %}
+              <option value="{{ reporter.id }}" selected>{{ reporter.source }}</option>
+            {% else %}
+              <option value="{{ reporter.id }}">{{ reporter.source }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </div>
       <div class="col-9">
-        <label for="lead-lead" class="form-label">Lead</label>
-        <textarea class="form-control" id="lead-lead" name="lead" rows="3">{{ lead_data.lead }}</textarea>
-        <div class="form-text" id="lead-lead-text">Leads related to the missing person that might hold weight in the investigation.</div>
+        <label for="lead-report" class="form-label">Report</label>
+        <textarea class="form-control" id="lead-report" name="report" rows="3">{{ lead_data.report }}</textarea>
+        <div class="form-text" id="lead-report-text">Leads related to the missing person that might hold weight in the investigation.</div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

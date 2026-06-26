@@ -298,17 +298,26 @@ class Lead(Base):
   __table_args__ = {"comment": "This table tracks specific citizen sightings, tips, or law enforcement emergency dispatches."}
 
   id = Column("id", Integer, primary_key=True)
-  name = Column(NullToEmptyString, comment="The name of the note.")
-  email = Column("email_address", NullToEmptyString(255), nullable=False, comment="The persons email address.")
-  phone = Column("phone_number", NullToEmptyString(20), nullable=False, comment="The phone number.")
+  name = Column(NullToEmptyString, default="", comment="The name of the person.")
+  type = Column(NullToEmptyString, default="", comment="Missing Person, Witness, Associate, Person of Interest or Suspect")
+  email = Column("email_address", NullToEmptyString(255), default="", comment="The persons email address.")
+  phone = Column("phone_number", NullToEmptyString(20), default="", comment="The phone number.")
+  dob = Column("data_of_birth", DateTime, default=None, comment="The date of birth of the person.")
   report = Column(Text, comment="Stores the raw narrative, GPS location if provided, reference to agency who repoted it.")
+  ifViewed = Column("if_viewed", Integer, default=0, comment="If lead has beed viewed.")
   reporter = Column(Integer, ForeignKey("feed_logs.id"), comment="The feed_log the lead is reported in.")
   owner = Column(Integer, ForeignKey("people.id"), comment="The persons the note is associated with.")
 
-  def __init__(self, name, lead, owner):
+  def __init__(self, name, type, email, phone, dob, report, ifViewed, reporter, owner):
     self.name = name
-    self.lead = lead
+    self.type = type
+    self.email = email
+    self.phone = phone
+    self.dob = dob
+    self.report = report
+    self.ifViewed = ifViewed
+    self.reporter = reporter
     self.owner = owner
 
   def __repr__(self):
-    return f"Lead: {self.name} Lead Details: {self.lead} "
+    return f"Name: {self.name} Lead Details: {self.report} "

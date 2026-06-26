@@ -31,10 +31,15 @@
         {% for lead in leads %}
           <tr>
               <td scope="row">{{ lead.id }}</td>
-              <td>{{ lead.lead }}</td>
+              <td>{{ lead.report }}</td>
               <td>
                 <a class="btn btn-secondary w-100 text-nowrap" href="{{ url_for('edit_lead', id=lead.id) }}">Edit</a>
-                <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="lead" data-bs-item-id="{{ lead.id }}" data-bs-item="{{ lead.name }}">Delete</a>
+                {% if lead.ifViewed == 0 %}
+                  <a class="btn btn-primary w-100 text-nowrap mt-2" href="{{ url_for('set_viewed', id=lead.id, ifViewed=1) }}">Mark Viewed</a>
+                {% else %}
+                  <a class="btn btn-success w-100 text-nowrap mt-2" href="{{ url_for('set_viewed', id=lead.id, ifViewed=0) }}">Mark Not Viewed</a>
+                {% endif %}
+                <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="lead" data-bs-item-id="{{ lead.id }}" data-bs-item="{{ lead.report }}">Delete</a>
               </td>
           </tr>
         {% endfor %}
@@ -61,9 +66,13 @@
   <div class="col-md-12">
     <form class="row g-4" action="/set_lead" method="POST" name="lead" autocomplete="off">
       <input type="hidden" class="form-control" id="lead-id" name="id" />
-      <div class="col-md-8">
+      <div class="col-md-4">
         <label for="lead-name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="lead-name" name="name" required>
+        <input type="text" class="form-control" id="lead-name" name="name">
+      </div>
+      <div class="col-md-4">
+        <label for="lead-type" class="form-label">Relationship</label>
+        <input type="text" class="form-control" id="lead-type" name="type">
       </div>
       <div class="col-md-4">
         <label for="lead-owner" class="form-label">Person</label>
@@ -74,10 +83,31 @@
           {% endfor %}
         </select>
       </div>
+      <div class="col-md-6">
+        <label for="lead-email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="lead-email" name="email">
+      </div>
+      <div class="col-md-6">
+        <label for="lead-phone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="lead-phone" name="phone">
+      </div>
+      <div class="col-md-6">
+        <label for="lead-dob" class="form-label">DOB</label>
+        <input type="date" class="form-control" id="lead-dob" name="dob">
+      </div>
+      <div class="col-md-6">
+        <label for="lead-reporter" class="form-label">Reporter</label>
+        <select class="form-select" id="lead-reporter" name="reporter">
+          <option value="0">Choose...</option>
+          {% for reporter in reporters %}
+            <option value="{{ reporter.id }}">{{ reporter.source }}</option>
+          {% endfor %}
+        </select>
+      </div>
       <div class="col-md-9">
-        <label for="lead-lead" class="form-label">Lead</label>
-        <textarea class="form-control" id="lead-lead" name="lead" rows="3"></textarea>
-        <div class="form-text" id="lead-lead-text">Leads related to the missing person that might hold weight in the investigation.</div>
+        <label for="lead-report" class="form-label">Report</label>
+        <textarea class="form-control" id="lead-report" name="report" rows="3"></textarea>
+        <div class="form-text" id="lead-report-text">Leads related to the missing person that might hold weight in the investigation.</div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

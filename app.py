@@ -1646,13 +1646,15 @@ def lead():
   total_pages = (total + Selection.per_page - 1) // Selection.per_page
 
   owner_select = session.query(Person).all()
+  reporter_select = session.query(FeedLog).all()
 
   return flask.render_template(
     'lead.html',
     leads=all_leads,
     page=page,
     total_pages=total_pages,
-    owners=owner_select
+    reporters=reporter_select,
+    owners=owner_select,
   )
 
 @app.route('/edit/lead/<int:id>', methods=['GET', 'POST'])
@@ -1665,7 +1667,13 @@ def edit_lead(id):
   lead_data = {
     'id': lead.id,
     'name': lead.name,
-    'lead': lead.lead,
+    'type': lead.type,
+    'email': lead.email,
+    'phone': lead.phone,
+    'dob': lead.dob,
+    'reporter': lead.reporter,
+    'ifViewed': lead.ifViewed,
+    'report': lead.report,
     'owner': lead.owner,
   }
 
@@ -1673,11 +1681,14 @@ def edit_lead(id):
   data, metadatas = repo.get_chroma_data('lead', id)
 
   owner_select = session.query(Person).all()
+  reporter_select = session.query(FeedLog).all()
+
   return flask.render_template(
     'edit_lead.html',
     edit_id=id,
     lead_data=lead_data,
     owners=owner_select,
+    reporters=reporter_select,
     data=data,
     metadatas=metadatas,
   )
@@ -1688,22 +1699,59 @@ def set_lead():
 
   try:
     lead = session.execute(select(Lead).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    formatted_dob_date = None
+    if form_data.get('dob'):
+      formatted_dob_date = datetime.strptime(form_data.get('dob'), '%Y-%m-%d')
     if lead:
       uporadd = "updated"
       lead.name=form_data.get('name')
-      lead.lead=form_data.get('lead')
+      lead.type=form_data.get('type')
+      lead.email=form_data.get('email')
+      lead.phone=form_data.get('phone')
+      lead.dob=formatted_dob_date
+      lead.reporter=form_data.get('reporter')
+      lead.ifViewed=form_data.get('ifViewed')
+      lead.report=form_data.get('report')
       lead.owner=form_data.get('owner')
     else:
       uporadd = "added"
       lead = Lead(
         name=form_data.get('name'),
-        lead=form_data.get('lead'),
+        type=form_data.get('type'),
+        email=form_data.get('email'),
+        phone=form_data.get('phone'),
+        dob=formatted_dob_date,
+        reporter=form_data.get('reporter'),
+        ifViewed=form_data.get('ifViewed'),
+        report=form_data.get('report'),
         owner=form_data.get('owner'),
       )
     session.merge(lead)
     session.commit()
 
     flash(f"Lead {uporadd} successfully!", "success")
+    return redirect(url_for('lead'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('lead'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('lead'))
+
+@app.route('/set/viewed/<int:id>/<int:ifViewed>', methods=['GET', 'POST'])
+def set_viewed(id, ifViewed):
+
+  try:
+    lead = session.execute(select(Lead).filter_by(id = id)).scalar_one_or_none()
+    if lead:
+      lead.ifViewed=ifViewed
+      session.merge(lead)
+      session.commit()
+
+    flash(f"Lead updated successfully!", "success")
     return redirect(url_for('lead'))
   except IntegrityError as e:
     session.rollback()
@@ -1973,11 +2021,40 @@ def extract_leads():
 
   state = session.get(State, 1)
   model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
-  prompt = session.execute(select(Prompt).filter_by(id = state.prompt)).scalar_one_or_none()
-  question = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
+  if not getPrompt():
+    prompt = (
+      """
+      Act as an expert intelligence analyst specializing in missing persons investigations. Your task is to analyze the provided raw data records and accurately extract distinct, actionable investigative leads.
+
+      Adhere to the following analytical rules:
+      1. Identify and categorize individuals based on their explicit relationship to the missing subject (e.g., witness, family, last seen with, person of interest, suspect, or associate).
+      2. Synthesize all relevant investigative context, notes, or background details provided about the individual into the 'context' field.
+      3. If a record contains incomplete contact fields (like missing phone or email), set those specific fields to null, but do not ignore the lead if they are relevant.
+      4. Only extract individuals who have a direct, contextual connection to the case. Do not create duplicate leads for the same individual across multiple records; merge their details into a single, cohesive lead entry.
+      """
+    )
+  else:
+    prompt_obj = session.execute(select(Prompt).filter_by(id = state.prompt)).scalar_one_or_none()
+    prompt = prompt_obj.prompt
+
+  if not getQuestion():
+    question = (
+      f"I am investigating the disappearance of {name}. Extract all leads that may help in finding {sex}."
+    )
+  else:
+    question_obj = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
+    question = question_obj.question
+
   person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
   peopleUtils = PeopleUtils(session=session)
   name = peopleUtils.get_person_name(person)
+
+  sex = 'her'
+  if person.gender == 'male':
+    sex = 'him'
+
+  name_replaced = prompt_obj.prompt.replace("{missing_person}", name)
+  prompt = name_replaced.replace("{sex}", sex)
 
   feed_log = session.get(FeedLog, form_data.get('id'))
   data = feed_log.rawPayload
@@ -1985,31 +2062,32 @@ def extract_leads():
   # Start the timer
   start_time = time.perf_counter()
 
-  # raw_data = json.dumps(data)
-
-  if not getPrompt():
-    flash(f"Upload a prompt and then set it in State.", "danger")
-    return redirect(url_for('task'))
-
-  if not getQuestion():
-    flash(f"Upload a question and then set it in State.", "danger")
-    return redirect(url_for('task'))
-
   manager = ChatManager(session=session, model=model)
   response = manager.extract_leads(model=model, prompt=prompt, question=question, json_response=data)
   if response:
     try:
       for item in response.leads:
-        flash(f"Lead: {item}", "success")
-        """ new_suggestion = Task(
-          type="CodeOptimization",
-          title=item.title,
-          description=item.description,
-          ifComplete=0,
+        if item.date_of_birth:
+          try:
+            date = datetime.strptime(item.date_of_birth, '%Y-%m-%d')
+          except Exception as e:
+            date = None
+        else:
+          date = None
+        new_lead = Lead(
+          name=item.full_name,
+          type=item.relationship_to_subject,
+          email=item.email,
+          phone=item.phone,
+          dob=date,
+          report=item.context,
+          ifViewed=0,
+          reporter=form_data.get('id'),
+          owner=person.id
         )
-        session.add(new_suggestion)
-      session.commit() """
-
+        session.add(new_lead)
+      session.commit()
+      flash(f"New leads saved!", "success")
     except json.JSONDecodeError:
       flash(f"Failed to parse LLM response.", "danger")
   else:
@@ -2741,11 +2819,11 @@ def initialize_database(engine):
 
   if session.query(Question).first() is None:
     q1 = Question(
-      question="I am investigating the disappearance of Nancy Guthrie. What are 10 specific investigative steps, technological strategies, or procedural optimizations I can use to maximize our chances of locating her safely?"
+      question="I am investigating the disappearance of {missing_person}. What are 10 specific investigative steps, technological strategies, or procedural optimizations I can use to maximize our chances of locating {sex} safely?"
     )
     session.add(q1)
     q2 = Question(
-      question="I am investigating the disappearance of Nancy Guthrie. Extract all leads that may help in finding her."
+      question="I am investigating the disappearance of {missing_person}. Extract all leads that may help in finding {sex}."
     )
     session.add(q2)
     state = session.get(State, 1)
