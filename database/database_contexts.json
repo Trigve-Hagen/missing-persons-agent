@@ -1,11 +1,26 @@
 {
-  "leads": {
-    "description": "Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.\n  @TODO Add a field named reporter that stores the id of the person or agency.\n  @TODO Adjust person table to be able to add agencies as well as peeople.",
+  "tasks": {
+    "description": "Tasks are TODOs.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "name": "STRING (The name of the note.)",
-      "lead": "TEXT (Stores the raw narrative, GPS location if provided, reference to agency who repoted it.)",
-      "owner": "INTEGER (The persons the note is associated with.)"
+      "name": "STRING (The name of the task.)",
+      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
+      "sql_insert_statement": "STRING (The sql insert statement.)",
+      "date_created": "DATETIME (The date the task was created.)",
+      "date_completed": "DATETIME (The date the task was created.)",
+      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
+    }
+  },
+  "events": {
+    "description": "Events related to the investigation that can build a timeline.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of Events. Definitions are created in Category)",
+      "name": "STRING (The name of the event.)",
+      "description": "TEXT (The event description.)",
+      "date_from": "DATETIME (The start date of the event.)",
+      "date_to": "DATETIME (The end date of the event if there is one.)",
+      "owner": "INTEGER (The persons the event is associated with.)"
     }
   },
   "addresses": {
@@ -64,25 +79,16 @@
       "owner": "INTEGER (This will be 0 if a missing person or the id of the missing person.)"
     }
   },
-  "tasks": {
-    "description": "Tasks are TODOs.",
+  "leads": {
+    "description": "Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "name": "STRING (The name of the task.)",
-      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
-      "sql_insert_statement": "STRING (The sql insert statement.)",
-      "date_created": "DATETIME (The date the task was created.)",
-      "date_completed": "DATETIME (The date the task was created.)",
-      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
-    }
-  },
-  "files": {
-    "description": "Documents with information related to the investigation.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
-      "filename": "STRING (The file name.)",
-      "owner": "INTEGER (The persons file is associated with.)"
+      "name": "STRING (The name of the note.)",
+      "email_address": "STRING (The persons email address.)",
+      "phone_number": "STRING (The phone number.)",
+      "report": "TEXT (Stores the raw narrative, GPS location if provided, reference to agency who repoted it.)",
+      "reporter": "INTEGER (The feed_log the lead is reported in.)",
+      "owner": "INTEGER (The persons the note is associated with.)"
     }
   },
   "phone_numbers": {
@@ -94,6 +100,15 @@
       "owner": "INTEGER (The persons who uses this phone number.)"
     }
   },
+  "files": {
+    "description": "Documents with information related to the investigation.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
+      "filename": "STRING (The file name.)",
+      "owner": "INTEGER (The persons file is associated with.)"
+    }
+  },
   "email_addresses": {
     "description": "Emails associated with a person.",
     "fields": {
@@ -101,18 +116,6 @@
       "type": "INTEGER (The user defined type of email. Definitions are created in Category)",
       "email_address": "STRING (The persons email address.)",
       "owner": "INTEGER (The persons who uses this email.)"
-    }
-  },
-  "events": {
-    "description": "Events related to the investigation that can build a timeline.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of Events. Definitions are created in Category)",
-      "name": "STRING (The name of the event.)",
-      "description": "TEXT (The event description.)",
-      "date_from": "DATETIME (The start date of the event.)",
-      "date_to": "DATETIME (The end date of the event if there is one.)",
-      "owner": "INTEGER (The persons the event is associated with.)"
     }
   }
 }

@@ -292,8 +292,6 @@ class Event(Base):
 class Lead(Base):
   """
   Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.
-  @TODO Add a field named reporter that stores the id of the person or agency.
-  @TODO Adjust person table to be able to add agencies as well as peeople.
   """
 
   __tablename__ = "leads"
@@ -301,7 +299,10 @@ class Lead(Base):
 
   id = Column("id", Integer, primary_key=True)
   name = Column(NullToEmptyString, comment="The name of the note.")
-  lead = Column(Text, comment="Stores the raw narrative, GPS location if provided, reference to agency who repoted it.")
+  email = Column("email_address", NullToEmptyString(255), nullable=False, comment="The persons email address.")
+  phone = Column("phone_number", NullToEmptyString(20), nullable=False, comment="The phone number.")
+  report = Column(Text, comment="Stores the raw narrative, GPS location if provided, reference to agency who repoted it.")
+  reporter = Column(Integer, ForeignKey("feed_logs.id"), comment="The feed_log the lead is reported in.")
   owner = Column(Integer, ForeignKey("people.id"), comment="The persons the note is associated with.")
 
   def __init__(self, name, lead, owner):

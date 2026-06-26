@@ -11,7 +11,7 @@ from langchain_ollama import ChatOllama
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
+from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser, JsonOutputParser
 from langchain_classic.chains import create_history_aware_retriever
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
 from classes.model_utils import ModelUtils
@@ -19,6 +19,8 @@ from classes.chroma_database import ChromaDatabase
 from classes.tools import get_current_weather
 from datetime import datetime
 from langchain_core.tools import tool
+from langchain_core.documents import Document
+from langchain_community.vectorstores import FAISS
 
 # LangGraph imports
 from typing import Annotated, Sequence
@@ -87,6 +89,19 @@ class Task(BaseModel):
 class ExtractionResult(BaseModel):
     task: Task
 
+class MissingPersonsLead(BaseModel):
+    full_name: Optional[str] = Field(None, description="The full name of the lead.")
+    relationship_to_subject: Optional[str] = Field(
+        None, description="How this person relates to the missing individual (e.g., witness, family, last seen with, person of interest, suspect or associate)."
+    )
+    email: Optional[str] = Field(None, description="The email address if available.")
+    phone: Optional[str] = Field(None, description="The phone number if available.")
+    date_of_birth: Optional[str] = Field(None, description="The date of birth if available.")
+    context: str = Field(description="Context, notes, or details about why they are a lead or what they know.")
+
+class LeadList(BaseModel):
+    leads: List[MissingPersonsLead] = Field(description="List of extracted leads")
+
 # ---------------------------------------------------------
 # State
 # ---------------------------------------------------------
@@ -114,7 +129,7 @@ class ChatManager(ChromaDatabase):
 
     self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     self.vector_store = Chroma(
-      persist_directory=self.persistent_directory,
+      persist_directory=self.investigation_db,
       embedding_function=self.embeddings,
       collection_name=self.collection_name
     )
@@ -186,6 +201,76 @@ class ChatManager(ChromaDatabase):
     )
 
     return output["answer"]
+
+  def extract_leads(self, model: Model, prompt: Prompt, question: Question, json_response: List[dict]):
+    """Extracts missing person leads using clean key-value serialization and structural Ollama parsing."""
+    if not model:
+        flash("Error fetching models: Please set a model.", "danger")
+        return False
+
+    try:
+        # Step A: Rewrite JSON Loop into structured Key-Value schema
+        documents = []
+        for idx, item in enumerate(json_response):
+            # Formats structural items cleanly so the vector/text search retains explicit context
+            lines = [f"{key.replace('_', ' ').title()}: {val}" for key, val in item.items() if val is not None]
+
+            if lines:
+                text_content = f"--- Record #{idx + 1} ---\n" + "\n".join(lines)
+                documents.append(
+                    Document(
+                        page_content=text_content,
+                        metadata=item  # Keeps your original raw dictionary structure intact
+                    )
+                )
+
+        if not documents:
+            flash("Error: No valid data found in json_response to build context.", "warning")
+            return False
+
+        # Step B: Light In-Memory Filtering vs Vector Search Strategy
+        # If your records are under ~50 entries, pass them directly as a consolidated catalog.
+        # If you have hundreds/thousands of rows, uncomment the 3 lines below to use FAISS vector pruning.
+
+        # from langchain_community.embeddings import HuggingFaceEmbeddings
+        # from langchain_community.vectorstores import FAISS
+        # vector_store = FAISS.from_documents(documents, HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"))
+        # documents = vector_store.as_retriever(search_kwargs={"k": 5}).invoke(question.question)
+
+        # Merge selected records into a readable database dump for the LLM
+        context_text = "\n\n".join([doc.page_content for doc in documents])
+
+        # Step C: Setup Ollama Native Structured Output Engine
+        base_llm = ChatOllama(model=model.model, temperature=0.7)
+        structured_llm = base_llm.with_structured_output(LeadList, method="json_schema")
+
+        # Cleaned prompt: Output formatting requirements are handled programmatically by Ollama
+        chat_prompt_template = ChatPromptTemplate.from_template(
+            "{prompt}\n\n"
+            "Context (Raw Data Records):\n"
+            "{context}\n\n"
+            "User Request: {query}"
+        )
+
+        try:
+            # Step D: Run the streamlined Chain
+            chain = chat_prompt_template | structured_llm
+            response = chain.invoke({
+                "prompt": prompt.prompt,
+                "context": context_text,
+                "query": question.question
+            })
+
+            # 'response' is natively delivered as a validated LeadList Pydantic Object!
+            return response
+
+        except Exception as e:
+            flash(f"Error fetching chain: {e}", "danger")
+            return False
+
+    except Exception as e:
+        flash(f"Error prompting models: {e}", "danger")
+        return False
 
   def suggestions(self, model: Model, prompt: Prompt, question: Question):
     """ Not sure if this will ever be used. """

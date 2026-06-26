@@ -1,5 +1,6 @@
 import os
 import json
+import ollama
 from ollama import chat
 from flask import flash
 from sqlalchemy import select
@@ -9,8 +10,8 @@ from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_ollama import ChatOllama
 from pydantic import BaseModel, Field
-from typing import List, Optional
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from typing import List, Optional, Union, Annotated, Sequence, TypedDict
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder,  PromptTemplate
 from langchain_core.output_parsers import StrOutputParser, PydanticOutputParser
 from langchain_classic.chains import create_history_aware_retriever
 from langchain_classic.chains.combine_documents import create_stuff_documents_chain
@@ -22,13 +23,12 @@ from langchain_core.tools import tool
 
 # LangGraph imports
 from typing import Annotated, Sequence
-from typing_extensions import TypedDict
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
-from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
-
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import BaseMessage, ToolMessage, SystemMessage
 from langchain_core.callbacks import BaseCallbackHandler
 
 # ---------------------------------------------------------
@@ -70,31 +70,30 @@ class AgentLogHandler(BaseCallbackHandler):
 # Pydantic Schemas for Structured LLM Output
 # ---------------------------------------------------------
 
-class Task(BaseModel):
-    name: str = Field(..., description="The name of the task.")
-    sql_table_name: str = Field(..., description="The name of the SQL table where the data fits best.")
-    sql_insert_statement: str = Field(..., description="The exact raw SQL INSERT statement to execute.")
-    if_complete: int = Field(default=0, description="Default to 0.")
-    dateCreated: datetime = Field(default_factory=datetime.now)
-    dateCompleted: Optional[datetime] = Field(default=None)
+class MissingPersonsLead(BaseModel):
+  full_name: Optional[str] = Field(None, description="The full name of the lead.")
+  relationship_to_subject: Optional[str] = Field(
+    None, description="How this person relates to the missing individual (e.g., witness, family, last seen with, person of interest, suspect or associate)."
+  )
+  email: Optional[str] = Field(None, description="The email address if available.")
+  phone: Optional[str] = Field(None, description="The phone number if available.")
+  date_of_birth: Optional[str] = Field(None, description="The date of birth if available.")
+  context: str = Field(description="Context, notes, or details about the lead.")
 
-class ExtractionResult(BaseModel):
-    task: Task
 
 # ---------------------------------------------------------
 # State
 # ---------------------------------------------------------
 
 class AgentState(TypedDict):
-  messages: List[HumanMessage]
+  messages: Annotated[Sequence[BaseMessage], add_messages]
 
 # ---------------------------------------------------------
 # LLMs
 # ---------------------------------------------------------
 
-class PracticeLlms(ChromaDatabase):
+class ExtractLeads(ChromaDatabase):
   def __init__(self, session, model):
-    # 1. Pass the required argument up to the parent class
     super().__init__(session=session)
 
     self.llm = ChatOllama(
@@ -103,29 +102,44 @@ class PracticeLlms(ChromaDatabase):
       num_ctx=model.num_ctx
     )
 
-    self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    self.vector_store = Chroma(
-      persist_directory=self.investigation_db,
-      embedding_function=self.embeddings,
-      collection_name=self.collection_name
+    self.model=model.model
+
+
+  # 2. Free, offline extraction function using Ollama
+  def run_agent(self, name: str, raw_payload_text: str) -> MissingPersonsLead:
+    system_prompt = (
+      "Act as an expert intelligence analyst specializing in missing persons investigations. "
+      "Your task is to analyze the text and extract leads. "
+      f"Focus strictly on leads involving the target person {name}. "
+      "Extract leads defined by keywords like witness, family, last seen with, person of interest, suspect or associate. "
+      "Extract the context of the lead defining ther relationship to the target person. "
+      "Populate the requested JSON schema fields using facts directly from the text. "
+      "Do not assume facts. If the target person is not found, return an empty leads array."
     )
-    self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 3})
 
-    self.agent = self.build_graph()
+    user_prompt = (
+      f"Extract the lead information from the following text:\n{raw_payload_text}"
+    )
 
-  def process(self, state: StateGraph) -> AgentState:
-    response = self.llm.invoke(state['messages'])
-    print(f"AI: {response.content}")
-    return state
+    # Fire request to your local engine
+    response = ollama.chat(
+      model=self.model,
+      messages=[
+        {'role': 'system', 'content': system_prompt},
+        {'role': 'user', 'content': user_prompt}
+      ],
+      # Forces the local Qwen model to conform exactly to your Pydantic schema
+      format=MissingPersonsLead.model_json_schema()
+    )
 
-  def build_graph(self):
-    graph = StateGraph(AgentState)
-    graph.add_node("process", self.process)
-    graph.add_edge(START, "process")
-    graph.add_edge("process", END)
+    # 3. Parse the raw string response back into your Pydantic object
+    return response['message']['content']
+    # return LeadExtractionContainer.model_validate_json(response_text)
 
-    return graph.compile()
-
-  def invoke(self, user_input: str):
-    return self.agent.invoke({"messages": [HumanMessage(content=user_input)]})
-
+  def extract_leeds(self, person: str, data: str):
+    try:
+      # Run the local agent
+      return self.run_agent(person, data)
+    except Exception as e:
+      flash(f"Execution Error: {e}", "danger")
+      flash(f"Ensure Ollama is actively running in your background menu bar!", "info")

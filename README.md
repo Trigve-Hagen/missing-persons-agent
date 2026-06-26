@@ -1,6 +1,8 @@
 # Missing Persons Agent
 On Off the cuff they talked about the suspect being someone who is doing ederly abuse or scamming the elderly. There are reports on the news about elderly people being coerced into moving their money from there accounts and loosing large amounts of money. You might want to investigate those to see if they might be connected. Also check if there is money being pulled from Nancy's accounts.
 
+She would need a way to get medication possible in house doctor. Look for places selling the medicine she uses. People other than her filling her perscription. People other than the patient filling the prscription for people. Doctors or nurses missing days of work. A wheelchair to move her around. Search video survelance in the area for a person in a wheelchair.
+
 Has anyone checked if there was a google maps request on the days before the Guthrie disappearance going to the Guthrie house? Everyone uses google maps for directions. Get a list of the people who went to her house if that's possible. Can phone or onstar systems be tracked in an area? Possible i-watch. Can you get a warrent for Apple and Google and other cell phone providers to possibly GPS track anyone in that area at the time of the doorbell camera? Other types of apps that could be used for directions besides google like hunting apps? And the car could have been parked a ways away. But they would need a car to take her away so any car roughly newer than 2010 has GPS tracking.
 
 Almost any electronic device you carry or use regularly has GPS tracking or location-sharing capabilities. If police secure a warrant, they can utilize a vast network of personal devices, vehicle logs, and digital trails to definitively place a suspect at a specific crime scene or trace their exact route at any given time. Anything from computers to ez-pass to watches have GPS. Search google with: 'What all has GPS tracking? What could a criminal be carring that could give away where they where at a specific time if someone had a warrent?' It returns a list of electronics that could leave a trail.
@@ -11,7 +13,7 @@ The top navigation apps offer distinct advantages depending on your needs:
 - Waze: Highly regarded for commuting, it uses crowdsourced data to alert you of accidents, road hazards, and police activity.
 - Specialty Apps: For off-the-grid trips without a data connection, offline apps like HERE WeGo work well. If you ride a bike frequently, specialized apps like Komoot are great for mapping trail
 
-## qwen3.5:latest
+## qwen3.5:latest or phi4
 This is the best model I found to use for my laptop that has 8 + 16 GB RAM, 1 Terabyte of ROM and running on a CPU.
 
 Missing Persons is a tool to investigate missing persons. Its built in python and uses pywebview to turn a flask website into a desktop application and then bundle it with pyinstaller into an executable that is installed using Inno. It uses [Ollama](https://ollama.com/download/windows) models. Ollama lets you build and work on an LLM model locally on your computer so you maintain your privacy.
@@ -74,10 +76,19 @@ Build out prompts and questions for LLMs.
 ![Questions Page](./assets/questions.png)
 
 ### Data Center
-Build out a page
+Build out Data Center
 - Run Apis, RSS Feeds or Page Scrapes
 - Filter the data if the feed relies on loose keyword matching.
 - When the user is happy they can save the JSON data to the Feed Logs database.
+- View feed log page
+  - Use agent to scan and create leads out of the json
+    - name
+    - email
+    - phone
+    - context of the lead
+  - Pull out and list all document or image Links with FQDN(fully qualified domain name)
+    - view link
+    - save link to files
 
 ![Data Center Page](./assets/data_center.png)
 
@@ -123,10 +134,12 @@ With the idea of
   - Prompting the model for connections that could lead to finding the person.
   - When new data is found the data is added to the entity as a [OSINT](https://github.com/cipher387/API-s-for-OSINT) row.
 
-The database have 3 separate collections.
+Collections.
   - database - Stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
   - investigation - Stores data from the person, email, phone, alias, address, event and note table data for investigating.
-  - investigator - SStores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
+  - investigator - Stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
+  - vehicles_of_interest - Stores vehicle descriptions.
+  - witness_statements - Stores witness statements.
 
 ### edge cases -
 someone has the same set of clothing as an unidentified man/women at the crime scene. How would the agent connect the two?
@@ -265,6 +278,9 @@ In the new age of agents APIs will need to offer exact data options to aid in AI
   - [DotNet Skills](https://github.com/dotnet/skills)
 - Tools
   - @tool
+- CrewAI
+  - Works with langgraph and ollama.
+  - Allows you to use sub agents to handle task simultaniously.
 - Agent2Agent Protocol
   - [a2a-protocol](https://a2a-protocol.org/latest/)
   - [Agent2Agent](https://github.com/a2aproject/a2a-samples)

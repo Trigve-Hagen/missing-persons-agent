@@ -47,6 +47,7 @@ import ast
 import logging
 import hashlib
 import subprocess
+import re
 from werkzeug.utils import secure_filename
 from config import Config
 from flask import Flask, request, session, current_app, redirect, flash, render_template, url_for, jsonify
@@ -70,6 +71,7 @@ from classes.resources import Resources
 from classes.logging import Logging
 from classes.model_utils import ModelUtils
 from classes.model_manager import ModelManager
+from classes.extract_leads import ExtractLeads
 from classes.chat_manager import ChatManager, ChatTester
 from classes.chroma_database import ChromaDatabase
 from classes.feed_generator import FeedGenerator
@@ -353,6 +355,7 @@ def edit_file(id):
 
 @app.route('/edit/file/vector/<int:id>/<string:file_id>/<string:vector_id>', methods=['GET', 'POST'])
 def edit_file_vectors(id, file_id, vector_id):
+   # @TODO validate file_id, vector_id
   try:
     pdf_repo = PdfRepository(session=session)
     data = pdf_repo.get_vector_by_ids([vector_id])
@@ -1964,17 +1967,107 @@ def dashboard():
 
   return flask.render_template('dashboard.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
 
+@app.route('/extract_leads', methods=['POST'])
+def extract_leads():
+  form_data = request.form
+  if form_data is None:
+    return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+  state = session.get(State, 1)
+  model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+  prompt = session.execute(select(Prompt).filter_by(id = state.prompt)).scalar_one_or_none()
+  question = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
+  person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
+  peopleUtils = PeopleUtils(session=session)
+  name = peopleUtils.get_person_name(person)
+
+  feed_log = session.get(FeedLog, form_data.get('id'))
+  data = feed_log.rawPayload
+  data[0]['witness_statements'] = (
+    "Witness statement from 06/24/2026. Security footage shows Jane Doe leaving the transit center "
+    "at 11:45 PM heading north toward Elm Street. Her cell phone pinged a tower near the reservoir "
+    "at 12:15 AM before going dark. Family noted she emptied her savings account two days prior."
+  )
+
+  # Start the timer
+  start_time = time.perf_counter()
+
+  # raw_data = json.dumps(data)
+
+  if not getPrompt():
+    flash(f"Upload a prompt and then set it in State.", "danger")
+    return redirect(url_for('task'))
+
+  if not getQuestion():
+    flash(f"Upload a question and then set it in State.", "danger")
+    return redirect(url_for('task'))
+
+  manager = ChatManager(session=session, model=model)
+  response = manager.extract_leads(model=model, prompt=prompt, question=question, json_response=data)
+  if response:
+    try:
+      for item in response.leads:
+        flash(f"Lead: {item}", "success")
+        """ new_suggestion = Task(
+          type="CodeOptimization",
+          title=item.title,
+          description=item.description,
+          ifComplete=0,
+        )
+        session.add(new_suggestion)
+      session.commit() """
+
+    except json.JSONDecodeError:
+      flash(f"Failed to parse LLM response.", "danger")
+  else:
+    flash(f"No data defined.", "info")
+
+  """ extractLeads = ExtractLeads(session=session, model=model)
+  leads = extractLeads.extract_leeds(name, raw_data) """
+
+  # End the timer
+  end_time = time.perf_counter()
+  execution_time = end_time - start_time
+
+  # Split total seconds into whole minutes and remaining seconds
+  minutes, seconds = divmod(execution_time, 60)
+
+  flash(f"Execution Time: {int(minutes)} minutes {seconds:.2f} seconds", "success")
+
+  return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+@app.route('/save_links', methods=['POST'])
+def save_links():
+  form_data = request.form
+  if form_data is None:
+    return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+  flash(f"Were here.", "success")
+
+  return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+def extract_links(data):
+  urls = []
+
+  # If the current element is a dictionary, loop through values
+  if isinstance(data, dict):
+    for value in data.values():
+      urls.extend(extract_links(value))
+
+  # If the current element is a list, loop through items
+  elif isinstance(data, list):
+    for item in data:
+      urls.extend(extract_links(item))
+
+  # If the element is a string, check if it is a link
+  elif isinstance(data, str):
+    if data.startswith(("http://", "https://")):
+      urls.append(data)
+
+  return urls
+
 @app.route('/data_center')
 def data_center():
-
-  """ people_utils = PeopleUtils(session=session)
-  person = people_utils.get_person()
-  person_name = ""
-  api_data = []
-
-  if person:
-    person_name = people_utils.get_person_name(person) """
-
   state = session.get(State, 1)
   api = session.execute(select(Api).filter_by(id = state.api)).scalar_one_or_none()
   api_params = session.scalars(select(ApiField).filter_by(owner = api.id)).all()
@@ -2082,7 +2175,10 @@ def feed_log():
 def feed_log_view(id):
   feed_log = session.get(FeedLog, id)
   formatted_json = json.dumps(feed_log.rawPayload, indent=2)
-  return flask.render_template('feed_log_view.html', formatted_json=formatted_json)
+
+  all_links = extract_links(feed_log.rawPayload)
+
+  return flask.render_template('feed_log_view.html', feed_log=feed_log, formatted_json=formatted_json, all_links=all_links)
 
 @app.route('/filter_data', methods=['POST'])
 def filter_data():
@@ -2122,7 +2218,7 @@ def create_instance(id):
 
 @app.route('/set/state/<string:type>/<int:id>', methods=['GET', 'POST'])
 def link_set_state(type, id):
-
+  # @TODO validate type
   state = session.get(State, 1)
   if state:
     try:
@@ -2620,21 +2716,37 @@ def initialize_database(engine):
     session.add(a1)
     session.commit()
 
-  """ if session.query(Model).first() is None:
+  if session.query(Model).first() is None:
     resource = Resources()
     models = resource.ollama_models()
     for model in models['models']:
-      m1 = Model(name=model.model, model=model.model, type="ollama", system="")
+      m1 = Model(name=model.model, model=model.model, type="ollama", num_ctx=2048, temperature=5)
       session.add(m1)
-      session.commit() """
+      session.commit()
+
+    state = session.get(State, 1)
+    state.model = 1
+    session.commit()
 
   if session.query(Prompt).first() is None:
     p1 = Prompt(
       prompt="You are an expert criminal investigator, forensic analyst, and search-and-rescue strategist. Your objective is to help me optimize my approach to an active missing person case. Analyze the scenario detailed in the question below and provide 10 highly actionable, evidence-based suggestions that prioritize investigative efficiency and subject safety."
     )
     session.add(p1)
+    p2 = Prompt(
+      """
+      Act as an expert intelligence analyst specializing in missing persons investigations. Your task is to analyze the provided raw data records and accurately extract distinct, actionable investigative leads.
+
+      Adhere to the following analytical rules:
+      1. Identify and categorize individuals based on their explicit relationship to the missing subject (e.g., witness, family, last seen with, person of interest, suspect, or associate).
+      2. Synthesize all relevant investigative context, notes, or background details provided about the individual into the 'context' field.
+      3. If a record contains incomplete contact fields (like missing phone or email), set those specific fields to null, but do not ignore the lead if they are relevant.
+      4. Only extract individuals who have a direct, contextual connection to the case. Do not create duplicate leads for the same individual across multiple records; merge their details into a single, cohesive lead entry.
+      """
+    )
+    session.add(p2)
     state = session.get(State, 1)
-    state.prompt = 1
+    state.prompt = 2
     session.commit()
 
   if session.query(Question).first() is None:
@@ -2642,8 +2754,12 @@ def initialize_database(engine):
       question="I am investigating the disappearance of Nancy Guthrie. What are 10 specific investigative steps, technological strategies, or procedural optimizations I can use to maximize our chances of locating her safely?"
     )
     session.add(q1)
+    q2 = Question(
+      question="I am investigating the disappearance of Nancy Guthrie. Extract all leads that may help in finding her."
+    )
+    session.add(q2)
     state = session.get(State, 1)
-    state.question = 1
+    state.question = 2
     session.commit()
 
 def update_height(window):
