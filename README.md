@@ -1,6 +1,8 @@
 # Missing Persons Agent
 On Off the cuff they talked about the suspect being someone who is doing ederly abuse or scamming the elderly. There are reports on the news about elderly people being coerced into moving their money from there accounts and loosing large amounts of money. You might want to investigate those to see if they might be connected. Also check if there is money being pulled from Nancy's accounts.
 
+For the record I support the Pima County sheriffs department. I believe they and the FBI are doing a great job. I hope that everyone will work together to expidite finding Nancy Guthrie.
+
 She would need a way to get medication possible in house doctor. Look for places selling the medicine she uses. People other than her filling her perscription. People other than the patient filling the prscription for people. Doctors or nurses missing days of work. A wheelchair to move her around. Search video survelance in the area for a person in a wheelchair.
 
 Has anyone checked if there was a google maps request on the days before the Guthrie disappearance going to the Guthrie house? Everyone uses google maps for directions. Get a list of the people who went to her house if that's possible. Can phone or onstar systems be tracked in an area? Possible i-watch. Can you get a warrent for Apple and Google and other cell phone providers to possibly GPS track anyone in that area at the time of the doorbell camera? Other types of apps that could be used for directions besides google like hunting apps? And the car could have been parked a ways away. But they would need a car to take her away so any car roughly newer than 2010 has GPS tracking.

@@ -11,6 +11,8 @@ env/
 
 # Experimental
 classes/extras/
+assets/models/
+assets/audio-samples/
 
 # Environment Variables
 .env
