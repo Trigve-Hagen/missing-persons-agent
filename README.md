@@ -15,10 +15,9 @@ The top navigation apps offer distinct advantages depending on your needs:
 - Waze: Highly regarded for commuting, it uses crowdsourced data to alert you of accidents, road hazards, and police activity.
 - Specialty Apps: For off-the-grid trips without a data connection, offline apps like HERE WeGo work well. If you ride a bike frequently, specialized apps like Komoot are great for mapping trail
 
-### Tracking Emails
-Tracking Emails via C++ or Binary AnalysisYou cannot track a live email moving through the internet using C++, but you can write C++ code or analyze email binaries (raw .eml / .msg files) to uncover tracking mechanisms:
-- 1. Parsing Email Headers
-  - You can write a C++ program to parse the raw text header of an email. This reveals the digital footprint of the message:
+### Tracking Emails via C++
+You cannot track a live email moving through the internet using C++, but you can write C++ code or analyze email binaries (raw .eml / .msg files) to uncover tracking mechanisms:
+- 1. Parsing Email Headers - You can write a C++ program to parse the raw text header of an email. This reveals the digital footprint of the message:
   - Received Headers: Shows every server the email passed through.
   - IP Addresses: Exposes the originating server's location.
   - Timestamps: Tracks the exact time of transit between servers.
@@ -29,6 +28,8 @@ Tracking Emails via C++ or Binary AnalysisYou cannot track a live email moving t
 - 3. Analyzing Compiled Email Clients - If you are reverse-engineering a compiled binary (like a malicious email client or malware):
   - Hardcoded SMTP: Look for embedded strings showing server IPs or credentials.
   - API Calls: Search for network functions like connect() or socket libraries pointing to mail ports (25, 465, 587).
+
+If someone is versed enough to remove tracking could they be a programmer?
 
 ## phi4
 This is the best model I found to use for my laptop that has 8 + 16 GB RAM, 1 Terabyte of ROM and running on a CPU.

@@ -28,17 +28,17 @@
     <div class="card border-0 shadow-sm h-100">
       <div class="card-header border-secondary d-flex justify-content-between align-items-center">
         <span class="fw-bold font-monospace text-uppercase small">Raw API Payload</span>
-        <div class="justify-content-end">
+        <div class="d-flex gap-2">
           <form action="/extract_leads" method="POST" name="extract_leads">
             <input type="hidden" name="id" value="{{ feed_log.id }}">
             <div class="col-12">
-              <button class="btn btn-primary" type="submit">Extract Leads</button>
+              <button class="btn btn-primary w-100" type="submit">Extract Leads</button>
             </div>
           </form>
           <form action="/extract_events" method="POST" name="extract_events">
             <input type="hidden" name="id" value="{{ feed_log.id }}">
             <div class="col-12">
-              <button class="btn btn-primary" type="submit">Extract Events</button>
+              <button class="btn btn-primary w-100" type="submit">Extract Timeline Events</button>
             </div>
           </form>
         </div>
