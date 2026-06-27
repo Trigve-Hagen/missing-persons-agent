@@ -28,12 +28,20 @@
     <div class="card border-0 shadow-sm h-100">
       <div class="card-header border-secondary d-flex justify-content-between align-items-center">
         <span class="fw-bold font-monospace text-uppercase small">Raw API Payload</span>
-        <form action="/extract_leads" method="POST" name="extract_leads">
-          <input type="hidden" name="id" value="{{ feed_log.id }}">
-          <div class="col-12">
-            <button class="btn btn-primary" type="submit">Extract Leads</button>
-          </div>
-        </form>
+        <div class="justify-content-end">
+          <form action="/extract_leads" method="POST" name="extract_leads">
+            <input type="hidden" name="id" value="{{ feed_log.id }}">
+            <div class="col-12">
+              <button class="btn btn-primary" type="submit">Extract Leads</button>
+            </div>
+          </form>
+          <form action="/extract_events" method="POST" name="extract_events">
+            <input type="hidden" name="id" value="{{ feed_log.id }}">
+            <div class="col-12">
+              <button class="btn btn-primary" type="submit">Extract Events</button>
+            </div>
+          </form>
+        </div>
       </div>
       <div class="card-body overflow-y-auto" style="max-height: 600px;">
         <pre class="text-success text-break break-word w-100 m-0 p-1" style="white-space: pre-wrap; word-break: break-word;"><code>{{ formatted_json }}</code></pre>

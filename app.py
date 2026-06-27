@@ -2063,7 +2063,7 @@ def extract_leads():
   start_time = time.perf_counter()
 
   manager = ChatManager(session=session, model=model)
-  response = manager.extract_leads(model=model, prompt=prompt, question=question, json_response=data)
+  response = manager.extract_data(model=model, prompt=prompt, question=question, json_response=data, structure="leads")
   if response:
     try:
       for item in response.leads:
@@ -2088,6 +2088,101 @@ def extract_leads():
         session.add(new_lead)
       session.commit()
       flash(f"New leads saved!", "success")
+    except json.JSONDecodeError:
+      flash(f"Failed to parse LLM response.", "danger")
+  else:
+    flash(f"No data defined.", "info")
+
+  # End the timer
+  end_time = time.perf_counter()
+  execution_time = end_time - start_time
+
+  # Split total seconds into whole minutes and remaining seconds
+  minutes, seconds = divmod(execution_time, 60)
+
+  flash(f"Execution Time: {int(minutes)} minutes {seconds:.2f} seconds", "success")
+
+  return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+@app.route('/extract_events', methods=['POST'])
+def extract_events():
+  form_data = request.form
+  if form_data is None:
+    return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+  state = session.get(State, 1)
+  model = session.execute(select(Model).filter_by(id = state.model)).scalar_one_or_none()
+  if not getPrompt():
+    prompt = (
+      """
+      You are an expert digital forensics AI agent specializing in missing persons investigations. Your primary objective is to analyze messy, unstructured, or semi-structured JSON data (such as phone logs, chat histories, bank statements, witness interviews, or location pings) and extract a highly accurate, chronological timeline.
+
+      ### Critical Operational Directives:
+      1. Chronological Accuracy: Prioritize establishing the sequence of events. Use the 'timestamp_raw' to capture exactly what the file says, and normalize it to 'timestamp_iso' whenever possible.
+      2. Objective Extraction: Do not speculate, invent details, or assume emotional states. Only extract factual actions, locations, interactions, and timestamps explicitly stated or strongly implied by metadata.
+      3. Source Attribution: Always document where the information came from in the 'evidence_source' field (e.g., "Bank Transaction Log", "Sister's Text Message").
+      4. Verification Tracking: Mark 'verifiable' as True ONLY if the event is anchored by objective data like GPS, digital timestamps, or video. Mark as False if it comes from an anecdotal interview or memory.
+
+      ### Formatting:
+      You must output your analysis strictly adhering to the provided Pydantic schema structure. Ensure no trailing commas or invalid JSON formatting exist in your final response.
+      """
+    )
+  else:
+    prompt_obj = session.execute(select(Prompt).filter_by(id = state.prompt)).scalar_one_or_none()
+    prompt = prompt_obj.prompt
+
+  if not getQuestion():
+    question = (
+      f"I am investigating the disappearance of {name}. Extract all events that may help in finding {sex}."
+    )
+  else:
+    question_obj = session.execute(select(Question).filter_by(id = state.question)).scalar_one_or_none()
+    question = question_obj.question
+
+  person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
+  peopleUtils = PeopleUtils(session=session)
+  name = peopleUtils.get_person_name(person)
+
+  sex = 'her'
+  if person.gender == 'male':
+    sex = 'him'
+
+  name_replaced = prompt_obj.prompt.replace("{missing_person}", name)
+  prompt = name_replaced.replace("{sex}", sex)
+
+  feed_log = session.get(FeedLog, form_data.get('id'))
+  data = feed_log.rawPayload
+
+  # Start the timer
+  start_time = time.perf_counter()
+
+  manager = ChatManager(session=session, model=model)
+  response = manager.extract_data(model=model, prompt=prompt, question=question, json_response=data, structure="events")
+  if response:
+    try:
+      for item in response.events:
+        flash(f"New event {item}", "success")
+        """ if item.date_of_birth:
+          try:
+            date = datetime.strptime(item.date_of_birth, '%Y-%m-%d')
+          except Exception as e:
+            date = None
+        else:
+          date = None
+        new_event = Event(
+          name=item.full_name,
+          type=item.relationship_to_subject,
+          email=item.email,
+          phone=item.phone,
+          dob=date,
+          report=item.context,
+          ifViewed=0,
+          reporter=form_data.get('id'),
+          owner=person.id
+        )
+        session.add(new_event)
+      session.commit()
+      flash(f"New events saved!", "success") """
     except json.JSONDecodeError:
       flash(f"Failed to parse LLM response.", "danger")
   else:

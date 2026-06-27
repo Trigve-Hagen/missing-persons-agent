@@ -102,6 +102,23 @@ class MissingPersonsLead(BaseModel):
 class LeadList(BaseModel):
     leads: List[MissingPersonsLead] = Field(description="List of extracted leads")
 
+class MissingPersonsEvent(BaseModel):
+    title: str = Field(description="A short, descriptive title of the event (e.g., 'Last Seen at Gas Station').")
+    timestamp_raw: str = Field(description="The exact text representing the time or date as found in the source json.")
+    timestamp_iso: Optional[datetime] = Field(None, description="The standardized ISO 8601 datetime object. Leave null if incomplete or unknown.")
+    location: Optional[str] = Field(None,  description="Physical location name, address, or coordinates where the event occurred.")
+    description: str = Field(description="Detailed narrative of what happened, including specific actions and behaviors.")
+    involved_parties: List[str] = Field(
+        default_factory=list,
+        description="Names or descriptions of people interacting with or observing the missing person."
+    )
+    evidence_source: str = Field(description="The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').")
+    verifiable: bool = Field(description="True if confirmed by physical/digital evidence; False if it relies on unverified hearsay.")
+    confidence_score: float = Field(description="Agent's confidence in the accuracy of this timeline entry, from 0.0 (low) to 1.0 (high).")
+
+class EventList(BaseModel):
+    events: List[MissingPersonsEvent] = Field(description="List of extracted events")
+
 # ---------------------------------------------------------
 # State
 # ---------------------------------------------------------
@@ -202,8 +219,8 @@ class ChatManager(ChromaDatabase):
 
     return output["answer"]
 
-  def extract_leads(self, model: Model, prompt: str, question: str, json_response: List[dict]):
-    """Extracts missing person leads using clean key-value serialization and structural Ollama parsing."""
+  def extract_data(self, model: Model, prompt: str, question: str, json_response: List[dict], structure: str):
+    """Extracts missing person leads or events using clean key-value serialization and structural Ollama parsing."""
     if not model:
         flash("Error fetching models: Please set a model.", "danger")
         return False
@@ -242,7 +259,10 @@ class ChatManager(ChromaDatabase):
 
         # Step C: Setup Ollama Native Structured Output Engine
         base_llm = ChatOllama(model=model.model, temperature=0.7)
-        structured_llm = base_llm.with_structured_output(LeadList, method="json_schema")
+        if structure == 'leads':
+          structured_llm = base_llm.with_structured_output(LeadList, method="json_schema")
+        else:
+          structured_llm = base_llm.with_structured_output(EventList, method="json_schema")
 
         # Cleaned prompt: Output formatting requirements are handled programmatically by Ollama
         chat_prompt_template = ChatPromptTemplate.from_template(
