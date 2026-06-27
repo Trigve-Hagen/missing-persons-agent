@@ -1,4 +1,75 @@
 {
+  "phone_numbers": {
+    "description": "Phone numbers associated with a person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of phones. Definitions are created in Category)",
+      "phone_number": "STRING (The phone number.)",
+      "owner": "INTEGER (The persons who uses this phone number.)"
+    }
+  },
+  "events": {
+    "description": "Events related to the investigation that can build a timeline.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of Events. Definitions are created in Category)",
+      "name": "STRING (The name of the event.)",
+      "description": "TEXT (The event description.)",
+      "date_from": "DATETIME (The start date of the event.)",
+      "date_to": "DATETIME (The end date of the event if there is one.)",
+      "owner": "INTEGER (The persons the event is associated with.)"
+    }
+  },
+  "addresses": {
+    "description": "Addresses associated with a person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of address. Definitions are created in Category)",
+      "if_current": "INTEGER (If current address.)",
+      "if_crime_scene": "INTEGER (If crime scene address.)",
+      "name": "STRING (The user defined name of address.)",
+      "address_1": "STRING (The address.)",
+      "address_2": "STRING (The apartment number associated with the address.)",
+      "city": "STRING (The city associated with the address.)",
+      "state": "STRING (The state associated with the address.)",
+      "zip_5": "INTEGER (The 5 digit zip code associated with the address.)",
+      "zip_4": "INTEGER (The 4 digit zip code associated with the address.)",
+      "description": "TEXT (The description.)",
+      "date_from": "DATETIME (The date of move in.)",
+      "date_to": "DATETIME (The date of move out.)",
+      "owner": "INTEGER (The persons who uses this address.)"
+    }
+  },
+  "aliases": {
+    "description": "Aliases associated with a person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "first_name": "STRING (The persons first name.)",
+      "middle_name": "STRING (The persons middle name.)",
+      "last_name": "STRING (The persons last name.)",
+      "sir_name": "STRING (The persons sir name.)",
+      "suffix": "STRING (The persons suffix name.)",
+      "owner": "INTEGER (The persons who uses this alias.)"
+    }
+  },
+  "files": {
+    "description": "Documents with information related to the investigation.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
+      "filename": "STRING (The file name.)",
+      "owner": "INTEGER (The persons file is associated with.)"
+    }
+  },
+  "email_addresses": {
+    "description": "Emails associated with a person.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "INTEGER (The user defined type of email. Definitions are created in Category)",
+      "email_address": "STRING (The persons email address.)",
+      "owner": "INTEGER (The persons who uses this email.)"
+    }
+  },
   "tasks": {
     "description": "Tasks are TODOs.",
     "fields": {
@@ -48,77 +119,6 @@
       "missing": "DATETIME (The date the missing person went missing or the date that the person of interest met the missing person.)",
       "description": "TEXT (A place to add more descriptive information about the person.)",
       "owner": "INTEGER (This will be 0 if a missing person or the id of the missing person.)"
-    }
-  },
-  "phone_numbers": {
-    "description": "Phone numbers associated with a person.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of phones. Definitions are created in Category)",
-      "phone_number": "STRING (The phone number.)",
-      "owner": "INTEGER (The persons who uses this phone number.)"
-    }
-  },
-  "events": {
-    "description": "Events related to the investigation that can build a timeline.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of Events. Definitions are created in Category)",
-      "name": "STRING (The name of the event.)",
-      "description": "TEXT (The event description.)",
-      "date_from": "DATETIME (The start date of the event.)",
-      "date_to": "DATETIME (The end date of the event if there is one.)",
-      "owner": "INTEGER (The persons the event is associated with.)"
-    }
-  },
-  "email_addresses": {
-    "description": "Emails associated with a person.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of email. Definitions are created in Category)",
-      "email_address": "STRING (The persons email address.)",
-      "owner": "INTEGER (The persons who uses this email.)"
-    }
-  },
-  "files": {
-    "description": "Documents with information related to the investigation.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
-      "filename": "STRING (The file name.)",
-      "owner": "INTEGER (The persons file is associated with.)"
-    }
-  },
-  "addresses": {
-    "description": "Addresses associated with a person.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of address. Definitions are created in Category)",
-      "if_current": "INTEGER (If current address.)",
-      "if_crime_scene": "INTEGER (If crime scene address.)",
-      "name": "STRING (The user defined name of address.)",
-      "address_1": "STRING (The address.)",
-      "address_2": "STRING (The apartment number associated with the address.)",
-      "city": "STRING (The city associated with the address.)",
-      "state": "STRING (The state associated with the address.)",
-      "zip_5": "INTEGER (The 5 digit zip code associated with the address.)",
-      "zip_4": "INTEGER (The 4 digit zip code associated with the address.)",
-      "description": "TEXT (The description.)",
-      "date_from": "DATETIME (The date of move in.)",
-      "date_to": "DATETIME (The date of move out.)",
-      "owner": "INTEGER (The persons who uses this address.)"
-    }
-  },
-  "aliases": {
-    "description": "Aliases associated with a person.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "first_name": "STRING (The persons first name.)",
-      "middle_name": "STRING (The persons middle name.)",
-      "last_name": "STRING (The persons last name.)",
-      "sir_name": "STRING (The persons sir name.)",
-      "suffix": "STRING (The persons suffix name.)",
-      "owner": "INTEGER (The persons who uses this alias.)"
     }
   }
 }
