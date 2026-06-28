@@ -33,6 +33,8 @@ If someone is versed enough to remove tracking could they be a programmer?
 
 Today around 11:30am - 06/28/2026 I passed a guy who seemed to be around 28 years old, one armed sleeved with tattos carring a black umbrella who seemed to have the same walk and feel as the guy in the video. He was smoking weed. He was on Peabody Street one block from the Walmart as I was returning from the store on the McDonalds side of the street. I'm not sure whether to report this or not. It was more a sense than definative.. He seemed to be mexican, short hair on the side curled back on the top, 200 lbs 5 foot 10 inches.
 
+This is the second time I thought I got a glimps os someone resembling the figure in the video. The first time was a couple of moths ago and the person even entered the building I live in. Same bood type and walk although then he had a hoody on.
+
 ## phi4
 This is the best model I found to use for my laptop that has 8 + 16 GB RAM, 1 Terabyte of ROM and running on a CPU.
 
