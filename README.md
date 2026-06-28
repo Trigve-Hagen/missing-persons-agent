@@ -31,7 +31,7 @@ You cannot track a live email moving through the internet using C++, but you can
 
 If someone is versed enough to remove tracking could they be a programmer?
 
-Today around 11:30am - 06/28/2026 I passed a guy around who seemed around 28 years old, one armed sleeved tattos carring a black umbrella who seemed to have the same walk and feel as the guy in the video. He was smoking weed. He was on Peabody Street one block from the Walmart as I was returning from the store on the McDonalds side of the street. I'm not sure whether to report this or not. It was more a sense than definative.. He seamed mexican and 200 lbs 5 foot 10 inches.
+Today around 11:30am - 06/28/2026 I passed a guy who seemed to be around 28 years old, one armed sleeved with tattos carring a black umbrella who seemed to have the same walk and feel as the guy in the video. He was smoking weed. He was on Peabody Street one block from the Walmart as I was returning from the store on the McDonalds side of the street. I'm not sure whether to report this or not. It was more a sense than definative.. He seemed to be mexican, short hair on the side curled back on the top, 200 lbs 5 foot 10 inches.
 
 ## phi4
 This is the best model I found to use for my laptop that has 8 + 16 GB RAM, 1 Terabyte of ROM and running on a CPU.
