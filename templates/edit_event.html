@@ -37,14 +37,34 @@
     <form class="row g-4" action="/set_event" method="POST" name="event" autocomplete="off">
       <input type="hidden" class="form-control" id="event-id" name="id" value="{{ event_data.id }}" />
       <div class="col-6">
-        <label for="event-type" class="form-label">Event Type</label>
-        <select class="form-select" id="event-type" name="type" required>
-          <option value="">Choose...</option>
-          {% for type in eventTypes %}
-            {% if event_data.type == type.id %}
-              <option value="{{ type.id }}" selected>{{ type.name }}</option>
+        <label for="event-title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="event-title" name="title" value="{{ event_data.title }}" required>
+      </div>
+      <div class="col-3">
+        <label for="event-date" class="form-label">Date</label>
+        <input type="date" class="form-control" id="event-date" name="date" value="{{ event_data.date }}">
+      </div>
+      <div class="col-3">
+        <label for="event-time" class="form-label">Time</label>
+        <input type="time" class="form-control" id="event-time" name="time" value="{{ event_data.time }}">
+      </div>
+      <div class="col-6">
+        <label for="event-location" class="form-label">Location</label>
+        <input type="text" class="form-control" id="location" name="location" value="{{ event_data.location }}">
+      </div>
+      <div class="col-6">
+        <label for="event-source" class="form-label">Source</label>
+        <input type="text" class="form-control" id="source" name="source" value="{{ event_data.source }}">
+      </div>
+      <div class="col-6">
+        <label for="event-reporter" class="form-label">Reporter</label>
+        <select class="form-select" id="event-reporter" name="reporter">
+          <option value="0">Choose...</option>
+          {% for reporter in reporters %}
+            {% if event_data.reporter == reporter.id %}
+              <option value="{{ reporter.id }}" selected>{{ reporter.source }}</option>
             {% else %}
-              <option value="{{ type.id }}">{{ type.name }}</option>
+              <option value="{{ reporter.id }}">{{ reporter.source }}</option>
             {% endif %}
           {% endfor %}
         </select>
@@ -63,21 +83,9 @@
         </select>
       </div>
       <div class="col-12">
-        <label for="event-name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="event-name" name="name" value="{{ event_data.name }}" required>
-      </div>
-      <div class="col-6">
-        <label for="event-date-from" class="form-label">Date From or Date</label>
-        <input type="date" class="form-control" id="event-date-from" name="dateFrom" value="{{ event_data.dateFrom }}" required>
-      </div>
-      <div class="col-6">
-        <label for="event-date-to" class="form-label">Date To</label>
-        <input type="date" class="form-control" id="event-date-to" name="dateTo" value="{{ event_data.dateTo }}">
-      </div>
-      <div class="col-12">
         <label for="event-description" class="form-label">Description</label>
         <textarea class="form-control" id="event-description" name="description" rows="3">{{ event_data.description }}</textarea>
-        <div class="form-text" id="event-description-text">Events related to the missing person that might hold weight in the investigation.</div>
+        <div class="form-text" id="event-description-text">Events related to the missing person that represent a point on a timeline.</div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

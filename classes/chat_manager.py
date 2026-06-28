@@ -104,17 +104,11 @@ class LeadList(BaseModel):
 
 class MissingPersonsEvent(BaseModel):
     title: str = Field(description="A short, descriptive title of the event (e.g., 'Last Seen at Gas Station').")
-    timestamp_raw: str = Field(description="The exact text representing the time or date as found in the source json.")
-    timestamp_iso: Optional[datetime] = Field(None, description="The standardized ISO 8601 datetime object. Leave null if incomplete or unknown.")
+    date: str = Field(description="The exact text representing the date as found in the source json formated as the default html input type of date.")
+    time: str = Field(description="The exact text representing the time as found in the source json formated as the default html input type of time.")
     location: Optional[str] = Field(None,  description="Physical location name, address, or coordinates where the event occurred.")
     description: str = Field(description="Detailed narrative of what happened, including specific actions and behaviors.")
-    involved_parties: List[str] = Field(
-        default_factory=list,
-        description="Names or descriptions of people interacting with or observing the missing person."
-    )
-    evidence_source: str = Field(description="The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').")
-    verifiable: bool = Field(description="True if confirmed by physical/digital evidence; False if it relies on unverified hearsay.")
-    confidence_score: float = Field(description="Agent's confidence in the accuracy of this timeline entry, from 0.0 (low) to 1.0 (high).")
+    source: str = Field(description="The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').")
 
 class EventList(BaseModel):
     events: List[MissingPersonsEvent] = Field(description="List of extracted events")

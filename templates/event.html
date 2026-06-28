@@ -31,10 +31,10 @@
         {% for event in events %}
           <tr>
               <td scope="row">{{ event.id }}</td>
-              <td>{{ event.name }}</td>
+              <td>{{ event.title }}</td>
               <td>
                 <a class="btn btn-secondary w-100 text-nowrap" href="{{ url_for('edit_event', id=event.id) }}">Edit</a>
-                <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="event" data-bs-item-id="{{ event.id }}" data-bs-item="{{ event.name }}">Delete</a>
+                <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="event" data-bs-item-id="{{ event.id }}" data-bs-item="{{ event.title }}">Delete</a>
               </td>
           </tr>
         {% endfor %}
@@ -62,11 +62,31 @@
     <form class="row g-4" action="/set_event" method="POST" name="event" autocomplete="off">
       <input type="hidden" class="form-control" id="event-id" name="id" />
       <div class="col-6">
-        <label for="event-type" class="form-label">Event Type</label>
-        <select class="form-select" id="event-type" name="type" required>
-          <option value="">Choose...</option>
-          {% for type in eventTypes %}
-            <option value="{{ type.id }}">{{ type.name }}</option>
+        <label for="event-title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+      </div>
+      <div class="col-3">
+        <label for="event-date" class="form-label">Date</label>
+        <input type="date" class="form-control" id="event-date" name="date">
+      </div>
+      <div class="col-3">
+        <label for="event-time" class="form-label">Time</label>
+        <input type="time" class="form-control" id="event-time" name="time">
+      </div>
+      <div class="col-6">
+        <label for="event-location" class="form-label">Location</label>
+        <input type="text" class="form-control" id="location" name="location">
+      </div>
+      <div class="col-6">
+        <label for="event-source" class="form-label">Source</label>
+        <input type="text" class="form-control" id="source" name="source">
+      </div>
+      <div class="col-md-6">
+        <label for="event-reporter" class="form-label">Reporter</label>
+        <select class="form-select" id="event-reporter" name="reporter">
+          <option value="0">Choose...</option>
+          {% for reporter in reporters %}
+            <option value="{{ reporter.id }}">{{ reporter.source }}</option>
           {% endfor %}
         </select>
       </div>
@@ -80,21 +100,9 @@
         </select>
       </div>
       <div class="col-12">
-        <label for="event-name" class="form-label">Name</label>
-        <input type="text" class="form-control" id="event-name" name="name" value="" required>
-      </div>
-      <div class="col-6">
-        <label for="event-date-from" class="form-label">Date From or Date</label>
-        <input type="date" class="form-control" id="event-date-from" name="dateFrom" required>
-      </div>
-      <div class="col-6">
-        <label for="event-date-to" class="form-label">Date To</label>
-        <input type="date" class="form-control" id="event-date-to" name="dateTo">
-      </div>
-      <div class="col-12">
         <label for="event-description" class="form-label">Description</label>
         <textarea class="form-control" id="event-description" name="description" rows="3"></textarea>
-        <div class="form-text" id="event-description-text">Events related to the missing person that might hold weight in the investigation.</div>
+        <div class="form-text" id="event-description-text">Events related to the missing person that represent a point on a timeline.</div>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>

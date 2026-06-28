@@ -6,6 +6,6 @@
   "email_addresses": "CREATE TABLE email_addresses (id INTEGER NOT NULL, type INTEGER, email_address VARCHAR(255) NOT NULL, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))",
   "phone_numbers": "CREATE TABLE phone_numbers (id INTEGER NOT NULL, type INTEGER, phone_number VARCHAR(20) NOT NULL, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))",
   "files": "CREATE TABLE files (id INTEGER NOT NULL, type VARCHAR, filename VARCHAR NOT NULL, owner INTEGER, PRIMARY KEY (id), UNIQUE (filename), FOREIGN KEY(owner) REFERENCES people (id))",
-  "events": "CREATE TABLE events (id INTEGER NOT NULL, type INTEGER, name VARCHAR NOT NULL, description TEXT NOT NULL, date_from DATETIME NOT NULL, date_to DATETIME, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(owner) REFERENCES people (id))",
+  "events": "CREATE TABLE events (id INTEGER NOT NULL, title VARCHAR NOT NULL, description TEXT NOT NULL, location VARCHAR, date DATE, time TIME, source VARCHAR, reporter INTEGER, owner INTEGER NOT NULL, PRIMARY KEY (id), FOREIGN KEY(reporter) REFERENCES feed_logs (id), FOREIGN KEY(owner) REFERENCES people (id))",
   "leads": "CREATE TABLE leads (id INTEGER NOT NULL, name VARCHAR, type VARCHAR, email_address VARCHAR(255), phone_number VARCHAR(20), data_of_birth DATETIME, report TEXT, if_viewed INTEGER, reporter INTEGER, owner INTEGER, PRIMARY KEY (id), FOREIGN KEY(reporter) REFERENCES feed_logs (id), FOREIGN KEY(owner) REFERENCES people (id))"
 }

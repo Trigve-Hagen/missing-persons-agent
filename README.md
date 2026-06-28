@@ -41,6 +41,10 @@ If you are looking to upgrade to a new computer and you want to use missing pers
 You will need to download Ollama first. They have a great selection of models to use. The different parts of the application rely on the values you set in Application State. Fill them in before running any part of the application.<br /><br />
 Gathered information is saved to Person, Phones, Emails, Addresses, Aliases, Events and Reports first so you can edit it. The data once cleaned up and validated needs to be then saved to the vector database for the LLM to use. There is a file entity to use to upload any image, Pdfs, Excels or Word docs.
 
+You can change models so when you get a better computer with VRAM and NVIDIA GPU you can run larger models.
+You can change the system_prompts(prompts) if you are a prompt engineer and know how to fine tune them. There is a default that no matter what you can always revert to.
+You can change user_querys(questions) if you are a prompt engineer and know how to fine tune them. There is a default that no matter what you can always revert to.
+
 ## The Build
 If you are good with python
 - clone the repo
@@ -121,6 +125,9 @@ Build out Data Center
 ![Extract Links](./assets/extract_and_save_links.png)
 
 ![Leads Page](./assets/leads.png)
+
+### Timeline for each Person
+A list of events recorded for each person who has a role in the investigation ordered in a timeline.
 
 ### Agent UI
 A list of Tasks created.

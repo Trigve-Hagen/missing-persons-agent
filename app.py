@@ -55,7 +55,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import create_engine, inspect, exc, select, update, func
 from sqlalchemy_utils import database_exists
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime
+from datetime import datetime, date
+from datetime import timezone
+from dateutil import parser
 from database.base import Base
 from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
@@ -66,6 +68,7 @@ from classes.request_api import RequestApi
 from classes.selections import Selection
 from classes.process_files import ProcessFiles
 from classes.people_utils import PeopleUtils, ValueOptions
+from classes.datetime_utils import DateTimeUtils
 from classes.resources import Resources
 from classes.logging import Logging
 from classes.model_utils import ModelUtils
@@ -1494,10 +1497,10 @@ def edit_email(id):
       return redirect(url_for('email'))
 
     email_data = {
-        'id': email.id,
-        'type': email.type,
-        'email': email.email,
-        'owner': email.owner
+      'id': email.id,
+      'type': email.type,
+      'email': email.email,
+      'owner': email.owner
     }
     stmt = select(Category).where(Category.type == "emailType")
     emailType_select = session.execute(stmt).scalars().all()
@@ -1546,6 +1549,7 @@ def event():
   stmt = select(Category).where(Category.type == "eventType")
   eventType_select = session.execute(stmt).scalars().all()
   owner_select = session.query(Person).all()
+  reporter_select = session.query(FeedLog).all()
 
   return flask.render_template(
     'event.html',
@@ -1553,6 +1557,7 @@ def event():
     page=page,
     total_pages=total_pages,
     eventTypes=eventType_select,
+    reporters=reporter_select,
     owners=owner_select
   )
 
@@ -1564,11 +1569,13 @@ def edit_event(id):
 
     event_data = {
       'id': event.id,
-      'type': event.type,
-      'name': event.name,
-      'dateFrom': event.dateFrom.strftime('%Y-%m-%d'),
-      'dateTo': to.strftime('%Y-%m-%d') if (to := event.dateTo) else None,
+      'title': event.title,
+      'date': event.date,
+      'time': event.time,
       'description': event.description,
+      'location': event.location,
+      'source': event.source,
+      'reporter': event.reporter,
       'owner': event.owner
     }
 
@@ -1578,12 +1585,15 @@ def edit_event(id):
     stmt = select(Category).where(Category.type == "eventType")
     eventType_select = session.execute(stmt).scalars().all()
     owner_select = session.query(Person).all()
+    reporter_select = session.query(FeedLog).all()
+
     return flask.render_template(
       'edit_event.html',
       edit_id=id,
       event_data=event_data,
       eventTypes=eventType_select,
       owners=owner_select,
+      reporters=reporter_select,
       data=data,
       metadatas=metadatas,
     )
@@ -1593,24 +1603,35 @@ def set_event():
   form_data = request.form
   try:
     event = session.execute(select(Event).filter_by(id = form_data.get('id'))).scalar_one_or_none()
-    formatted_dateFrom_date = datetime.strptime(form_data.get('dateFrom'), '%Y-%m-%d')
-    formatted_dateTo_date = datetime.strptime(date_str, '%Y-%m-%d') if (date_str := form_data.get('dateTo')) else None
+
+    formatted_date = None
+    if form_data.get('date'):
+      formatted_date = datetime.strptime(form_data.get('date'), '%Y-%m-%d')
+
+    formatted_time = None
+    if form_data.get('time'):
+      formatted_time = datetime.strptime(form_data.get('time'), "%H:%M").time()
+
     if event:
       uporadd = "updated"
-      event.type=form_data.get('type')
-      event.name=form_data.get('name')
-      event.dateFrom=formatted_dateFrom_date
-      event.dateTo=formatted_dateTo_date
+      event.title=form_data.get('title')
+      event.date=formatted_date
+      event.time=formatted_time
       event.description=form_data.get('description')
+      event.location=form_data.get('location')
+      event.source=form_data.get('source')
+      event.reporter=form_data.get('reporter')
       event.owner=form_data.get('owner')
     else:
       uporadd = "added"
       event = Event(
-        type=form_data.get('type'),
-        name=form_data.get('name'),
-        dateFrom=formatted_dateFrom_date,
-        dateTo=formatted_dateTo_date,
+        title=form_data.get('title'),
+        date=formatted_date,
+        time=formatted_time,
         description=form_data.get('description'),
+        location=form_data.get('location'),
+        source=form_data.get('source'),
+        reporter=form_data.get('reporter'),
         owner=form_data.get('owner'),
       )
     session.merge(event)
@@ -2118,10 +2139,9 @@ def extract_events():
       You are an expert digital forensics AI agent specializing in missing persons investigations. Your primary objective is to analyze messy, unstructured, or semi-structured JSON data (such as phone logs, chat histories, bank statements, witness interviews, or location pings) and extract a highly accurate, chronological timeline.
 
       ### Critical Operational Directives:
-      1. Chronological Accuracy: Prioritize establishing the sequence of events. Use the 'timestamp_raw' to capture exactly what the file says, and normalize it to 'timestamp_iso' whenever possible.
+      1. Chronological Accuracy: Prioritize establishing the sequence of events. Use the 'datetime' to capture the date and time, and normalize it to a DateTime object whenever possible.
       2. Objective Extraction: Do not speculate, invent details, or assume emotional states. Only extract factual actions, locations, interactions, and timestamps explicitly stated or strongly implied by metadata.
       3. Source Attribution: Always document where the information came from in the 'evidence_source' field (e.g., "Bank Transaction Log", "Sister's Text Message").
-      4. Verification Tracking: Mark 'verifiable' as True ONLY if the event is anchored by objective data like GPS, digital timestamps, or video. Mark as False if it comes from an anecdotal interview or memory.
 
       ### Formatting:
       You must output your analysis strictly adhering to the provided Pydantic schema structure. Ensure no trailing commas or invalid JSON formatting exist in your final response.
@@ -2161,28 +2181,45 @@ def extract_events():
   if response:
     try:
       for item in response.events:
-        flash(f"New event {item}", "success")
-        """ if item.date_of_birth:
-          try:
-            date = datetime.strptime(item.date_of_birth, '%Y-%m-%d')
-          except Exception as e:
-            date = None
-        else:
-          date = None
+        try:
+          if DateTimeUtils.is_iso_format(item.date):
+            raw_date = item.date[:10]
+            formatted_date = datetime.strptime(raw_date, '%Y-%m-%d')
+          else:
+            formatted_date = datetime.strptime(item.date, '%Y-%m-%d')
+        except Exception as e:
+          formatted_date = None
+
+
+        try:
+          time_str = item.time.lower().strip()
+          if 'morning' in time_str:
+            # Crucial: .time() must be called at the end
+            formatted_time = datetime.strptime("7 AM", "%I %p").time()
+          elif 'evening' in time_str:
+            formatted_time = datetime.strptime("7 PM", "%I %p").time()
+          elif 'am' in time_str or 'pm' in time_str:
+            formatted_time = datetime.strptime(item.time.strip(), "%I:%M %p").time()
+          else:
+            formatted_time = datetime.strptime(item.time.strip(), "%H:%M:%S").time()
+        except Exception as e:
+          # SQL Alchemy Time columns accept Python's None
+          # Do NOT use an empty string "" here
+          formatted_time = None
+
         new_event = Event(
-          name=item.full_name,
-          type=item.relationship_to_subject,
-          email=item.email,
-          phone=item.phone,
-          dob=date,
-          report=item.context,
-          ifViewed=0,
+          title=item.title,
+          date=formatted_date,
+          time=formatted_time,
+          location=item.location,
+          description=item.description,
+          source=item.source,
           reporter=form_data.get('id'),
           owner=person.id
         )
         session.add(new_event)
+        flash(f"New events saved! {item}", "success")
       session.commit()
-      flash(f"New events saved!", "success") """
     except json.JSONDecodeError:
       flash(f"Failed to parse LLM response.", "danger")
   else:
@@ -2497,7 +2534,6 @@ def delete_item():
   cat_email_count = session.query(Email).filter_by(type=id).count()
   cat_phone_count = session.query(Phone).filter_by(type=id).count()
   cat_file_count = session.query(File).filter_by(type=id).count()
-  cat_event_count = session.query(Event).filter_by(type=id).count()
   if table_type == 'category':
     if int(id) <= 6:
       flash(f"You cannot delete initial categories. You can only update the name.", "danger")
@@ -2516,9 +2552,6 @@ def delete_item():
       return redirect(url_for('category'))
     if cat_file_count > 0:
       flash(f"Cannot delete: {table_type} has {cat_file_count} associated files. Delete them first.", "danger")
-      return redirect(url_for('category'))
-    if cat_event_count > 0:
-      flash(f"Cannot delete: {table_type} has {cat_event_count} associated events. Delete them first.", "danger")
       return redirect(url_for('category'))
 
   # Specific check for Person child records
@@ -2908,8 +2941,22 @@ def initialize_database(engine):
       """
     )
     session.add(p2)
+    p3 = Prompt(
+      """
+      You are an expert digital forensics AI agent specializing in missing persons investigations. Your primary objective is to analyze messy, unstructured, or semi-structured JSON data (such as phone logs, chat histories, bank statements, witness interviews, or location pings) and extract a highly accurate, chronological timeline.
+
+      ### Critical Operational Directives:
+      1. Chronological Accuracy: Prioritize establishing the sequence of events. Use the 'datetime' to capture the date and time, and normalize it to a DateTime object whenever possible.
+      2. Objective Extraction: Do not speculate, invent details, or assume emotional states. Only extract factual actions, locations, interactions, and timestamps explicitly stated or strongly implied by metadata.
+      3. Source Attribution: Always document where the information came from in the 'evidence_source' field (e.g., "Bank Transaction Log", "Sister's Text Message").
+
+      ### Formatting:
+      You must output your analysis strictly adhering to the provided Pydantic schema structure. Ensure no trailing commas or invalid JSON formatting exist in your final response.
+      """
+    )
+    session.add(p3)
     state = session.get(State, 1)
-    state.prompt = 2
+    state.prompt = 3
     session.commit()
 
   if session.query(Question).first() is None:
@@ -2921,8 +2968,12 @@ def initialize_database(engine):
       question="I am investigating the disappearance of {missing_person}. Extract all leads that may help in finding {sex}."
     )
     session.add(q2)
+    q3 = Question(
+      question="I am investigating the disappearance of {missing_person}. Extract all events that may help in finding {sex}."
+    )
+    session.add(q3)
     state = session.get(State, 1)
-    state.question = 2
+    state.question = 3
     session.commit()
 
 def update_height(window):

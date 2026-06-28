@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func, Text
+from sqlalchemy import ForeignKey, Column, String, Integer, CHAR, DateTime, Boolean, func, Text, Date, Time
 from database.base import Base, NullToEmptyString
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -265,29 +265,27 @@ class Event(Base):
   __table_args__ = {"comment": "This table stores events associated with persons. In the future they will be the base information for timelines."}
 
   id = Column("id", Integer, primary_key=True)
-  type = Column(Integer, default=6, comment="The user defined type of Events. Definitions are created in Category")
-  name = Column(NullToEmptyString, nullable=False, comment="The name of the event.")
+  title = Column(NullToEmptyString, nullable=False, comment="A short, descriptive title of the event (e.g., 'Last Seen at Gas Station').")
   description = Column(Text, nullable=False, comment="The event description.")
-  dateFrom = Column("date_from", DateTime, nullable=False, comment="The start date of the event.")
-  dateTo = Column("date_to", DateTime, default=None, comment="The end date of the event if there is one.")
+  location = Column(NullToEmptyString, default="", comment="Physical location name, address, or coordinates where the event occurred..")
+  date = Column(Date, default=None, comment="The date of the event.")
+  time = Column(Time, default=None, comment="The time of the event.")
+  source = Column(NullToEmptyString, default="", comment="The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').")
+  reporter = Column(Integer, ForeignKey("feed_logs.id"), comment="The feed_log the event is reported in.")
   owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons the event is associated with.")
 
-  def __init__(self, type, name, description, dateFrom, dateTo, owner):
-    self.type = type
-    self.name = name
+  def __init__(self, title, description, location, date, time, source, reporter, owner):
+    self.title = title
     self.description = description
-    self.dateFrom = dateFrom
-    self.dateTo = dateTo
+    self.location = location
+    self.date = date
+    self.time = time
+    self.source = source
+    self.reporter = reporter
     self.owner = owner
 
   def __repr__(self):
-    dates = ""
-    if self.dateTo != "" and self.dateTo != 'None':
-      dates = f"Event Dates: from {self.dateFrom} to {self.dateTo}. "
-    elif self.dateFrom != "" and self.dateFrom != 'None':
-      dates = f"Event Date: on {self.dateFrom}. "
-
-    return f"Event: {self.name} Event Details: {self.description} {dates}"
+    return f"Event: {self.name} Event Details: {self.description} Happened On: {self.date}"
 
 class Lead(Base):
   """
