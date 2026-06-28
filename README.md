@@ -33,7 +33,7 @@ If someone is versed enough to remove tracking could they be a programmer?
 
 ### Does the video guy from Nancy Guthrie case hang out here in DC?
 
-Today around 11:30am - 06/28/2026 I passed a guy who seemed to be around 28 years old, one armed sleeved with tattoos carring a black umbrella who seemed to have the same walk and feel as the guy in the Nancy Guthrie video. He was smoking weed. He was on Peabody Street one block from the Walmart as I was returning from the store on the McDonalds side of the street. I'm not sure whether to report this or not. It was more a sense than definitive and I don't want to be crying wolf if this is just some random chance that he resembles the guy. He seemed to be mexican, short hair on the side curled back on the top, 200 lbs 5 foot 10 inches.
+Today around 11:30am - 06/28/2026 I passed a guy who seemed to be around 28 years old, one arm sleeved with tattoos carring a black umbrella who seemed to have the same walk and feel as the guy in the Nancy Guthrie video. He was smoking weed. He was on Peabody Street one block from the Walmart as I was returning from the store on the McDonalds side of the street. I'm not sure whether to report this or not. It was more a sense than definitive and I don't want to be crying wolf if this is just some random chance that he resembles the guy. He seemed to be mexican, short hair on the side curled back on the top, 200 lbs 5 foot 10 inches.
 
 This is the second time I thought I got a glimps of someone resembling the figure in the video. The first time was a couple of months ago and the person even entered the building I live in. Same body type and walk although then he had a hoody on.
 
