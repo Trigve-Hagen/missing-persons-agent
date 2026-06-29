@@ -65,13 +65,15 @@
             <td>{{ link }}</td>
             <td>
               <a class="btn btn-primary w-100 text-nowrap" href="{{ link }}" target="_blank">View</a>
-              <form action="/save_links" method="POST" name="save_links">
-                <input type="hidden" name="id" value="{{ feed_log.id }}">
-                <input type="hidden" name="link" value="{{ link }}">
-                <div class="col-12">
-                  <button class="btn btn-success w-100 text-nowrap mt-2" type="submit">Save</button>
-                </div>
-              </form>
+              {% if link.endswith('.jpg') or link.endswith('.png') or link.endswith('.jpeg') or link.endswith('.gif') or link.endswith('.pdf') %}
+                <form action="/save_links" method="POST" name="save_links">
+                  <input type="hidden" name="id" value="{{ feed_log.id }}">
+                  <input type="hidden" name="link" value="{{ link }}">
+                  <div class="col-12">
+                    <button class="btn btn-success w-100 text-nowrap mt-2" type="submit">Save</button>
+                  </div>
+                </form>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}

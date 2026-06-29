@@ -2240,9 +2240,71 @@ def extract_events():
 def save_links():
   form_data = request.form
   if form_data is None:
+    flash(f"No forn data.", "danger")
     return redirect(url_for('feed_log_view', id=form_data.get('id')))
 
-  flash(f"Were here.", "success")
+  try:
+    target_url = form_data.get('link')
+    # 1. Fetch the file from the FQDN
+    flash(f"Fetching file from: {target_url}", "info")
+    with requests.get(target_url, stream=True, timeout=10) as download_response:
+      download_response.raise_for_status()
+
+      # Extract the original filename from the URL path safely
+      original_filename = os.path.basename(download_response.url.split('?')[0])
+      if not original_filename:
+          flash("Could not parse filename from URL", "danger")
+          return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+       # Validate file extension using your existing utility
+      if not ModelUtils.allowed_file(original_filename):
+        flash("File type not allowed.", "danger")
+        return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+      sec_filename = secure_filename(original_filename)
+      filename, filename_ext = os.path.splitext(sec_filename)
+      clean_filename = ModelUtils.machine_name(name=filename)
+      safe_filename = f"{clean_filename}_{time.time_ns()}{filename_ext}"
+      save_path = ModelUtils.resource_path(os.path.join("uploads", "files", safe_filename))
+
+      state = session.get(State, 1)
+      person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
+
+      file_type = 'image'
+      if filename_ext.strip(".") == 'pdf':
+        file_type = 'pdf'
+
+      # Ensure the directory exists before writing to it
+      os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+      # FIX: Stream chunk data directly to the disk instead of using file.save()
+      with open(save_path, 'wb') as f:
+        for chunk in download_response.iter_content(chunk_size=8192):
+          if chunk:
+            f.write(chunk)
+
+      try:
+        file_record = File(
+          type=file_type,
+          filename=safe_filename,
+          owner=person.id,
+        )
+        session.merge(file_record)
+        session.commit()
+        flash(f"File uploaded successfully!", "success")
+        return redirect(url_for('feed_log_view', id=form_data.get('id')))
+      except IntegrityError as e:
+        session.rollback()
+        error_msg = str(e.orig)
+        flash(f"Database Error: {error_msg}", "danger")
+        return redirect(url_for('feed_log_view', id=form_data.get('id')))
+      except Exception as e:
+        session.rollback()
+        flash(f"An unexpected error occurred: {str(e)}", "danger")
+        return redirect(url_for('feed_log_view', id=form_data.get('id')))
+
+  except requests.exceptions.RequestException as e:
+    flash(f"An error occurred during network operations: {e}", "danger")
 
   return redirect(url_for('feed_log_view', id=form_data.get('id')))
 
