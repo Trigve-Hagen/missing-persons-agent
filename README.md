@@ -10,6 +10,8 @@ Maybe video cameras on that Walmart corner can see if he is anything close to wh
 
 1:20pm I just reported it to the DC police.
 
+### Ederly Abuse
+
 On Off the cuff they talked about the suspect being someone who is doing ederly abuse or scamming the elderly. There are reports on the news about elderly people being coerced into moving their money from there accounts and loosing large amounts of money. You might want to investigate those to see if they might be connected. Also check if there is money being pulled from Nancy's accounts.
 
 For the record I support the Pima County sheriffs department. I believe they and the FBI are doing a great job. I hope that everyone will work together to expidite finding Nancy Guthrie.
