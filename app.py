@@ -63,7 +63,6 @@ from database.state import State, Task
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField, FeedLog
 from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Lead
-from classes.data_extractor import DynamicSkillOrchestrator
 from classes.request_api import RequestApi
 from classes.selections import Selection
 from classes.process_files import ProcessFiles
@@ -112,7 +111,7 @@ def add_nosniff_header_to_static(response):
 @app.route('/')
 @app.route('/index')
 def index():
-  resource = Resources()
+  """  resource = Resources()
   resource.generate_agent_schema()
 
   create_statements = resource.initialize_determinator(engine)
@@ -126,7 +125,7 @@ def index():
   cleaned_string = json_data_str.replace('\\n', '').replace('\\t', '')
   resource.save_schema_to_file(cleaned_string, "db_contexts.json")
 
-  """  determine = Determinator(session=session)
+  determine = Determinator(session=session)
   determine.chunk_create_statements(createStatements=data_entities) """
 
   return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
@@ -3070,7 +3069,7 @@ if __name__ == '__main__':
   window.events.resized += on_resized
   window.events.loaded += on_loaded
 
-  webview.start(debug=True)
+  webview.start(debug=False)
 
 # python -m venv .venv
 # .\.venv\Scripts\Activate.ps1
