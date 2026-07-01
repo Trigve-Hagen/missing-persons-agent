@@ -1,4 +1,7 @@
 # Missing Persons Agent
+― Roy T. Bennett, The Light in the Heart
+
+Difficulties and adversities viciously force all their might on us and cause us to fall apart, but they are necessary elements of individual growth and reveal our true potential. We have to endure and overcome them and move forward. Never lose hope. Storms make people stronger and never last forever.
 
 ## phi4
 This is the best model I found to use for my laptop that has 8 + 16 GB RAM, 1 Terabyte of ROM and running on a CPU.
