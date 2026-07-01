@@ -119,7 +119,7 @@ Build an agent that loads all the data saved to the vecotor database and tries t
 - witness_statements - Stores witness statements.
 
 ### edge cases
-A list of examples that can be added to the prompt to instrauct the agent on what to look for.
+A list of examples that can be added to the prompt to instruct the agent on what to look for.
 - Someone has the same set of clothing as an unidentified man/women at the crime scene.
 
 ### Add in Autosearch
