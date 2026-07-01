@@ -1,49 +1,5 @@
 # Missing Persons Agent
 
-### Does the video guy from Nancy Guthrie case hang out here in DC?
-
-Today around 11:30am - 06/28/2026 I passed a guy who seemed to be around 28 years old, one arm sleeved with tattoos carring a black umbrella who seemed to have the same walk and feel as the guy in the Nancy Guthrie video. He was smoking weed. He was on Peabody Street one block from the Walmart as I was returning from the store on the McDonalds side of the street. I'm not sure whether to report this or not. It was more a sense than definitive and I don't want to be crying wolf if this is just some random chance that he resembles the guy. He seemed to be mexican, short hair on the side curled back on the top, 200 lbs 5 foot 10 inches.
-
-This is the second time I thought I got a glimps of someone resembling the figure in the video. The first time was a couple of months ago and the person even entered the building I live in. Same body type and walk although then he had a hoody on.
-
-Maybe video cameras on that Walmart corner can see if he is anything close to what they are looking for.
-
-1:20pm I just reported it to the DC police.
-
-### Ederly Abuse
-
-On Off the cuff they talked about the suspect being someone who is doing ederly abuse or scamming the elderly. There are reports on the news about elderly people being coerced into moving their money from there accounts and loosing large amounts of money. You might want to investigate those to see if they might be connected. Also check if there is money being pulled from Nancy's accounts.
-
-For the record I support the Pima County sheriffs department. I believe they and the FBI are doing a great job. I hope that everyone will work together to expidite finding Nancy Guthrie.
-
-She would need a way to get medication possible in house doctor. Look for places selling the medicine she uses. People other than her filling her perscription. People other than the patient filling the prscription for people. Doctors or nurses missing days of work. A wheelchair to move her around. Search video survelance in the area for a person in a wheelchair.
-
-Has anyone checked if there was a google maps request on the days before the Guthrie disappearance going to the Guthrie house? Everyone uses google maps for directions. Get a list of the people who went to her house if that's possible. Can phone or onstar systems be tracked in an area? Possible i-watch. Can you get a warrent for Apple and Google and other cell phone providers to possibly GPS track anyone in that area at the time of the doorbell camera? Other types of apps that could be used for directions besides google like hunting apps? And the car could have been parked a ways away. But they would need a car to take her away so any car roughly newer than 2010 has GPS tracking.
-
-Almost any electronic device you carry or use regularly has GPS tracking or location-sharing capabilities. If police secure a warrant, they can utilize a vast network of personal devices, vehicle logs, and digital trails to definitively place a suspect at a specific crime scene or trace their exact route at any given time. Anything from computers to ez-pass to watches have GPS. Search google with: 'What all has GPS tracking? What could a criminal be carring that could give away where they where at a specific time if someone had a warrent?' It returns a list of electronics that could leave a trail.
-
-The top navigation apps offer distinct advantages depending on your needs:
-- Google Maps: The most comprehensive app with the best global coverage. It supports driving, cycling, walking, and public transit (like Metro and buses in the DC area), and offers great details on local businesses.
-- Apple Maps: Built-in for all iOS devices, it features a clean interface, 3D city views, and helpful cycling details like steep hills.
-- Waze: Highly regarded for commuting, it uses crowdsourced data to alert you of accidents, road hazards, and police activity.
-- Specialty Apps: For off-the-grid trips without a data connection, offline apps like HERE WeGo work well. If you ride a bike frequently, specialized apps like Komoot are great for mapping trail
-
-### Tracking Emails via C++
-You cannot track a live email moving through the internet using C++, but you can write C++ code or analyze email binaries (raw .eml / .msg files) to uncover tracking mechanisms:
-- 1. Parsing Email Headers - You can write a C++ program to parse the raw text header of an email. This reveals the digital footprint of the message:
-  - Received Headers: Shows every server the email passed through.
-  - IP Addresses: Exposes the originating server's location.
-  - Timestamps: Tracks the exact time of transit between servers.
-- 2. Detecting Tracking Pixels - Emails often contain hidden tracker images. You can use C++ to scan the binary or HTML content of an email for these elements:
-  - Web Beacons: Tiny 1x1 transparent images embedded in HTML.
-  - Unique URLs: Images hosted on strings like ://tracker.com.
-  - Trigger Mechanism: When the victim opens the email, their client downloads the image, alerting the sender.
-- 3. Analyzing Compiled Email Clients - If you are reverse-engineering a compiled binary (like a malicious email client or malware):
-  - Hardcoded SMTP: Look for embedded strings showing server IPs or credentials.
-  - API Calls: Search for network functions like connect() or socket libraries pointing to mail ports (25, 465, 587).
-
-If someone is versed enough to remove tracking could they be a programmer?
-
 ## phi4
 This is the best model I found to use for my laptop that has 8 + 16 GB RAM, 1 Terabyte of ROM and running on a CPU.
 
