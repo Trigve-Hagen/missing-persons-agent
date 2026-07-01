@@ -77,6 +77,10 @@ Build out Data Center
 - View feed log page
   - Extract Leads - Uses an agent to find and list leads in the json data.
   - Extract Timeline Events - Uses an agent to find and list events in the json data that can be used to build a timeline of a person.
+    - When extracted its listed the event even if it does not have a reliable date or time so the user can fill those in.
+    - Field for timeline so the events can be added to specific timelines
+    - Add a field for text date time so it can be recorded as a text strin (eg. 'evening', 'afternoon')
+    - Im giving 7 am to morning 3pm for afternoon and 7pm for evening as times for these text representations. I'll make it apparent that the time is a guess on the timeline. You will be able to adjust the time in edit event.
   - Pull out and list all document or image Links with FQDN(fully qualified domain name)
     - view link
     - save link to files
@@ -97,9 +101,13 @@ Build out Data Center
 
 ### Timeline for each Person
 A UI that displays recorded events for each person who has a role in the investigation ordered in a timeline.
+- Main Timeline - Has all events.
+- Named timelines - Has only events for the person named in the link.
+
+![Timeline](./assets/timeline.png)
 
 ### Agent
-Build an agent that loads all the data saved to the vecotor database and tries to answer the question?:
+Build an agent that loads all the data saved to the vecotor database and tries to answer the question?
 - Where is the missing person?
 - Who did it?
 

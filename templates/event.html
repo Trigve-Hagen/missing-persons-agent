@@ -34,6 +34,11 @@
               <td>{{ event.title }}</td>
               <td>
                 <a class="btn btn-secondary w-100 text-nowrap" href="{{ url_for('edit_event', id=event.id) }}">Edit</a>
+                {% if event.ifComplete == 0 %}
+                  <a class="btn btn-primary w-100 text-nowrap mt-2" href="{{ url_for('set_event_complete', id=event.id, ifComplete=1) }}">Mark Complete</a>
+                {% else %}
+                  <a class="btn btn-success w-100 text-nowrap mt-2" href="{{ url_for('set_event_complete', id=event.id, ifComplete=0) }}">Mark Not Complete</a>
+                {% endif %}
                 <a class="btn btn-danger w-100 text-nowrap mt-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="event" data-bs-item-id="{{ event.id }}" data-bs-item="{{ event.title }}">Delete</a>
               </td>
           </tr>

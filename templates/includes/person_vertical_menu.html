@@ -1,0 +1,7 @@
+<ul class="nav flex-column">
+  {% for person in people %}
+    <li class="nav-item">
+      <a class="nav-link{% if request.path == url_for('timeline', id=person.id) %} active{% endif %}" href="{{ url_for('timeline', id=person.id) }}">{{ person.name }}</a>
+    </li>
+  {% endfor %}
+</ul>

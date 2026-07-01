@@ -1647,6 +1647,28 @@ def set_event():
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('event'))
 
+@app.route('/event/complete/<int:id>/<int:ifComplete>', methods=['GET', 'POST'])
+def set_event_complete(id, ifComplete):
+
+  try:
+    event = session.execute(select(Event).filter_by(id = id)).scalar_one_or_none()
+    if event:
+      event.ifComplete=ifComplete
+      session.merge(event)
+      session.commit()
+
+    flash(f"Event updated successfully!", "success")
+    return redirect(url_for('event'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('event'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('event'))
+
 @app.route('/save_to_vector_event', methods=['POST'])
 def save_to_vector_event():
   form_data = request.form
@@ -2032,6 +2054,74 @@ def dashboard():
   flash(f"Execution Time: {int(minutes)} minutes {seconds:.2f} seconds", "success")
 
   return flask.render_template('dashboard.html', person=person, aliases=aliases, addresses=addresses, emails=emails, phones=phones)
+
+@app.route('/timeline/')
+@app.route('/timeline/<int:id>')
+def timeline(id=None):
+    # @TODO make sure docs on each page that uses a state item have warnings for the user at the top of the page
+    # @TODO add pagination
+    state = session.get(State, 1)
+    person = session.execute(select(Person).filter_by(id = state.person)).scalar_one_or_none()
+    person_list = []
+    peopleUtils = PeopleUtils(session=session)
+    main_timeline = {
+      "id": None,
+      "name": "Main Timeline"
+    }
+    person_list.append(main_timeline)
+    state_person = {
+      "id": person.id,
+      "name": peopleUtils.get_person_name(person)
+    }
+    person_list.append(state_person)
+    all_people = session.query(Person).filter(Person.owner == person.id).all()
+    for person in all_people:
+      state_person = {
+        "id": person.id,
+        "name": peopleUtils.get_person_name(person)
+      }
+      person_list.append(state_person)
+
+    events = []
+    selected_person = "Main"
+    if id != None:
+      selected_person = next((item['name'] for item in person_list if item['id'] == id), "Not Found")
+      all_events = session.query(Event).filter(Event.owner == id).all()
+      for event in all_events:
+        if event.ifComplete == 1:
+          new_event = {
+            "date": event.date,
+            "time": event.time,
+            "title": event.title,
+            "description": event.description,
+            "location": event.location,
+            "source": event.source,
+          }
+          events.append(new_event)
+    else:
+      for person in person_list:
+        if person.get('id') != None:
+          all_events = session.query(Event).filter(Event.owner == person['id']).all()
+          for event in all_events:
+            if event.ifComplete == 1:
+              new_event = {
+                "date": event.date,
+                "time": event.time,
+                "title": event.title,
+                "description": event.description,
+                "location": event.location,
+                "source": event.source,
+              }
+              events.append(new_event)
+
+      # events = sorted(events, key=lambda x: x['date'])
+
+    return render_template(
+      'timeline.html',
+      person=selected_person,
+      events=events,
+      people=person_list
+    )
 
 @app.route('/extract_leads', methods=['POST'])
 def extract_leads():

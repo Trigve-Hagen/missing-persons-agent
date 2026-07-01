@@ -16,6 +16,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="dashboard-dropdown">
             <li><a class="dropdown-item{% if request.endpoint == 'dashboard' %} active{% endif %}" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a class="dropdown-item{% if request.endpoint == 'timeline' %} active{% endif %}" href="{{ url_for('timeline') }}">Timeline</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'application_state' %} active{% endif %}" href="{{ url_for('application_state') }}">App State</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'resources' %} active{% endif %}" href="{{ url_for('resources') }}">Resources</a></li>
             <li><a class="dropdown-item{% if request.endpoint == 'category' %} active{% endif %}" href="{{ url_for('category') }}">Category</a></li>

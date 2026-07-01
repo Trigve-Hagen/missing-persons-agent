@@ -271,6 +271,7 @@ class Event(Base):
   date = Column(Date, default=None, comment="The date of the event.")
   time = Column(Time, default=None, comment="The time of the event.")
   source = Column(NullToEmptyString, default="", comment="The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').")
+  ifComplete = Column("if_complete", Integer, default=0, comment="If the event is complete and ready to go on a timeline.")
   reporter = Column(Integer, ForeignKey("feed_logs.id"), comment="The feed_log the event is reported in.")
   owner = Column(Integer, ForeignKey("people.id"), nullable=False, comment="The persons the event is associated with.")
 
