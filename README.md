@@ -111,24 +111,17 @@ Build an agent that loads all the data saved to the vecotor database and tries t
 - Where is the missing person?
 - Who did it?
 
-### Collections
-- database - Stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
-- investigation - Stores data from the person, email, phone, alias, address, event and note table data for investigating.
-- investigator - Stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
-- vehicles_of_interest - Stores vehicle descriptions.
-- witness_statements - Stores witness statements.
-
-### edge cases
+#### Edge cases
 A list of examples that can be added to the prompt to instruct the agent on what to look for.
 - Someone has the same set of clothing as an unidentified man/women at the crime scene.
-
-### Add in Autosearch
-Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.
-- Add auto search to the agent to aid in optimizing prompts if possible.
 
 ### Add in Audio to text
 Use a package that can listen to audio and video and convert the talking to text to be searched for clues, leads and connections.
 - @TODO need to get llama-liquid-audio-cli set up.
+
+### Add in Autosearch
+Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.
+- Add auto search to the agent to aid in optimizing prompts if possible.
 
 ### Images and Videos
 - Add images and video to the person object to use when looking though images and videos for matching.
@@ -140,6 +133,13 @@ Use a package that can listen to audio and video and convert the talking to text
 
 ### Central Data Store
 - A central data storage where all data on an investigation can be accessed by any one using Missing Persons.
+
+## Collections
+- database - Stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
+- investigation - Stores data from the person, email, phone, alias, address, event and note table data for investigating.
+- investigator - Stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
+- vehicles_of_interest - Stores vehicle descriptions.
+- witness_statements - Stores witness statements.
 
 ## Section Details
 - Categories - Work and in testing.
