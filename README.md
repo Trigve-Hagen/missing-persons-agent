@@ -75,11 +75,8 @@ Build out Data Center
 - Filter the data if the feed relies on loose keyword matching.
 - When the user is happy they can save the JSON data to the Feed Logs database.
 - View feed log page
-  - Use agent to scan and create leads out of the json
-    - name
-    - email
-    - phone
-    - context of the lead
+  - Extract Leads - Uses an agent to find and list leads in the json data.
+  - Extract Timeline Events - Uses an agent to find and list events in the json data that can be used to build a timeline of a person.
   - Pull out and list all document or image Links with FQDN(fully qualified domain name)
     - view link
     - save link to files
@@ -99,55 +96,23 @@ Build out Data Center
 ![Leads Page](./assets/leads.png)
 
 ### Timeline for each Person
-A list of events recorded for each person who has a role in the investigation ordered in a timeline.
-
-### Agent UI
-A list of Tasks created.
-
-Form to set the Agent working.
-- list saved api content  - select content to process
-- Process Content button
-
-List of logs to watch while the agent work.
-
-Keep the APIs separate so other people can continue to work on it.
-Offer the ability to save the raw responses to a database table.
-
-On the first set of passes it looks for leads and adds them as tasks.
-On the second set of passes it looks for information on events.
-On the third set of passes it looks for contact information.
-
-You pass it an API, RSS Feed or a scraped content and it processes the whole unit.
-It recursively checks each task against the data stored in SqlAlchemy database and the task list, if its not present creates a task to insert it.
-Have the agent always log where its pulling the data from.
+A UI that displays recorded events for each person who has a role in the investigation ordered in a timeline.
 
 ### Agent
-Build an agent that operates continuously with stop options
-- Possibly create a nodes table that the user can define the nodes. This might be too much. Still trying to create the perfect idea.
-  - Create tools that can be used by the agent.
-  - Create an MCP server that the agent can use. MCP servers standardalize connecting to external data.
-    - Resources, Tools and prompts
-    - Elicit - allows the tool to pause for user input
-  - Load the Chroma database with person, emails, phones, addresses and aliases.
-  - Load the Chroma database with Events and notes.
-  - Load the Chroma database with Documents including documents, images, audio and videos.
-  - Connect to APIs and Rss Feeds to pull data in as json.
+Build an agent that loads all the data saved to the vecotor database and tries to answer the question?:
+- Where is the missing person?
+- Who did it?
 
-With the idea of
-  - Find new people of interest and accessing data points for them.
-  - Parse the returned json and save new data to the database related to the case.
-  - Prompting the model for connections that could lead to finding the person.
-  - When new data is found the data is added to the entity as a [OSINT](https://github.com/cipher387/API-s-for-OSINT) row.
+### Collections
+- database - Stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
+- investigation - Stores data from the person, email, phone, alias, address, event and note table data for investigating.
+- investigator - Stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
+- vehicles_of_interest - Stores vehicle descriptions.
+- witness_statements - Stores witness statements.
 
-Collections.
-  - database - Stores data for the RAG LLM to determine the table and column to save data pulled from the API and Rss Feed json.
-  - investigation - Stores data from the person, email, phone, alias, address, event and note table data for investigating.
-  - investigator - Stores data from pdfs and documentation on how to investigate. You can create a pdf here with your own private methods.
-  - vehicles_of_interest - Stores vehicle descriptions.
-  - witness_statements - Stores witness statements.
-
-### edge cases -
-someone has the same set of clothing as an unidentified man/women at the crime scene. How would the agent connect the two?
+### edge cases
+A list of examples that can be added to the prompt to instrauct the agent on what to look for.
+- Someone has the same set of clothing as an unidentified man/women at the crime scene.
 
 ### Add in Autosearch
 Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.
@@ -172,7 +137,6 @@ Use a package that can listen to audio and video and convert the talking to text
 - A central data storage where all data on an investigation can be accessed by any one using Missing Persons.
 
 ## Section Details
-
 - Categories - Work and in testing.
   - Categories - You can have different categories for people, phones, emails, addresses and events. Define your categories for each and they will show up in each of the entities as Type when you add or edit rows. I created two categories for person. They are 'Missing Person' and 'Person of Interest'. You can change them or create others but you will be unable to delete them because they are going to be used by the system.
 - Person - Work in SqlAlchemy, working on the save and update functions for Chroma Db now.
@@ -292,3 +256,5 @@ In the new age of agents APIs will need to offer exact data options to aid in AI
   - [Agent2Agent](https://github.com/a2aproject/a2a-samples)
 
 [Thinking in LangGraph](https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph)
+
+[OSINT](https://github.com/cipher387/API-s-for-OSINT)

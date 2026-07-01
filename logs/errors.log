@@ -8885,3 +8885,51 @@ WHERE state.id = ?
 FROM state 
 WHERE state.id = ?
 2026-06-30 04:00:56,485 - INFO - [cached since 1.389s ago] (1,)
+2026-07-01 09:21:39,465 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-07-01 09:21:39,465 - INFO - [cached since 2.747s ago] (1,)
+2026-07-01 09:21:39,466 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-07-01 09:21:39,466 - INFO - [cached since 2.748s ago] (1,)
+2026-07-01 09:21:39,468 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-07-01 09:21:39,468 - INFO - [cached since 2.749s ago] (1,)
+2026-07-01 09:21:39,469 - INFO - SELECT state.id AS state_id, state.theme AS state_theme, state.person AS state_person, state.model AS state_model, state.api AS state_api, state.prompt AS state_prompt, state.question AS state_question, state."database" AS state_database, state.collection AS state_collection, state.processor AS state_processor, state.loader AS state_loader, state.chunk_size AS state_chunk_size, state.chunk_overlap AS state_chunk_overlap, state.root_node AS state_root_node, state.display_type AS state_display_type, state.files_size AS state_files_size, state.sql_alchemy_database_size AS state_sql_alchemy_database_size, state.chroma_database_size AS state_chroma_database_size, state.ollama_models_size AS state_ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-07-01 09:21:39,469 - INFO - [cached since 2.75s ago] (1,)
+2026-07-01 09:25:54,806 - INFO - SELECT state.id, state.theme, state.person, state.model, state.api, state.prompt, state.question, state."database", state.collection, state.processor, state.loader, state.chunk_size, state.chunk_overlap, state.root_node, state.display_type, state.files_size, state.sql_alchemy_database_size, state.chroma_database_size, state.ollama_models_size 
+FROM state 
+WHERE state.id = ?
+2026-07-01 09:25:54,806 - INFO - [generated in 0.00044s] (1,)
+2026-07-01 09:25:54,808 - INFO - SELECT people.id, people.first_name, people.middle_name, people.last_name, people.sir_name, people.suffix, people.type, people.height, people.weight, people.hair_color, people.eye_color, people.ssn, people.gender, people.data_of_birth, people.ethnicity, people.primary_language, people.missing, people.description, people.owner 
+FROM people 
+WHERE people.id = ?
+2026-07-01 09:25:54,808 - INFO - [generated in 0.00027s] (1,)
+2026-07-01 09:25:54,808 - INFO - SELECT aliases.id, aliases.first_name, aliases.middle_name, aliases.last_name, aliases.sir_name, aliases.suffix, aliases.owner 
+FROM aliases 
+WHERE aliases.owner = ?
+2026-07-01 09:25:54,808 - INFO - [generated in 0.00019s] (1,)
+2026-07-01 09:25:54,808 - INFO - SELECT phone_numbers.id, phone_numbers.type, phone_numbers.phone_number, phone_numbers.owner 
+FROM phone_numbers 
+WHERE phone_numbers.owner = ?
+2026-07-01 09:25:54,808 - INFO - [generated in 0.00019s] (1,)
+2026-07-01 09:25:54,808 - INFO - SELECT addresses.id, addresses.type, addresses.if_current, addresses.if_crime_scene, addresses.name, addresses.address_1, addresses.address_2, addresses.city, addresses.state, addresses.zip_5, addresses.zip_4, addresses.description, addresses.date_from, addresses.date_to, addresses.owner 
+FROM addresses 
+WHERE addresses.owner = ?
+2026-07-01 09:25:54,808 - INFO - [generated in 0.00024s] (1,)
+2026-07-01 09:25:54,815 - INFO - SELECT email_addresses.id, email_addresses.type, email_addresses.email_address, email_addresses.owner 
+FROM email_addresses 
+WHERE email_addresses.owner = ?
+2026-07-01 09:25:54,815 - INFO - [generated in 0.00043s] (1,)
+2026-07-01 09:25:54,816 - INFO - SELECT people.id, people.first_name, people.middle_name, people.last_name, people.sir_name, people.suffix, people.type, people.height, people.weight, people.hair_color, people.eye_color, people.ssn, people.gender, people.data_of_birth, people.ethnicity, people.primary_language, people.missing, people.description, people.owner 
+FROM people 
+WHERE people.id = ?
+2026-07-01 09:25:54,816 - INFO - [cached since 0.009248s ago] (1,)
+2026-07-01 09:25:54,818 - INFO - SELECT models.id, models.name, models.model, models.num_ctx, models.temperature, models.type 
+FROM models 
+WHERE models.id = ?
+2026-07-01 09:25:54,818 - INFO - [generated in 0.00027s] (1,)
