@@ -111,7 +111,7 @@ def add_nosniff_header_to_static(response):
 @app.route('/')
 @app.route('/index')
 def index():
-  """  resource = Resources()
+  resource = Resources()
   resource.generate_agent_schema()
 
   create_statements = resource.initialize_determinator(engine)
@@ -126,7 +126,7 @@ def index():
   resource.save_schema_to_file(cleaned_string, "db_contexts.json")
 
   determine = Determinator(session=session)
-  determine.chunk_create_statements(createStatements=data_entities) """
+  determine.chunk_create_statements(createStatements=data_entities)
 
   return flask.render_template('index.html', appData=ModelUtils.resource_path(os.path.join("MissingPersons")))
 
@@ -3159,7 +3159,7 @@ if __name__ == '__main__':
   window.events.resized += on_resized
   window.events.loaded += on_loaded
 
-  webview.start(debug=False)
+  webview.start(debug=True)
 
 # python -m venv .venv
 # .\.venv\Scripts\Activate.ps1

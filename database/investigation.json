@@ -1,0 +1,132 @@
+{
+  "protocol_title": "AI RAG Agent Guide: Missing Persons Data Analysis Protocol",
+  "primary_directives": [
+    "Locate the Subject: Find the current or last known physical location of the missing person.",
+    "Identify Persons of Interest (POIs): Uncover who may be responsible for or complicit in the disappearance."
+  ],
+  "part_1_locating_the_subject": {
+    "section_title": "Searching for 'Where is the Person?'",
+    "analytical_categories": [
+      {
+        "category": "Timeline & Location Anomalies",
+        "search_intent": "Detect geographic anomalies, travel patterns, and sudden halts in activity.",
+        "target_questions": [
+          "What is the exact timestamp and coordinates of the last verifiable human interaction?",
+          "Where did the subject's digital footprint abruptly terminate or deviate from their baseline routine?",
+          "Are there any 'silent periods' where a heavily used device suddenly stopped transmitting data?"
+        ],
+        "rag_query_examples": [
+          {
+            "data_source": "Cell Tower Data",
+            "scenario": "Subject's handset typically pings Tower A (Home) and Tower B (Work). Query for any pings outside this radius in the 48 hours surrounding the disappearance."
+          },
+          {
+            "data_source": "License Plate Readers / CCTV",
+            "scenario": "Cross-reference the subject's vehicle registration across traffic camera logs to see if the vehicle traveled toward a location the subject has no known connection to."
+          }
+        ]
+      },
+      {
+        "category": "Digital Breadcrumbs & Communications",
+        "search_intent": "Extract real-time intent, mental state, and planned destinations.",
+        "target_questions": [
+          "What locations, transport methods, or accommodations did the subject search for online prior to disappearing?",
+          "Do recent calendar entries, emails, or navigation history suggest an unannounced trip or meeting?"
+        ],
+        "rag_query_examples": [
+          {
+            "data_source": "Browser History",
+            "scenario": "Flag searches containing keywords like 'bus schedules', 'cash-only motels', 'hiking trails', or 'how to delete accounts'."
+          },
+          {
+            "data_source": "Ride-Share / Navigation Apps",
+            "scenario": "Extract drop-off locations from ride-share receipts or pinned locations in mapping applications."
+          }
+        ]
+      },
+      {
+        "category": "Transactional & Financial Trail",
+        "search_intent": "Map physical movement through point-of-sale utilization.",
+        "target_questions": [
+          "Where have the subject's credit/debit cards or digital wallets been used since the disappearance?",
+          "Were there large, unusual cash withdrawals immediately preceding the timeline gap?"
+        ],
+        "rag_query_examples": [
+          {
+            "data_source": "Banking Logs",
+            "scenario": "Subject went missing in New York, but a debit card transaction occurred at a gas station pump in Pennsylvania six hours later."
+          },
+          {
+            "data_source": "Merchant Category Codes",
+            "scenario": "Flag purchases at outdoor supply stores (tents, tarps), hardware stores, or prepaid burner phone kiosks."
+          }
+        ]
+      }
+    ]
+  },
+  "part_2_identifying_responsibility": {
+    "section_title": "Searching for 'Who is Responsible?'",
+    "analytical_categories": [
+      {
+        "category": "Network Graph & Communication Spikes",
+        "search_intent": "Identify high-velocity or newly established communication channels.",
+        "target_questions": [
+          "Who did the subject communicate with most frequently in the 72 hours leading up to the disappearance?",
+          "Are there unknown numbers, burner phones, or encrypted app usernames appearing in the logs?",
+          "Whose communication with the subject abruptly ceased the moment they went missing?"
+        ],
+        "rag_query_examples": [
+          {
+            "data_source": "Call Detail Records",
+            "scenario": "Identify a phone number that exchanged 50+ texts with the subject over two days, but has zero historical records prior to that week."
+          },
+          {
+            "data_source": "Social Media DMs",
+            "scenario": "Scan direct message histories for threads containing deleted messages, arguments, or requests to 'meet in person alone'."
+          }
+        ]
+      },
+      {
+        "category": "Behavioral Changes in Inner Circle",
+        "search_intent": "Uncover signs of guilt, evasion, or coordination among individuals close to the subject.",
+        "target_questions": [
+          "Do statements from family, friends, or coworkers contain factual contradictions when cross-referenced against digital evidence?",
+          "Has any known associate suddenly altered their routine, cleaned their vehicle, taken unexpected time off work, or deleted social media profiles?"
+        ],
+        "rag_query_examples": [
+          {
+            "data_source": "Alibi Verification",
+            "scenario": "Associate A claims they were 'home sleeping' at 11:00 PM. Query Associate A’s phone logs or social media activity to see if they were actively posting, traveling, or pinging cell towers near the crime scene."
+          },
+          {
+            "data_source": "Interview Transcripts",
+            "scenario": "Run semantic searches across multiple witness statements to identify conflicting timelines regarding who saw the subject last."
+          }
+        ]
+      },
+      {
+        "category": "Threat Assessment & Past Incidents",
+        "search_intent": "Identify historical motives, restraining orders, or escalating conflicts.",
+        "target_questions": [
+          "Is there a history of domestic disputes, legal threats, or financial entanglements between the subject and anyone in their network?",
+          "Has the subject recently filed complaints about stalking, harassment, or feeling unsafe?"
+        ],
+        "rag_query_examples": [
+          {
+            "data_source": "Public Records & Police Logs",
+            "scenario": "Search historical dispatch logs for the subject's address or associates' addresses looking for domestic disturbance calls."
+          },
+          {
+            "data_source": "Text Sentiment",
+            "scenario": "Filter messages for keywords indicating fear, coercion, or blackmail (e.g., 'don't tell anyone', 'or else', 'stalking', 'scared')."
+          }
+        ]
+      }
+    ]
+  },
+  "rag_search_syntax_prompts": [
+    "Find all documents containing timestamps where [Subject Name] mentions meeting someone or going somewhere unknown.",
+    "Extract any discrepancies between [Person of Interest Name]'s interview transcript and known cell phone location logs.",
+    "Retrieve financial transactions that occurred outside of [Subject's City] after [Disappearance Date]."
+  ]
+}

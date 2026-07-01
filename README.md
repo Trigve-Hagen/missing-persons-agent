@@ -109,9 +109,19 @@ A UI that displays recorded events for each person who has a role in the investi
 ![Timeline](./assets/timeline.png)
 
 ### Agent
-Build an agent that loads all the data saved to the vecotor database and tries to answer the question.
-- Where is the missing person?
-- Who did it?
+- Build an agent that loads all the data saved to the vecotor database and tries to answer the question.
+  - Where is the missing person?
+  - Who did it?
+- Build a database called instructions to let the user save specific investigation instructions it want the agent to get.
+- Documents for Training the Agent - Build an initialize function to load and chunk documents from agent_instructions into the file system and then chunked into the vector database.
+  - investigation.md
+  - CPD-11.351.pdf
+  - Guidelines to Digital Forensics First Responders_V7.pdf
+  - Missing Person Data Collection.pdf
+Agents Settings
+- Set agent to use only the data saved in the vector database
+- Set agent to only use the Feeds logged.
+- Set agent to use all data
 
 Agents analyzing data in a missing persons investigation should focus on triangulating time, location, and behavioral patterns to establish a timeline and assess risk. Data analysis must shift from merely gathering personal descriptions to detecting anomalies in the subject's routine, communications, and digital footprint.
 - What was the last verifiable action the subject took, and did it deviate from their baseline routine?
@@ -134,7 +144,12 @@ Agents analyzing data in a missing persons investigation should focus on triangu
 
 Edge Cases: A list of examples that can be added to the prompt to instruct the agent on what to look for.
 - Someone has the same set of clothing as an unidentified man/women at the crime scene.
+  - Search for people who have things that are identified to be at the crime scene.
 - A persons friend are less likely to hide important information that a missing person might try to hide.
+  - Search for close friends of missing person as a direct source of information on the missing persons day to day movements.
+- Images hold metadata that you cannot see when you look at it.
+  - Where it might have been taken.
+  - What camera or camera type took it.
 
 For every answer you give, explain how you came to the conclusion.
 
@@ -144,14 +159,19 @@ For every answer you give, explain how you came to the conclusion.
 
 ![Missing Persons Checklist](https://directives.chicagopolice.org/forms/CPD-11.351.pdf)
 
-Agents Settings
-- Set agent to use only the data saved in the vector database
-- Set agent to only use the Feeds logged.
-- Set agent to use all data
-
 ### Add in Audio to text
 Use a package that can listen to audio and video and convert the talking to text to be searched for clues, leads and connections.
 - @TODO need to get llama-liquid-audio-cli set up.
+
+### Add item to Contextual Menu
+- Create add Person button to save select text to create
+  - Person
+  - Email Address
+  - Phone Number
+  - Alias
+  - Address
+  - Lead
+  - Timeline Event
 
 ### Add in Autosearch
 Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Autoresearch" pattern (often dubbed "The Karpathy Loop"). Instead of humans manually tweaking prompts, an AI agent optimizes them by iteratively modifying a prompt, running a test against a strict evaluation rubric, keeping changes if the score improves, and discarding failures.

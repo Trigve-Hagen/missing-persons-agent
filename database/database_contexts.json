@@ -1,37 +1,14 @@
 {
-  "addresses": {
-    "description": "Addresses associated with a person.",
+  "tasks": {
+    "description": "Tasks are TODOs.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "type": "INTEGER (The user defined type of address. Definitions are created in Category)",
-      "if_current": "INTEGER (If current address.)",
-      "if_crime_scene": "INTEGER (If crime scene address.)",
-      "name": "STRING (The user defined name of address.)",
-      "address_1": "STRING (The address.)",
-      "address_2": "STRING (The apartment number associated with the address.)",
-      "city": "STRING (The city associated with the address.)",
-      "state": "STRING (The state associated with the address.)",
-      "zip_5": "INTEGER (The 5 digit zip code associated with the address.)",
-      "zip_4": "INTEGER (The 4 digit zip code associated with the address.)",
-      "description": "TEXT (The description.)",
-      "date_from": "DATETIME (The date of move in.)",
-      "date_to": "DATETIME (The date of move out.)",
-      "owner": "INTEGER (The persons who uses this address.)"
-    }
-  },
-  "leads": {
-    "description": "Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "name": "STRING (The name of the person.)",
-      "type": "STRING (Missing Person, Witness, Associate, Person of Interest or Suspect)",
-      "email_address": "STRING (The persons email address.)",
-      "phone_number": "STRING (The phone number.)",
-      "data_of_birth": "DATETIME (The date of birth of the person.)",
-      "report": "TEXT (Stores the raw narrative, GPS location if provided, reference to agency who repoted it.)",
-      "if_viewed": "INTEGER (If lead has beed viewed.)",
-      "reporter": "INTEGER (The feed_log the lead is reported in.)",
-      "owner": "INTEGER (The persons the note is associated with.)"
+      "name": "STRING (The name of the task.)",
+      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
+      "sql_insert_statement": "STRING (The sql insert statement.)",
+      "date_created": "DATETIME (The date the task was created.)",
+      "date_completed": "DATETIME (The date the task was created.)",
+      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
     }
   },
   "people": {
@@ -58,20 +35,6 @@
       "owner": "INTEGER (This will be 0 if a missing person or the id of the missing person.)"
     }
   },
-  "events": {
-    "description": "Events related to the investigation that can build a timeline.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "title": "STRING (A short, descriptive title of the event (e.g., 'Last Seen at Gas Station').)",
-      "description": "TEXT (The event description.)",
-      "location": "STRING (Physical location name, address, or coordinates where the event occurred..)",
-      "date": "DATE (The date of the event.)",
-      "time": "TIME (The time of the event.)",
-      "source": "STRING (The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').)",
-      "reporter": "INTEGER (The feed_log the event is reported in.)",
-      "owner": "INTEGER (The persons the event is associated with.)"
-    }
-  },
   "aliases": {
     "description": "Aliases associated with a person.",
     "fields": {
@@ -84,16 +47,43 @@
       "owner": "INTEGER (The persons who uses this alias.)"
     }
   },
-  "tasks": {
-    "description": "Tasks are TODOs.",
+  "leads": {
+    "description": "Tracks specific citizen sightings, tips, or law enforcement emergency dispatches.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "name": "STRING (The name of the task.)",
-      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
-      "sql_insert_statement": "STRING (The sql insert statement.)",
-      "date_created": "DATETIME (The date the task was created.)",
-      "date_completed": "DATETIME (The date the task was created.)",
-      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
+      "name": "STRING (The name of the person.)",
+      "type": "STRING (Missing Person, Witness, Associate, Person of Interest or Suspect)",
+      "email_address": "STRING (The persons email address.)",
+      "phone_number": "STRING (The phone number.)",
+      "data_of_birth": "DATETIME (The date of birth of the person.)",
+      "report": "TEXT (Stores the raw narrative, GPS location if provided, reference to agency who repoted it.)",
+      "if_viewed": "INTEGER (If lead has beed viewed.)",
+      "reporter": "INTEGER (The feed_log the lead is reported in.)",
+      "owner": "INTEGER (The persons the note is associated with.)"
+    }
+  },
+  "events": {
+    "description": "Events related to the investigation that can build a timeline.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "title": "STRING (A short, descriptive title of the event (e.g., 'Last Seen at Gas Station').)",
+      "description": "TEXT (The event description.)",
+      "location": "STRING (Physical location name, address, or coordinates where the event occurred..)",
+      "date": "DATE (The date of the event.)",
+      "time": "TIME (The time of the event.)",
+      "source": "STRING (The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').)",
+      "if_complete": "INTEGER (If the event is complete and ready to go on a timeline.)",
+      "reporter": "INTEGER (The feed_log the event is reported in.)",
+      "owner": "INTEGER (The persons the event is associated with.)"
+    }
+  },
+  "files": {
+    "description": "Documents with information related to the investigation.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
+      "filename": "STRING (The file name.)",
+      "owner": "INTEGER (The persons file is associated with.)"
     }
   },
   "phone_numbers": {
@@ -114,13 +104,24 @@
       "owner": "INTEGER (The persons who uses this email.)"
     }
   },
-  "files": {
-    "description": "Documents with information related to the investigation.",
+  "addresses": {
+    "description": "Addresses associated with a person.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "type": "STRING (The type of file. The allowed values are image, pdf for now.)",
-      "filename": "STRING (The file name.)",
-      "owner": "INTEGER (The persons file is associated with.)"
+      "type": "INTEGER (The user defined type of address. Definitions are created in Category)",
+      "if_current": "INTEGER (If current address.)",
+      "if_crime_scene": "INTEGER (If crime scene address.)",
+      "name": "STRING (The user defined name of address.)",
+      "address_1": "STRING (The address.)",
+      "address_2": "STRING (The apartment number associated with the address.)",
+      "city": "STRING (The city associated with the address.)",
+      "state": "STRING (The state associated with the address.)",
+      "zip_5": "INTEGER (The 5 digit zip code associated with the address.)",
+      "zip_4": "INTEGER (The 4 digit zip code associated with the address.)",
+      "description": "TEXT (The description.)",
+      "date_from": "DATETIME (The date of move in.)",
+      "date_to": "DATETIME (The date of move out.)",
+      "owner": "INTEGER (The persons who uses this address.)"
     }
   }
 }
