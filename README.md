@@ -130,9 +130,6 @@ Andrej Karpathy revolutionized prompt and AI optimization by introducing the "Au
 Use a package that can listen to audio and video and convert the talking to text to be searched for clues, leads and connections.
 - @TODO need to get llama-liquid-audio-cli set up.
 
-### Events to construct a Timeline
-- Use the data gathered from the APIs to build timelines for each person.
-
 ### Images and Videos
 - Add images and video to the person object to use when looking though images and videos for matching.
 - Build ability to train a model on video and images.
