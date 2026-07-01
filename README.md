@@ -153,11 +153,11 @@ Edge Cases: A list of examples that can be added to the prompt to instruct the a
 
 For every answer you give, explain how you came to the conclusion.
 
-![OSINT for Missing People Investigations](https://www.youtube.com/watch?v=BpN09NhAUIU&t=239s)
+[OSINT for Missing People Investigations](https://www.youtube.com/watch?v=BpN09NhAUIU&t=239s)
 
-![Data Collection](https://www.criminaljustice.ny.gov/missing/findthem/docs/Missing%20Person%20Data%20Collection.pdf)
+[Data Collection](https://www.criminaljustice.ny.gov/missing/findthem/docs/Missing%20Person%20Data%20Collection.pdf)
 
-![Missing Persons Checklist](https://directives.chicagopolice.org/forms/CPD-11.351.pdf)
+[Missing Persons Checklist](https://directives.chicagopolice.org/forms/CPD-11.351.pdf)
 
 ### Add in Audio to text
 Use a package that can listen to audio and video and convert the talking to text to be searched for clues, leads and connections.
