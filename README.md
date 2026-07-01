@@ -17,6 +17,8 @@ You can change models so when you get a better computer with VRAM and NVIDIA GPU
 You can change the system_prompts(prompts) if you are a prompt engineer and know how to fine tune them. There is a default that no matter what you can always revert to.
 You can change user_querys(questions) if you are a prompt engineer and know how to fine tune them. There is a default that no matter what you can always revert to.
 
+You can investigate simular missing persons cases and look for people who they all came in contact with but where new to their lives.
+
 ## The Build
 If you are good with python
 - clone the repo
@@ -107,13 +109,45 @@ A UI that displays recorded events for each person who has a role in the investi
 ![Timeline](./assets/timeline.png)
 
 ### Agent
-Build an agent that loads all the data saved to the vecotor database and tries to answer the question?
+Build an agent that loads all the data saved to the vecotor database and tries to answer the question.
 - Where is the missing person?
 - Who did it?
 
-#### Edge cases
-A list of examples that can be added to the prompt to instruct the agent on what to look for.
+Agents analyzing data in a missing persons investigation should focus on triangulating time, location, and behavioral patterns to establish a timeline and assess risk. Data analysis must shift from merely gathering personal descriptions to detecting anomalies in the subject's routine, communications, and digital footprint.
+- What was the last verifiable action the subject took, and did it deviate from their baseline routine?
+  - Compare the last known cell phone ping with their typical commuting route or GPS history.
+  - Example: If the subject always takes the bus to work, why did location data show them walking into a heavily wooded park at 2:00 AM?
+- What does the digital communication traffic reveal immediately before the disappearance?
+  - Review the last messages sent. Look for uncharacteristic language, distress, or abrupt changes in communication habits.
+  - Cross-reference web search history with recent purchases.
+  - Example: Search history shows inquiries about "buying bus tickets to [City]" on the same day bank data shows a withdrawal of funds.
+- Where and how has the subject's money been accessed since they went missing?
+  - Monitor for sudden depletion of bank accounts or the cessation of routine auto-pay bills.
+  - Track point-of-sale transactions.
+  - Example: A subject with a fixed-income status suddenly makes an unusual, high-dollar purchase at an outdoor supply store.
+- Are there underlying physical, emotional, or environmental conditions contributing to the disappearance?
+  - Check medical data for changes in prescriptions, recent surgeries, or cognitive impairment (e.g., Alzheimer's/Dementia).
+  - Example: If the subject requires daily, life-saving medication, analyzing pharmacy records can confirm whether they left with an adequate supply.
+- Who are the subject's closest, most frequent, or most recently contacted associates?
+  - Use call detail records (CDRs) to establish network graphs. Look for individuals whose numbers suddenly stop appearing, or contact numbers that surged right before the disappearance.
+  - Example: Phone logs indicate daily calls with an unknown number that belongs to someone with a history of crossing state lines.
+
+Edge Cases: A list of examples that can be added to the prompt to instruct the agent on what to look for.
 - Someone has the same set of clothing as an unidentified man/women at the crime scene.
+- A persons friend are less likely to hide important information that a missing person might try to hide.
+
+For every answer you give, explain how you came to the conclusion.
+
+![OSINT for Missing People Investigations](https://www.youtube.com/watch?v=BpN09NhAUIU&t=239s)
+
+![Data Collection](https://www.criminaljustice.ny.gov/missing/findthem/docs/Missing%20Person%20Data%20Collection.pdf)
+
+![Missing Persons Checklist](https://directives.chicagopolice.org/forms/CPD-11.351.pdf)
+
+Agents Settings
+- Set agent to use only the data saved in the vector database
+- Set agent to only use the Feeds logged.
+- Set agent to use all data
 
 ### Add in Audio to text
 Use a package that can listen to audio and video and convert the talking to text to be searched for clues, leads and connections.
