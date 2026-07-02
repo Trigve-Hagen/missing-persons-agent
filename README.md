@@ -110,9 +110,11 @@ A UI that displays recorded events for each person who has a role in the investi
 
 ### Agent Instructions
 Build a database called instructions to let the user save specific investigation instructions they want the agent to use.
-- Has Drag N Drop UI for the list of instruction.
+- Has Drag N Drop UI for the list of instructions.
 - Saves all rows to a .md file as a File so it can be chunked.
-- Adding a Mark Down Editor like easyMDE. Keep getting duplicate editors.
+- Uses Mark Down Editor easyMDE.
+
+![Agent Instructions](./assets/agent_instructions.png)
 
 ### Agent
 - Build an agent that loads all the data saved to the vecotor database and tries to answer the question.

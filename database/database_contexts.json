@@ -1,14 +1,17 @@
 {
-  "tasks": {
-    "description": "Tasks are TODOs.",
+  "events": {
+    "description": "Events related to the investigation that can build a timeline.",
     "fields": {
       "id": "INTEGER (Primary Key)",
-      "name": "STRING (The name of the task.)",
-      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
-      "sql_insert_statement": "STRING (The sql insert statement.)",
-      "date_created": "DATETIME (The date the task was created.)",
-      "date_completed": "DATETIME (The date the task was created.)",
-      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
+      "title": "STRING (A short, descriptive title of the event (e.g., 'Last Seen at Gas Station').)",
+      "description": "TEXT (The event description.)",
+      "location": "STRING (Physical location name, address, or coordinates where the event occurred..)",
+      "date": "DATE (The date of the event.)",
+      "time": "TIME (The time of the event.)",
+      "source": "STRING (The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').)",
+      "if_complete": "INTEGER (If the event is complete and ready to go on a timeline.)",
+      "reporter": "INTEGER (The feed_log the event is reported in.)",
+      "owner": "INTEGER (The persons the event is associated with.)"
     }
   },
   "leads": {
@@ -24,21 +27,6 @@
       "if_viewed": "INTEGER (If lead has beed viewed.)",
       "reporter": "INTEGER (The feed_log the lead is reported in.)",
       "owner": "INTEGER (The persons the note is associated with.)"
-    }
-  },
-  "events": {
-    "description": "Events related to the investigation that can build a timeline.",
-    "fields": {
-      "id": "INTEGER (Primary Key)",
-      "title": "STRING (A short, descriptive title of the event (e.g., 'Last Seen at Gas Station').)",
-      "description": "TEXT (The event description.)",
-      "location": "STRING (Physical location name, address, or coordinates where the event occurred..)",
-      "date": "DATE (The date of the event.)",
-      "time": "TIME (The time of the event.)",
-      "source": "STRING (The source of this data point (e.g., 'CCTV Footage', 'Cell Tower Ping', 'Witness Statement').)",
-      "if_complete": "INTEGER (If the event is complete and ready to go on a timeline.)",
-      "reporter": "INTEGER (The feed_log the event is reported in.)",
-      "owner": "INTEGER (The persons the event is associated with.)"
     }
   },
   "files": {
@@ -98,6 +86,18 @@
       "sir_name": "STRING (The persons sir name.)",
       "suffix": "STRING (The persons suffix name.)",
       "owner": "INTEGER (The persons who uses this alias.)"
+    }
+  },
+  "tasks": {
+    "description": "Tasks are TODOs.",
+    "fields": {
+      "id": "INTEGER (Primary Key)",
+      "name": "STRING (The name of the task.)",
+      "sql_table_name": "STRING (The name of the sql table name where the data will be inserted.)",
+      "sql_insert_statement": "STRING (The sql insert statement.)",
+      "date_created": "DATETIME (The date the task was created.)",
+      "date_completed": "DATETIME (The date the task was created.)",
+      "if_complete": "INTEGER (If the task has been completed. Allowed values are 0 for no and 1 for yes.)"
     }
   },
   "people": {

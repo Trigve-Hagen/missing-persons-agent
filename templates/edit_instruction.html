@@ -3,6 +3,10 @@
 
 {% block title %}Edit Instructions{% endblock %}
 
+{% block page_css %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+{% endblock %}
+
 {% block content %}
 
 <h1 class="my-4">Edit Instructions</h1>
@@ -35,9 +39,9 @@
         <label for="instruction-order-index" class="form-label">Order Index</label>
         <input type="number" class="form-control" id="instruction-order-index" name="order" value="{{ instruction_data.order }}" required>
       </div>
-      <div class="col-md-9">
+      <div class="col-md-12">
         <label for="instruction-instruction" class="form-label">Instruction</label>
-        <textarea class="form-control" id="instruction-instruction" name="instruction" rows="10" required>{{ instruction_data.instruction }}</textarea>
+        <textarea id="instruction-markdown-editor" name="instruction" rows="10" required>{{ instruction_data.instruction }}</textarea>
       </div>
       <div class="col-12 mb-5">
         <button class="btn btn-primary" type="submit">Save</button>
@@ -45,6 +49,21 @@
     </form>
   </div>
 </div>
+
+{% block page_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (!window.markdownEditorInitialized) {
+          const easyMDE = new EasyMDE({
+              element: document.getElementById('instruction-markdown-editor'),
+              forceSync: true, // Crucial for form data reliability
+          });
+          window.markdownEditorInitialized = true;
+        }
+    });
+  </script>
+{% endblock %}
 
 {% include 'includes/delete_modal.html' %}
 
