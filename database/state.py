@@ -60,3 +60,21 @@ class Task(Base):
     self.dateCreated = dateCreated
     self.dateCompleted = dateCompleted
     self.ifComplete = ifComplete
+
+class Instruction(Base):
+  """
+  Instructions get added to a .md file and saved for chunking into the vector database.
+  """
+
+  __tablename__ = "instructions"
+  __table_args__ = {"comment": "This table stores content to instruct the agent on how to behave."}
+
+  id = Column("id", Integer, primary_key=True)
+  title = Column(NullToEmptyString, comment="The title.")
+  instruction = Column(Text, nullable=False, comment="The instruction to give to the agent.")
+  orderIndex = Column("order_index", Integer, nullable=False, comment="The order for Drag and Drop.")
+
+  def __init__(self, title, instruction, orderIndex):
+    self.title = title
+    self.instruction = instruction
+    self.orderIndex = orderIndex

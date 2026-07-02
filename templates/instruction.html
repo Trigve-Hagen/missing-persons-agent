@@ -1,0 +1,114 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Agent Instructions{% endblock %}
+
+{% block page_css %}
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Agent Instructions</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row mb-5">
+  <div class="col-md-12">
+    <!-- Sortable Container -->
+    <div id="instruction-list" class="list-group shadow-sm">
+        {% for item in instructions %}
+        <div class="list-group-item d-flex align-items-center justify-content-between" data-id="{{ item.id }}">
+            <div class="d-flex align-items-center">
+                <!-- Visual Anchor Drag Handle -->
+                <span class="drag-handle text-muted me-3 fs-4">☰</span>
+                <span class="instruction-text">{{ item.instruction }}</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <span class="badge bg-secondary rounded-pill text-nowrap">{{ loop.index }}</span>
+              <a class="btn btn-secondary text-nowrap ms-2" href="{{ url_for('edit_instruction', id=item.id) }}">Edit</a>
+              <a class="btn btn-danger text-nowrap ms-2" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-item-type="instruction" data-bs-item-id="{{ item.id }}" data-bs-item="{{ item.title }}">Delete</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+</div>
+
+<hr>
+<h3 class="my-4 mt-5">Add Instruction</h3>
+
+<div class="row mt-3">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_instruction" method="POST" name="instruction" autocomplete="off">
+      <input type="hidden" class="form-control" id="instruction-id" name="id" />
+      <div class="col-md-6">
+        <label for="instruction-title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="instruction-title" name="title" required>
+      </div>
+      <div class="col-md-6">
+        <label for="instruction-order-index" class="form-label">Order Index</label>
+        <input type="number" class="form-control" id="instruction-order-index" name="order" required>
+      </div>
+      <div class="col-md-12">
+        <label for="instruction-instruction" class="form-label">Instruction</label>
+        <textarea class="form-control" id="instruction-markdown-editor" name="instruction" rows="10" required></textarea>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% block page_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const el = document.getElementById('instruction-list');
+
+        // Initialize SortableJS on the list container
+        const sortable = new Sortable(el, {
+            animation: 150,           // Smooth transitions (ms)
+            ghostClass: 'sortable-ghost', // Styling placeholder class while dragging
+            handle: '.drag-handle',   // Restricts dragging to the icon handle area
+
+            // Fires immediately when an element is dropped
+            onEnd: function () {
+                // Returns an array of strings pulling directly from data-id tokens
+                const updatedOrderArr = sortable.toArray();
+
+                // Transmit the absolute order array over to Flask asynchronously
+                fetch('/update-instruction-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ order: updatedOrderArr })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Refresh the UI badges incrementally to showcase visual feedback
+                        document.querySelectorAll('#instruction-list .badge').forEach((badge, idx) => {
+                            badge.textContent = `Step ${idx + 1}`;
+                        });
+                    }
+                })
+                .catch(err => console.error('Error syncing sequence layout:', err));
+            }
+        });
+    });
+  </script>
+{% endblock %}
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}

@@ -1,0 +1,101 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Proposal{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Proposal</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-12">
+    <p><b>Project Title:</b> Scale-Up and Law Enforcement Integration of the "Missing Persons Agent" (MPA) Framework<br /><b>Applicant:</b> [Your Organization/Agency Name]<br /><b>Target Funding Source:</b> [e.g., Department of Justice (DOJ) / Bureau of Justice Assistance (BJA) Technology Innovation for Public Safety (TIPS) Grant]</p>
+    <h3>Executive Summary</h3>
+    <p>This proposal seeks $[Amount] in federal funding to transition the open-source repository missing-persons-agent from a prototype into an enterprise-grade, law enforcement-ready AI platform. The system leverages Autonomous LLM Agents to automate the gathering of Open Source Intelligence (OSINT) and parse public tips during missing person investigations.</p>
+    <p>By automating manual data aggregation during the critical first 48 hours of a disappearance, this software drastically reduces investigative bottlenecks, allowing detectives to focus purely on high-value leads and field work.</p>
+    <hr>
+    <h3>Project Overview & Problem Statement</h3>
+    <p>Every year, hundreds of thousands of missing person cases overwhelm local police agencies. Investigative success is directly tied to response velocity. However, detectives are plagued by operational bottlenecks:</p>
+    <ul>
+      <li><b>Data Overload:</b> Sifting through thousands of public tips, social media footprints, and neighborhood forum posts manually is incredibly slow.</li>
+      <li><b>Fragmented Intelligence:</b> Cross-referencing disparate databases, geolocations, and physical descriptions frequently leads to siloed data.</li>
+    </ul>
+    <p>The open-source missing-persons-agent architecture solves this by deploying a collaborative web of specialized AI agents. They automatically scan open web networks, organize timelines, and filter high-priority tips, bringing immediate, actionable intelligence to the primary investigator.</p>
+    <hr>
+    <h3>Project Scope & Key Deliverables</h3>
+    <p>Funding will be utilized over an 18-month cycle to transform the codebase across three primary pillars:</p>
+    <ol>
+      <li><b>Security & Compliance Upgrades</b>
+        <ul>
+          <li><b>CJIS Compliance:</b> Re-architecting the application layer to meet strict Criminal Justice Information Services (CJIS) data security requirements.</li>
+          <li><b>On-Premise / GovCloud Deployment:</b> Creating standardized containerized deployments (Docker/Kubernetes) optimized for secure AWS GovCloud or local precinct servers.</li>
+        </ul>
+      </li>
+      <li><b>Feature Implementation & System Hardening</b>
+        <ul>
+          <li><b>Advanced OSINT Scraping:</b> Building secure connectors for localized news networks, public geodata, and social media platforms.</li>
+          <li><b>Human-in-the-Loop Safeguards:</b> Creating a strict UI review system ensuring AI recommendations must be formally verified by a sworn detective before case file integration.</li>
+          <li><b>Interoperability Engines:</b> Developing APIs to seamlessly push parsed data directly into standard Records Management Systems (RMS) used by law enforcement.</li>
+        </ul>
+      </li>
+      <li><b>Pilot Program & Field Testing</b>
+        <ul>
+          <li>Deploying the hardened software across [Number] partner agency precincts for a 6-month trial phase.</li>
+          <li>Benchmarking case-clearance times against historical averages to quantify efficacy.</li>
+        </ul>
+      </li>
+    </ol>
+    <hr>
+    <h3>Budget & Resource Allocation</h3>
+    <table class="table table-striped">
+      <tr>
+        <th>Category</th>
+        <th>Cost</th>
+        <th>Justification</th>
+      </tr>
+      <tr>
+        <td>Personnel & Engineering</td>
+        <td>$XX,XXX</td>
+        <td>Hiring 2 Senior Backend/AI Engineers and 1 Cybersecurity DevSecOps Specialist.</td>
+      </tr>
+      <tr>
+        <td>Infrastructure & Compute</td>
+        <td>$XX,XXX</td>
+        <td>Secure federal cloud computing instances and fine-tuning local model environments.</td>
+      </tr>
+      <tr>
+        <td>Compliance & Auditing</td>
+        <td>$XX,XXX</td>
+        <td>Third-party CJIS security penetration testing and federal data compliance certification.</td>
+      </tr>
+      <tr>
+        <td>Training & Support</td>
+        <td>$XX,XXX</td>
+        <td>Designing onboarding manuals and conducting technical workshops for partner detectives.</td>
+      </tr>
+      <tr>
+        <td colspan="2">Total Requested Funding</td>
+        <td>$XXX,XXX</td>
+      </tr>
+    </table>
+    <hr>
+    <h3>Projected Impact and Outcomes</h3>
+    <ul>
+      <li><b>Time Reductions:</b> Anticipated 70% reduction in time spent by detectives conducting basic web-based background lookups.</li>
+      <li><b>Higher Clearance Rates:</b> Increased actionable leads within the vital 24-48 hour window, fundamentally raising the probability of safe returns.</li>
+      <li><b>Public Asset:</b> Sustaining the core framework via secure open-source methods, allowing other tech-forward municipal police forces to deploy the tech at near-zero software licensing costs.</li>
+    </ul>
+  </div>
+</div>
+
+{% endblock %}

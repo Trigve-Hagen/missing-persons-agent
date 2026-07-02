@@ -1,0 +1,51 @@
+<!-- templates/search.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Edit Instructions{% endblock %}
+
+{% block content %}
+
+<h1 class="my-4">Edit Instructions</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="row">
+  <div class="col-md-12">
+    <a href="{{ url_for('instruction') }}" class="btn btn-primary mb-3">back</a>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <form class="row g-4" action="/set_instruction" method="POST" name="instruction" autocomplete="off">
+      <input type="hidden" class="form-control" id="instruction-id" name="id" value="{{ instruction_data.id }}" />
+      <div class="col-md-6">
+        <label for="instruction-title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="instruction-title" name="title" value="{{ instruction_data.title }}" required>
+      </div>
+      <div class="col-md-6">
+        <label for="instruction-order-index" class="form-label">Order Index</label>
+        <input type="number" class="form-control" id="instruction-order-index" name="order" value="{{ instruction_data.order }}" required>
+      </div>
+      <div class="col-md-9">
+        <label for="instruction-instruction" class="form-label">Instruction</label>
+        <textarea class="form-control" id="instruction-instruction" name="instruction" rows="10" required>{{ instruction_data.instruction }}</textarea>
+      </div>
+      <div class="col-12 mb-5">
+        <button class="btn btn-primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% include 'includes/delete_modal.html' %}
+
+{% endblock %}

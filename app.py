@@ -59,7 +59,7 @@ from datetime import datetime, date
 from datetime import timezone
 from dateutil import parser
 from database.base import Base
-from database.state import State, Task
+from database.state import State, Task, Instruction
 from database.model import Model, ModelParams, Prompt, Question
 from database.apis import Api, ApiField, FeedLog
 from database.person import Category, Person, Alias, Email, Phone, Address, File, Event, Lead
@@ -76,6 +76,7 @@ from classes.chat_manager import ChatManager
 from classes.chroma_database import ChromaDatabase
 from classes.feed_generator import FeedGenerator
 from classes.chroma_manager import PdfRepository, PersonRepository, EventRepository, LeadRepository, Determinator
+from classes.instruction_manager import InstructionManager
 
 import mimetypes
 mimetypes.add_type('application/javascript', '.js')
@@ -979,6 +980,94 @@ def set_question():
     session.rollback()
     flash(f"An unexpected error occurred: {str(e)}", "danger")
     return redirect(url_for('question'))
+
+@app.route('/proposal')
+def proposal():
+  return flask.render_template(
+    'proposal.html'
+  )
+
+@app.route('/instruction')
+def instruction():
+  all_instructions = session.scalars(
+    select(Instruction).order_by(Instruction.orderIndex.asc())
+  ).all()
+
+  return flask.render_template(
+    'instruction.html',
+    instructions=all_instructions
+  )
+
+@app.route('/update-instruction-order', methods=['POST'])
+def update_instruction_order():
+    data = request.get_json() or {}
+    # Array list containing matching string items of IDs parsed from frontend template
+    new_id_order = data.get('order', [])
+
+    if not new_id_order:
+        return jsonify({"status": "error", "message": "No sequence layout received"}), 400
+
+    try:
+        # Loop through elements mapping array element placement index directly
+        for position_index, item_id in enumerate(new_id_order):
+            instruction_record = session.get(Instruction, item_id)
+            if instruction_record:
+                instruction_record.orderIndex = position_index
+
+        session.commit()
+        return jsonify({"status": "success", "message": "Sequence reordered perfectly!"})
+
+    except Exception as e:
+        session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/edit/instruction/<int:id>', methods=['GET', 'POST'])
+def edit_instruction(id):
+  # Retrieve instruction or return 404
+  instruction = session.get(Instruction, id)
+  if not instruction:
+    return redirect(url_for('instruction'))
+
+  instruction_data = {
+      'id': instruction.id,
+      'title': instruction.title,
+      'instruction': instruction.instruction,
+      'order': instruction.orderIndex
+  }
+  return flask.render_template('edit_instruction.html', edit_id=id, instruction_data=instruction_data)
+
+@app.route('/set_instruction', methods=['POST'])
+def set_instruction():
+  form_data = request.form
+
+  try:
+    instruction = session.execute(select(Instruction).filter_by(id = form_data.get('id'))).scalar_one_or_none()
+    if instruction:
+      uporadd = "updated"
+      instruction.title=form_data.get('title')
+      instruction.instruction=form_data.get('instruction')
+      instruction.orderIndex=form_data.get('order')
+    else:
+      uporadd = "added"
+      instruction = Instruction(
+        title=form_data.get('title'),
+        instruction=form_data.get('instruction'),
+        orderIndex=form_data.get('order')
+      )
+    session.merge(instruction)
+    session.commit()
+
+    flash(f"Instruction {uporadd} successfully!", "success")
+    return redirect(url_for('instruction'))
+  except IntegrityError as e:
+    session.rollback()
+    error_msg = str(e.orig)
+    flash(f"Database Error: {error_msg}", "danger")
+    return redirect(url_for('instruction'))
+  except Exception as e:
+    session.rollback()
+    flash(f"An unexpected error occurred: {str(e)}", "danger")
+    return redirect(url_for('instruction'))
 
 @app.route('/category')
 def category():
@@ -2672,7 +2761,7 @@ def delete_item():
   available_models = {
     'person': Person, 'alias': Alias, 'address': Address, 'email': Email,
     'phone': Phone, 'file': File, 'category': Category, 'api': Api,
-    'task': Task, 'event': Event, 'lead': Lead,
+    'task': Task, 'event': Event, 'lead': Lead, 'instruction': Instruction,
     'api_field': ApiField, 'model': Model, 'model_params': ModelParams,
     'prompt': Prompt, 'question': Question, 'feed_log': FeedLog
   }
